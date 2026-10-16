@@ -30,6 +30,22 @@ components?, axis? }`): what a question with no PR diff would decide, which a ro
   checks against the lock registry (`lockConflicts`). A question on a PR page needs none.
 - A question's optional `frames`: the variant keys it asks about, all in its own section. A
   renderer places those frames directly above the question; a frame sits above one question.
+- A pick question's optional decision packet (`packet.ts`), every key an option's text:
+  - `optionDetails`: `{ [option]: { detail, weakPoint?, after? } }`, markdown. An option's
+    pros, cons and consequence; a page shows them without revealing the recommendation.
+  - `evidence`: measured tables, `{ caption, columns: [{ label, option? }], rows: [{ label,
+cells }], note? }[]`. The first column heads the row labels; each row has one cell per later
+    column, a cell being text or `{ text, tone: 'pass' | 'fail' | 'neutral', span? }`. A column's
+    `option` lets a page mark the recommended and picked columns.
+  - `compare`: an option × scenario viewer, `{ views: [{ id, label }], cells: { [option]:
+{ [viewId]: variantKey } }, shown? }`. Every row fills every view, each cell is one of the
+    question's `frames` used once, and the compared frames share one source. `shown` lists the
+    options open at first; choose it by evidence, not by the recommendation. `compare` is how a
+    page sets alternates side by side; `variantUnit` and `alternate` are read only by lint.
+  - `packetProblems(round)` returns what a packet names that is not its question's own;
+    `RoundSchema` and `ManifestSchema` report it under `questions`.
+- A recommendation's optional `weakPoint` (markdown) and `fallback` (an option other than the
+  answer), hidden with the recommendation and echoed with it in feedback.
 - The review kinds (all optional): a question's `decision` (`iterate`, `ship` or `decide`,
   `DECISION_KINDS`) and `outcomes` (option text to `accept`, `changes` or `neutral`,
   `OPTION_OUTCOMES`); the manifest's `prGroups` (`[{ pr, headSha, sectionIds }]`,
@@ -42,7 +58,7 @@ components?, axis? }`): what a question with no PR diff would decide, which a ro
 - `implemented` on a pick-one (an option) or pick-many (a list): what the PR implements at its
   head. `shipBlocks(round, feedback)` returns `{ pr, blocked, blockers: { questionId, kind,
 message }[] }[]`, one per PR group: blocked when an answer in the group has free text (`comment`,
-  `text`, a frame comment) or picks other than `implemented`; an unanswered question does not
+  `text`, a frame comment, an option note) or picks other than `implemented`; an unanswered question does not
   block (owner item 166), and `unansweredQuestionIds` lists those, Ship aside. `pr` is `owner/name#n`; a group is its `prGroups` sections plus the questions whose
   `page` is that PR.
 - A `prGroups` entry's optional `stackedOn` (`{ repo, pr, headSha }`) names the base that one group
@@ -51,6 +67,12 @@ message }[] }[]`, one per PR group: blocked when an answer in the group has free
   holder: its `shipBlocks` status carries `shipsAfter`, and it is blocked (kind
   `holder-not-shipped`, naming the holder) while the holder's Ship is answered Don't ship or asks
   for a revision. An unanswered holder does not block, as an unanswered question does not.
+- Audio (`audio.ts`): a variant's `audio` source with its `transcript` and optional `durationMs`
+  (`isAudioVariant`), and the `blind-ab` question, `{ pairs: [{ id, transcript, takes: [{ engine,
+src, durationMs? }, …] }], seed? }`. `blindAbOrder(seed, count)` is the balanced seeded A/B order,
+  `blindAbKey(round, question)` lists the pairs as played (the key a page must never see), and
+  `engineOf(key, pair, choice)` maps an answer's `pairs[].choice` back to its engine.
+  `takesRecommendation(question)` is false for a text or blind-ab question.
 - `lintRound(round)`, a pure check of a parsed round against the review-layout rules. It returns
   `{ rule, message }[]` (empty when the round passes; `LINT_RULES` lists the rules) and every
   round builder refuses a round with any problem.

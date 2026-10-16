@@ -24,13 +24,13 @@
     "function-lines": 104
   },
   "components/custom/Workout/BodyMapDetailPanel.tsx": {
-    "file-lines": 519
+    "file-lines": 521
   },
   "components/custom/Workout/BodyMapDetailPanel.tsx#BodyMapDetailPanel": {
     "complexity": 21,
-    "component-lines": 374,
-    "function-lines": 374,
-    "props": 16
+    "component-lines": 375,
+    "function-lines": 375,
+    "props": 17
   },
   "components/custom/Workout/DualVelocityCharts.tsx#DualVelocityCompactStrip": {
     "props": 15
@@ -67,7 +67,7 @@
     "props": 19
   },
   "components/custom/Workout/GoalCard.tsx": {
-    "file-lines": 477
+    "file-lines": 476
   },
   "components/custom/Workout/GoalCard.tsx#GoalCard": {
     "props": 15
@@ -124,7 +124,7 @@
     "props": 21
   },
   "components/custom/Workout/index.ts": {
-    "file-lines": 344
+    "file-lines": 353
   },
   "components/custom/Workout/velocityBandGeometry.ts": {
     "file-lines": 318
@@ -207,18 +207,12 @@
   "components/shell/workout/PinnedLiveStrip.tsx#WallValues": {
     "props": 19
   },
-  "components/ui/alert/Alert.tsx#Alert": {
-    "complexity": 19
-  },
   "components/ui/autocomplete/Autocomplete.tsx#Autocomplete": {
     "complexity": 28,
     "props": 20
   },
-  "components/ui/button/Button.tsx": {
-    "file-lines": 253
-  },
   "components/ui/button/Button.tsx#Button": {
-    "complexity": 19
+    "complexity": 18
   },
   "components/ui/card/Card.tsx": {
     "file-lines": 245
@@ -257,9 +251,6 @@
   },
   "components/ui/pill/Pill.tsx#PillContent": {
     "props": 14
-  },
-  "components/ui/progress/Progress.tsx": {
-    "file-lines": 267
   },
   "components/ui/progress/Progress.tsx#CircularProgress": {
     "complexity": 17

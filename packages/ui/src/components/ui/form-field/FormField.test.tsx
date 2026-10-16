@@ -4,6 +4,7 @@ import { axe } from 'jest-axe'
 import { capturedByNode } from '../../../test/classname-capture'
 import { FormField, FormSection, FormActions, FormRow } from './FormField'
 import { resolveAll, spacingClassesAt } from '../../../test/spacing-resolver'
+import { capturedByNode } from '../../../test/classname-capture'
 
 describe('FormField', () => {
   it('renders label and children', () => {
@@ -53,6 +54,18 @@ describe('FormField', () => {
         </FormField>
       )
       expect(screen.getByText('We will never share your email.')).toBeInTheDocument()
+    })
+
+    it('paints valid helper text text-secondary, since it carries content', () => {
+      render(
+        <FormField label="Email" helperText="We will never share your email.">
+          <input />
+        </FormField>
+      )
+      const helper = screen.getByText('We will never share your email.')
+      const classes = (capturedByNode.get(helper) ?? '').split(/\s+/)
+      expect(classes).toContain('text-text-secondary')
+      expect(classes).not.toContain('text-text-tertiary')
     })
 
     it('renders error message', () => {

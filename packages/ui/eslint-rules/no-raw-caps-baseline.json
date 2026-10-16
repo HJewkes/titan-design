@@ -93,30 +93,10 @@
     "tracking": 1,
     "uppercase": 1
   },
-  "src/components/ui/charts/scatter/ScatterFrame.tsx": {
-    "arbitrarySize": 2
-  },
-  "src/components/ui/charts/scatter/ScatterGridlines.tsx": {
-    "arbitrarySize": 2
-  },
-  "src/components/ui/charts/scatter/ScatterPointMark.tsx": {
-    "arbitrarySize": 1
-  },
   "src/components/ui/charts/treemap/Treemap.tsx": {
     "arbitrarySize": 1
   },
-  "src/components/ui/menu/Menu.tsx": {
-    "uppercase": 1
-  },
-  "src/components/ui/section/Section.tsx": {
-    "tracking": 1,
-    "uppercase": 1
-  },
-  "src/components/ui/table/TableHeaderCell.tsx": {
-    "tracking": 1,
-    "uppercase": 1
-  },
   "src/components/ui/tile/Tile.tsx": {
-    "arbitrarySize": 1
+    "tracking": 1
   }
 }

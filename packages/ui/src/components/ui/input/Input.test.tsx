@@ -2,8 +2,16 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { Input } from './Input'
+import { Surface } from '../surface'
+import { insetFieldStyle } from '../surface/insetField'
 import { capturedByNode } from '../../../test/classname-capture'
-import { resolveAll, siblingSource } from '../../../test/spacing-resolver'
+import { resolveAll, siblingSource, sizeClasses } from '../../../test/spacing-resolver'
+
+function normalisedColor(color: string) {
+  const probe = document.createElement('div')
+  probe.style.backgroundColor = color
+  return probe.style.backgroundColor
+}
 
 describe('Input', () => {
   it('renders correctly', () => {
@@ -54,6 +62,50 @@ describe('Input', () => {
     render(<Input isReadOnly defaultValue="Read only" />)
     const input = screen.getByDisplayValue('Read only')
     expect(input).toHaveAttribute('readonly')
+  })
+
+  describe('filled variant', () => {
+    it.each([
+      ['dark', 'base'],
+      ['dark', 'elevated'],
+      ['dark', 'raised'],
+      ['light', 'base'],
+      ['light', 'elevated'],
+      ['light', 'raised'],
+    ] as const)(
+      'fills the field with the well colour of the enclosing plane and the inset-well recess (%s %s)',
+      (mode, level) => {
+        render(
+          <Surface theme={mode} level={level}>
+            <Input variant="filled" placeholder="Filled" />
+          </Surface>
+        )
+        const row = screen.getByPlaceholderText('Filled').parentElement as HTMLElement
+        const expected = insetFieldStyle(level, mode) as {
+          backgroundColor: string
+          boxShadow: string
+        }
+        expect(expected.boxShadow).toContain('inset')
+        expect(row.style.boxShadow).toBe(expected.boxShadow)
+        expect(row.style.backgroundColor).toBe(normalisedColor(expected.backgroundColor))
+      }
+    )
+
+    it('drops the recess while focused, so the focus border reads alone', () => {
+      render(<Input variant="filled" placeholder="Filled" />)
+      const input = screen.getByPlaceholderText('Filled')
+      fireEvent.focus(input)
+      expect((input.parentElement as HTMLElement).style.boxShadow).toBe('')
+      fireEvent.blur(input)
+      expect((input.parentElement as HTMLElement).style.boxShadow).toContain('inset')
+    })
+
+    it('leaves the outline variant flat', () => {
+      render(<Input placeholder="Outline" />)
+      expect(
+        (screen.getByPlaceholderText('Outline').parentElement as HTMLElement).style.boxShadow
+      ).toBe('')
+    })
   })
 
   it('draws the focus ring on the rounded field box, not the bare text element', () => {
@@ -116,5 +168,36 @@ describe('Input label face', () => {
     render(<Input label="Email" />)
 
     expect(capturedByNode.get(screen.getByText('Email'))).toContain('font-heading')
+  })
+})
+
+/**
+ * Input's single-line heights sit on Button's control tokens (TD-275), so an
+ * Input and a Button of the same size line up in one row. Horizontal padding
+ * stays at 12/16/16, narrower than Button's, by the Gate 2 decision.
+ */
+describe('Input single-line sizes', () => {
+  const source = siblingSource(import.meta.url, 'Input.tsx')
+  const buttonSource = siblingSource(import.meta.url, '../button/Button.tsx')
+  const geometryFor = (level: string) =>
+    sizeClasses(source, 'sizeStyles', level).filter((c) => resolveAll([c])[0] !== undefined)
+  const heightKey = (classes: string[]) =>
+    classes.find((c) => /^(min-)?h-/.test(c))?.replace(/^(min-)?h-/, '')
+
+  const shipped = [
+    ['sm', ['h-control-sm', 'px-3'], ['32px', '12px']],
+    ['md', ['h-control-md', 'px-4'], ['40px', '16px']],
+    ['lg', ['h-control-lg', 'px-4'], ['48px', '16px']],
+  ] as const
+
+  it.each(shipped)('%s pins its height and padding', (level, classes, pixels) => {
+    expect(geometryFor(level)).toEqual([...classes])
+    expect(resolveAll(geometryFor(level))).toEqual([...pixels])
+  })
+
+  it.each(['sm', 'md', 'lg'])('%s shares its control height token with Button', (level) => {
+    const buttonHeight = heightKey(sizeClasses(buttonSource, 'sizeStyles', level))
+    expect(buttonHeight).toBe(`control-${level}`)
+    expect(heightKey(geometryFor(level))).toBe(buttonHeight)
   })
 })

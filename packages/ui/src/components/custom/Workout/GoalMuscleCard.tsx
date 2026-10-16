@@ -163,7 +163,7 @@ export function GoalMuscleCard({
           className="gap-inline-sm"
         >
           <View style={{ flexShrink: 1, minWidth: 0 }}>
-            <Typography variant="overline" color="tertiary" testID="goal-muscle-card-name">
+            <Typography variant="overline" color="secondary" testID="goal-muscle-card-name">
               {name}
             </Typography>
           </View>

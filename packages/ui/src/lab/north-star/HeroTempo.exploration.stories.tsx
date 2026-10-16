@@ -18,7 +18,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import type { ReactNode } from 'react'
 import { View, Text, type ViewStyle } from 'react-native'
-import { DualVelocityStrip, LiveAuraFrame } from '../../components'
+import { DualVelocityStrip, LiveAuraFrame } from '../../workout'
 import type { TempoLivePhase } from '../../components/custom/Workout/TempoDisplay'
 import { getSemanticColors } from '../../theme/tokens/semantic'
 import { greyRamp, primitiveRamps } from '../../theme/tokens/primitives'

@@ -61,12 +61,12 @@ function DayLabel({ at, now, labels }: { at: Date; now: Date; labels: DateSepara
   const dayName = relativeDayName(at, now, labels)
   if (dayName) {
     return (
-      <Typography variant="caption" color="tertiary">
+      <Typography variant="caption" color="secondary">
         {dayName}
       </Typography>
     )
   }
-  return <DateTime value={at} format="medium" variant="caption" color="tertiary" />
+  return <DateTime value={at} format="medium" variant="caption" color="secondary" />
 }
 
 /** The visible text, in one string, so a button's name can start with it (WCAG 2.5.3). */
@@ -100,7 +100,7 @@ export function DateSeparator({
     <>
       <Divider className="flex-1" />
       {showDay ? <DayLabel at={at} now={nowDate} labels={text} /> : null}
-      {showTime ? <DateTime value={at} format="time" variant="caption" color="tertiary" /> : null}
+      {showTime ? <DateTime value={at} format="time" variant="caption" color="secondary" /> : null}
       <Divider className="flex-1" />
     </>
   )

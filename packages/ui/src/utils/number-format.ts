@@ -37,3 +37,11 @@ export function formatUsd(n: number): string {
   if (n > 0 && n < 0.01) return '<$0.01'
   return USD.format(n)
 }
+
+/** Grouped thousands and exactly `decimals` fraction digits: `1,234.5`, `-12,000`. */
+export function formatGrouped(n: number, decimals = 0): string {
+  return n.toLocaleString('en-US', {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
+  })
+}

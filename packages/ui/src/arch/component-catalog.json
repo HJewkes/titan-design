@@ -2589,7 +2589,9 @@
     },
     {
       "composes": [
+        "Pill",
         "StatusDot",
+        "StatusGlyph",
         "Tooltip"
       ],
       "family": "custom/Fatigue",
@@ -2609,6 +2611,13 @@
           "name": "spread",
           "required": false,
           "type": "boolean"
+        },
+        {
+          "default": "dots",
+          "description": "`dots` (default) are glowing status dots; `chips` are neutral pills led by a status glyph.",
+          "name": "variant",
+          "required": false,
+          "type": "\"dots\" | \"chips\""
         }
       ],
       "purpose": "",
@@ -2619,6 +2628,7 @@
       "status": "candidate",
       "storyIds": [
         "custom-fatigue-fatigue-lights--across-states",
+        "custom-fatigue-fatigue-lights--default",
         "custom-fatigue-fatigue-lights--spread"
       ],
       "tier": "organism"
@@ -3073,17 +3083,50 @@
       "tier": "organism"
     },
     {
-      "composes": [],
+      "composes": [
+        "Eyebrow",
+        "StatusGlyph",
+        "Tooltip",
+        "Typography"
+      ],
       "family": "custom/Fatigue",
       "file": "packages/ui/src/components/custom/Fatigue/VerdictHero.tsx",
       "name": "VerdictHero",
       "props": [
         {
           "default": null,
+          "description": "A label above the word naming what was read (\"HOW IT MOVED · WORST SET #2\").",
+          "name": "kicker",
+          "required": false,
+          "type": "ReactNode"
+        },
+        {
+          "default": null,
+          "description": "Lead with the RPE number.",
+          "name": "lead",
+          "required": false,
+          "type": "\"rpe\" | \"word\""
+        },
+        {
+          "default": null,
+          "description": "The set was not scored: `title` shows in place of the word, `reason` is the glyph's tip and spoken name.",
+          "name": "noVerdict",
+          "required": false,
+          "type": "{ title: string; reason: string; }"
+        },
+        {
+          "default": null,
           "description": "Exact (unrounded) RPE estimate; rounded to the conventional 0.5 for display.",
           "name": "rpe",
           "required": true,
           "type": "number | null"
+        },
+        {
+          "default": null,
+          "description": "`card` sets the word at h3; `wall` at h2 for reading across a room.",
+          "name": "scale",
+          "required": false,
+          "type": "\"wall\" | \"card\""
         },
         {
           "default": null,
@@ -3100,9 +3143,10 @@
       },
       "status": "candidate",
       "storyIds": [
-        "custom-fatigue-verdict-hero--across-states"
+        "custom-fatigue-verdict-hero--across-states",
+        "custom-fatigue-verdict-hero--default"
       ],
-      "tier": "atom"
+      "tier": "organism"
     },
     {
       "composes": [
@@ -3158,6 +3202,7 @@
         "custom-prose-markdownprose--code-blocks",
         "custom-prose-markdownprose--default",
         "custom-prose-markdownprose--no-linkers",
+        "custom-prose-markdownprose--on-every-plane",
         "custom-prose-markdownprose--pressable",
         "custom-prose-markdownprose--tables"
       ],
@@ -3779,6 +3824,13 @@
           "name": "strength",
           "required": false,
           "type": "MuscleStrengthSection"
+        },
+        {
+          "default": null,
+          "description": "Unit the `strength` masses arrive in.",
+          "name": "unit",
+          "required": false,
+          "type": "\"kg\" | \"lb\""
         },
         {
           "default": null,
@@ -7857,6 +7909,108 @@
     },
     {
       "composes": [
+        "SetLossStripParts",
+        "Typography"
+      ],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/SetLossStrip.tsx",
+      "name": "SetLossStrip",
+      "props": [
+        {
+          "default": null,
+          "description": "The `index` of the session's best e1RM; its cell gets the brand dot.",
+          "name": "bestE1rmIndex",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Tailwind overrides for the outer stack, merged with `cn()`.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": "0",
+          "description": "Minimum column count.",
+          "name": "columns",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": "40",
+          "description": "The loss (%) a full-height bar shows.",
+          "name": "lossCeilingPct",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "The `index` of the set the verdict read; it gets a ring and a glyph in `markedTone`.",
+          "name": "markedIndex",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "The verdict word for the marked set, spoken by its glyph and the strip label.",
+          "name": "markedLabel",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": "neutral",
+          "description": "Defaults to `neutral`.",
+          "name": "markedTone",
+          "required": false,
+          "type": "StatusGlyphTone"
+        },
+        {
+          "default": "phone",
+          "description": "Column width and plot height.",
+          "name": "scale",
+          "required": false,
+          "type": "SetLossStripScale"
+        },
+        {
+          "default": null,
+          "description": "The exercise's sets in the order performed.",
+          "name": "sets",
+          "required": true,
+          "type": "readonly SetLossStripSet[]"
+        },
+        {
+          "default": "set-loss-strip",
+          "description": "Defaults to `set-loss-strip`.",
+          "name": "testID",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": "[10, 20, 30]",
+          "description": "Where the VL lines sit (%).",
+          "name": "thresholds",
+          "required": false,
+          "type": "VelocityLossThresholds"
+        }
+      ],
+      "purpose": "One exercise's sets as velocity-loss bars on a fixed scale, the marked set ringed, with set, reps, load and e1RM rows aligned under each bar.",
+      "sources": {
+        "props": "packages/ui/src/components/custom/Workout/SetLossStrip.tsx",
+        "status": "packages/ui/src/components/custom/Workout/SetLossStrip.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-workout-setlossstrip--bilateral",
+        "custom-workout-setlossstrip--default",
+        "custom-workout-setlossstrip--no-data",
+        "custom-workout-setlossstrip--not-scored",
+        "custom-workout-setlossstrip--warm-up"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
         "Typography",
         "VelocityStrip"
       ],
@@ -9933,6 +10087,13 @@
           "type": "string"
         },
         {
+          "default": "default",
+          "description": "Gutter around the content region: `p-gutter-sm` below the `md` breakpoint, `p-gutter-md` from it.",
+          "name": "contentPadding",
+          "required": false,
+          "type": "AppShellContentPadding"
+        },
+        {
           "default": "false",
           "description": "Render the content region as the `main` landmark.",
           "name": "isMainLandmark",
@@ -10804,6 +10965,13 @@
           "type": "string"
         },
         {
+          "default": null,
+          "description": "Passed to {@link AppShell}: `none` when the children own their gutter.",
+          "name": "contentPadding",
+          "required": false,
+          "type": "AppShellContentPadding"
+        },
+        {
           "default": "[\n  { id: 'Voltra-A3F2', nickname: 'Left Cable', slot: 'L', state: 'connected' },\n  { id: 'Voltra-9B1C', nickname: 'Right Cable', slot: 'R', state: 'connected' },\n]",
           "description": "Connected devices → the TopBar connection glyph + dropdown.",
           "name": "devices",
@@ -10968,7 +11136,7 @@
         },
         {
           "default": null,
-          "description": "Convenience single-line content: renders as **status-colored, bold** text (white on `solid`) — the batteries-included cue message, so a `compact` cue is just `<Alert status=\"warning\" size=\"compact\" message=\"VL20 · …\" />` with no need to hand-color the text (RN doesn't cascade color).",
+          "description": "Convenience single-line content: renders as **status-colored, bold** text (the on-colour on `solid`) — the batteries-included cue message, so a `compact` cue is just `<Alert status=\"warning\" size=\"compact\" message=\"VL20 · …\" />` with no need to hand-color the text (RN doesn't cascade color).",
           "name": "message",
           "required": false,
           "type": "string"
@@ -11032,6 +11200,82 @@
         "components-molecules-alert--without-icon"
       ],
       "tier": "atom"
+    },
+    {
+      "composes": [
+        "Typography"
+      ],
+      "family": "ui/animated-number",
+      "file": "packages/ui/src/components/ui/animated-number/AnimatedNumber.tsx",
+      "name": "AnimatedNumber",
+      "props": [
+        {
+          "default": null,
+          "description": "Tailwind overrides for the root, merged with `cn()`.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": "0",
+          "description": "Fraction digits for the default format.",
+          "name": "decimals",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Overrides the default grouped format; `decimals` is then ignored.",
+          "name": "format",
+          "required": false,
+          "type": "AnimatedNumberFormat"
+        },
+        {
+          "default": "0",
+          "description": "Where the number starts at progress 0.",
+          "name": "from",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": "count",
+          "description": "`count` rewrites the text; `reel` rolls one clipped column per digit.",
+          "name": "mode",
+          "required": false,
+          "type": "AnimatedNumberMode"
+        },
+        {
+          "default": null,
+          "description": "0..1, driven by the caller's clock.",
+          "name": "progress",
+          "required": true,
+          "type": "number"
+        },
+        {
+          "default": "md",
+          "description": "Default `md`.",
+          "name": "size",
+          "required": false,
+          "type": "AnimatedNumberSize"
+        },
+        {
+          "default": null,
+          "description": "The value the number lands on.",
+          "name": "value",
+          "required": true,
+          "type": "number"
+        }
+      ],
+      "purpose": "A number that counts or rolls from `from` to `value` as `progress` goes 0 → 1.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/animated-number/AnimatedNumber.tsx",
+        "status": "packages/ui/src/components/ui/animated-number/AnimatedNumber.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-atoms-animatednumber--default"
+      ],
+      "tier": "molecule"
     },
     {
       "composes": [
@@ -11778,6 +12022,63 @@
     },
     {
       "composes": [
+        "Eyebrow",
+        "Surface",
+        "Typography"
+      ],
+      "family": "ui/chapter-card",
+      "file": "packages/ui/src/components/ui/chapter-card/ChapterCard.tsx",
+      "name": "ChapterCard",
+      "props": [
+        {
+          "default": null,
+          "description": "Tailwind classes merged onto the root.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "The chapter's number, shown zero-padded to two digits.",
+          "name": "index",
+          "required": true,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "A short line above the title.",
+          "name": "kicker",
+          "required": false,
+          "type": "ReactNode"
+        },
+        {
+          "default": null,
+          "description": "Progress through the card's life, 0..1.",
+          "name": "progress",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "The chapter's name, set as a heading.",
+          "name": "title",
+          "required": true,
+          "type": "string"
+        }
+      ],
+      "purpose": "ChapterCard: a chapter title card, its number, an optional kicker and the title.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/chapter-card/ChapterCard.tsx",
+        "status": "packages/ui/src/components/ui/chapter-card/ChapterCard.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-molecules-chaptercard--default"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
         "BarListCells",
         "BarListParts",
         "BarListTip",
@@ -12277,7 +12578,7 @@
           "description": "",
           "name": "colors",
           "required": true,
-          "type": "{ readonly 'brand-primary': \"#FF7900\"; readonly 'brand-primary-light': \"#FFA063\"; readonly 'brand-primary-dark': \"#DA5F00\"; readonly 'brand-primary-subtle': \"rgba(255, 121, 0, 0.12)\"; ... 150 more ...; readonly 'avatar-text': \"#FFFFFF\"; } | { ...; }"
+          "type": "{ readonly 'brand-primary': \"#FF7900\"; readonly 'brand-primary-light': \"#FFA063\"; readonly 'brand-primary-dark': \"#DA5F00\"; readonly 'brand-primary-subtle': \"rgba(255, 121, 0, 0.12)\"; ... 151 more ...; readonly 'avatar-text': \"#FFFFFF\"; } | { ...; }"
         },
         {
           "default": null,
@@ -12314,7 +12615,7 @@
           "description": "",
           "name": "colors",
           "required": true,
-          "type": "{ readonly 'brand-primary': \"#FF7900\"; readonly 'brand-primary-light': \"#FFA063\"; readonly 'brand-primary-dark': \"#DA5F00\"; readonly 'brand-primary-subtle': \"rgba(255, 121, 0, 0.12)\"; ... 150 more ...; readonly 'avatar-text': \"#FFFFFF\"; } | { ...; }"
+          "type": "{ readonly 'brand-primary': \"#FF7900\"; readonly 'brand-primary-light': \"#FFA063\"; readonly 'brand-primary-dark': \"#DA5F00\"; readonly 'brand-primary-subtle': \"rgba(255, 121, 0, 0.12)\"; ... 151 more ...; readonly 'avatar-text': \"#FFFFFF\"; } | { ...; }"
         },
         {
           "default": null,
@@ -12462,6 +12763,91 @@
         "components-atoms-sparkbars--truncated"
       ],
       "tier": "atom"
+    },
+    {
+      "composes": [
+        "EmptyState",
+        "Skeleton",
+        "Typography"
+      ],
+      "family": "ui/charts",
+      "file": "packages/ui/src/components/ui/charts/timeline/Timeline.tsx",
+      "name": "Timeline",
+      "props": [
+        {
+          "default": null,
+          "description": "Names the timeline for assistive tech.",
+          "name": "accessibilityLabel",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Tailwind classes merged onto the root.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "The axis span.",
+          "name": "domain",
+          "required": false,
+          "type": "TimelineRange<number | Date>"
+        },
+        {
+          "default": null,
+          "description": "Replaces the default empty state, shown when `items` is empty.",
+          "name": "emptyState",
+          "required": false,
+          "type": "ReactNode"
+        },
+        {
+          "default": "false",
+          "description": "Shows a skeleton track in place of the events.",
+          "name": "isLoading",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "The events.",
+          "name": "items",
+          "required": true,
+          "type": "TimelineItem[]"
+        },
+        {
+          "default": "horizontal",
+          "description": "Axis direction.",
+          "name": "orientation",
+          "required": false,
+          "type": "TimelineOrientation"
+        },
+        {
+          "default": null,
+          "description": "Playhead as a fraction of the domain, 0..1.",
+          "name": "playhead",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "The visible part of the domain as fractions of it, e.g. `[0.5, 1]` for the second half.",
+          "name": "window",
+          "required": false,
+          "type": "TimelineRange"
+        }
+      ],
+      "purpose": "Timeline: events on one time axis, with an optional playhead and a pan window.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/charts/timeline/Timeline.tsx",
+        "status": "packages/ui/src/components/ui/charts/timeline/Timeline.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-organisms-timeline--default"
+      ],
+      "tier": "molecule"
     },
     {
       "composes": [],
@@ -12744,6 +13130,222 @@
         "components-atoms-chip--default",
         "components-atoms-chip--disabled",
         "components-atoms-chip--dismissible"
+      ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [
+        "EvidenceChip",
+        "ScaledPill"
+      ],
+      "family": "ui/chip",
+      "file": "packages/ui/src/components/ui/chip/ChipBand.tsx",
+      "name": "ChipBand",
+      "props": [
+        {
+          "default": null,
+          "description": "The beat's citations, lead first.",
+          "name": "chips",
+          "required": true,
+          "type": "BandChip[]"
+        },
+        {
+          "default": null,
+          "description": "Additional className on the band.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "`rise` fades in and rises; `fade` only fades.",
+          "name": "entry",
+          "required": false,
+          "type": "\"rise\" | \"fade\""
+        },
+        {
+          "default": null,
+          "description": "Chip font size in px.",
+          "name": "fontPx",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": "1080",
+          "description": "Frame height in px; the chip font is 40 px per 1080.",
+          "name": "frameHeight",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": "3",
+          "description": "Most chips shown, counting the lead.",
+          "name": "max",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Seconds since the band's cue.",
+          "name": "progress",
+          "required": true,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Show the end state at any `progress`.",
+          "name": "reducedMotion",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "Band width in px.",
+          "name": "width",
+          "required": true,
+          "type": "number"
+        }
+      ],
+      "purpose": "ChipBand — one beat's citations on a single line at video scale: the lead chip with its citation, the next chips as kind tabs, the rest as a `+d` count.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/chip/ChipBand.tsx",
+        "status": "packages/ui/src/components/ui/chip/ChipBand.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-molecules-chipband--default"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "Pill",
+        "Typography"
+      ],
+      "family": "ui/chip",
+      "file": "packages/ui/src/components/ui/chip/EvidenceChip.tsx",
+      "name": "EvidenceChip",
+      "props": [
+        {
+          "default": null,
+          "description": "Additional className on the row.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Video size in px, for frames with no Tailwind rung (`40 × frameHeight / 1080`).",
+          "name": "fontPx",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "What kind of evidence backs the on-screen fact; picks the capsule's tone and label.",
+          "name": "kind",
+          "required": true,
+          "type": "\"target\" | \"verified\" | \"measured\" | \"computed\" | \"docs-claim\" | \"estimated\" | \"our-framing\" | \"reconstructed\" | \"illustrative\""
+        },
+        {
+          "default": null,
+          "description": "Character budget for `text`.",
+          "name": "maxChars",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": "md",
+          "description": "App size, one Pill rung.",
+          "name": "size",
+          "required": false,
+          "type": "EvidenceChipSize"
+        },
+        {
+          "default": null,
+          "description": "The citation: refs joined by `\"; \"`, e.g. `ab@1a2b3c4:src/core/loop.ts:12-30`.",
+          "name": "text",
+          "required": true,
+          "type": "string"
+        }
+      ],
+      "purpose": "EvidenceChip — a `Pill` preset that cites the source behind an on-screen fact: a tone capsule naming the evidence kind, then the citation in mono.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/chip/EvidenceChip.tsx",
+        "status": "packages/ui/src/components/ui/chip/EvidenceChip.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-molecules-evidencechip--default"
+      ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [
+        "Pill"
+      ],
+      "family": "ui/chip",
+      "file": "packages/ui/src/components/ui/chip/StateChip.tsx",
+      "name": "StateChip",
+      "props": [
+        {
+          "default": null,
+          "description": "Additional className on the capsule.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Video size in px, for frames with no Tailwind rung (`40 × frameHeight / 1080`).",
+          "name": "fontPx",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "The state the chip is leaving.",
+          "name": "from",
+          "required": false,
+          "type": "\"met\" | \"unmet\""
+        },
+        {
+          "default": "1",
+          "description": "How far the move from `from` has run, 0..1.",
+          "name": "progress",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": "md",
+          "description": "App size, one Pill rung.",
+          "name": "size",
+          "required": false,
+          "type": "StateChipSize"
+        },
+        {
+          "default": null,
+          "description": "The state the chip is in, or moving to.",
+          "name": "state",
+          "required": true,
+          "type": "\"met\" | \"unmet\""
+        },
+        {
+          "default": null,
+          "description": "What the chip names, e.g. `ci:green@h`.",
+          "name": "text",
+          "required": true,
+          "type": "string"
+        }
+      ],
+      "purpose": "StateChip — a `Pill` preset that shows whether a requirement is met.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/chip/StateChip.tsx",
+        "status": "packages/ui/src/components/ui/chip/StateChip.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-molecules-statechip--default"
       ],
       "tier": "molecule"
     },
@@ -13186,6 +13788,111 @@
         "components-molecules-eyebrow--default"
       ],
       "tier": "molecule"
+    },
+    {
+      "composes": [
+        "Chip",
+        "Eyebrow"
+      ],
+      "family": "ui/facet-bar",
+      "file": "packages/ui/src/components/ui/facet-bar/FacetBar.tsx",
+      "name": "FacetBar",
+      "props": [
+        {
+          "default": null,
+          "description": "",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Colour of a selected chip.",
+          "name": "color",
+          "required": false,
+          "type": "ChipColor"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "defaultValue",
+          "required": false,
+          "type": "string | readonly T[] | null"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "formatCount",
+          "required": false,
+          "type": "((count: number) => string)"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "isDisabled",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "isLabelHidden",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "Names the group.",
+          "name": "label",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "onValueChange",
+          "required": false,
+          "type": "((value: T[]) => void) | ((value: T | null) => void)"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "options",
+          "required": true,
+          "type": "readonly FacetOption<T>[]"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "selectionMode",
+          "required": false,
+          "type": "\"multiple\" | \"single\""
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "size",
+          "required": false,
+          "type": "ChipSize"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "value",
+          "required": false,
+          "type": "string | readonly T[] | null"
+        }
+      ],
+      "purpose": "FacetBar — one labelled row of toggle chips for one facet.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/facet-bar/FacetBar.tsx",
+        "status": "packages/ui/src/components/ui/facet-bar/FacetBar.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-molecules-facetbar--default"
+      ],
+      "tier": "organism"
     },
     {
       "composes": [
@@ -14066,6 +14773,87 @@
       "tier": "molecule"
     },
     {
+      "composes": [],
+      "family": "ui/motion",
+      "file": "packages/ui/src/components/ui/motion/Beat.tsx",
+      "name": "Beat",
+      "props": [
+        {
+          "default": null,
+          "description": "The beat's content, timed from the beat's start.",
+          "name": "children",
+          "required": false,
+          "type": "ReactNode"
+        },
+        {
+          "default": null,
+          "description": "Named moments in seconds from the beat's start, each within `[0, durationS]`; content reads one with `useCue(name)`.",
+          "name": "cues",
+          "required": false,
+          "type": "Readonly<Record<string, number>>"
+        },
+        {
+          "default": null,
+          "description": "Length of the window in seconds.",
+          "name": "durationS",
+          "required": true,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Seconds from the enclosing origin at which the beat's window starts.",
+          "name": "startS",
+          "required": true,
+          "type": "number"
+        }
+      ],
+      "purpose": "A window of the timeline: moves the time origin to `startS` and mounts only near its window.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/motion/Beat.tsx",
+        "status": null
+      },
+      "status": "review",
+      "storyIds": [],
+      "tier": "atom"
+    },
+    {
+      "composes": [],
+      "family": "ui/motion",
+      "file": "packages/ui/src/components/ui/motion/MotionProvider.tsx",
+      "name": "MotionProvider",
+      "props": [
+        {
+          "default": null,
+          "description": "The timeline.",
+          "name": "children",
+          "required": false,
+          "type": "ReactNode"
+        },
+        {
+          "default": null,
+          "description": "The time source for every motion hook below.",
+          "name": "clock",
+          "required": true,
+          "type": "Clock"
+        },
+        {
+          "default": "0",
+          "description": "Total timeline length in seconds, published as `__titanMotion.duration`.",
+          "name": "durationS",
+          "required": false,
+          "type": "number"
+        }
+      ],
+      "purpose": "Puts every motion hook below it on `clock`, so a seek clock can drive a render frame by frame.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/motion/MotionProvider.tsx",
+        "status": null
+      },
+      "status": "review",
+      "storyIds": [],
+      "tier": "atom"
+    },
+    {
       "composes": [
         "Typography"
       ],
@@ -14452,6 +15240,82 @@
         "components-molecules-progress--with-label"
       ],
       "tier": "atom"
+    },
+    {
+      "composes": [
+        "Progress"
+      ],
+      "family": "ui/progress",
+      "file": "packages/ui/src/components/ui/progress/ProgressSteps.tsx",
+      "name": "ProgressSteps",
+      "props": [
+        {
+          "default": null,
+          "description": "Additional className",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Color of completed steps.",
+          "name": "color",
+          "required": false,
+          "type": "ProgressColor"
+        },
+        {
+          "default": null,
+          "description": "Current step (0-indexed)",
+          "name": "currentStep",
+          "required": true,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Labels for each step",
+          "name": "labels",
+          "required": false,
+          "type": "string[]"
+        },
+        {
+          "default": null,
+          "description": "Fractional position along the steps, 0..totalSteps-1.",
+          "name": "progress",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Size of step indicators.",
+          "name": "size",
+          "required": false,
+          "type": "\"sm\" | \"md\" | \"lg\""
+        },
+        {
+          "default": null,
+          "description": "Total number of steps",
+          "name": "totalSteps",
+          "required": true,
+          "type": "number"
+        },
+        {
+          "default": "dots",
+          "description": "`dots` (default) or `rail`: state chips joined by connectors that fill with `progress`.",
+          "name": "variant",
+          "required": false,
+          "type": "ProgressStepsVariant"
+        }
+      ],
+      "purpose": "Step-based progress indicator.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/progress/ProgressSteps.tsx",
+        "status": "packages/ui/src/components/ui/progress/ProgressSteps.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-molecules-progresssteps--default"
+      ],
+      "tier": "molecule"
     },
     {
       "composes": [],
@@ -15018,6 +15882,56 @@
       "status": "candidate",
       "storyIds": [
         "components-molecules-statcard--default"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "SvgIcon",
+        "icons",
+        "statusIcons"
+      ],
+      "family": "ui/status-glyph",
+      "file": "packages/ui/src/components/ui/status-glyph/StatusGlyph.tsx",
+      "name": "StatusGlyph",
+      "props": [
+        {
+          "default": null,
+          "description": "Tailwind overrides for the wrapper, merged with `cn()`.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "The status word, spoken as the glyph's accessible name.",
+          "name": "label",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": "md",
+          "description": "Defaults to `md`.",
+          "name": "size",
+          "required": false,
+          "type": "StatusGlyphSize"
+        },
+        {
+          "default": null,
+          "description": "The condition shown.",
+          "name": "tone",
+          "required": true,
+          "type": "StatusGlyphTone"
+        }
+      ],
+      "purpose": "One status condition as a shaped, coloured mark: circle-check, alert-triangle, octagon-x or a dashed ring.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/status-glyph/StatusGlyph.tsx",
+        "status": "packages/ui/src/components/ui/status-glyph/StatusGlyph.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-atoms-statusglyph--default"
       ],
       "tier": "organism"
     },

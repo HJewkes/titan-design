@@ -48,6 +48,26 @@ describe('Autocomplete', () => {
     expect(screen.getByText('Pick your favorite')).toBeInTheDocument()
   })
 
+  it('paints helper, empty and description text text-secondary, since each carries content', () => {
+    const classesOf = (text: string) =>
+      (capturedByNode.get(screen.getByText(text)) ?? '').split(/\s+/)
+    render(<Autocomplete options={optionsWithDescriptions} helperText="Pick a person" />)
+    const input = screen.getByPlaceholderText('Search...')
+
+    typeInInput(input, 'John')
+    const description = classesOf('john@example.com')
+    typeInInput(input, 'Zzzz')
+
+    for (const classes of [
+      classesOf('Pick a person'),
+      description,
+      classesOf('No options found'),
+    ]) {
+      expect(classes).toContain('text-text-secondary')
+      expect(classes).not.toContain('text-text-tertiary')
+    }
+  })
+
   it('renders error message instead of helper text', () => {
     render(
       <Autocomplete
@@ -348,5 +368,16 @@ describe('Autocomplete label face', () => {
     render(<Autocomplete label="Fruit" options={defaultOptions} />)
 
     expect(capturedByNode.get(screen.getByText('Fruit'))).toContain('font-heading')
+  })
+})
+
+// TD-483: brand orange as the selected option label missed 4.5:1 on the light overlay planes.
+describe('Autocomplete selected option', () => {
+  it('paints the selected label in the brand text role, not the brand fill', () => {
+    render(<Autocomplete options={defaultOptions} value="2" />)
+    typeInInput(screen.getByRole('textbox'), 'Ban')
+    const classes = (capturedByNode.get(screen.getByText('Banana')) ?? '').split(/\s+/)
+    expect(classes).toContain('text-text-brand')
+    expect(classes).not.toContain('text-brand-primary')
   })
 })

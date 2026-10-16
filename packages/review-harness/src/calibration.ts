@@ -12,13 +12,36 @@ const CONFIDENCE_BANDS = [
   { label: '>=0.75', holds: (c: number) => c >= 0.75 },
 ] as const
 
+interface Scored {
+  agreed: boolean
+  confidence: number
+  /** Answered with the recommendation visible; feedback from before the tag counts as blind. */
+  seen: boolean
+}
+
 /** The answers a recommendation can be scored on: it was given, and the owner answered. */
-function scored(feedback: Feedback) {
+function scored(feedback: Feedback): Scored[] {
   return feedback.answers.flatMap((a) =>
     a.recommendation && a.agreed !== undefined
-      ? [{ agreed: a.agreed, confidence: a.recommendation.confidence }]
+      ? [
+          {
+            agreed: a.agreed,
+            confidence: a.recommendation.confidence,
+            seen: a.recommendationSeen === true,
+          },
+        ]
       : []
   )
+}
+
+const blind = (items: Scored[]) => items.filter((i) => !i.seen)
+
+/** A round's blind rate, saying how many answers were left out as seen. */
+function roundRow(f: Feedback): string {
+  const items = scored(f)
+  const seen = items.length - blind(items).length
+  const label = `${f.unit} round ${f.round}${seen ? ` (${seen} seen)` : ''}`
+  return row(label, tally(blind(items)))
 }
 
 function tally(items: { agreed: boolean }[]): Tally {
@@ -30,16 +53,23 @@ function row(label: string, { agreed, total }: Tally): string {
   return `  ${label.padEnd(32)} ${`${agreed}/${total}`.padStart(7)}  ${share.padStart(4)}`
 }
 
-/** Agreement per round, overall, and by confidence band, as plain text. */
+/**
+ * Agreement per round, overall, and by confidence band, as plain text. Every rate but `seen` counts
+ * blind answers only: an answer given with the recommendation in view says nothing about it.
+ */
 export function calibrationReport(rounds: Feedback[]): string {
   const all = rounds.flatMap(scored)
+  const blindAll = blind(all)
   return [
-    'By round',
-    ...rounds.map((f) => row(`${f.unit} round ${f.round}`, tally(scored(f)))),
+    'By round (blind)',
+    ...rounds.map(roundRow),
     'Overall',
-    row('all rounds', tally(all)),
-    'By confidence',
-    ...CONFIDENCE_BANDS.map((b) => row(b.label, tally(all.filter((i) => b.holds(i.confidence))))),
+    row('all rounds, blind', tally(blindAll)),
+    row('all rounds, seen', tally(all.filter((i) => i.seen))),
+    'By confidence (blind)',
+    ...CONFIDENCE_BANDS.map((b) =>
+      row(b.label, tally(blindAll.filter((i) => b.holds(i.confidence))))
+    ),
   ].join('\n')
 }
 

@@ -81,11 +81,6 @@ describe('Checkbox', () => {
     expect(onCheckedChange).not.toHaveBeenCalled()
   })
 
-  it('shows checkmark when checked', () => {
-    render(<Checkbox isChecked label="Checked" />)
-    expect(screen.getByText('\u2713')).toBeInTheDocument()
-  })
-
   it('emits aria-checked true when checked', () => {
     render(<Checkbox isChecked label="Checked" />)
     expect(screen.getByRole('checkbox')).toHaveAttribute('aria-checked', 'true')
@@ -222,5 +217,26 @@ describe('Checkbox label face', () => {
     )
 
     expect(capturedByNode.get(screen.getByText('Preferences'))).toContain('font-heading')
+  })
+})
+
+// TD-483: the tick sits on the on-brand chip, so it takes the brand text role. TD-840: it is
+// an SVG CheckMark that inherits that role as currentColor, not a ✓ glyph in a host font.
+describe('Checkbox tick', () => {
+  it('draws the tick as an SVG in the brand text role, not the brand fill', () => {
+    viewClassNames.length = 0
+    const { container } = render(<Checkbox label="Toggle" isChecked />)
+    expect(screen.queryByText('✓')).toBeNull()
+    expect(container.querySelector('svg')?.getAttribute('stroke')).toBe('currentColor')
+    const chip = viewClassNames.find((classes) => classes.includes('bg-on-brand-primary'))
+    expect(chip).toContain('text-text-brand')
+    expect(chip).not.toContain('text-brand-primary')
+  })
+
+  it('draws no tick when unchecked or indeterminate', () => {
+    const { container, rerender } = render(<Checkbox label="Toggle" />)
+    expect(container.querySelector('svg')).toBeNull()
+    rerender(<Checkbox label="Toggle" isIndeterminate />)
+    expect(container.querySelector('svg')).toBeNull()
   })
 })
