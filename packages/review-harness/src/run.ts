@@ -20,16 +20,13 @@ import { CHECK_EXIT, checkPlan } from './locks-check.ts'
 import { formatSync } from './locks-sync.ts'
 import {
   REGISTRY_ENV,
-  REPO_ROOT,
   lockFootprint,
   lockSync,
   locksIo,
   readRegistry,
   type LocksIo,
 } from './locks.ts'
-import { PACKET_FILE, packetFromCi } from './packet.ts'
-import { ciIo, type CiIo } from './packet-ci.ts'
-import { packetUnit } from './packet-draft.ts'
+import { PACKET_USAGE, packetCommand, type PacketIo } from './packet-cli.ts'
 import {
   EXIT_INTERRUPTED,
   EXIT_INVALID,
@@ -52,8 +49,7 @@ titan-review round from-morning <items.json> [--decider <file>] [--out <draft.js
 titan-review locks footprint <pr> | --base <ref> --head <ref> [--repo <path>]
 titan-review locks sync [--registry <path>] [--repo <path>] [--json]
 titan-review locks check --files <globs|paths> --tokens <name/mode,...> [--registry <path>] [--json]
-titan-review packet from-ci --repo <owner/name> --pr <n> --head <sha> --run <id> [--out <dir>]
-                  [--clone <path>] [--side <questions.json>]
+${PACKET_USAGE}
 
 Serves one review round (live Storybook iframes or static PNGs, picks, comments, pins) on
 127.0.0.1, blocks until the human submits, writes <out>/feedback.json plus one PNG per story
@@ -109,6 +105,15 @@ before/, after/, diff/ and montage/ PNGs, draft.json (a round@2 draft with one m
 Ship question; run build on it next) and packet.json last, into --out (default:
 ./packets/<name>-pr<n>-<head12>/), staged and swapped in whole.
 
+packet lint checks a packet directory against the gate's head: packet.json, draft.json and
+every image as from-ci wrote them, prose.json and round.json when present (or when --require
+names them), and no other file or link. It reads only the directory. Exit 0 clean, 3 on any
+problem, each printed as <rule>: <message>; with --json, one titan-review/packet-lint@1 object
+{schema, ok, packetId (null when packet.json does not parse), problems}.
+
+packet prompt prints the review packager's instructions: how to write prose.json for a packet
+and lint it.
+
   --storybook <url>  Storybook base url (default: the manifest's storybookUrl)
   --tree <path>      The checkout the Storybook ran from, for build (see above)
   --prior-feedback <feedback.json>
@@ -132,7 +137,9 @@ Ship question; run build on it next) and packet.json last, into --out (default:
   --files <globs>    For locks check: planned paths or globs, comma-separated (repeatable)
   --tokens <list>    For locks check: planned tokens as name/mode, comma-separated (repeatable);
                      a name without /mode means both modes
-  --json             For locks sync and check: print JSON instead of text
+  --gate-head <sha>  For packet lint: the head the gate is open on (40 hex, required)
+  --require <list>   For packet lint: files that must be present, from prose,round
+  --json             For locks sync and check and packet lint: print JSON instead of text
   --out <dir>        Where feedback.json and PNGs go (default: the manifest's directory);
                      for round from-morning, the draft's file path (default: draft.json
                      beside the items file); for packet from-ci, the packet directory
@@ -148,16 +155,12 @@ Ship question; run build on it next) and packet.json last, into --out (default:
 const DRAFT_FILE = 'draft.json'
 
 export interface CliIo
-  extends Omit<ReviewDeps, 'onReady'>, Pick<BuildIo, 'measure' | 'renderFrames' | 'git'> {
-  stdout: (text: string) => void
-  stderr: (text: string) => void
+  extends Omit<ReviewDeps, 'onReady'>, Pick<BuildIo, 'measure' | 'renderFrames' | 'git'>, PacketIo {
   openBrowser: (url: string) => void
   capture: (round: LoadedRound, outDir: string) => Promise<string[]>
   harnessFreshness: () => Promise<HarnessFreshness>
   /** The git and gh reads of `locks footprint`; the real ones when absent. */
   locks?: LocksIo
-  /** The gh and git reads of `packet from-ci`; the real ones when absent. */
-  ci?: CiIo
 }
 
 /** `--locks` takes an optional path: bare (last, or before another flag) it reads the env var. */
@@ -195,6 +198,8 @@ function parseCli(argv: string[]) {
       files: { type: 'string', multiple: true },
       tokens: { type: 'string', multiple: true },
       json: { type: 'boolean' },
+      'gate-head': { type: 'string' },
+      require: { type: 'string' },
       'prior-feedback': { type: 'string', multiple: true },
       example: { type: 'boolean' },
       help: { type: 'boolean' },
@@ -391,34 +396,6 @@ async function locksFootprint(parsed: Parsed, io: CliIo): Promise<number> {
   return EXIT_OK
 }
 
-function required(parsed: Parsed, name: 'repo' | 'pr' | 'head' | 'run'): string {
-  const value = parsed.values[name]
-  if (value === undefined) throw new ReviewError(`packet from-ci needs --${name}\n\n${USAGE}`)
-  return value
-}
-
-/** Builds the packet and prints packet.json's path; every refusal writes nothing. */
-async function packet(parsed: Parsed, io: CliIo): Promise<number> {
-  if (parsed.positionals[1] !== 'from-ci' || parsed.positionals.length !== 2)
-    throw new ReviewError(`expected: packet from-ci\n\n${USAGE}`)
-  const repo = required(parsed, 'repo')
-  const pr = Number(required(parsed, 'pr'))
-  const head = required(parsed, 'head')
-  const out = resolve(parsed.values.out ?? join('packets', packetUnit(repo, pr, head)))
-  const { packet: built, warnings } = await packetFromCi(
-    {
-      ...{ repo, pr, head, run: required(parsed, 'run'), out },
-      clone: resolve(parsed.values.clone ?? REPO_ROOT),
-      ...(parsed.values.side ? { side: resolve(parsed.values.side) } : {}),
-    },
-    io.ci ?? ciIo
-  )
-  warnings.forEach((w) => io.stderr(`titan-review: warning: ${w}`))
-  io.stderr(`${built.images.length} images; next: titan-review build ${join(out, DRAFT_FILE)}`)
-  io.stdout(`${join(out, PACKET_FILE)}\n`)
-  return EXIT_OK
-}
-
 function isUsageError(err: unknown): err is Error {
   const code = (err as { code?: unknown }).code
   return (
@@ -441,7 +418,7 @@ async function dispatch(parsed: Parsed, io: CliIo): Promise<number> {
   if (parsed.positionals[0] === 'build') return build(parsed, io)
   if (parsed.positionals[0] === 'round') return fromMorning(parsed, io)
   if (parsed.positionals[0] === 'locks') return locks(parsed, io)
-  if (parsed.positionals[0] === 'packet') return packet(parsed, io)
+  if (parsed.positionals[0] === 'packet') return packetCommand(parsed, io)
   if (parsed.positionals[0] === 'calibration') {
     const rounds = await readFeedbackFiles(parsed.positionals.slice(1).map((p) => resolve(p)))
     io.stdout(`${calibrationReport(rounds)}\n`)
