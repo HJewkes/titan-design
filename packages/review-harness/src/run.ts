@@ -136,7 +136,8 @@ and lint it.
   --pr <n>           For packet from-ci: the PR number
   --run <id>         For packet from-ci: the CI run id
   --clone <path>     For packet from-ci: the checkout git reads main and the PR from (default:
-                     this one)
+                     this one); for packet lint, the checkout to re-derive the images from (no
+                     default: without it, images are checked by sha only)
   --side <file>      For packet from-ci: a JSON array of side questions, asked on the PR page
                      before Ship
   --registry <path>  For locks sync and check: the titan-locks/1 registry (default: $${REGISTRY_ENV})

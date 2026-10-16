@@ -1,6 +1,6 @@
 // `titan-review packet <verb>`: from-ci builds a packet, round builds its round, lint judges one,
 // prompt prints the packager's instructions. Each verb is one function; a new verb adds one row to VERBS.
-import { readFile } from 'node:fs/promises'
+import { readFile, stat } from 'node:fs/promises'
 import { join, resolve } from 'node:path'
 import { DRAFT_FILE, PACKET_FILE, packetFromCi } from './packet.ts'
 import { ciIo, type CiIo } from './packet-ci.ts'
@@ -21,7 +21,7 @@ export const PACKET_LINT_SCHEMA_ID = 'titan-review/packet-lint@1'
 
 export const PACKET_USAGE = `titan-review packet from-ci --repo <owner/name> --pr <n> --head <sha> --run <id> [--out <dir>]
                   [--clone <path>] [--side <questions.json>]
-titan-review packet lint <dir> --gate-head <sha> [--require prose,round] [--json]
+titan-review packet lint <dir> --gate-head <sha> [--require prose,round] [--clone <path>] [--json]
 titan-review packet round <dir>
 titan-review packet prompt`
 
@@ -94,6 +94,15 @@ function requirements(parsed: PacketParsed): PacketRequirement[] {
   return given as PacketRequirement[]
 }
 
+/** `--clone`, when given and a directory; lint never defaults it, so no flag means no git read. */
+async function lintClone(parsed: PacketParsed): Promise<{ clone?: string }> {
+  if (parsed.values.clone === undefined) return {}
+  const clone = resolve(parsed.values.clone)
+  if (!(await stat(clone).catch(() => null))?.isDirectory())
+    throw usage('--clone must be a directory')
+  return { clone }
+}
+
 const lintText = (problems: PacketLintProblem[]) =>
   problems.map((p) => `${p.rule}: ${p.message}\n`).join('')
 
@@ -102,8 +111,12 @@ async function lint(parsed: PacketParsed, io: PacketIo): Promise<number> {
   const [, , dir] = parsed.positionals
   if (dir === undefined || parsed.positionals.length !== 3)
     throw usage('expected: packet lint <dir>')
-  const opts = { gateHead: gateHead(parsed), require: requirements(parsed) }
-  const { packetId, problems } = await lintPacketResult(resolve(dir), opts)
+  const opts = {
+    gateHead: gateHead(parsed),
+    require: requirements(parsed),
+    ...(await lintClone(parsed)),
+  }
+  const { packetId, problems } = await lintPacketResult(resolve(dir), opts, io.ci ?? ciIo)
   const ok = problems.length === 0
   if (parsed.values.json)
     io.stdout(`${JSON.stringify({ schema: PACKET_LINT_SCHEMA_ID, ok, packetId, problems })}\n`)

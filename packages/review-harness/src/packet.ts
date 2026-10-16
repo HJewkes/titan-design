@@ -154,14 +154,10 @@ async function compare(g: Gathered, before: Rgba, after: Rgba, staging: string, 
   return { shown: ci ? decode(ci, `CI diff of ${key}`) : result.image, recorded }
 }
 
-type Staged = Awaited<ReturnType<typeof writeSide>>
-
-function montageEntry(before?: Staged, after?: Staged, diff?: Rgba | null): MontageEntry {
-  if (before && after)
-    return { change: 'changed', before: before.image, after: after.image, diff: diff ?? null }
-  return after
-    ? { change: 'new', after: after.image }
-    : { change: 'removed', before: before!.image }
+/** What an image's montage shows: both sides when it has both, else the one it has. */
+export function montageEntry(before?: Rgba, after?: Rgba, diff?: Rgba | null): MontageEntry {
+  if (before && after) return { change: 'changed', before, after, diff: diff ?? null }
+  return after ? { change: 'new', after } : { change: 'removed', before: before! }
 }
 
 async function stageImage(g: Gathered, key: string, staging: string): Promise<PacketImage> {
@@ -170,7 +166,7 @@ async function stageImage(g: Gathered, key: string, staging: string): Promise<Pa
   const compared =
     before && after ? await compare(g, before.image, after.image, staging, key) : undefined
   const file = `montage/${key}.png`
-  const bytes = montage(montageEntry(before, after, compared?.shown))
+  const bytes = montage(montageEntry(before?.image, after?.image, compared?.shown))
   await writeFile(join(staging, file), bytes)
   const viewed = (after ?? before)!.image
   return {

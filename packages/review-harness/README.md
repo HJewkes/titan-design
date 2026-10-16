@@ -551,12 +551,12 @@ the problems. Run `titan-review build <out>/draft.json --tree <clone>` on it nex
 ### packet lint (TD-924)
 
 ```sh
-titan-review packet lint <dir> --gate-head <40-hex> [--require prose,round] [--json]
+titan-review packet lint <dir> --gate-head <40-hex> [--require prose,round] [--clone <path>] [--json]
 ```
 
 Checks that a packet directory is the one from-ci wrote for the gate's head, and that the files
-added since are well formed. It reads only the directory: no git, no gh, no network. It walks the
-tree with `lstat` and never follows a link.
+added since are well formed. Without `--clone` it reads only the directory: no git, no gh, no
+network. It walks the tree with `lstat` and never follows a link.
 
 - `packet.json` passes `titan-review/ci-packet@1`, its `packetId` is the hash of what it names,
   and its head is `--gate-head`.
@@ -568,6 +568,11 @@ tree with `lstat` and never follows a link.
   packet and the gate head and gives exactly one cause per image.
 - `round.json`, when present, is `applyRoundRules(draft.json)` plus `build`, for the packet's unit
   and head.
+- With `--clone`, the images are re-derived from git in that local clone (`src/packet-derive.ts`):
+  each before image is `git show <mainSha>:<path>` (`before-source`), each `source: "git"` after is
+  `git show <headSha>:<path>` (`after-source`), and each montage and computed diff is recomputed
+  bit-exact from the two sides (`derived`). A CI-regenerated after and a CI diff have no git source
+  and stay checked by sha only. `--clone` has no default, so no flag means no git read.
 - `frames/frames.json`, when present, is byte for byte the index `packet round` derives from
   packet.json, round.json and prose.json (rule `frames-index`).
 
