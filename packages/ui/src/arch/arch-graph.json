@@ -7679,9 +7679,10 @@
         "StatusGlyph",
         "StatusGlyphTone",
         "StatusGlyphSize",
-        "StatusGlyphProps"
+        "StatusGlyphProps",
+        "STATUS_GLYPH_FILL"
       ],
-      "libDependents": 0,
+      "libDependents": 5,
       "storyRefs": 1,
       "xproj": {
         "mobile": 0,
@@ -7700,11 +7701,11 @@
         "rawText": 0,
         "inlineStyle": 0,
         "rawHex": 0,
-        "loc": 66,
+        "loc": 73,
         "score": 1
       },
       "tier": "organism",
-      "verdict": "dead",
+      "verdict": "keep-internal",
       "deadByAssociation": false,
       "audited": "unaudited",
       "standard": false
