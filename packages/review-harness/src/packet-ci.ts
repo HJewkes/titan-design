@@ -5,6 +5,7 @@ import { readFile, readdir, stat, writeFile } from 'node:fs/promises'
 import { join, relative, sep } from 'node:path'
 import { classify, gitBlobId, isBaseline, stemOf } from './packet-classify.ts'
 import { PNG_LIMITS } from './packet-png.ts'
+import { ARTIFACT_LIMITS, checkArchive } from './packet-zip.ts'
 import type { Binding, CiDiff, CiTarget, Gathered, Layer, LayerSources } from './packet-types.ts'
 import { ReviewError } from './review.ts'
 
@@ -125,16 +126,23 @@ export async function liveArtifacts(t: CiTarget, io: CiIo): Promise<Map<string, 
   return new Map(ours.map((a) => [a.name, a.id]))
 }
 
-/** Every PNG under `dir`, by its path relative to `dir` with forward slashes. */
-export async function readPngTree(dir: string): Promise<Map<string, Buffer>> {
+/** Every PNG under `dir`, by its path relative to `dir` with forward slashes; links are skipped. */
+export async function readPngTree(
+  dir: string,
+  limits = ARTIFACT_LIMITS
+): Promise<Map<string, Buffer>> {
   const files = new Map<string, Buffer>()
   const entries = await readdir(dir, { recursive: true, withFileTypes: true })
+  let total = 0
   for (const entry of entries) {
     if (!entry.isFile() || !entry.name.endsWith('.png')) continue
     const file = join(entry.parentPath, entry.name)
     const { size } = await stat(file)
     if (size > PNG_LIMITS.maxBytes)
       throw new ReviewError(`${entry.name} is ${size} bytes, over the ${PNG_LIMITS.maxBytes} cap`)
+    total += size
+    if (total > limits.maxTotalBytes)
+      throw new ReviewError(`${dir} holds over the ${limits.maxTotalBytes}-byte artifact cap`)
     files.set(relative(dir, file).split(sep).join('/'), await readFile(file))
   }
   return files
@@ -286,13 +294,21 @@ function exec(cmd: 'gh' | 'git' | 'unzip', args: string[]): Promise<Buffer> {
   })
 }
 
+/** Checks the zip in code, then unzips it into `dir`; a refused zip never reaches unzip. */
+export async function unpackArtifact(zip: Buffer, dir: string): Promise<void> {
+  checkArchive(zip)
+  await writeFile(`${dir}.zip`, zip)
+  await exec('unzip', ['-q', `${dir}.zip`, '-d', dir])
+}
+
 export const ciIo: CiIo = {
   gh: (args) => exec('gh', args).then((b) => b.toString('utf8').trim()),
   git: (clone, args) => exec('git', ['-C', clone, ...args]).then((b) => b.toString('utf8').trim()),
   gitBlob: (clone, spec) => exec('git', ['-C', clone, 'show', spec]),
   ghDownload: async (repo, id, dir) => {
-    const zip = await exec('gh', ['api', `repos/${repo}/actions/artifacts/${id}/zip`])
-    await writeFile(`${dir}.zip`, zip)
-    await exec('unzip', ['-q', `${dir}.zip`, '-d', dir])
+    await unpackArtifact(
+      await exec('gh', ['api', `repos/${repo}/actions/artifacts/${id}/zip`]),
+      dir
+    )
   },
 }
