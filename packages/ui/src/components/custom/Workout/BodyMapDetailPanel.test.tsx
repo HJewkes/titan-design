@@ -352,9 +352,8 @@ describe('BodyMapDetailPanel', () => {
     it('focuses the off-screen sheet without scrolling the page to it', () => {
       const focus = vi.spyOn(HTMLElement.prototype, 'focus')
       render(<BodyMapDetailPanel {...baseProps} placement="right" />)
-      const sheet = screen.getByTestId('body-map-detail-panel')
-      const sheetCall = focus.mock.instances.findIndex((instance) => instance === sheet)
-      expect(focus.mock.calls[sheetCall]).toEqual([{ preventScroll: true }])
+      expect(focus).toHaveBeenCalledOnce()
+      expect(focus).toHaveBeenCalledWith({ preventScroll: true })
       focus.mockRestore()
     })
 
