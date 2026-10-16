@@ -174,7 +174,7 @@ function ScrimPanel({ showScrims, backdrop }: ProposedTokensArgs) {
             )}
             {backdrop === 'gradient' && <GradientWash />}
             <BackdropContent />
-            {showScrims && (
+            {!!showScrims && (
               <View
                 style={{
                   position: 'absolute',

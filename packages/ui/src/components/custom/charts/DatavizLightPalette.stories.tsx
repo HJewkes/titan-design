@@ -671,7 +671,7 @@ function PaletteDecision({ palette }: { palette: DatavizPalette }) {
  */
 const meta: Meta<{ palette: DatavizPalette }> = {
   title: 'Lab/Decisions/Dataviz Light Palettes',
-  tags: ['autodocs', 'status:lab'],
+  tags: ['autodocs', 'status:lab', '!status:review'],
 }
 
 export default meta

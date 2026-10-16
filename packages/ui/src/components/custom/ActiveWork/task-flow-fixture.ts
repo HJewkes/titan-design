@@ -1,3 +1,4 @@
+import { seededRandom } from '../../ui/charts/kit/seededRandom'
 import { SESSION_FIXTURE } from './session-fixture'
 import type { SessionSummary } from './SessionListItem'
 import type { TaskSeverity } from './SeverityLabel'
@@ -254,14 +255,6 @@ export const TASK_FLOW_HOSTILE: TaskFlowItem[] = [
     pullRequest: pr(0, 'WEIRD'),
   }),
 ]
-
-function seededRandom(seed: number): () => number {
-  let state = seed
-  return () => {
-    state = (state * 1_664_525 + 1_013_904_223) % 4_294_967_296
-    return state / 4_294_967_296
-  }
-}
 
 const OPEN_STAGES: TaskStage[] = ['blocked', 'ready', 'in-progress', 'review']
 const LARGE_SLUGS = ['garden', 'kiln', 'tidepool', 'orrery']

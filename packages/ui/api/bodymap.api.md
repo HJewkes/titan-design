@@ -38,6 +38,7 @@ export interface BodyMapDetailPanelProps extends ViewProps {
     placement?: SheetPlacement;
     plan?: MusclePlanSection;
     strength?: MuscleStrengthSection;
+    unit?: 'lb' | 'kg';
     upcomingExercises?: UpcomingExercise[];
     visible?: boolean;
     volumeStatus: VolumeStatus;
@@ -196,6 +197,10 @@ export interface MusclePlanSection {
     doneSetsThisWeek: number;
     // (undocumented)
     exercises: MusclePlanExerciseRow[];
+    frequency: {
+        plannedPerWeek: number;
+        observedThisWeek: number;
+    };
     // (undocumented)
     plannedSetsThisWeek: number;
 }
@@ -204,6 +209,8 @@ export interface MusclePlanSection {
 export interface MuscleStrengthExerciseRow {
     // (undocumented)
     bestE1rm: MuscleStrengthBestE1rm | null;
+    currentLevel: number | null;
+    daysSinceTrained: number | null;
     // (undocumented)
     exerciseId: string;
     // (undocumented)
@@ -214,8 +221,11 @@ export interface MuscleStrengthExerciseRow {
     plateau: 'plateau' | 'tolerated' | 'none' | null;
     // (undocumented)
     priorBest: number | null;
+    recency: 'current' | 'fading' | 'no_current_read' | null;
+    relativeIndex: number | null;
     // (undocumented)
     rSquared: number | null;
+    setCount: number;
     // (undocumented)
     side: MuscleStrengthSide;
     slopePctPerWeek: number | null;
@@ -225,9 +235,11 @@ export interface MuscleStrengthExerciseRow {
 export interface MuscleStrengthSection {
     // (undocumented)
     agreement: MuscleStrengthAgreement;
+    daysSinceTrained: number | null;
     earlyPhase: boolean;
     // (undocumented)
     exercises: StrengthExerciseRow[];
+    relativeIndexBySide: Partial<Record<'left' | 'right' | 'none', number>>;
 }
 
 // @public

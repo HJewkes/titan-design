@@ -1,11 +1,14 @@
-// Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
+// Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body), font-mono=JetBrains Mono
 /**
  * Shared tokens + pure colour helpers for the live-fatigue family. Everything here
  * is token-sourced (semantic tokens / primitive ramps) — no literal surface hex — so
  * the family inherits the surface-ramp refresh when it lands.
  */
+import type { TextStyle } from 'react-native'
 import type { getSemanticColors } from '../../../theme/tokens/semantic'
 import { primitiveRamps, greyRamp } from '../../../theme/tokens/primitives'
+import { SILVER, RED_LIGHT, RED_MID, RED_DEEP, DRIFT_GREY } from '../../ui/charts/kit/silverRed'
+import type { StatusGlyphTone } from '../../ui/status-glyph'
 import type { DimensionTone, FatigueVerdictState, SamplePhase } from './fatigue-model'
 
 type ColorToken = keyof ReturnType<typeof getSemanticColors>
@@ -13,18 +16,13 @@ type ColorToken = keyof ReturnType<typeof getSemanticColors>
 export const FONT_HEAD = '"Space Grotesk", sans-serif'
 export const FONT_UI = '"Nunito Sans", sans-serif'
 
-/**
- * FOUNDATIONS GAP (TD-03.59 debt 3) — deliberately still the generic CSS fallback.
- *
- * titan has TWO mono declarations and they disagree, so adopting either here would be
- * choosing a typeface rather than resolving a token:
- *   `primitiveTypography.fontFamilies.mono`  SF Mono · Monaco · Inconsolata · Fira Mono · …
- *   `--font-family-mono` (global.css, both themes)  SFMono-Regular · Consolas · Liberation Mono · Menlo
- * They also pick different first faces on macOS, so the two render at different metrics.
- * Reconciling them is a foundations decision; until it lands this stays `monospace` so the
- * wall render does not move under a half-made choice.
- */
-export const FONT_MONO = 'monospace'
+const FONT_MONO = '"JetBrains Mono", monospace'
+
+/** Mono text with ligatures off (TD-840): "!=" stays two characters, as `font-mono` does. */
+export const MONO_TEXT = {
+  fontFamily: FONT_MONO,
+  fontVariant: ['no-common-ligatures', 'no-contextual'],
+} satisfies TextStyle
 
 /**
  * Per-dimension tone → semantic status TOKEN (the one language the dots + hero share).
@@ -38,6 +36,17 @@ export const TONE_TOKEN = {
   warn: 'status-warning',
   alarm: 'status-error',
 } as const satisfies Record<DimensionTone, ColorToken>
+
+/**
+ * Per-dimension tone → the {@link StatusGlyph} tone, so a word-led verdict and its chips
+ * give each tone its own shape as well as its colour. Shared with consumers that draw the
+ * same tones beside the verdict.
+ */
+export const TONE_GLYPH = {
+  ok: 'success',
+  warn: 'warning',
+  alarm: 'error',
+} as const satisfies Record<DimensionTone, StatusGlyphTone>
 
 /** Verdict state → the hero word. */
 export const STATE_LABEL: Record<FatigueVerdictState, string> = {
@@ -129,20 +138,12 @@ export const PACING_TONE_MIN_CONTRAST = 4.5
 
 // --- shared silver/red scheme (ROM chart + ghost-spark line) --------------------
 // One source of truth for the two quality readouts: SILVER when the rep is right,
-// SHADES OF RED when there's an issue. No greens, no ambers — those languages belong
-// to the verdict tones / velocity-loss bands, not here.
-/** On-track / at-or-above-working. */
-export const SILVER = greyRamp[200]
-export const RED_LIGHT = primitiveRamps.red[400]
-export const RED_MID = primitiveRamps.red[600]
-export const RED_DEEP = primitiveRamps.red[800]
+// SHADES OF RED when there's an issue. The tones live in the chart kit so domain-free
+// charts share them; they are re-exported here for the Fatigue family.
+export { SILVER, RED_LIGHT, RED_MID, RED_DEEP, DRIFT_GREY }
 
 /** Below this grind signature the rep is "controlled" → silver; at/above it goes red. */
 export const GRIND_THRESHOLD = 0.35
-/** A quiet grey the controlled line dims toward as it drifts (never a colour): a dimmed
- *  cool grey in the SAME neutral family as SILVER, so a fully-drifted line reads dim-silver
- *  rather than sinking toward black. Shared with the ROM chart. */
-export const DRIFT_GREY = greyRamp[700]
 
 export function clamp01(v: number): number {
   return Math.min(1, Math.max(0, v))

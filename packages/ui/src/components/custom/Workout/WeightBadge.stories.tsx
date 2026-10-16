@@ -6,7 +6,7 @@ const meta: Meta<typeof WeightBadge> = {
   title: 'Custom/Workout/WeightBadge',
   component: WeightBadge,
   parameters: { docs: { description: { component: 'Composes **Icons** · **BaseBadge**.' } } },
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   argTypes: {
     value: { control: 'number', description: 'Weight value' },
     unit: { control: 'select', options: ['lbs', 'kg'], description: 'Unit system' },

@@ -35,7 +35,6 @@
   "src/components/ui/table/Table.test.tsx": 2,
   "src/hooks/useListNavigation.test.tsx": 1,
   "src/lab/audits/RowInventory.stories.tsx": 2,
-  "src/lab/explorations/S3SetModalities.stories.tsx": 1,
   "src/lab/north-star/HeroTempo.exploration.stories.tsx": 1,
   "src/lab/north-star/VelocityDiverging.exploration.stories.tsx": 4,
   "src/test/check-release-bump.test.ts": 2,

@@ -1,5 +1,5 @@
 import { View } from 'react-native'
-import { CardInset } from '../../ui/card/Card'
+import { CardInset } from '../../ui/card'
 import { SparkBars } from '../../ui/charts/spark-bars'
 import { Typography } from '../../ui/typography'
 import { Eyebrow } from '../../ui/eyebrow'

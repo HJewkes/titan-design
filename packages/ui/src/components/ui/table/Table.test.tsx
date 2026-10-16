@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent, renderHook, act } from '@testing-library/react'
 import { axe } from 'jest-axe'
+import { capturedByNode } from '../../../test/classname-capture'
 import {
   Table,
   TableHeader,
@@ -83,6 +84,21 @@ describe('Table', () => {
       )
       // Loading skeleton replaces children
       expect(screen.queryByText('Hidden content')).not.toBeInTheDocument()
+    })
+
+    it('keeps skeleton widths equal across renders', () => {
+      const widthsOf = (container: HTMLElement) =>
+        Array.from(container.querySelectorAll<HTMLElement>('[aria-hidden="true"]')).map(
+          (bar) => bar.style.width
+        )
+      const first = render(<Table isLoading loadingRowCount={3} />)
+      const firstWidths = widthsOf(first.container)
+      first.unmount()
+      const second = render(<Table isLoading loadingRowCount={3} />)
+
+      expect(firstWidths.length).toBeGreaterThan(0)
+      expect(firstWidths.every(Boolean)).toBe(true)
+      expect(widthsOf(second.container)).toEqual(firstWidths)
     })
 
     it('respects loadingRowCount', () => {
@@ -532,6 +548,14 @@ describe('Table', () => {
 
       fireEvent.click(screen.getByText('25'))
       expect(onPageSizeChange).toHaveBeenCalledWith(25)
+    })
+
+    // TD-483: brand orange as the selected size label missed 4.5:1 on its subtle fill in light.
+    it('paints the selected page size in the brand text role, not the brand fill', () => {
+      render(<TablePagination page={0} pageSize={10} totalItems={50} onPageChange={vi.fn()} />)
+      const classes = (capturedByNode.get(screen.getByText('10')) ?? '').split(/\s+/)
+      expect(classes).toContain('text-text-brand')
+      expect(classes).not.toContain('text-brand-primary')
     })
 
     it('renders custom pageSizeOptions', () => {

@@ -1,21 +1,14 @@
 import React from 'react'
 import { View, Text, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { useSurfaceMode } from '../surface'
+import { progressColor, type ProgressColor } from './progressColor'
+
+export { progressColor, type ProgressColor }
 
 export type ProgressSize = 'sm' | 'md' | 'lg'
-export type ProgressColor = 'primary' | 'secondary' | 'success' | 'error' | 'warning' | 'info'
 export type ProgressVariant = 'linear' | 'circular'
-
-/** Maps the color prop to a CSS variable reference for inline styles */
-export const colorVarMap: Record<ProgressColor, string> = {
-  primary: 'var(--color-brand-primary)',
-  secondary: 'var(--color-brand-secondary)',
-  success: 'var(--color-status-success)',
-  error: 'var(--color-status-error)',
-  warning: 'var(--color-status-warning)',
-  info: 'var(--color-status-info)',
-}
 
 export interface ProgressProps extends ViewProps {
   /** Current value (0-100) */
@@ -204,6 +197,7 @@ export function CircularProgress({
   className,
   ...props
 }: CircularProgressProps) {
+  const surfaceMode = useSurfaceMode()
   const percentage = Math.min(Math.max((value / max) * 100, 0), 100)
   const radius = (size - strokeWidth) / 2
   const circumference = 2 * Math.PI * radius
@@ -239,7 +233,7 @@ export function CircularProgress({
             cy={center}
             r={radius}
             fill="none"
-            stroke="var(--color-hairline-default)"
+            stroke={getSemanticColors(surfaceMode)['hairline-default']}
             strokeWidth={strokeWidth}
           />
           {/* Progress arc */}
@@ -248,7 +242,7 @@ export function CircularProgress({
             cy={center}
             r={radius}
             fill="none"
-            stroke={colorVarMap[color]}
+            stroke={progressColor(color, surfaceMode)}
             strokeWidth={strokeWidth}
             strokeLinecap="round"
             strokeDasharray={circumference}
@@ -286,88 +280,9 @@ export function CircularProgress({
   )
 }
 
-export interface ProgressStepsProps extends ViewProps {
-  /** Current step (0-indexed) */
-  currentStep: number
-  /** Total number of steps */
-  totalSteps: number
-  /** Color of completed steps */
-  color?: ProgressColor
-  /** Size of step indicators */
-  size?: ProgressSize
-  /** Labels for each step */
-  labels?: string[]
-  /** Additional className */
-  className?: string
-}
-
-const stepSizeStyles: Record<ProgressSize, { dot: string; connector: string }> = {
-  sm: { dot: 'w-2 h-2', connector: 'h-0.5' },
-  md: { dot: 'w-3 h-3', connector: 'h-1' },
-  lg: { dot: 'w-4 h-4', connector: 'h-1.5' },
-}
-
-/**
- * Step-based progress indicator.
- *
- * @example
- * <ProgressSteps currentStep={2} totalSteps={4} labels={['Cart', 'Shipping', 'Payment', 'Done']} />
- */
-export function ProgressSteps({
-  currentStep,
-  totalSteps,
-  color = 'primary',
-  size = 'md',
-  labels,
-  className,
-  ...props
-}: ProgressStepsProps) {
-  const { dot, connector } = stepSizeStyles[size]
-
-  return (
-    <View className={cn('w-full gap-stack-md', className)} {...props}>
-      <View className="flex-row items-center">
-        {Array.from({ length: totalSteps }).map((_, index) => (
-          <React.Fragment key={index}>
-            {/* Step dot */}
-            <View
-              className={cn(
-                'rounded-full',
-                dot,
-                index <= currentStep ? colorStyles[color] : 'bg-hairline-strong'
-              )}
-            />
-
-            {/* Connector line */}
-            {index < totalSteps - 1 && (
-              <View
-                className={cn(
-                  'flex-1 mx-1',
-                  connector,
-                  index < currentStep ? colorStyles[color] : 'bg-hairline-strong'
-                )}
-              />
-            )}
-          </React.Fragment>
-        ))}
-      </View>
-
-      {/* Labels */}
-      {labels && labels.length > 0 && (
-        <View className="flex-row">
-          {labels.map((label, index) => (
-            <Text
-              key={index}
-              className={cn(
-                'flex-1 text-xs text-center',
-                index <= currentStep ? 'text-text-primary font-medium' : 'text-text-tertiary'
-              )}
-            >
-              {label}
-            </Text>
-          ))}
-        </View>
-      )}
-    </View>
-  )
-}
+export {
+  ProgressSteps,
+  type ProgressStepsProps,
+  type ProgressStepsVariant,
+  type ProgressStepState,
+} from './ProgressSteps'

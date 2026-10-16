@@ -104,7 +104,7 @@
 @font-face {
   font-family: 'Space Grotesk';
   font-style: normal;
-  font-weight: 600 700;
+  font-weight: 300 700;
   font-display: swap;
   src: url('./fonts/space-grotesk/vietnamese.woff2') format('woff2');
   unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
@@ -112,7 +112,7 @@
 @font-face {
   font-family: 'Space Grotesk';
   font-style: normal;
-  font-weight: 600 700;
+  font-weight: 300 700;
   font-display: swap;
   src: url('./fonts/space-grotesk/latin-ext.woff2') format('woff2');
   unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
@@ -120,9 +120,57 @@
 @font-face {
   font-family: 'Space Grotesk';
   font-style: normal;
-  font-weight: 600 700;
+  font-weight: 300 700;
   font-display: swap;
   src: url('./fonts/space-grotesk/latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('./fonts/jetbrains-mono/cyrillic-ext.woff2') format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('./fonts/jetbrains-mono/cyrillic.woff2') format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('./fonts/jetbrains-mono/greek.woff2') format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('./fonts/jetbrains-mono/vietnamese.woff2') format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('./fonts/jetbrains-mono/latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('./fonts/jetbrains-mono/latin.woff2') format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
@@ -140,7 +188,7 @@
     --color-brand-primary-subtle: rgba(255, 121, 0, 0.12);
     --color-brand-primary-muted: rgba(255, 121, 0, 0.30);
     --color-brand-primary-strong: rgba(255, 121, 0, 0.50);
-    --color-brand-secondary: #307B9B;
+    --color-brand-secondary: #2697B7;
     --color-brand-secondary-light: #2697B7;
     --color-brand-secondary-dark: #2A617F;
     --color-brand-secondary-subtle: rgba(34, 211, 238, 0.12);
@@ -165,7 +213,7 @@
     --color-status-live: #2ED573;
     --color-status-deload: #BA2996;
     --color-status-live-muted: #22A444;
-    --color-status-error: #D14343;
+    --color-status-error: #E05254;
     --color-status-error-light: #E05254;
     --color-status-error-dark: #A4221C;
     --color-status-error-subtle: rgba(247, 113, 117, 0.08);
@@ -178,7 +226,7 @@
     --color-status-error-vivid-muted: rgba(255, 71, 87, 0.30);
     --color-status-error-vivid-strong: rgba(255, 71, 87, 0.50);
     --color-status-error-vivid-rgb: 255, 71, 87;
-    --color-border-prominent: #424140;
+    --color-border-prominent: rgba(255, 255, 255, 0.30);
     --color-status-warning: #F9B415;
     --color-status-warning-light: #FFD352;
     --color-status-warning-dark: #C27400;
@@ -262,8 +310,13 @@
     --color-text-tertiary: #888684;
     --color-text-disabled: rgba(255, 255, 255, 0.38);
     --color-text-inverse: #1C1916;
-    --color-text-error: #FF9A9D;
-    --color-text-link: #828DF8;
+    --color-text-error: #E05254;
+    --color-text-brand: #FF7900;
+    --color-text-brand-secondary: #22D3EE;
+    --color-text-success: #21C05D;
+    --color-text-warning: #F9B415;
+    --color-text-info: #78C2FF;
+    --color-text-link: #78C2FF;
     --color-text-link-hover: #3CA8FF;
 
     /* Surface ramp — warm-tapered DERIVED, shipped verbatim from deriveSurfaceRamp()
@@ -286,8 +339,8 @@
     --color-background-frame: #100D0A;
 
     --color-border-focus: #828DF8;
-    --color-border-input: #5A5958;
-    --color-border-input-hover: #72716F;
+    --color-border-input: #888684;
+    --color-border-input-hover: #A29F9D;
     --color-border-input-focus: #828DF8;
     --color-border-input-error: #E05254;
 
@@ -309,7 +362,8 @@
     --color-scrim-subtle: rgba(0, 0, 0, 0.30);
     --color-scrim-default: rgba(0, 0, 0, 0.50);
 
-    /* Control-face and data-fill labels (VW-82). */
+    /* Disabled control face (TD-264), control and data-fill labels (VW-82). */
+    --color-control-face-disabled: rgba(255, 255, 255, 0.12);
     --color-on-control-idle: #D1D1D1;
     --color-on-control-active: #FFFFFF;
     --color-on-data-strong: #0B0B0B;
@@ -318,6 +372,7 @@
     --color-interactive-focus: rgba(255, 255, 255, 0.12);
     --color-interactive-active: rgba(255, 255, 255, 0.16);
     --color-interactive-selected: rgba(255, 255, 255, 0.08);
+    --color-interactive-selected-solid: #F9F6F3;
     --color-interactive-disabled: rgba(255, 255, 255, 0.12);
     --color-interactive-disabled-text: rgba(255, 255, 255, 0.26);
 
@@ -339,12 +394,13 @@
     --font-family-sans: 'Inter';
     --font-family-body: 'Nunito Sans';
     --font-family-heading: 'Space Grotesk';
-    --font-family-mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+    --font-family-mono: 'JetBrains Mono', monospace;
 
     /* Animation tokens */
     --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
     --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
     --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --ease-in: cubic-bezier(0.55, 0, 1, 0.45);
     --duration-fast: 150ms;
     --duration-normal: 250ms;
     --duration-slow: 400ms;
@@ -398,58 +454,58 @@
     --color-brand-primary: #FF7900;
     --color-brand-primary-light: #FFA063;
     --color-brand-primary-dark: #DA5F00;
-    --color-brand-primary-subtle: #FFF5ED;
+    --color-brand-primary-subtle: #FFE6D4;
     --color-brand-primary-muted: #FFC7A2;
     --color-brand-primary-strong: rgba(255, 121, 0, 0.50);
     --color-brand-secondary: #307B9B;
     --color-brand-secondary-light: #2697B7;
     --color-brand-secondary-dark: #2A617F;
-    --color-brand-secondary-subtle: #E6FBFF;
+    --color-brand-secondary-subtle: #C2F6FF;
     --color-brand-secondary-muted: #62EAFF;
     --color-brand-secondary-strong: rgba(48, 123, 155, 0.50);
-    --color-brand-primary-hover: #DA5F00;
-    --color-brand-primary-active: #B94A00;
+    --color-brand-primary-hover: #B94A00;
+    --color-brand-primary-active: #983804;
     --color-brand-secondary-hover: #2A617F;
     --color-brand-secondary-active: #22465F;
 
     --color-on-brand-primary: #FFFFFF;
     --color-on-brand-secondary: #FFFFFF;
-    --color-on-brand-primary-subtle: #FF7900;
-    --color-on-brand-secondary-subtle: #307B9B;
+    --color-on-brand-primary-subtle: #983804;
+    --color-on-brand-secondary-subtle: #2A617F;
 
-    --color-status-success: #298732;
+    --color-status-success: #2B6B25;
     --color-status-success-light: #58F69E;
-    --color-status-success-dark: #298732;
-    --color-status-success-subtle: #E3FFEE;
+    --color-status-success-dark: #264D1C;
+    --color-status-success-subtle: #B5FFD2;
     --color-status-success-muted: rgba(46, 213, 115, 0.30);
     --color-status-success-strong: rgba(46, 213, 115, 0.50);
     --color-status-live: #2ED573;
-    --color-status-deload: #BA2996;
+    --color-status-deload: #9C0D7A;
     --color-status-live-muted: #22A444;
     --color-status-error: #D14343;
     --color-status-error-light: #E05254;
     --color-status-error-dark: #A4221C;
-    --color-status-error-subtle: #FFF4F4;
+    --color-status-error-subtle: #FFE3E5;
     --color-status-error-muted: rgba(209, 67, 67, 0.30);
     --color-status-error-strong: rgba(209, 67, 67, 0.50);
-    --color-status-error-vivid: #FF4757;
+    --color-status-error-vivid: #A4221C;
     --color-status-error-vivid-light: #E05254;
     --color-status-error-vivid-dark: #A4221C;
-    --color-status-error-vivid-subtle: rgba(255, 71, 87, 0.12);
-    --color-status-error-vivid-muted: rgba(255, 71, 87, 0.30);
-    --color-status-error-vivid-strong: rgba(255, 71, 87, 0.50);
+    --color-status-error-vivid-subtle: rgba(164, 34, 28, 0.12);
+    --color-status-error-vivid-muted: rgba(164, 34, 28, 0.30);
+    --color-status-error-vivid-strong: rgba(164, 34, 28, 0.50);
     --color-status-error-vivid-rgb: 255, 71, 87;
     --color-border-prominent: #A29F9D;
-    --color-status-warning: #C27400;
+    --color-status-warning: #A45E00;
     --color-status-warning-light: #FFD352;
-    --color-status-warning-dark: #C27400;
-    --color-status-warning-subtle: #FFF7DD;
+    --color-status-warning-dark: #814D14;
+    --color-status-warning-subtle: #FFEAA9;
     --color-status-warning-muted: rgba(249, 180, 21, 0.30);
     --color-status-warning-strong: rgba(249, 180, 21, 0.50);
-    --color-status-info: #1072CB;
+    --color-status-info: #135AA8;
     --color-status-info-light: #78C2FF;
-    --color-status-info-dark: #1072CB;
-    --color-status-info-subtle: #EFF8FF;
+    --color-status-info-dark: #14407E;
+    --color-status-info-subtle: #D9EFFF;
     --color-status-info-muted: rgba(33, 150, 243, 0.30);
     --color-status-info-strong: rgba(33, 150, 243, 0.50);
 
@@ -457,16 +513,16 @@
     --color-on-status-error: #FFFFFF;
     --color-on-status-warning: #FFFFFF;
     --color-on-status-info: #FFFFFF;
-    --color-on-status-success-subtle: #2ED573;
-    --color-on-status-error-subtle: #D14343;
-    --color-on-status-warning-subtle: #F9B415;
-    --color-on-status-info-subtle: #2196F3;
-    --color-brand-primary-solid: #FF7900;
+    --color-on-status-success-subtle: #2B6B25;
+    --color-on-status-error-subtle: #A4221C;
+    --color-on-status-warning-subtle: #814D14;
+    --color-on-status-info-subtle: #135AA8;
+    --color-brand-primary-solid: #DA5F00;
     --color-brand-secondary-solid: #307B9B;
-    --color-status-success-solid: #2ED573;
+    --color-status-success-solid: #298732;
     --color-status-error-solid: #D14343;
-    --color-status-warning-solid: #F9B415;
-    --color-status-info-solid: #2196F3;
+    --color-status-warning-solid: #C27400;
+    --color-status-info-solid: #1072CB;
 
     --color-result-improve: #4caf50;
     --color-result-improve-light: rgba(76, 175, 80, 0.12);
@@ -518,56 +574,64 @@
     --color-dataviz-categorical-6: #A45E00;
 
     --color-text-primary: #121828;
-    --color-text-secondary: #65748B;
-    --color-text-tertiary: #A29F9D;
+    --color-text-secondary: #424140;
+    --color-text-tertiary: #5A5958;
     --color-text-disabled: rgba(55, 65, 81, 0.48);
     --color-text-inverse: #FFFFFF;
     --color-text-error: #A4221C;
+    --color-text-brand: #983804;
+    --color-text-brand-secondary: #22465F;
+    --color-text-success: #264D1C;
+    --color-text-warning: #814D14;
+    --color-text-info: #135AA8;
     --color-text-link: #135AA8;
     --color-text-link-hover: #135AA8;
 
-    --color-surface-base: #FFFFFF;
+    /* TD-789 3b: page grey 100 up to elevated grey 50; raised and overlay share white. */
+    --color-surface-base: #EDEAE7;
     --color-surface-elevated: #F9F6F3;
-    --color-surface-raised: #EDEAE7;
+    --color-surface-raised: #FFFFFF;
     --color-surface-overlay: #FFFFFF;
     --color-surface-input: #F9F6F3;
 
-    --color-background-base: #EDEAE7;
-    --color-background-default: #FFFFFF;
+    --color-background-base: #D4D1CE;
+    --color-background-default: #EDEAE7;
     --color-background-subtle: #F9F6F3;
-    /* Placeholder pairing — light mode is deferred. */
-    --color-background-frame: #A29F9D;
+    --color-background-frame: #BDBAB7;
 
     --color-border-focus: #1072CB;
-    --color-border-input: #888684;
-    --color-border-input-hover: #72716F;
+    --color-border-input: #72716F;
+    --color-border-input-hover: #5A5958;
     --color-border-input-focus: #1072CB;
     --color-border-input-error: #D14343;
 
     /* Alpha hairline separators — mirrors the dark-mode white-alpha family,
        composited toward black on light surfaces (§4/S-2). */
     --color-hairline-subtle: rgba(0, 0, 0, 0.10);
-    --color-hairline-default: rgba(0, 0, 0, 0.15);
-    --color-hairline-strong: rgba(0, 0, 0, 0.22);
+    --color-hairline-default: rgba(0, 0, 0, 0.16);
+    --color-hairline-strong: rgba(0, 0, 0, 0.24);
 
-    /* Scrims and control/data labels (VW-82) — identical to the dark block on
+    /* Scrims and the data label (VW-82) — identical to the dark block on
        purpose; see tokens/semantic.ts. */
     --color-scrim-press: rgba(0, 0, 0, 0.10);
     --color-scrim-press-strong: rgba(0, 0, 0, 0.20);
     --color-scrim-subtle: rgba(0, 0, 0, 0.30);
     --color-scrim-default: rgba(0, 0, 0, 0.50);
-    --color-on-control-idle: #D4D1CE;
-    --color-on-control-active: #FFFFFF;
+    /* Control faces and their labels flip with the theme (TD-264). */
+    --color-control-face-disabled: rgba(0, 0, 0, 0.06);
+    --color-on-control-idle: #5A5958;
+    --color-on-control-active: #1C1916;
     --color-on-data-strong: #0B0B0B;
 
     --color-interactive-hover: rgba(55, 65, 81, 0.04);
     --color-interactive-focus: rgba(55, 65, 81, 0.12);
     --color-interactive-active: rgba(55, 65, 81, 0.16);
     --color-interactive-selected: rgba(55, 65, 81, 0.08);
+    --color-interactive-selected-solid: #5A5958;
     --color-interactive-disabled: rgba(55, 65, 81, 0.12);
     --color-interactive-disabled-text: rgba(55, 65, 81, 0.26);
 
-    --color-divider: rgba(0, 0, 0, 0.15);
+    --color-divider: rgba(0, 0, 0, 0.16);
 
     --color-avatar-background: #72716F;
     --color-avatar-text: #FFFFFF;
@@ -585,12 +649,13 @@
     --font-family-sans: 'Inter';
     --font-family-body: 'Nunito Sans';
     --font-family-heading: 'Space Grotesk';
-    --font-family-mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+    --font-family-mono: 'JetBrains Mono', monospace;
 
     /* Animation tokens */
     --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
     --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
     --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --ease-in: cubic-bezier(0.55, 0, 1, 0.45);
     --duration-fast: 150ms;
     --duration-normal: 250ms;
     --duration-slow: 400ms;
@@ -650,9 +715,13 @@
     color: var(--color-text-primary);
   }
 
-  /* Focus visible styles */
-  *:focus-visible {
-    outline: 2px solid var(--color-border-focus);
+  /* Focus ring (TD-765): text-brand over a 2px gap. The gap is the outline offset, left transparent
+     so it shows whatever plane the element sits on; a box-shadow gap would need that plane's colour
+     and loses to any shadow utility. `.focus-ring` paints the same ring for a component that draws
+     it itself. */
+  *:focus-visible,
+  .focus-ring {
+    outline: 2px solid var(--color-text-brand);
     outline-offset: 2px;
   }
 

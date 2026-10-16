@@ -5,7 +5,7 @@ import { StatusDot } from './StatusDot'
 const meta: Meta<typeof StatusDot> = {
   title: 'Custom/Workout/StatusDot',
   component: StatusDot,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   argTypes: {
     variant: {
       control: 'select',

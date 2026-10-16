@@ -25,6 +25,17 @@ come from [`src/arch/arch-graph.json`](../../../arch/arch-graph.json).
 are workout-internal and imported by path, so the public barrel stays one mark
 wide. Adding them to the barrel is a decision, not a tidy-up.
 
+## Token decision record
+
+| File                                | Kind            | Records                                                                                      | Pinned by                                 |
+| ----------------------------------- | --------------- | -------------------------------------------------------------------------------------------- | ----------------------------------------- |
+| `DatavizLightPalette.candidates.ts` | decision record | Every light `dataviz-*` candidate set weighed in VW-371 phase 2, and why the chosen one won. | `DatavizLightPalette.candidates.test.tsx` |
+
+It is not a mark or a hook, and no component renders from it. Its story,
+`DatavizLightPalette.stories.tsx` (`Lab/Decisions/Dataviz Light Palettes`), renders
+each candidate on the light planes. The test fails when the light tokens drift
+from the set marked `chosen`.
+
 ## What each owns
 
 **`SetBarChart`** owns the chart _geometry_ — value→height scaling, the shared
@@ -86,27 +97,31 @@ differ, so the older chart's choices are not copied by accident.
 - **The y scale is linear and padded** so marks clear the plot edges. A value
   label gutter sits on the left (`PLOT_LEFT`).
 - **Empty data renders a placeholder**, not an empty plot: a `View` of the same
-  width with `accessibilityRole="image"`, a sentence `accessibilityLabel`, and a
-  `*-empty` testID.
+  width and height with `accessibilityRole="image"`, a sentence
+  `accessibilityLabel`, and a `*-empty` testID. `GoalTrajectoryChart` shows it
+  when there is neither a band nor an actual, whatever its `status`; the words
+  (`<STATUS_LABEL[status]> — no band yet`) and the label
+  (`<STATUS_LABEL[status]>: no band yet.`) are taken from `status`.
 - **The canvas is one accessible image.** Its `accessibilityLabel` is a
   generated summary (metric, latest value, status or trend). Decorative layers
-  sit inside that image or carry `accessibilityElementsHidden`.
+  are hidden from it: `GoalTrajectoryChart`'s `<svg>` is `aria-hidden`, so its
+  marks are not in the accessibility tree.
 - **The line draws left to right on mount**, and a prop turns the entrance off
   (`animate`, `animateOnMount`) so visual baselines capture the final frame.
 - **Mesocycle boundaries and PR stars** are overlays on the same plot.
 
 ### Where they differ
 
-| Concern         | `GoalTrajectoryChart` (extend this)                                                                                                                                                                                      | `StrengthTrendChart`                                                                                                                                                 |
-| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Geometry module | `GoalTrajectoryChartGeometry.ts`: pure functions, no React, no colour, unit-tested on its own. `GoalTrajectoryMini` reuses it at a smaller size.                                                                         | `buildGeometry` inside the component file.                                                                                                                           |
-| Scales          | `scaleLinear` from `d3-scale`; `line`, `area` and `curveMonotoneX` from `d3-shape`. x is the week index (`weekIndex`, or `ts` placed against week start dates).                                                          | Hand-written linear `toX` / `toY`. x is `Date.parse` of each point's date.                                                                                           |
-| y padding       | The floor steps down by `VALUE_STEP` (5) until the lowest mark clears the bottom edge. The ceiling rises until every rule label and marker clears the top. Both derive from the label font and plot height.              | 15% of the range on each side.                                                                                                                                       |
-| Marks           | One DOM `<svg>` in `GoalTrajectoryPlot.tsx` that only paints paths from the geometry.                                                                                                                                    | React Native `View`s: each segment is a rotated `View`, revealed by an `Animated.View` width.                                                                        |
-| Colour          | Resolved at render time from the nearest `Surface`: `useSurface()` feeds `trajectoryPalette(mode, level, status)`, which reads `getSemanticColors(mode)` and makes washes with `alpha()`.                                | Dark palette frozen at module scope (`getSemanticColors('dark')`). It is grandfathered in `eslint-rules/frozen-theme-baseline.json`; do not copy it.                 |
-| Responsive      | Above `WALL_BREAKPOINT` (720 px) a `DENSITY` table raises stroke width, star size, gridline count and the week-label budget.                                                                                             | None; width only stretches the x axis.                                                                                                                               |
-| Motion          | `useTrajectoryEntrance` honours `prefers-reduced-motion` through `usePrefersReducedMotion` from `src/hooks`.                                                                                                             | `Animated.timing` for 600 ms, with no reduced-motion check.                                                                                                          |
-| Degenerate data | Non-finite values are dropped. A band needs at least two slices; a band thinner than `BAND_MIN_THICKNESS` is flagged `bandIsDegenerate`. `GoalTrajectoryDegenerate.test.tsx` covers committed equal to stretch (VW-414). | Empty when `data` is empty, even if a projection exists. A single timestamp widens the x domain by 1 ms; a flat series uses `max(1, 10% of the value)` as its range. |
-| Interaction     | The next-target marker opens a `TipTrigger`.                                                                                                                                                                             | Each point is a `Pressable` with a label and opens a tooltip.                                                                                                        |
+| Concern         | `GoalTrajectoryChart` (extend this)                                                                                                                                                                                                                                                                         | `StrengthTrendChart`                                                                                                                                                 |
+| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Geometry module | `GoalTrajectoryChartGeometry.ts`: pure functions, no React, no colour, unit-tested on its own. `GoalTrajectoryMini` reuses it at a smaller size.                                                                                                                                                            | `buildGeometry` inside the component file.                                                                                                                           |
+| Scales          | `scaleLinear` from `d3-scale`; `line`, `area` and `curveMonotoneX` from `d3-shape`. x is the week index (`weekIndex`, or `ts` placed against week start dates).                                                                                                                                             | Hand-written linear `toX` / `toY`. x is `Date.parse` of each point's date.                                                                                           |
+| y padding       | The floor steps down by `VALUE_STEP` (5) until the lowest mark clears the bottom edge. The ceiling rises until every rule label and marker clears the top. Both derive from the label font and plot height.                                                                                                 | 15% of the range on each side.                                                                                                                                       |
+| Marks           | One DOM `<svg>` in `GoalTrajectoryPlot.tsx` that only paints paths from the geometry.                                                                                                                                                                                                                       | React Native `View`s: each segment is a rotated `View`, revealed by an `Animated.View` width.                                                                        |
+| Colour          | Resolved at render time from the nearest `Surface`: `useSurface()` feeds `trajectoryPalette(mode, level, status)`, which reads `getSemanticColors(mode)` and makes washes with `alpha()`.                                                                                                                   | Dark palette frozen at module scope (`getSemanticColors('dark')`). It is grandfathered in `eslint-rules/frozen-theme-baseline.json`; do not copy it.                 |
+| Responsive      | Above `WALL_BREAKPOINT` (720 px) a `DENSITY` table raises stroke width, star size, gridline count and the week-label budget.                                                                                                                                                                                | None; width only stretches the x axis.                                                                                                                               |
+| Motion          | `useTrajectoryEntrance` honours `prefers-reduced-motion` through `usePrefersReducedMotion` from `src/hooks`.                                                                                                                                                                                                | `Animated.timing` for 600 ms, with no reduced-motion check.                                                                                                          |
+| Degenerate data | Non-finite values are dropped. A band needs at least two slices; a band thinner than `BAND_MIN_THICKNESS` is flagged `bandIsDegenerate`. `GoalTrajectoryDegenerate.test.tsx` covers committed equal to stretch (VW-414).                                                                                    | Empty when `data` is empty, even if a projection exists. A single timestamp widens the x domain by 1 ms; a flat series uses `max(1, 10% of the value)` as its range. |
+| Interaction     | `GoalTrajectoryWeekTips` lays one `TipTrigger` per week over the canvas, outside the `<svg>`: a roving tab stop, arrow keys, Home and End move between weeks. Each opens that week's plan, reading, PR and deload flags, and the next target on its week. The next-target marker itself is not interactive. | Each point is a `Pressable` with a label and opens a tooltip.                                                                                                        |
 
 This section moves to `ui/charts/README.md` when M5 lands (roadmap decision of 2026-09-19).

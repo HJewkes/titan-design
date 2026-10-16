@@ -89,6 +89,47 @@ Complex components use the compound component pattern for flexibility:
 | `isLoading` | `boolean` | Loading state |
 | `onPress` | `() => void` | Press handler (RN convention) |
 
+#### Placement: Which Directory a Component Belongs In
+
+A tier is decided by what the component knows, not by how much it composes. Paths are under `packages/ui/src/`.
+
+| Directory | Holds |
+|-----------|-------|
+| `components/ui/<name>/` | Domain-free components of any size. Any product could render one without knowing another product's vocabulary. |
+| `components/ui/charts/<name>/` | Domain-free charts. `d3-*` imports are legal only here (`titan/no-raw-composition`). Shared scales, geometry and motion live in `ui/charts/kit/`. |
+| `components/custom/<Family>/` | A domain family (`Workout`, `Fatigue`, `ActiveWork`). A prop, type or label names a domain concept. |
+| `components/shell/` | The domain-free application frame. `shell/<app>/` is one app's chrome and composes it. |
+| `lab/` | Unpublished exploration. Excluded from the published package. |
+| `hooks/`, `utils/` | Hooks and pure functions with no JSX. They never import `components/`. |
+
+To decide a new component's home, take the first match, top to bottom:
+
+| Question | Home |
+|----------|------|
+| Is it an exploration that must not publish? | `lab/<family>/` |
+| Does any prop, type or label name a domain concept (set, rep, mesocycle, initiative, fatigue)? | `components/custom/<Family>/` of that domain |
+| Does it know the app's own chrome (its routes, its brand, its page regions)? | `components/shell/`, or `shell/<app>/` if it names an app. A generic sidebar, rail, or band that takes its content as props (e.g. `Sidebar`) is `ui/`. |
+| Does it paint data marks from a scale? | `components/ui/charts/<name>/` |
+| Is it a hook or pure function with no JSX? | `hooks/` or `utils/` |
+| Otherwise | `components/ui/<name>/` |
+
+If the component you want to compose sits in a higher tier, run the table on that component. If it lands lower, move it first.
+
+##### Tier import order
+
+The order is theme, icons, ui, custom, shell, pages. A lower tier never imports a higher one; the `titan/no-upward-tier-import` rule (`eslint-rules/no-upward-tier-import.js`) errors on it. The rule classifies by path only: `theme/` and `components/{icons,ui,custom,shell,pages}/`. It does not yet cover `hooks/` or `utils/`, so their "never import `components/`" rule is not machine-checked, and `lab/` is exempt in both directions. Existing offenders are ratcheted in `eslint-rules/tier-import-baseline.json`, which only shrinks.
+
+`ui/` components may compose `ui/` siblings. If the component you need sits in a higher tier and is domain-free, move it down first; do not copy it and do not replace it with a slot. Generic directories still in `components/custom/` are listed in `src/arch/custom-families.baseline.json`, which only shrinks (`src/arch/custom-families.test.ts`).
+
+##### Slots and controlled state
+
+- Import what is fixed anatomy (Typography, Skeleton, Tooltip, Surface).
+- Take a named `ReactNode` slot for consumer vocabulary (wording, headers, actions).
+- Give every state slot (`emptyState`, ...) a default built from `ui/`.
+- Controlled state is named `x`, `defaultX`, `onXChange`.
+
+Add the export to the family barrel (`components/ui/index.ts` or `components/custom/index.ts`) and, for `ui/`, a row in `components/ui/README.md`; without the row the component stays `status:candidate`.
+
 ## Design Token Architecture
 
 ### Two-Tier Token System
@@ -97,42 +138,35 @@ Following Design Tokens Community Group (DTCG) and Material Design 3 conventions
 
 #### 1. Primitive Tokens (Raw Values)
 
+Raw ramps with no semantic meaning. Chromatic ramps live in `primitiveRamps` and the warm greys in `greyRamp`:
+
 ```typescript
 // packages/ui/src/theme/tokens/primitives.ts
-export const primitiveColors = {
-  indigo: {
-    50: '#EEF2FF',
-    500: '#5048E5',  // Brand primary
-    900: '#312E81',
-  },
-  // ... other color scales
-}
+export const greyRamp = {
+  50: '#F9F6F3', //  L*97.0  W6
+  100: '#EDEAE7', // L*92.8  W6
+  ...
+export const primitiveRamps = {
+  red: {
+    50: '#FFF4F4',
+    100: '#FFE3E5',
+    ...
 ```
 
 #### 2. Semantic Tokens (Meaningful Roles)
 
+Semantic tokens are a flat map of `{category}-{name}` keys per mode (`semanticColorsDark`, `semanticColorsLight`), each pointing at a primitive step or a literal:
+
 ```typescript
 // packages/ui/src/theme/tokens/semantic.ts
-export const semanticTokens = {
-  dark: {
-    brand: {
-      primary: primitiveColors.indigo[500],
-      secondary: primitiveColors.emerald[500],
-    },
-    text: {
-      primary: primitiveColors.gray[50],
-      secondary: primitiveColors.gray[400],
-    },
-    surface: {
-      base: primitiveColors.gray[900],
-      elevated: primitiveColors.gray[800],
-    },
-  },
-  light: {
-    // Light mode equivalents...
-  },
-}
+export const semanticColorsDark = {
+  // Brand colors stay the same in dark mode
+  'brand-primary': ramp.orange[400],
+  'brand-primary-light': ramp.orange[300],
+  ...
 ```
+
+See `packages/ui/TOKENS.md` for the full token reference.
 
 ### Token Naming Conventions
 
@@ -151,19 +185,24 @@ export const semanticTokens = {
 Tokens are exposed as CSS custom properties for runtime theming:
 
 ```css
-/* Dark mode (default) */
-:root {
-  --color-brand-primary: #5048E5;
-  --color-text-primary: #F9FAFB;
-  --color-surface-base: #111827;
-}
-
-/* Light mode */
-.light, :root.light {
-  --color-brand-primary: #5048E5;
-  --color-text-primary: #111827;
-  --color-surface-base: #FFFFFF;
-}
+/* packages/ui/src/theme/global.css */
+  :root {
+    --color-brand-primary: #FF7900;
+    --color-brand-primary-light: #FFA063;
+    ...
+    --color-text-primary: #F9F6F3;
+    ...
+    --color-surface-base: #252321;
+    ...
+  }
+  ...
+  .light,
+  :root.light {
+    --color-brand-primary: #FF7900;
+    ...
+    --color-text-primary: #121828;
+    ...
+    --color-surface-base: #FFFFFF;
 ```
 
 ## Storybook Architecture

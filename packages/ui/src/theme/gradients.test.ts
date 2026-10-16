@@ -42,7 +42,7 @@ describe('gradients', () => {
 
   it('surfaceGradient.statusTrack ramps success → warning → error at 25% alpha', () => {
     expect(surfaceGradient.statusTrack().backgroundImage).toBe(
-      'linear-gradient(90deg, rgba(46, 213, 115, 0.25) 0%, rgba(249, 180, 21, 0.25) 50%, rgba(209, 67, 67, 0.25) 100%)'
+      'linear-gradient(90deg, rgba(46, 213, 115, 0.25) 0%, rgba(249, 180, 21, 0.25) 50%, rgba(224, 82, 84, 0.25) 100%)'
     )
   })
 

@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
+import { capturedClassNames } from '../../../test/classname-capture'
 import { FileHistoryExplorer } from './FileHistoryExplorer'
 import {
   FILE_HISTORY_CO_EDGES,
@@ -95,5 +96,14 @@ describe('FileHistoryExplorer', () => {
   it('has no a11y violations', async () => {
     const { container } = render(<FileHistoryExplorer {...base} />)
     expect(await axe(container)).toHaveNoViolations()
+  })
+})
+
+describe('FileHistoryExplorer className merge', () => {
+  it('lets a caller class replace the root class it conflicts with', () => {
+    render(<FileHistoryExplorer {...base} className="gap-2" />)
+    const classes = capturedClassNames.get('file-history-explorer')?.split(/\s+/)
+    expect(classes).toContain('gap-2')
+    expect(classes).not.toContain('gap-3.5')
   })
 })

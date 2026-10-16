@@ -16,6 +16,8 @@ const ruleTester = new RuleTester({
 const uiFile = '/repo/packages/ui/src/components/ui/select/Select.tsx'
 const customFile = '/repo/packages/ui/src/components/custom/Metric/Metric.tsx'
 const themeFile = '/repo/packages/ui/src/theme/config.ts'
+// A checkout under a directory that is itself named `src`: the root is the LAST `/src/`.
+const underSrcDirFile = '/work/src/repo/packages/ui/src/components/ui/select/Select.tsx'
 const labFile = '/repo/packages/ui/src/lab/specimens/Sample.tsx'
 
 describe('no-upward-tier-import', () => {
@@ -68,6 +70,12 @@ describe('no-upward-tier-import', () => {
       {
         code: "export { Metric } from '../../custom/Metric/Metric'",
         filename: uiFile,
+        errors: [{ messageId: 'upward' }],
+      },
+      // Regression (TD-552): the first `/src/` made tierOf null here, so every import passed.
+      {
+        code: "import { Typography } from '../../custom/Typography'",
+        filename: underSrcDirFile,
         errors: [{ messageId: 'upward' }],
       },
     ],

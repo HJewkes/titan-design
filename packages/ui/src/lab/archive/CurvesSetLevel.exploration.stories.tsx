@@ -518,7 +518,7 @@ function ForceVelocityChart({ width = 760, height = 360 }: { width?: number; hei
           const emph = i === 0 || i === FV.length - 1
           return (
             <g key={i}>
-              {emph && (
+              {!!emph && (
                 <circle
                   cx={px(p.f)}
                   cy={py(p.v)}

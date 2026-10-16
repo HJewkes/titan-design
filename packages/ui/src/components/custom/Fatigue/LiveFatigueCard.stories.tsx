@@ -20,12 +20,16 @@ const meta: Meta<typeof LiveFatigueCard> = {
           '`GhostSpark` (tempo embedded). Grounded on the `Surface` **base** plane — one step ' +
           'above the `background` shell the live stage paints — separated by the alpha ' +
           '`hairline-default` edge and finished with the shared **paper** accent (matte grain + ' +
-          'top rim-light + contact shadow), the hero-surface treatment from the surface north-star.',
+          'top rim-light + contact shadow), the hero-surface treatment from the surface north-star. ' +
+          'The `layout` control picks the arrangement the panel tier asks for: `column` (the row ' +
+          'tiers), `fill` (the wall, leftover height spent on the charts) or `compact` (the wrapped ' +
+          'tiers — lights beside the verdict, the two charts side by side; try it at width 568+).',
       },
     },
   },
   argTypes: {
-    width: { control: { type: 'number', min: 260, max: 420, step: 2 } },
+    width: { control: { type: 'number', min: 260, max: 980, step: 2 } },
+    layout: { control: 'select', options: ['column', 'fill', 'compact'] },
   },
 }
 export default meta
@@ -40,7 +44,7 @@ const Frame = ({ children }: { children: React.ReactNode }) => (
 
 /** The default (form breaking down) card. */
 export const Default: Story = {
-  args: { model: FATIGUE_STATES[3].model, width: 318, height: 508 },
+  args: { model: FATIGUE_STATES[3].model, width: 318, height: 508, layout: 'column' },
   render: (args) => (
     <Frame>
       <LiveFatigueCard {...args} />

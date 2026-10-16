@@ -4,7 +4,8 @@ import { primitiveRamps as ramp } from '../../../theme/tokens/primitives'
  * The VW-371 phase 2 decision record: every light-mode candidate for the three
  * `dataviz-*` palettes, rendered by `DatavizLightPalette.stories.tsx`. The set
  * marked `chosen` in each palette is what the light block of the token mirrors
- * carries (landed 2026-09-17); `dataviz-palettes.test.ts` fails if they drift.
+ * carries (landed 2026-09-17); `DatavizLightPalette.candidates.test.tsx` fails
+ * if they drift.
  * The rest stay here as the record of what was weighed and why it lost.
  *
  * Every value is a `primitiveRamps` step, picked by exhaustive search over the

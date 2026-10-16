@@ -1,7 +1,10 @@
 import { describe, it, expect, vi } from 'vitest'
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render, screen, fireEvent, within } from '@testing-library/react'
 import { axe } from 'jest-axe'
+import { capturedByNode } from '../../../test/classname-capture'
 import { Select } from './Select'
+import { Surface } from '../surface'
+import { insetFieldStyle } from '../surface/insetField'
 
 const defaultOptions = [
   { value: '1', label: 'Option 1' },
@@ -116,6 +119,14 @@ describe('Select', () => {
       fireEvent.click(screen.getByText('Option 1'))
       expect(onChangeMulti).toHaveBeenCalledWith(['2'])
     })
+
+    it('ticks each selected option with an SVG check, not a ✓ text glyph', () => {
+      render(<Select options={defaultOptions} isMulti values={['1', '3']} />)
+      fireEvent.click(screen.getByRole('combobox'))
+      expect(screen.queryByText('✓')).toBeNull()
+      const ticked = screen.getAllByRole('checkbox').map((row) => row.querySelector('svg') !== null)
+      expect(ticked).toEqual([true, false, true])
+    })
   })
 
   describe('disabled options', () => {
@@ -143,6 +154,36 @@ describe('Select', () => {
     it('renders with default variant when omitted', () => {
       render(<Select options={defaultOptions} />)
       expect(screen.getByRole('combobox')).toBeInTheDocument()
+    })
+
+    it.each([
+      ['dark', 'base'],
+      ['dark', 'raised'],
+      ['light', 'base'],
+      ['light', 'elevated'],
+    ] as const)(
+      'fills the filled trigger with the well colour of the enclosing plane (%s %s)',
+      (mode, level) => {
+        render(
+          <Surface theme={mode} level={level}>
+            <Select options={defaultOptions} variant="filled" />
+          </Surface>
+        )
+        const expected = insetFieldStyle(level, mode) as {
+          backgroundColor: string
+          boxShadow: string
+        }
+        const trigger = screen.getByRole('combobox')
+        const probe = document.createElement('div')
+        probe.style.backgroundColor = expected.backgroundColor
+        expect(trigger.style.boxShadow).toBe(expected.boxShadow)
+        expect(trigger.style.backgroundColor).toBe(probe.style.backgroundColor)
+      }
+    )
+
+    it('keeps the default trigger flat', () => {
+      render(<Select options={defaultOptions} />)
+      expect(screen.getByRole('combobox').style.boxShadow).toBe('')
     })
 
     it('supports selection in filled variant', () => {
@@ -207,5 +248,17 @@ describe('Select', () => {
       fireEvent.click(screen.getByRole('combobox'))
       expect(screen.getAllByRole('checkbox')).toHaveLength(defaultOptions.length)
     })
+  })
+})
+
+// TD-483: brand orange as the selected option label missed 4.5:1 on the light overlay planes.
+describe('Select selected option', () => {
+  it('paints the selected label in the brand text role, not the brand fill', () => {
+    render(<Select options={defaultOptions} value="2" />)
+    fireEvent.click(screen.getByRole('combobox'))
+    const option = screen.getByRole('option', { name: 'Option 2' })
+    const classes = (capturedByNode.get(within(option).getByText('Option 2')) ?? '').split(/\s+/)
+    expect(classes).toContain('text-text-brand')
+    expect(classes).not.toContain('text-brand-primary')
   })
 })

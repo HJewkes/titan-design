@@ -4,7 +4,8 @@ import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { IntensityBar } from './IntensityBar'
 import { getGlowShadow } from '../../../theme/elevation'
-import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { getSemanticColors, type ThemeMode } from '../../../theme/tokens/semantic'
+import { SurfaceContext } from '../../ui/surface/SurfaceContext'
 
 const AT_TARGET_GLOW = (
   getGlowShadow(getSemanticColors('dark')['status-info'], 'subtle') as { boxShadow: string }
@@ -46,6 +47,26 @@ describe('IntensityBar', () => {
       render(<IntensityBar level={-0.5} />)
       expect(screen.getByTestId('intensity-label')).toHaveTextContent('0%')
     })
+
+    it.each<ThemeMode>(['light', 'dark'])('reads text-secondary in %s mode', (mode) => {
+      const t = getSemanticColors(mode)
+      render(
+        <SurfaceContext.Provider value={{ mode, level: 'base' }}>
+          <IntensityBar level={0.5} />
+        </SurfaceContext.Provider>
+      )
+      expect(screen.getByTestId('intensity-label')).toHaveStyle({ color: t['text-secondary'] })
+    })
+
+    it('differs from result-neutral in light mode', () => {
+      const t = getSemanticColors('light')
+      render(
+        <SurfaceContext.Provider value={{ mode: 'light', level: 'base' }}>
+          <IntensityBar level={0.5} />
+        </SurfaceContext.Provider>
+      )
+      expect(screen.getByTestId('intensity-label')).not.toHaveStyle({ color: t['result-neutral'] })
+    })
   })
 
   describe('zone colors graded by true percentage', () => {
@@ -71,7 +92,7 @@ describe('IntensityBar', () => {
 
     it('renders over-1 red just past target (110%)', () => {
       render(<IntensityBar level={1.1} />)
-      expect(screen.getByTestId('intensity-fill')).toHaveStyle({ backgroundColor: '#D14343' })
+      expect(screen.getByTestId('intensity-fill')).toHaveStyle({ backgroundColor: '#E05254' })
     })
 
     it('renders over-2 deep red at 120%', () => {

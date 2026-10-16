@@ -49,7 +49,7 @@ const meta: Meta<typeof BodyMapDetailPanel> = {
       },
     },
   },
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   decorators: [
     (Story, context) => {
       const frame = (context.parameters.frame ?? PHONE_FRAME) as typeof PHONE_FRAME
@@ -73,6 +73,11 @@ const meta: Meta<typeof BodyMapDetailPanel> = {
       options: ['bottom', 'right'],
       description: 'Bottom slide-up sheet (phone) or right side-sheet (wall)',
     },
+    unit: {
+      control: 'inline-radio',
+      options: ['lb', 'kg'],
+      description: 'Unit the strength figures arrive in; labelled, never converted',
+    },
     isOpen: { control: 'boolean', description: 'Whether the sheet is visible' },
     lastTrained: { control: 'text', description: 'Last trained label' },
   },
@@ -92,6 +97,7 @@ export const Default: Story = {
     weeklyHistory: [8, 10, 12, 11, 13, 14],
     contributingExercises: contributing,
     upcomingExercises: upcoming,
+    unit: 'lb',
     isOpen: true,
     onClose: () => {},
     onViewExercises: () => {},

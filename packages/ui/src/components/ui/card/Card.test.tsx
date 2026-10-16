@@ -1,7 +1,7 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, afterEach } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
-import { Text } from 'react-native'
+import { Platform, Text } from 'react-native'
 import {
   Card,
   CardHeader,
@@ -12,7 +12,9 @@ import {
   CardSkeleton,
   CardInset,
 } from './Card'
+import { Surface } from '../surface/Surface'
 import { greyRamp } from '../../../theme/tokens/primitives'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { resolveAll, spacingClassesAt } from '../../../test/spacing-resolver'
 
 // Planes by RAMP STEP, never by literal bytes — see Surface.test.tsx.
@@ -332,6 +334,44 @@ describe('Card', () => {
         </Card>
       )
       expect(container.firstChild).toBeInTheDocument()
+    })
+  })
+
+  describe('accent stripe colour', () => {
+    const originalOS = Platform.OS
+    afterEach(() => {
+      Platform.OS = originalOS
+    })
+
+    it('keeps the brand CSS variable on web', () => {
+      render(<Card variant="accent" testID="card" />)
+      expect(screen.getByTestId('card').style.borderLeftColor).toBe('var(--color-brand-primary)')
+    })
+
+    it.each(['ios', 'android'] as const)('resolves to the dark brand colour on %s', (os) => {
+      Platform.OS = os
+      render(<Card variant="accent" testID="card" />)
+      expect(screen.getByTestId('card')).toHaveStyle({
+        borderLeftColor: getSemanticColors('dark')['brand-primary'],
+      })
+    })
+
+    it('resolves to the light brand colour on native inside a light surface', () => {
+      Platform.OS = 'ios'
+      render(
+        <Surface theme="light">
+          <Card variant="accent" testID="card" />
+        </Surface>
+      )
+      expect(screen.getByTestId('card')).toHaveStyle({
+        borderLeftColor: getSemanticColors('light')['brand-primary'],
+      })
+    })
+
+    it('lets a caller accentColor win on native', () => {
+      Platform.OS = 'ios'
+      render(<Card variant="accent" accentColor="rgb(1, 2, 3)" testID="card" />)
+      expect(screen.getByTestId('card')).toHaveStyle({ borderLeftColor: 'rgb(1, 2, 3)' })
     })
   })
 

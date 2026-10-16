@@ -22,7 +22,7 @@ import {
   reps,
   Page,
   sectionTitle,
-} from '../../components/custom/Workout/setHeadingKit'
+} from './setHeadingKit'
 
 // ---- variable-zone (floor→max) upcoming color — real ramp candidates (no invented hex)
 const VAR_GREY = greyRamp[800] // #3C3C3C — lighter grey (the paler-grey reference)

@@ -67,7 +67,7 @@ function InitiativeReader({
           <InitiativeBrief brief={brief} linkers={linkers} />
         </Card>
         <Card className={tabCardClass} testID="reader-card">
-          <Tabs defaultIndex={0}>
+          <Tabs defaultValue={0}>
             <TabList>
               <Tab>{`Tasks (${tasks.length})`}</Tab>
               <Tab>{`Sessions (${SESSION_FIXTURE.length})`}</Tab>

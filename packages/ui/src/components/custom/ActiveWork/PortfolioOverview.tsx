@@ -1,7 +1,8 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { View, type ViewProps } from 'react-native'
+import { cn } from '../../../utils/cn'
 import { Card } from '../../ui/card'
-import { Metric } from '../Metric'
+import { Metric } from '../../ui/metric'
 import { Typography } from '../../ui/typography'
 import { Eyebrow } from '../../ui/eyebrow'
 import { InitiativeCard, type InitiativeCardProps } from './InitiativeCard'
@@ -48,7 +49,7 @@ export function PortfolioOverview({
   ...props
 }: PortfolioOverviewProps) {
   return (
-    <View className={`gap-5 ${className ?? ''}`} {...props}>
+    <View className={cn('gap-5', className)} {...props}>
       <View>
         <Typography variant="h4" className="text-text-primary">
           {title}

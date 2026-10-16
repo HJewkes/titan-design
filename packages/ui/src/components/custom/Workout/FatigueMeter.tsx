@@ -1,14 +1,13 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import type { ViewProps } from 'react-native'
 import { WORKOUT_TOKENS } from '../../../theme/workout-tokens'
+import { VL_LOSS_THRESHOLDS, type VelocityLossThresholds } from './velocity-scale'
 import { ZoneTrack, type ZoneTrackZone, type ZoneTrackTick, type ZoneTrackSize } from './ZoneTrack'
 
 const { green, yellow, orange, red } = WORKOUT_TOKENS.scale
 
 /** Canonical fatigue band colours (fresh → stop) — the even effort-scale hue walk. */
 const DEFAULT_ZONE_COLORS: [string, string, string, string] = [green, yellow, orange, red]
-/** Zone boundaries in velocity-loss %, matching the VL10/VL20/VL30 coaching cues. */
-const DEFAULT_THRESHOLDS: [number, number, number] = [10, 20, 30]
 /** Scale labels at [min, ...thresholds, max]. */
 const DEFAULT_LABELS = ['fresh', 'VL10', 'VL20', 'VL30', 'stop']
 const DEFAULT_MAX = 40
@@ -19,7 +18,7 @@ export interface FatigueMeterProps extends ViewProps {
   /** Upper bound of the fatigue scale — the "stop" end, in loss %. Default 40. */
   max?: number
   /** Zone boundary thresholds (loss %): green→gold, gold→orange, orange→red. Default [10,20,30]. */
-  thresholds?: [number, number, number]
+  thresholds?: VelocityLossThresholds
   /** Zone band colours low→high (fresh→stop). Default the canonical effort scale. */
   zoneColors?: [string, string, string, string]
   /** Tick labels at [min, ...thresholds, max]. Default ['fresh','VL10','VL20','VL30','stop']. */
@@ -48,7 +47,7 @@ export interface FatigueMeterProps extends ViewProps {
 export function FatigueMeter({
   value,
   max = DEFAULT_MAX,
-  thresholds = DEFAULT_THRESHOLDS,
+  thresholds = VL_LOSS_THRESHOLDS,
   zoneColors = DEFAULT_ZONE_COLORS,
   labels = DEFAULT_LABELS,
   size = 'default',

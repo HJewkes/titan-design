@@ -16,7 +16,7 @@ import {
   REP_SET,
   REP_SET_LAGGING,
   type StripView,
-} from './velocity-story-kit'
+} from '../../../lab/velocity-story-kit/velocity-story-kit'
 import { Surface } from '../../ui/surface'
 
 /**
@@ -48,7 +48,7 @@ const meta: Meta<typeof VelocityStrip> = {
       description: { component: 'Composes **SetBarChart** · **ChartSideRail** · **SessionRail**.' },
     },
   },
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   argTypes: {
     variant: {
       control: 'select',

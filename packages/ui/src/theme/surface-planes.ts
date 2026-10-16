@@ -10,8 +10,7 @@
  * the frame that level was an imperceptible duplicate.
  */
 import { getSemanticColors, type ThemeMode } from './tokens/semantic'
-
-type ColorToken = keyof ReturnType<typeof getSemanticColors>
+import type { ColorToken } from './resolve-color'
 
 export type SurfaceLevel = 'frame' | 'background' | 'base' | 'elevated' | 'raised' | 'overlay'
 

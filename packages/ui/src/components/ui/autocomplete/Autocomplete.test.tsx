@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
 import { render, renderHook, screen, fireEvent, act } from '@testing-library/react'
 import { axe } from 'jest-axe'
+import { capturedByNode } from '../../../test/classname-capture'
 import { Autocomplete } from './Autocomplete'
 import { useAutocompleteState } from './useAutocompleteState'
 import { defaultFilterFn } from './autocompleteFilter'
@@ -45,6 +46,26 @@ describe('Autocomplete', () => {
   it('renders helper text', () => {
     render(<Autocomplete options={defaultOptions} helperText="Pick your favorite" />)
     expect(screen.getByText('Pick your favorite')).toBeInTheDocument()
+  })
+
+  it('paints helper, empty and description text text-secondary, since each carries content', () => {
+    const classesOf = (text: string) =>
+      (capturedByNode.get(screen.getByText(text)) ?? '').split(/\s+/)
+    render(<Autocomplete options={optionsWithDescriptions} helperText="Pick a person" />)
+    const input = screen.getByPlaceholderText('Search...')
+
+    typeInInput(input, 'John')
+    const description = classesOf('john@example.com')
+    typeInInput(input, 'Zzzz')
+
+    for (const classes of [
+      classesOf('Pick a person'),
+      description,
+      classesOf('No options found'),
+    ]) {
+      expect(classes).toContain('text-text-secondary')
+      expect(classes).not.toContain('text-text-tertiary')
+    }
   })
 
   it('renders error message instead of helper text', () => {
@@ -106,6 +127,21 @@ describe('Autocomplete', () => {
   it('shows clear button when value is selected', () => {
     render(<Autocomplete options={defaultOptions} value="1" isClearable />)
     expect(screen.getByLabelText('Clear selection')).toBeInTheDocument()
+  })
+
+  it('shows the clear button and leaks no bare 0 when the selected value is 0', () => {
+    render(
+      <Autocomplete
+        options={[
+          { value: '0', label: 'Zero' },
+          { value: '1', label: 'One' },
+        ]}
+        value={0 as unknown as string}
+        isClearable
+      />
+    )
+    expect(screen.getByLabelText('Clear selection')).toBeInTheDocument()
+    expect(screen.queryByText('0')).not.toBeInTheDocument()
   })
 
   it('calls onChange with null when clear is pressed', () => {
@@ -324,5 +360,16 @@ describe('Autocomplete', () => {
       render(<Autocomplete options={defaultOptions} value="1" isClearable />)
       expect(screen.getByLabelText('Clear selection')).toBeInTheDocument()
     })
+  })
+})
+
+// TD-483: brand orange as the selected option label missed 4.5:1 on the light overlay planes.
+describe('Autocomplete selected option', () => {
+  it('paints the selected label in the brand text role, not the brand fill', () => {
+    render(<Autocomplete options={defaultOptions} value="2" />)
+    typeInInput(screen.getByRole('textbox'), 'Ban')
+    const classes = (capturedByNode.get(screen.getByText('Banana')) ?? '').split(/\s+/)
+    expect(classes).toContain('text-text-brand')
+    expect(classes).not.toContain('text-brand-primary')
   })
 })

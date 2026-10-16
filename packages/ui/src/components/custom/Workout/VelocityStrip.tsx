@@ -102,12 +102,6 @@ export interface VelocityStripProps extends ViewProps {
    */
   scaleMax?: number
   /**
-   * `hero` only (internal): suppress this strip's own 2px baseline border. The diverging dual sets
-   * it on BOTH composed wings and draws ONE shared centre axis where they meet, so the axis is a
-   * single crisp line rather than two abutting baselines reading as a double-thick rule.
-   */
-  hideBaseline?: boolean
-  /**
    * `hero` only (internal): the EXACT rendered column structure, overriding this strip's own
    * slot-building. The diverging dual builds ONE index-locked structure shared by both wings (same
    * rep indices, same WIDE-gap positions, same column count; a column a side didn't log renders
@@ -183,7 +177,6 @@ export function VelocityStrip({
   showLossBands,
   orientation = 'up',
   scaleMax,
-  hideBaseline,
   columnSlots,
   label,
   liveRepIndex,

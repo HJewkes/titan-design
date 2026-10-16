@@ -1,6 +1,6 @@
 /// <reference types="vite/client" />
 import type { ComponentType } from 'react'
-import { composeStories } from '@storybook/react'
+import { composeStories } from '@storybook/react-vite'
 
 type StoryModule = Parameters<typeof composeStories>[0]
 
@@ -28,6 +28,11 @@ export function storyTimeout(id: string): number | undefined {
 
 export function storyModuleCount(): number {
   return Object.keys(storyModules).length
+}
+
+/** Story files under `src/components/`, relative to it, for checking that a split covers them all. */
+export function storyFiles(): string[] {
+  return Object.keys(storyModules).map(toFile)
 }
 
 /** Stories under `src/components/` whose file passes `include`, composed without project annotations. */

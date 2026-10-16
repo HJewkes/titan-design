@@ -38,6 +38,7 @@ import {
   GLOW_CONFIG,
   type ElevationLevel,
   type GlowIntensity,
+  glowShadow,
 } from './elevation-planes'
 import type { ThemeMode } from './tokens/semantic'
 
@@ -63,6 +64,7 @@ export function getElevationSurface(level: ElevationLevel, mode: ThemeMode = 'da
  * Inner-shadow recess for a pressed (sunken) surface: the `insetWell` material's
  * cut, which the wall calibrated in VW-99. Web only; on native the recess reads
  * from the darker fill alone, which is why the fill is never optional.
+ * `_mode` is unused: the cut depends only on `fillColor`; it is kept for signature parity.
  */
 export function getPressedRecessShadow(fillColor: string, _mode: ThemeMode = 'dark'): ViewStyle {
   const { boxShadow } = insetWell(fillColor) as unknown as { boxShadow: string }
@@ -101,7 +103,7 @@ export function getGlowShadow(color: string, intensity: GlowIntensity = 'medium'
 
   return Platform.select({
     web: {
-      boxShadow: `0 0 ${config.blur}px ${config.spread}px rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${config.opacity})`,
+      boxShadow: glowShadow(`${rgb.r}, ${rgb.g}, ${rgb.b}`, intensity),
     } as unknown as ViewStyle,
     default: {
       shadowColor: color,

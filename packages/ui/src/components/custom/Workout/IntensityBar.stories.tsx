@@ -5,7 +5,7 @@ import { IntensityBar } from './IntensityBar'
 const meta: Meta<typeof IntensityBar> = {
   title: 'Custom/Workout/DataViz/IntensityBar',
   component: IntensityBar,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   argTypes: {
     level: {
       control: { type: 'range', min: 0, max: 1, step: 0.05 },

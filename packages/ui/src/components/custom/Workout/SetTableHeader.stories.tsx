@@ -12,7 +12,7 @@ import { Surface } from '../../ui/surface'
 const meta: Meta<typeof SetTableHeader> = {
   title: 'Custom/Workout/SetTableHeader',
   component: SetTableHeader,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   parameters: {
     docs: {
       description: {

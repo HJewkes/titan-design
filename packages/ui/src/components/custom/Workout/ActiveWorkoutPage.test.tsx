@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { resolveAll, spacingClassesOf } from '../../../test/spacing-resolver'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
@@ -177,6 +177,44 @@ describe('ActiveWorkoutPage', () => {
 
     fireEvent.click(screen.getByTestId('rest-timer-skip'))
     expect(screen.getByTestId('input-bar')).toBeInTheDocument()
+  })
+})
+
+describe('ActiveWorkoutPage callbacks', () => {
+  it('reports a recorded set with the active exercise, set number and typed values', () => {
+    const onRecord = vi.fn()
+    render(<ActiveWorkoutPage {...baseProps} onRecord={onRecord} />)
+
+    fireEvent.change(screen.getByTestId('input-bar-reps'), { target: { value: '7' } })
+    fireEvent.change(screen.getByTestId('input-bar-weight'), { target: { value: '200' } })
+    fireEvent.click(screen.getByTestId('input-bar-record'))
+
+    expect(onRecord).toHaveBeenCalledTimes(1)
+    expect(onRecord).toHaveBeenCalledWith({
+      exerciseId: 'bench',
+      setNumber: 3,
+      reps: '7',
+      weight: '200',
+    })
+  })
+
+  it('reports a rest skip and brings the input bar back', () => {
+    const onSkip = vi.fn()
+    render(<ActiveWorkoutPage {...baseProps} initialResting onSkip={onSkip} />)
+
+    fireEvent.click(screen.getByTestId('rest-timer-skip'))
+
+    expect(onSkip).toHaveBeenCalledTimes(1)
+    expect(screen.getByTestId('input-bar')).toBeInTheDocument()
+  })
+
+  it('reports an add-time press', () => {
+    const onAddTime = vi.fn()
+    render(<ActiveWorkoutPage {...baseProps} initialResting onAddTime={onAddTime} />)
+
+    fireEvent.click(screen.getByTestId('rest-timer-add-time'))
+
+    expect(onAddTime).toHaveBeenCalledTimes(1)
   })
 })
 

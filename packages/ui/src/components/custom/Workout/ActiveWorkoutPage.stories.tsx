@@ -105,7 +105,7 @@ const meta: Meta<typeof ActiveWorkoutPage> = {
       },
     },
   },
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   args: {
     title: 'Push Day A',
     subtitle: 'Hypertrophy · Week 6 of 8',

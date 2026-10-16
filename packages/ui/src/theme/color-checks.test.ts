@@ -1,9 +1,11 @@
 import { describe, it, expect } from 'vitest'
 import {
   CVD_MATRICES,
+  compositeOver,
   contrast,
   cvdDelta,
   deltaE,
+  grayOfValue,
   minAdjacent,
   minPairwise,
   relativeLuminance,
@@ -28,6 +30,24 @@ describe('contrast', () => {
 
   it('takes the linear branch of the gamma curve for very dark channels', () => {
     expect(relativeLuminance('#0A0A0A')).toBeCloseTo(10 / 255 / 12.92, 6)
+  })
+})
+
+describe('compositeOver', () => {
+  it('returns an opaque hex colour unchanged', () => {
+    expect(compositeOver('#336699', '#000000')).toBe('#336699')
+  })
+
+  it('blends a translucent colour halfway at alpha 0.5', () => {
+    expect(compositeOver('rgba(255, 255, 255, 0.5)', '#000000')).toBe('#808080')
+  })
+
+  it('treats rgb() without alpha as opaque', () => {
+    expect(compositeOver('rgb(0, 0, 0)', '#FFFFFF')).toBe('#000000')
+  })
+
+  it('refuses a colour it cannot parse rather than measuring black', () => {
+    expect(() => compositeOver('var(--color-x)', '#FFFFFF')).toThrow(/expected/)
   })
 })
 
@@ -85,6 +105,33 @@ describe('cvdDelta', () => {
 
   it('is the worse of deutan and protan, never above plain deltaE for red/green', () => {
     expect(cvdDelta('#FF0000', '#00FF00')).toBeLessThan(deltaE('#FF0000', '#00FF00'))
+  })
+
+  it('measures only the dichromacies it is given', () => {
+    const tritan = cvdDelta('#FF0000', '#00FF00', ['tritan'])
+    expect(tritan).toBeGreaterThan(cvdDelta('#FF0000', '#00FF00'))
+    expect(cvdDelta('#FF0000', '#00FF00', ['deutan', 'protan', 'tritan'])).toBeLessThan(tritan)
+  })
+
+  it('changes only colours whose simulation leaves the gamut when clamping negatives', () => {
+    const clamp = { clampNegative: true }
+    expect(cvdDelta('#767676', '#333333', undefined, clamp)).toBeCloseTo(
+      cvdDelta('#767676', '#333333'),
+      10
+    )
+    expect(cvdDelta('#FF7900', '#2ED573', undefined, clamp)).toBeCloseTo(8.15, 2)
+    expect(cvdDelta('#FF7900', '#2ED573')).toBeCloseTo(8.34, 2)
+  })
+})
+
+describe('grayOfValue', () => {
+  it('leaves a grey as it is', () => {
+    expect(grayOfValue('#767676')).toBe('#767676')
+  })
+
+  it('gives a colour the grey of the same luminance', () => {
+    expect(grayOfValue('#2196F3')).toBe('#929292')
+    expect(relativeLuminance(grayOfValue('#2196F3'))).toBeCloseTo(relativeLuminance('#2196F3'), 2)
   })
 })
 

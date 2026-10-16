@@ -1,4 +1,6 @@
+import { scaleLinear } from 'd3-scale'
 import { formatTrimmedDecimal } from '../../../../utils/number-format'
+import { cappedTicks, linearDomain, type Domain } from '../kit/scaleMath'
 
 export interface ScatterDatum {
   /** Stable identity — returned by onPress and used as the React key. */
@@ -57,10 +59,7 @@ export const PLOT_TOP = 12
 export const PLOT_BOTTOM = 34
 export const TICK_COUNT = 5
 
-export interface Domain {
-  min: number
-  max: number
-}
+export type { Domain }
 
 export interface ScatterPoint {
   datum: ScatterDatum
@@ -80,18 +79,23 @@ export interface ScatterLayout {
   points: ScatterPoint[]
 }
 
-/** Derive a padded [min, max] from values, honoring explicit overrides. */
-export function domainOf(values: number[], min?: number, max?: number): Domain {
-  const lo = min ?? (values.length ? Math.min(...values) : 0)
-  const hi = max ?? (values.length ? Math.max(...values) : 1)
-  if (hi > lo) return { min: lo, max: hi }
-  const pad = Math.abs(hi) * 0.1 || 0.5
-  return { min: lo - pad, max: hi + pad }
+const isFiniteBound = (bound: number | undefined): bound is number => Number.isFinite(bound)
+
+/**
+ * The kit's padded domain over the finite values across `extent` px, with each finite override
+ * replacing its bound. Overrides join the derived domain so a lone override still leaves min < max.
+ */
+export function domainOf(values: number[], extent: number, min?: number, max?: number): Domain {
+  const overrides = [min, max].filter(isFiniteBound)
+  const derived = linearDomain({ values, referenceValues: overrides, extent })
+  const lo = isFiniteBound(min) ? min : derived.min
+  const hi = isFiniteBound(max) ? max : derived.max
+  return hi > lo ? { min: lo, max: hi } : derived
 }
 
-/** Evenly spaced tick values across a domain. */
+/** Round tick values inside a domain, at most one more than `count`. */
 export function ticksOf(d: Domain, count: number): number[] {
-  return Array.from({ length: count }, (_, i) => d.min + ((d.max - d.min) * i) / (count - 1))
+  return cappedTicks(scaleLinear().domain([d.min, d.max]), count)
 }
 
 /** Adaptive tick precision: sub-1 domains need 2dp to stay legible, else 1dp. */
@@ -111,11 +115,13 @@ export function scatterLayout(
   const innerH = Math.max(1, height - PLOT_TOP - PLOT_BOTTOM)
   const xd = domainOf(
     data.map((d) => d.x),
+    innerW,
     axis.xMin,
     axis.xMax
   )
   const yd = domainOf(
     data.map((d) => d.y),
+    innerH,
     axis.yMin,
     axis.yMax
   )

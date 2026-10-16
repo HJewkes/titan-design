@@ -1,0 +1,79 @@
+name: React next
+
+# Advisory leg (TD-314): packages/ui unit tests against React 19 and react-native-web 0.21, the
+# versions most consumers run. Its own workflow so it is never in ci.yml's `check.needs` and never a
+# required check. The test step is continue-on-error so the check concludes success (Shepherd treats any
+# red check as ci-failed); the result is in the step summary, and a warning annotation fires whenever the unit step fails (its outcome, not
+# the JSON counts, so type-check and load errors are never silent).
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: react-next-${{ github.event_name == 'pull_request' && github.ref || github.sha }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  react-19-rnw-021:
+    name: unit tests (React 19, react-native-web 0.21)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      # Overrides the pinned versions in this job's checkout only; the lockfile change is never committed.
+      - name: Override React and react-native-web
+        run: >
+          pnpm --filter @titan-design/react-ui add -D
+          react@19 react-dom@19 @types/react@19 @types/react-dom@19 react-native-web@0.21
+
+      - name: Show resolved versions
+        run: pnpm --filter @titan-design/react-ui list react react-dom react-native-web
+
+      - name: Unit tests
+        id: unit
+        continue-on-error: true
+        run: >
+          pnpm --filter @titan-design/react-ui exec vitest run
+          --project threads --project local-time --project types
+          --reporter=default --reporter=json --outputFile.json="$RUNNER_TEMP/vitest.json"
+
+      - name: Publish result
+        if: always()
+        env:
+          UNIT_OUTCOME: ${{ steps.unit.outcome }}
+        run: |
+          node --input-type=module -e '
+            import { existsSync, readFileSync, appendFileSync } from "node:fs";
+            const failed = process.env.UNIT_OUTCOME === "failure";
+            const path = process.env.RUNNER_TEMP + "/vitest.json";
+            const r = existsSync(path) ? JSON.parse(readFileSync(path, "utf8")) : null;
+            const failedFiles = r ? r.testResults.filter((f) => f.status === "failed").length : 0;
+            const rows = r
+              ? [
+                  ["Tests passed", r.numPassedTests],
+                  ["Tests failed", r.numFailedTests],
+                  ["Test files", r.testResults.length],
+                  ["Test files failed", failedFiles],
+                ]
+              : [["Report", "none written"]];
+            rows.push(["Unit step outcome", process.env.UNIT_OUTCOME]);
+            const table = "| Metric | Count |\n| --- | --- |\n" + rows.map(([k, v]) => `| ${k} | ${v} |`).join("\n");
+            appendFileSync(process.env.GITHUB_STEP_SUMMARY, `## React 19 + react-native-web 0.21 (advisory)\n\n${table}\n`);
+            if (failed) {
+              const counts = r ? `${r.numFailedTests} tests failed, ${failedFiles} test files failed` : "no report written";
+              console.log(`::warning::React 19 leg: unit step failed (${counts}; type-check errors and load errors count too) (advisory)`);
+            }
+          '

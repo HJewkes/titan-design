@@ -22,6 +22,7 @@ export {
   type ActiveWorkoutExercise,
   type ActiveWorkoutSuperset,
   type ActiveWorkoutInput,
+  type ActiveWorkoutRecordedSet,
   type ActiveWorkoutRest,
   type ActiveExerciseStatus,
   type WorkoutProgress,

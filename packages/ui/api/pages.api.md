@@ -43,10 +43,21 @@ export interface ActiveWorkoutPageProps extends ViewProps {
     exercises: ActiveWorkoutExercise[];
     initialResting?: boolean;
     input?: ActiveWorkoutInput;
+    onAddTime?: () => void;
+    onRecord?: (set: ActiveWorkoutRecordedSet) => void;
+    onSkip?: () => void;
     rest?: ActiveWorkoutRest;
     subtitle?: string;
     supersets?: ActiveWorkoutSuperset[];
     title?: string;
+}
+
+// @public
+export interface ActiveWorkoutRecordedSet {
+    exerciseId: string;
+    reps: string;
+    setNumber: number;
+    weight: string;
 }
 
 // @public
@@ -266,7 +277,7 @@ export interface ProgramSelection {
 export function summarizeVbt(sets: ExerciseVbtSet[]): VbtSummary;
 
 // @public
-export function toActiveCardProps(exercise: ActiveWorkoutExercise, focused: boolean, onToggle: () => void, supersetPosition?: ExerciseCardProps['supersetPosition'], supersetColor?: string): ExerciseCardProps;
+export function toActiveCardProps(exercise: ActiveWorkoutExercise, focused: boolean, onToggle: () => void, supersetPosition?: ExerciseCardProps['supersetPosition']): ExerciseCardProps;
 
 // @public
 export function toExerciseCardProps(entry: ExerciseDetailEntry, expanded: boolean, onToggle: () => void): ExerciseCardProps;

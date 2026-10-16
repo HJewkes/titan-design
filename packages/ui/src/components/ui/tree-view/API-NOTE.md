@@ -54,7 +54,7 @@ that now holds.
   Storybook play functions. The jsdom APG tests (every key below moves `document.activeElement` and
   holds one `tabindex="0"`) satisfy the task's done-when on their own. The real-browser check also
   runs: an interaction story tagged `play`, in the `storybook` Vitest project that CI's
-  `storybook-play` job runs.
+  `check` job runs.
 - **A6. `height` is optional.** Status: decided (design-coord, 2026-10-03, from a consumer asking for
   a 15-row tree in a detail card). Without `height`, the tree renders every visible row at its
   natural height with no window and no scroll container, and the page scrolls. A large tree must

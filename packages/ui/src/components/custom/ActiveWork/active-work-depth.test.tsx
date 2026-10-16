@@ -8,7 +8,7 @@
 // ramp so a re-space moves them rather than breaking them.
 import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
-import { composeStories } from '@storybook/react'
+import { composeStories } from '@storybook/react-vite'
 import { greyRamp } from '../../../theme/tokens/primitives'
 import * as PortfolioStories from './PortfolioOverview.stories'
 import * as TaskTableStories from './TaskTable.stories'
@@ -93,10 +93,11 @@ describe('F1 · FileHistoryExplorer depth', () => {
     expect(well.style.boxShadow).not.toContain('inset 0 1px 0 rgba(255,255,255')
   })
 
-  it('keeps co-change chips tone-only, so only the panes lift', () => {
+  it('keeps co-change pairs as flat Pills, so only the panes lift', () => {
     render(<Default />)
     const chip = screen.getAllByTestId('co-change-chip')[0]
-    expect(chip).toHaveStyle({ backgroundColor: CARD })
+    // A Pill paints its alpha fill from a class, never a plane colour or a lift.
+    expect(chip.style.backgroundColor).toBe('')
     expect(chip.style.boxShadow).toBe('')
   })
 })

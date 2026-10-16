@@ -16,7 +16,7 @@ import {
   FATIGUE_SET_LAGGING,
   IN_PROGRESS_SET,
   IN_PROGRESS_LAGGING,
-} from './velocity-story-kit'
+} from '../../../lab/velocity-story-kit/velocity-story-kit'
 
 /**
  * `expanded` — the velocity-HEIGHT bar chart. Bars are scaled to their value,
@@ -38,7 +38,7 @@ const meta: Meta<typeof VelocityStrip> = {
   parameters: {
     docs: { description: { component: 'Composes **SetBarChart** · **ChartSideRail**.' } },
   },
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
 }
 export default meta
 type Story = StoryObj<typeof VelocityStrip>

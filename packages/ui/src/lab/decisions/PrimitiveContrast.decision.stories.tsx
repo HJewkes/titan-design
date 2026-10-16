@@ -59,6 +59,7 @@ const DOT_COLOR: Record<Tone, IndicatorColor> = {
 interface Sample {
   tone: Tone
   isProposed: boolean
+  set: TokenSet
 }
 
 interface MatrixRow {
@@ -114,7 +115,7 @@ const ROWS: MatrixRow[] = [
       plane,
       floor: 4.5,
     }),
-    render: ({ isProposed }) => <SelectedChip isProposed={isProposed} />,
+    render: ({ isProposed, set }) => <SelectedChip set={isProposed ? set : 'main'} />,
   },
   {
     label: 'Button solid (label frozen to dark map)',
@@ -207,11 +208,11 @@ function CellHalf({
     <Half set={set} mode={mode}>
       <View className={`min-h-[64px] flex-1 justify-between gap-1 p-1.5 ${plane.className}`}>
         <View className="items-start">
-          {row.render({ tone, isProposed: simulates(set, mode) })}
+          {row.render({ tone, isProposed: simulates(set, mode), set })}
         </View>
         <Text className="font-mono text-[10px] text-text-secondary">
           {formatMeasurement(pair, measure(pair, set, mode))}
-          {simulates(set, mode) && isSimulated(pair) ? ' · simulated' : ''}
+          {simulates(set, mode) && isSimulated(pair, set) ? ' · simulated' : ''}
         </Text>
       </View>
     </Half>

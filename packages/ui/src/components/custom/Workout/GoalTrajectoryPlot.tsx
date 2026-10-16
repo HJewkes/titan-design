@@ -77,7 +77,7 @@ const FONT_FAMILY = 'Inter, sans-serif'
 /** How much of the deload magenta the column carries over the plane: the owner's pick, round 7. */
 export const DELOAD_WASH = 0.12
 /** How much of the rule colour lights the current week's column, on the full and compact charts alike. */
-export const CURRENT_WEEK_TINT = 0.2
+export const CURRENT_WEEK_TINT = 0.12
 const LABEL_GAP = 8
 export const PLANE_RADIUS = 6
 export const DOT_RADIUS = 4
@@ -143,7 +143,6 @@ export interface PlotStyle {
   baseline: PlotBaseline
   bandFade: BandFade
   bandCurve: BandCurve
-  referenceLabelSide: ReferenceLabelSide
 }
 
 export interface LayerProps {
@@ -521,7 +520,7 @@ function NextTargetMark({ geometry, palette, stroke }: LayerProps & { stroke: nu
   )
 }
 
-/** The hollow current-week point's accessible words, also said in the chart's summary. */
+/** The hollow current-week point's words, said in the chart's summary: the plot is aria-hidden. */
 export const CURRENT_WEEK_NO_READING = 'Current week, no reading yet'
 
 /**
@@ -534,7 +533,6 @@ function CurrentWeekMark({ geometry, palette }: LayerProps) {
   return (
     <circle
       data-testid="goal-trajectory-chart-current-week-point"
-      aria-label={CURRENT_WEEK_NO_READING}
       cx={point.x}
       cy={point.y}
       r={DOT_RADIUS}

@@ -22,3 +22,16 @@ describe('tailwind.config.js matches the primitives', () => {
     expect(extend.zIndex).toEqual(primitiveZIndex)
   })
 })
+
+describe('border radius scale', () => {
+  const px = (value: string) => {
+    expect(value).toMatch(/^\d+px$/)
+    return Number.parseInt(value, 10)
+  }
+
+  // TD-279: 2xl was 1rem, which equals xl on web and drops below it on native.
+  it('gives 2xl a px value greater than xl', () => {
+    expect(px(primitiveBorderRadius['2xl'])).toBeGreaterThan(px(primitiveBorderRadius.xl))
+    expect(primitiveBorderRadius['2xl']).toBe('24px')
+  })
+})

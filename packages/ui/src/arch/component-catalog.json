@@ -58,10 +58,10 @@
         "DataRow",
         "DateTime",
         "Eyebrow",
+        "FileActivityGrowthWell",
         "FileActivityRow",
         "FilePathLabel",
         "Pill",
-        "SparkBars",
         "Tile",
         "Typography"
       ],
@@ -253,52 +253,6 @@
     },
     {
       "composes": [
-        "Typography"
-      ],
-      "family": "custom/ActiveWork",
-      "file": "packages/ui/src/components/custom/ActiveWork/FilePathLabel.tsx",
-      "name": "FilePathLabel",
-      "props": [
-        {
-          "default": "false",
-          "description": "Render only the basename, dropping the directory prefix.",
-          "name": "baseOnly",
-          "required": false,
-          "type": "boolean"
-        },
-        {
-          "default": null,
-          "description": "",
-          "name": "className",
-          "required": false,
-          "type": "string"
-        },
-        {
-          "default": null,
-          "description": "A repo-relative path, e.g. `src/commands/open.ts`.",
-          "name": "path",
-          "required": true,
-          "type": "string"
-        },
-        {
-          "default": "md",
-          "description": "`md` for standalone rows, `sm` for dense contexts like chips.",
-          "name": "size",
-          "required": false,
-          "type": "FilePathLabelSize"
-        }
-      ],
-      "purpose": "FilePathLabel — a file path with the directory dimmed and the basename bright.",
-      "sources": {
-        "props": "packages/ui/src/components/custom/ActiveWork/FilePathLabel.tsx",
-        "status": null
-      },
-      "status": "review",
-      "storyIds": [],
-      "tier": "molecule"
-    },
-    {
-      "composes": [
         "Eyebrow",
         "MarkdownProse",
         "Typography"
@@ -359,6 +313,27 @@
           "name": "className",
           "required": false,
           "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Makes the whole card one link to this URL.",
+          "name": "href",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Consumer vocabulary under the top task: counts, newest activity, a badge.",
+          "name": "meta",
+          "required": false,
+          "type": "ReactNode"
+        },
+        {
+          "default": null,
+          "description": "Makes the whole card one link.",
+          "name": "onPress",
+          "required": false,
+          "type": "(() => void)"
         },
         {
           "default": null,
@@ -634,6 +609,156 @@
     },
     {
       "composes": [
+        "Link",
+        "Pill"
+      ],
+      "family": "custom/ActiveWork",
+      "file": "packages/ui/src/components/custom/ActiveWork/RefChip.tsx",
+      "name": "RefChip",
+      "props": [
+        {
+          "default": null,
+          "description": "Extra classes on the chip.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Where the ref navigates.",
+          "name": "href",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "The ref's stable identity, unique within a list (e.g. `task:TD-1`).",
+          "name": "id",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "What the ref points at.",
+          "name": "kind",
+          "required": true,
+          "type": "RefKind"
+        },
+        {
+          "default": null,
+          "description": "What the chip shows.",
+          "name": "label",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Called with the ref when the chip is pressed.",
+          "name": "onPressRef",
+          "required": false,
+          "type": "((ref: EntityRef) => void)"
+        },
+        {
+          "default": "sm",
+          "description": "Pill size; defaults to `sm`.",
+          "name": "size",
+          "required": false,
+          "type": "PillSizeLevel"
+        },
+        {
+          "default": null,
+          "description": "Shown after the label, e.g. a pull request's open or merged state.",
+          "name": "status",
+          "required": false,
+          "type": "RefStatus"
+        },
+        {
+          "default": "ref-chip",
+          "description": "Defaults to `ref-chip`.",
+          "name": "testID",
+          "required": false,
+          "type": "string"
+        }
+      ],
+      "purpose": "RefChip — a typed pointer at another entity: a kind glyph, the ref's label and an optional status.",
+      "sources": {
+        "props": "packages/ui/src/components/custom/ActiveWork/RefChip.tsx",
+        "status": "packages/ui/src/components/custom/ActiveWork/RefChip.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-activework-refchip--default"
+      ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [
+        "EmptyState",
+        "Eyebrow",
+        "RefChip",
+        "Skeleton",
+        "Typography"
+      ],
+      "family": "custom/ActiveWork",
+      "file": "packages/ui/src/components/custom/ActiveWork/RelatedList.tsx",
+      "name": "RelatedList",
+      "props": [
+        {
+          "default": null,
+          "description": "Extra classes on the root.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": "(\n  <EmptyState\n    title=\"Nothing related\"\n    description=\"No other item links here yet.\"\n    className=\"py-6\"\n  />\n)",
+          "description": "Shown when `refs` is empty.",
+          "name": "emptyState",
+          "required": false,
+          "type": "ReactNode"
+        },
+        {
+          "default": "false",
+          "description": "Draws placeholder chips in place of the groups.",
+          "name": "isLoading",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "Passed to every chip.",
+          "name": "onPressRef",
+          "required": false,
+          "type": "((ref: EntityRef) => void)"
+        },
+        {
+          "default": null,
+          "description": "Refs of any kinds, in any order.",
+          "name": "refs",
+          "required": true,
+          "type": "readonly EntityRef[]"
+        },
+        {
+          "default": "related-list",
+          "description": "Defaults to `related-list`; each chip is `ref-chip-<id>`.",
+          "name": "testID",
+          "required": false,
+          "type": "string"
+        }
+      ],
+      "purpose": "RelatedList — a detail page's related panel: refs grouped by kind, each group headed by its plural and a count, each ref a `RefChip`.",
+      "sources": {
+        "props": "packages/ui/src/components/custom/ActiveWork/RelatedList.tsx",
+        "status": "packages/ui/src/components/custom/ActiveWork/RelatedList.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-activework-relatedlist--default"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
         "Card",
         "Collapse",
         "DateTime",
@@ -795,6 +920,20 @@
       "props": [
         {
           "default": null,
+          "description": "Merged over the row's own classes through `cn()`, so a conflicting class wins.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Receives the row's host node, so a list can move focus to it.",
+          "name": "focusRef",
+          "required": false,
+          "type": "((node: unknown) => void)"
+        },
+        {
+          "default": null,
           "description": "Reference instant for the age label, injected so renders are deterministic.",
           "name": "now",
           "required": true,
@@ -820,6 +959,13 @@
           "name": "session",
           "required": true,
           "type": "SessionSummary"
+        },
+        {
+          "default": null,
+          "description": "The row's tab stop, when a list roves focus across its rows.",
+          "name": "tabIndex",
+          "required": false,
+          "type": "0 | -1"
         }
       ],
       "purpose": "SessionListItem — one session in the reader's list, led by its title, with a footer of age · duration · tasks touched · track.",
@@ -940,6 +1086,47 @@
     },
     {
       "composes": [
+        "Pill"
+      ],
+      "family": "custom/ActiveWork",
+      "file": "packages/ui/src/components/custom/ActiveWork/TaskStagePill.tsx",
+      "name": "TaskStagePill",
+      "props": [
+        {
+          "default": null,
+          "description": "",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": "sm",
+          "description": "",
+          "name": "size",
+          "required": false,
+          "type": "PillSizeLevel"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "stage",
+          "required": true,
+          "type": "TaskStage"
+        }
+      ],
+      "purpose": "The one renderer of a stage outside the board columns; label and tone come from the stage table.",
+      "sources": {
+        "props": "packages/ui/src/components/custom/ActiveWork/TaskStagePill.tsx",
+        "status": "packages/ui/src/components/custom/ActiveWork/TaskStagePill.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-activework-taskstagepill--default"
+      ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [
         "Eyebrow",
         "SeverityLabel",
         "Table",
@@ -1032,6 +1219,445 @@
         "custom-activework-tasktable--sorted-by-severity"
       ],
       "tier": "organism"
+    },
+    {
+      "composes": [
+        "AgentStateLabel",
+        "Avatar",
+        "Card",
+        "Pill",
+        "Progress",
+        "SparkBars",
+        "Typography"
+      ],
+      "family": "custom/Agents",
+      "file": "packages/ui/src/components/custom/Agents/AgentCard.tsx",
+      "name": "AgentCard",
+      "props": [
+        {
+          "default": null,
+          "description": "The session to show.",
+          "name": "agent",
+          "required": true,
+          "type": "AgentSummary"
+        },
+        {
+          "default": null,
+          "description": "Tailwind overrides on the card.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Host actions under the metrics.",
+          "name": "footer",
+          "required": false,
+          "type": "ReactNode"
+        },
+        {
+          "default": "false",
+          "description": "Marks the card with the accent stripe, for the agent the host has in focus.",
+          "name": "isHighlighted",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": "false",
+          "description": "Renders the card's skeleton in place of the content.",
+          "name": "isLoading",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "Shown in place of the metrics block when `agent.metrics` is null or absent.",
+          "name": "metricsEmpty",
+          "required": false,
+          "type": "ReactNode"
+        },
+        {
+          "default": null,
+          "description": "Reference instant for the recency label, injected so renders are deterministic.",
+          "name": "now",
+          "required": true,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Makes the agent name a link.",
+          "name": "onPress",
+          "required": false,
+          "type": "(() => void)"
+        },
+        {
+          "default": null,
+          "description": "Makes the task id pill a link.",
+          "name": "onPressTask",
+          "required": false,
+          "type": "((taskId: string) => void)"
+        },
+        {
+          "default": "agent-card",
+          "description": "Test id on the card root.",
+          "name": "testID",
+          "required": false,
+          "type": "string"
+        }
+      ],
+      "purpose": "One agent session: name, state, stated task, branch, recency, and the transcript's tokens, tool calls, errors, cost and activity.",
+      "sources": {
+        "props": "packages/ui/src/components/custom/Agents/AgentCard.tsx",
+        "status": "packages/ui/src/components/custom/Agents/AgentCard.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-agents-agentcard--default"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "AgentCardIdentity",
+        "AgentCardMetrics",
+        "Tooltip",
+        "TriggerSurface",
+        "Typography"
+      ],
+      "family": "custom/Agents",
+      "file": "packages/ui/src/components/custom/Agents/AgentHoverCard.tsx",
+      "name": "AgentHoverCard",
+      "props": [
+        {
+          "default": null,
+          "description": "The session to summarise.",
+          "name": "agent",
+          "required": true,
+          "type": "AgentSummary"
+        },
+        {
+          "default": null,
+          "description": "The trigger: a focusable agent name, avatar or row.",
+          "name": "children",
+          "required": true,
+          "type": "ReactNode"
+        },
+        {
+          "default": null,
+          "description": "Tailwind overrides on the content root.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": "100",
+          "description": "Delay before closing on hover out or blur (ms).",
+          "name": "closeDelay",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Initial visibility when uncontrolled.",
+          "name": "defaultIsOpen",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": "false",
+          "description": "Never opens, whatever `isOpen` says.",
+          "name": "isDisabled",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "Controlled visibility.",
+          "name": "isOpen",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "Reference instant for the recency label, injected so renders are deterministic.",
+          "name": "now",
+          "required": true,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Called with `true` on open and `false` on close.",
+          "name": "onOpenChange",
+          "required": false,
+          "type": "((isOpen: boolean) => void)"
+        },
+        {
+          "default": "300",
+          "description": "Delay before opening on hover or focus (ms).",
+          "name": "openDelay",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": "right",
+          "description": "Side of the trigger the card opens on.",
+          "name": "placement",
+          "required": false,
+          "type": "TooltipPlacement"
+        }
+      ],
+      "purpose": "An agent summary over a trigger, as a WAI-ARIA tooltip: hover or keyboard focus opens it after `openDelay`, hover out or blur close it after `closeDelay`, Escape closes it at once, and a long press opens it on touch.",
+      "sources": {
+        "props": "packages/ui/src/components/custom/Agents/AgentHoverCard.tsx",
+        "status": "packages/ui/src/components/custom/Agents/AgentHoverCard.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-agents-agenthovercard--default"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "AgentRosterRow",
+        "EmptyState",
+        "Skeleton",
+        "Typography"
+      ],
+      "family": "custom/Agents",
+      "file": "packages/ui/src/components/custom/Agents/AgentRoster.tsx",
+      "name": "AgentRoster",
+      "props": [
+        {
+          "default": null,
+          "description": "Every agent; duplicates by id collapse to the first, and the list sorts itself.",
+          "name": "agents",
+          "required": true,
+          "type": "AgentSummary[]"
+        },
+        {
+          "default": null,
+          "description": "Tailwind overrides on the root.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Initial selection when uncontrolled.",
+          "name": "defaultSelectedId",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Shown when `agents` is empty.",
+          "name": "emptyState",
+          "required": false,
+          "type": "ReactNode"
+        },
+        {
+          "default": null,
+          "description": "The details each row shows.",
+          "name": "fields",
+          "required": false,
+          "type": "AgentRosterField[]"
+        },
+        {
+          "default": "false",
+          "description": "Renders skeleton rows in place of the list.",
+          "name": "isLoading",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": "Agents",
+          "description": "Heading and accessible name of the list.",
+          "name": "label",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Reference instant for the recency labels, injected so renders are deterministic.",
+          "name": "now",
+          "required": true,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Called with the id of the row chosen by press, Enter or Space.",
+          "name": "onSelectedIdChange",
+          "required": false,
+          "type": "((id: string | undefined) => void)"
+        },
+        {
+          "default": null,
+          "description": "Controlled selection.",
+          "name": "selectedId",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": "agent-roster",
+          "description": "Test id on the root.",
+          "name": "testID",
+          "required": false,
+          "type": "string"
+        }
+      ],
+      "purpose": "The agents as a single-select listbox, live above past, each group sorted by state and then recency.",
+      "sources": {
+        "props": "packages/ui/src/components/custom/Agents/AgentRoster.tsx",
+        "status": "packages/ui/src/components/custom/Agents/AgentRoster.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-agents-agentroster--default"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "AgentStateLabel",
+        "Avatar",
+        "Typography"
+      ],
+      "family": "custom/Agents",
+      "file": "packages/ui/src/components/custom/Agents/AgentRosterRow.tsx",
+      "name": "AgentRosterRow",
+      "props": [
+        {
+          "default": null,
+          "description": "The session to show.",
+          "name": "agent",
+          "required": true,
+          "type": "AgentSummary"
+        },
+        {
+          "default": null,
+          "description": "Tailwind overrides on the row.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": "['task', 'idle', 'cost']",
+          "description": "The details under the name; printed in a fixed order whatever order is passed.",
+          "name": "fields",
+          "required": false,
+          "type": "AgentRosterField[]"
+        },
+        {
+          "default": null,
+          "description": "Receives the row's host node, so a list can move focus to it.",
+          "name": "focusRef",
+          "required": false,
+          "type": "((node: unknown) => void)"
+        },
+        {
+          "default": "false",
+          "description": "Renders the selected treatment (raised fill and leading accent bar).",
+          "name": "isSelected",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "Reference instant for the recency label, injected so renders are deterministic.",
+          "name": "now",
+          "required": true,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Makes the row a selectable option.",
+          "name": "onSelect",
+          "required": false,
+          "type": "(() => void)"
+        },
+        {
+          "default": null,
+          "description": "The row's tab stop, when a list roves focus across its rows.",
+          "name": "tabIndex",
+          "required": false,
+          "type": "0 | -1"
+        },
+        {
+          "default": "agent-roster-row",
+          "description": "Test id on the row root.",
+          "name": "testID",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Host content at the row's end.",
+          "name": "trailing",
+          "required": false,
+          "type": "ReactNode"
+        }
+      ],
+      "purpose": "One agent in a dense list: name, state and the chosen details.",
+      "sources": {
+        "props": "packages/ui/src/components/custom/Agents/AgentRosterRow.tsx",
+        "status": "packages/ui/src/components/custom/Agents/AgentRosterRow.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-agents-agentrosterrow--default"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "Indicator",
+        "Pill",
+        "Typography"
+      ],
+      "family": "custom/Agents",
+      "file": "packages/ui/src/components/custom/Agents/AgentStateLabel.tsx",
+      "name": "AgentStateLabel",
+      "props": [
+        {
+          "default": null,
+          "description": "Tailwind overrides on the row.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": "false",
+          "description": "The session holds pushes: a message sent to it queues in its inbox instead of interrupting.",
+          "name": "isDnd",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": "sm",
+          "description": "`sm` (caption) for cards and rows, `md` (body) for headers.",
+          "name": "size",
+          "required": false,
+          "type": "\"sm\" | \"md\""
+        },
+        {
+          "default": null,
+          "description": "The state to show.",
+          "name": "state",
+          "required": true,
+          "type": "AgentSummaryState"
+        }
+      ],
+      "purpose": "An agent's state as a dot and its word, never colour alone.",
+      "sources": {
+        "props": "packages/ui/src/components/custom/Agents/AgentStateLabel.tsx",
+        "status": "packages/ui/src/components/custom/Agents/AgentStateLabel.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-agents-agentstatelabel--default"
+      ],
+      "tier": "molecule"
     },
     {
       "composes": [
@@ -1269,10 +1895,24 @@
         },
         {
           "default": null,
+          "description": "Replaces any of the built-in strings; the rest keep their defaults.",
+          "name": "labels",
+          "required": false,
+          "type": "Partial<DateSeparatorLabels>"
+        },
+        {
+          "default": null,
           "description": "The reader's \"now\", for Today / Yesterday.",
           "name": "now",
           "required": false,
           "type": "string | number | Date"
+        },
+        {
+          "default": null,
+          "description": "Makes the separator a button that toggles message times; the keyboard and tap route to them.",
+          "name": "onPress",
+          "required": false,
+          "type": "(() => void)"
         },
         {
           "default": "true",
@@ -1285,6 +1925,13 @@
           "default": "false",
           "description": "Add the clock time, as Messages does when it opens a day or follows a long pause.",
           "name": "showTime",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": "false",
+          "description": "Whether message times are showing, which names the button's action and its state.",
+          "name": "timesShown",
           "required": false,
           "type": "boolean"
         }
@@ -1333,6 +1980,13 @@
           "name": "isOwn",
           "required": false,
           "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "Replaces any of the built-in strings; the rest keep their defaults.",
+          "name": "labels",
+          "required": false,
+          "type": "Partial<MessageBubbleLabels>"
         },
         {
           "default": "direct",
@@ -1441,6 +2095,13 @@
           "name": "header",
           "required": false,
           "type": "ReactNode"
+        },
+        {
+          "default": null,
+          "description": "Replaces any of the built-in strings; the rest keep their defaults.",
+          "name": "labels",
+          "required": false,
+          "type": "Partial<MessageListLabels>"
         },
         {
           "default": null,
@@ -1577,6 +2238,13 @@
         },
         {
           "default": null,
+          "description": "Replaces any of the built-in strings; the rest keep their defaults.",
+          "name": "labels",
+          "required": false,
+          "type": "Partial<TypingIndicatorLabels>"
+        },
+        {
+          "default": null,
           "description": "Who is composing.",
           "name": "participants",
           "required": true,
@@ -1616,6 +2284,13 @@
           "name": "count",
           "required": true,
           "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Replaces any of the built-in strings; the rest keep their defaults.",
+          "name": "labels",
+          "required": false,
+          "type": "Partial<UnreadBadgeLabels>"
         },
         {
           "default": "99",
@@ -1769,8 +2444,63 @@
     },
     {
       "composes": [
+        "Pill"
+      ],
+      "family": "custom/Code",
+      "file": "packages/ui/src/components/custom/Code/StatusMark.tsx",
+      "name": "StatusMark",
+      "props": [
+        {
+          "default": null,
+          "description": "Tailwind overrides, merged by the Pill.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Score change, after minus before.",
+          "name": "delta",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Raises worsened from warning to error.",
+          "name": "isOverCutoff",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "Which change the mark names.",
+          "name": "kind",
+          "required": true,
+          "type": "CodeChangeKind"
+        },
+        {
+          "default": "sm",
+          "description": "Pill size; default `sm`.",
+          "name": "size",
+          "required": false,
+          "type": "\"sm\" | \"md\" | \"xs\""
+        }
+      ],
+      "purpose": "The change vocabulary of the Code family: one Pill, named in words for assistive tech.",
+      "sources": {
+        "props": "packages/ui/src/components/custom/Code/StatusMark.tsx",
+        "status": "packages/ui/src/components/custom/Code/StatusMark.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-code-statusmark--default"
+      ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [
+        "DualGhostSparkParts",
         "GhostBand",
-        "GhostBloom",
         "GhostSpark"
       ],
       "family": "custom/Fatigue",
@@ -1859,7 +2589,9 @@
     },
     {
       "composes": [
+        "Pill",
         "StatusDot",
+        "StatusGlyph",
         "Tooltip"
       ],
       "family": "custom/Fatigue",
@@ -1879,6 +2611,13 @@
           "name": "spread",
           "required": false,
           "type": "boolean"
+        },
+        {
+          "default": "dots",
+          "description": "`dots` (default) are glowing status dots; `chips` are neutral pills led by a status glyph.",
+          "name": "variant",
+          "required": false,
+          "type": "\"dots\" | \"chips\""
         }
       ],
       "purpose": "",
@@ -1889,12 +2628,15 @@
       "status": "candidate",
       "storyIds": [
         "custom-fatigue-fatigue-lights--across-states",
+        "custom-fatigue-fatigue-lights--default",
         "custom-fatigue-fatigue-lights--spread"
       ],
       "tier": "organism"
     },
     {
-      "composes": [],
+      "composes": [
+        "GhostBandParts"
+      ],
       "family": "custom/Fatigue",
       "file": "packages/ui/src/components/custom/Fatigue/GhostBand.tsx",
       "name": "GhostBand",
@@ -1929,7 +2671,7 @@
         },
         {
           "default": "false",
-          "description": "Reveal the ECC / HOLD / CON labels inside the band.",
+          "description": "Reveal the ECC / CON labels inside the band; hold and idle runs stay unlabelled.",
           "name": "showLabels",
           "required": false,
           "type": "boolean"
@@ -1963,7 +2705,7 @@
       },
       "status": "review",
       "storyIds": [],
-      "tier": "atom"
+      "tier": "molecule"
     },
     {
       "composes": [],
@@ -2087,7 +2829,7 @@
         "custom-fatigue-ghost-spark--empty-before-first-rep",
         "custom-fatigue-ghost-spark--paused-rep-band"
       ],
-      "tier": "molecule"
+      "tier": "organism"
     },
     {
       "composes": [
@@ -2107,6 +2849,13 @@
           "name": "height",
           "required": false,
           "type": "number"
+        },
+        {
+          "default": "column",
+          "description": "How the sections are arranged — the panel passes its tier's.",
+          "name": "layout",
+          "required": false,
+          "type": "CardLayout"
         },
         {
           "default": null,
@@ -2202,8 +2951,8 @@
         "custom-fatigue-live-fatigue-panel--live-panel-v-2",
         "custom-fatigue-live-fatigue-panel--live-states",
         "custom-fatigue-live-fatigue-panel--on-light-surface",
-        "custom-fatigue-live-fatigue-panel--responsive-tiers",
-        "custom-fatigue-live-fatigue-panel--wall-width"
+        "custom-fatigue-live-fatigue-panel--wall-width",
+        "custom-fatigue-live-fatigue-panel--widths"
       ],
       "tier": "organism"
     },
@@ -2334,17 +3083,50 @@
       "tier": "organism"
     },
     {
-      "composes": [],
+      "composes": [
+        "Eyebrow",
+        "StatusGlyph",
+        "Tooltip",
+        "Typography"
+      ],
       "family": "custom/Fatigue",
       "file": "packages/ui/src/components/custom/Fatigue/VerdictHero.tsx",
       "name": "VerdictHero",
       "props": [
         {
           "default": null,
+          "description": "A label above the word naming what was read (\"HOW IT MOVED · WORST SET #2\").",
+          "name": "kicker",
+          "required": false,
+          "type": "ReactNode"
+        },
+        {
+          "default": null,
+          "description": "Lead with the RPE number.",
+          "name": "lead",
+          "required": false,
+          "type": "\"rpe\" | \"word\""
+        },
+        {
+          "default": null,
+          "description": "The set was not scored: `title` shows in place of the word, `reason` is the glyph's tip and spoken name.",
+          "name": "noVerdict",
+          "required": false,
+          "type": "{ title: string; reason: string; }"
+        },
+        {
+          "default": null,
           "description": "Exact (unrounded) RPE estimate; rounded to the conventional 0.5 for display.",
           "name": "rpe",
           "required": true,
           "type": "number | null"
+        },
+        {
+          "default": null,
+          "description": "`card` sets the word at h3; `wall` at h2 for reading across a room.",
+          "name": "scale",
+          "required": false,
+          "type": "\"wall\" | \"card\""
         },
         {
           "default": null,
@@ -2361,93 +3143,10 @@
       },
       "status": "candidate",
       "storyIds": [
-        "custom-fatigue-verdict-hero--across-states"
+        "custom-fatigue-verdict-hero--across-states",
+        "custom-fatigue-verdict-hero--default"
       ],
-      "tier": "atom"
-    },
-    {
-      "composes": [],
-      "family": "custom/Metric",
-      "file": "packages/ui/src/components/custom/Metric/Metric.tsx",
-      "name": "Metric",
-      "props": [
-        {
-          "default": null,
-          "description": "",
-          "name": "className",
-          "required": false,
-          "type": "string"
-        },
-        {
-          "default": null,
-          "description": "",
-          "name": "label",
-          "required": true,
-          "type": "string"
-        },
-        {
-          "default": null,
-          "description": "Merged onto the label text, e.g. to hold it at one size whatever the figure's `size`.",
-          "name": "labelClassName",
-          "required": false,
-          "type": "string"
-        },
-        {
-          "default": "md",
-          "description": "",
-          "name": "size",
-          "required": false,
-          "type": "\"sm\" | \"md\" | \"lg\""
-        },
-        {
-          "default": null,
-          "description": "",
-          "name": "trend",
-          "required": false,
-          "type": "MetricTrend"
-        },
-        {
-          "default": null,
-          "description": "",
-          "name": "unit",
-          "required": false,
-          "type": "string"
-        },
-        {
-          "default": null,
-          "description": "",
-          "name": "value",
-          "required": true,
-          "type": "string"
-        },
-        {
-          "default": null,
-          "description": "Merged onto the value text, e.g. `leading-none` to sit the figure tight under a header.",
-          "name": "valueClassName",
-          "required": false,
-          "type": "string"
-        }
-      ],
-      "purpose": "",
-      "sources": {
-        "props": "packages/ui/src/components/custom/Metric/Metric.tsx",
-        "status": "packages/ui/src/components/custom/Metric/Metric.stories.tsx"
-      },
-      "status": "candidate",
-      "storyIds": [
-        "components-molecules-metric--all-sizes",
-        "components-molecules-metric--default",
-        "components-molecules-metric--full-metric",
-        "components-molecules-metric--group",
-        "components-molecules-metric--group-small",
-        "components-molecules-metric--large",
-        "components-molecules-metric--small",
-        "components-molecules-metric--with-trend-down",
-        "components-molecules-metric--with-trend-neutral",
-        "components-molecules-metric--with-trend-up",
-        "components-molecules-metric--with-unit"
-      ],
-      "tier": "atom"
+      "tier": "organism"
     },
     {
       "composes": [
@@ -2500,11 +3199,166 @@
       },
       "status": "candidate",
       "storyIds": [
+        "custom-prose-markdownprose--code-blocks",
         "custom-prose-markdownprose--default",
         "custom-prose-markdownprose--no-linkers",
-        "custom-prose-markdownprose--pressable"
+        "custom-prose-markdownprose--on-every-plane",
+        "custom-prose-markdownprose--pressable",
+        "custom-prose-markdownprose--tables"
       ],
       "tier": "molecule"
+    },
+    {
+      "composes": [
+        "DateTime",
+        "Divider",
+        "Typography"
+      ],
+      "family": "custom/Session",
+      "file": "packages/ui/src/components/custom/Session/GapIndicator.tsx",
+      "name": "GapIndicator",
+      "props": [
+        {
+          "default": null,
+          "description": "Tailwind overrides on the row.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "The idle span.",
+          "name": "durationMs",
+          "required": true,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Shows the date in UTC rather than the runtime's zone.",
+          "name": "isUTC",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "When activity resumed.",
+          "name": "resumedAtMs",
+          "required": false,
+          "type": "number | null"
+        },
+        {
+          "default": "false",
+          "description": "Set on the first gap after a day change, so the reader sees the new day.",
+          "name": "showDate",
+          "required": false,
+          "type": "boolean"
+        }
+      ],
+      "purpose": "A hairline with the idle time in the middle: \"32m idle\".",
+      "sources": {
+        "props": "packages/ui/src/components/custom/Session/GapIndicator.tsx",
+        "status": "packages/ui/src/components/custom/Session/GapIndicator.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-session-gapindicator--default"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "Pill"
+      ],
+      "family": "custom/Session",
+      "file": "packages/ui/src/components/custom/Session/ToolBadge.tsx",
+      "name": "ToolBadge",
+      "props": [
+        {
+          "default": null,
+          "description": "Tailwind overrides on the pill.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "A ToolFamily, or any string from a newer read model (falls back to other_tool).",
+          "name": "family",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": "md",
+          "description": "`sm` for a dense row, `md` (default) beside a label.",
+          "name": "size",
+          "required": false,
+          "type": "\"sm\" | \"md\""
+        }
+      ],
+      "purpose": "A tool family as a one-character glyph in a neutral pill.",
+      "sources": {
+        "props": "packages/ui/src/components/custom/Session/ToolBadge.tsx",
+        "status": "packages/ui/src/components/custom/Session/ToolBadge.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-session-toolbadge--default"
+      ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [
+        "Collapse",
+        "DateTime",
+        "Indicator",
+        "TipTrigger",
+        "ToolBadge",
+        "Tooltip",
+        "Typography"
+      ],
+      "family": "custom/Session",
+      "file": "packages/ui/src/components/custom/Session/ToolCallRow.tsx",
+      "name": "ToolCallRow",
+      "props": [
+        {
+          "default": null,
+          "description": "The call to draw.",
+          "name": "call",
+          "required": true,
+          "type": "TimelineToolCall"
+        },
+        {
+          "default": null,
+          "description": "Tailwind overrides on the row.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Shows the time stamp in UTC rather than the runtime's zone.",
+          "name": "isUTC",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "Makes the row a button.",
+          "name": "onPress",
+          "required": false,
+          "type": "((call: TimelineToolCall) => void)"
+        }
+      ],
+      "purpose": "One tool call as a line: time, outcome dot (its word on hover and focus), family badge, tool name, what it acted on and the observed duration.",
+      "sources": {
+        "props": "packages/ui/src/components/custom/Session/ToolCallRow.tsx",
+        "status": "packages/ui/src/components/custom/Session/ToolCallRow.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-session-toolcallrow--default"
+      ],
+      "tier": "organism"
     },
     {
       "composes": [],
@@ -2686,6 +3540,27 @@
         },
         {
           "default": null,
+          "description": "Called when the user presses the rest timer's add-time button.",
+          "name": "onAddTime",
+          "required": false,
+          "type": "(() => void)"
+        },
+        {
+          "default": null,
+          "description": "Called with each recorded set, after the page enters rest if `rest` is set.",
+          "name": "onRecord",
+          "required": false,
+          "type": "((set: ActiveWorkoutRecordedSet) => void)"
+        },
+        {
+          "default": null,
+          "description": "Called when the user skips rest, after the input bar returns.",
+          "name": "onSkip",
+          "required": false,
+          "type": "(() => void)"
+        },
+        {
+          "default": null,
           "description": "Rest-timer state; when resting, the timer replaces the input bar.",
           "name": "rest",
           "required": false,
@@ -2718,7 +3593,7 @@
         "props": "packages/ui/src/components/custom/Workout/ActiveWorkoutPage.tsx",
         "status": "packages/ui/src/components/custom/Workout/ActiveWorkoutPage.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "pages-active-workout--all-collapsed",
         "pages-active-workout--default",
@@ -2773,7 +3648,7 @@
         "props": "packages/ui/src/components/custom/Workout/BaseBadge.tsx",
         "status": "packages/ui/src/components/custom/Workout/BaseBadge.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-basebadge--all-variants",
         "custom-workout-basebadge--plain",
@@ -2850,7 +3725,7 @@
         "props": "packages/ui/src/components/custom/Workout/BodyMap.tsx",
         "status": "packages/ui/src/components/custom/Workout/BodyMap.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-dataviz-bodymap--back",
         "custom-workout-dataviz-bodymap--detailed",
@@ -2952,6 +3827,13 @@
         },
         {
           "default": null,
+          "description": "Unit the `strength` masses arrive in.",
+          "name": "unit",
+          "required": false,
+          "type": "\"kg\" | \"lb\""
+        },
+        {
+          "default": null,
           "description": "Upcoming exercises targeting this muscle.",
           "name": "upcomingExercises",
           "required": false,
@@ -2991,7 +3873,7 @@
         "props": "packages/ui/src/components/custom/Workout/BodyMapDetailPanel.tsx",
         "status": "packages/ui/src/components/custom/Workout/BodyMapDetailPanel.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-dataviz-bodymapdetailpanel--default",
         "custom-workout-dataviz-bodymapdetailpanel--interactive",
@@ -3074,7 +3956,7 @@
         "props": "packages/ui/src/components/custom/Workout/BodyweightGoalCard.tsx",
         "status": "packages/ui/src/components/custom/Workout/BodyweightGoalCard.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-goals-bodyweightgoalcard--default",
         "custom-workout-goals-bodyweightgoalcard--gain",
@@ -3087,12 +3969,16 @@
         "custom-workout-goals-bodyweightgoalcard--rate-vetoed",
         "custom-workout-goals-bodyweightgoalcard--slow-loss",
         "custom-workout-goals-bodyweightgoalcard--slow-loss-one-line",
-        "custom-workout-goals-bodyweightgoalcard--tag-tip"
+        "custom-workout-goals-bodyweightgoalcard--tag-tip",
+        "custom-workout-goals-bodyweightgoalcard--widths"
       ],
       "tier": "organism"
     },
     {
-      "composes": [],
+      "composes": [
+        "CapacityBandOverlays",
+        "CapacityBandPlot"
+      ],
       "family": "custom/Workout",
       "file": "packages/ui/src/components/custom/Workout/CapacityBandChart.tsx",
       "name": "CapacityBandChart",
@@ -3152,7 +4038,7 @@
         "props": "packages/ui/src/components/custom/Workout/CapacityBandChart.tsx",
         "status": "packages/ui/src/components/custom/Workout/CapacityBandChart.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-dataviz-capacitybandchart--compact",
         "custom-workout-dataviz-capacitybandchart--default",
@@ -3161,6 +4047,57 @@
         "custom-workout-dataviz-capacitybandchart--sparse-data",
         "custom-workout-dataviz-capacitybandchart--without-projection"
       ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/CapacityBandPlot.tsx",
+      "name": "CapacityBandPlot",
+      "props": [
+        {
+          "default": null,
+          "description": "",
+          "name": "colors",
+          "required": true,
+          "type": "CapacityBandColors"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "height",
+          "required": true,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "layout",
+          "required": true,
+          "type": "{ columns: { x: number; top: number; height: number; }[]; topEdge: { left: number; top: number; length: number; angle: number; }[]; bottomEdge: { left: number; top: number; length: number; angle: number; }[]; trainingPixels: PixelPoint[]; restPixels: PixelPoint[]; labelStride: number; hasProjection: boolean; }"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "revealWidth",
+          "required": true,
+          "type": "AnimatedInterpolation<number>"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "width",
+          "required": true,
+          "type": "number"
+        }
+      ],
+      "purpose": "The band and projection, drawn left to right through an animated clip.",
+      "sources": {
+        "props": "packages/ui/src/components/custom/Workout/CapacityBandPlot.tsx",
+        "status": null
+      },
+      "status": "review",
+      "storyIds": [],
       "tier": "atom"
     },
     {
@@ -3196,7 +4133,7 @@
         "props": "packages/ui/src/components/custom/Workout/DeviationBar.tsx",
         "status": "packages/ui/src/components/custom/Workout/DeviationBar.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-dataviz-deviationbar--full-range",
         "custom-workout-dataviz-deviationbar--much-harder",
@@ -3210,12 +4147,118 @@
     },
     {
       "composes": [
+        "DualVelocityCharts",
+        "SetBarChart"
+      ],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/DualVelocityStrip.tsx",
+      "name": "DualVelocityStrip",
+      "props": [
+        {
+          "default": "loss",
+          "description": "Bar-fill coloring mode, matching {@link VelocityStrip }.",
+          "name": "barColor",
+          "required": false,
+          "type": "\"zone\" | \"loss\""
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Total plot height (px), split evenly into the up (L) and down (R) wings.",
+          "name": "height",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "The up-wing stream — drawn growing UP from the centre axis; its edge name comes from `left.label`.",
+          "name": "left",
+          "required": true,
+          "type": "DualVelocityStream"
+        },
+        {
+          "default": null,
+          "description": "Index of the most-recently-completed rep; that mirrored pair animates in (hero only).",
+          "name": "liveRepIndex",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "`loss` only: the thresholds both wings band at, as on {@link VelocityStrip }.",
+          "name": "lossThresholds",
+          "required": false,
+          "type": "VelocityLossThresholds"
+        },
+        {
+          "default": null,
+          "description": "The down-wing stream — drawn growing DOWN from the centre axis; its edge name comes from `right.label`.",
+          "name": "right",
+          "required": true,
+          "type": "DualVelocityStream"
+        },
+        {
+          "default": "peak",
+          "description": "Bar-height scaling, shared across BOTH wings so the L/R asymmetry reads as bar length against one scale.",
+          "name": "scale",
+          "required": false,
+          "type": "\"peak\" | \"fixed\""
+        },
+        {
+          "default": null,
+          "description": "Planned rep count.",
+          "name": "targetReps",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": "hero",
+          "description": "`hero` — the across-the-room wall scale: tall wings, per-rep m/s value labels, and a dashed running-best reference line per side.",
+          "name": "variant",
+          "required": false,
+          "type": "\"compact\" | \"hero\" | \"dual-expanded\" | \"rail\""
+        },
+        {
+          "default": null,
+          "description": "Optional velocity-zone bands (shape-compatible with WA's `VelocityZones.bands`), shared with {@link VelocityStrip }.",
+          "name": "zones",
+          "required": false,
+          "type": "readonly VelocityZoneBandProp[]"
+        }
+      ],
+      "purpose": "The dual-voltra (bilateral) DIVERGING per-rep velocity chart.",
+      "sources": {
+        "props": "packages/ui/src/components/custom/Workout/DualVelocityStrip.tsx",
+        "status": "packages/ui/src/components/custom/Workout/DualVelocityStrip.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-workout-dataviz-dualvelocitystrip--crowded-right-edge-label",
+        "custom-workout-dataviz-dualvelocitystrip--dual-expanded",
+        "custom-workout-dataviz-dualvelocitystrip--hero",
+        "custom-workout-dataviz-dualvelocitystrip--range-set",
+        "custom-workout-dataviz-velocitystrip-dual--default",
+        "custom-workout-dataviz-velocitystrip-dual--in-progress",
+        "custom-workout-dataviz-velocitystrip-dual--playground",
+        "custom-workout-dataviz-velocitystrip-dual--small-height-labels",
+        "custom-workout-dataviz-velocitystrip-dual--symmetric-empties",
+        "custom-workout-dataviz-velocitystrip-dual--tiny-height"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
         "ExerciseCardHeading",
         "ExerciseIndicator",
         "SetBar",
         "SetRow",
-        "SetTableHeader",
-        "VelocityStrip"
+        "SetTableHeader"
       ],
       "family": "custom/Workout",
       "file": "packages/ui/src/components/custom/Workout/ExerciseCard.tsx",
@@ -3280,13 +4323,6 @@
         {
           "default": null,
           "description": "",
-          "name": "onNavigateDetail",
-          "required": false,
-          "type": "(() => void)"
-        },
-        {
-          "default": null,
-          "description": "",
           "name": "prescription",
           "required": false,
           "type": "string"
@@ -3336,13 +4372,6 @@
         {
           "default": null,
           "description": "",
-          "name": "supersetColor",
-          "required": false,
-          "type": "string"
-        },
-        {
-          "default": null,
-          "description": "",
           "name": "supersetPosition",
           "required": false,
           "type": "\"middle\" | \"first\" | \"last\" | null"
@@ -3381,7 +4410,7 @@
         "props": "packages/ui/src/components/custom/Workout/ExerciseCard.tsx",
         "status": "packages/ui/src/components/custom/Workout/ExerciseCard.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-exercisecard--collapsed-with-pr",
         "custom-workout-exercisecard--collapsed-with-velocity",
@@ -3592,7 +4621,7 @@
         "props": "packages/ui/src/components/custom/Workout/ExerciseCardHeading.tsx",
         "status": "packages/ui/src/components/custom/Workout/ExerciseCardHeading.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-exercisecardheading--compact",
         "custom-workout-exercisecardheading--default",
@@ -3608,6 +4637,7 @@
       "composes": [
         "CapacityBandChart",
         "ExerciseCard",
+        "ExerciseDetailSectionCard",
         "MesoStatusCard",
         "SetRow",
         "StrengthTrendChart",
@@ -3672,7 +4702,7 @@
         "props": "packages/ui/src/components/custom/Workout/ExerciseDetailPage.tsx",
         "status": "packages/ui/src/components/custom/Workout/ExerciseDetailPage.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "pages-exercise-detail--default",
         "pages-exercise-detail--no-vbt-data"
@@ -3829,7 +4859,7 @@
         "props": "packages/ui/src/components/custom/Workout/ExerciseHeading.tsx",
         "status": "packages/ui/src/components/custom/Workout/ExerciseHeading.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-exerciseheading--default",
         "custom-workout-exerciseheading--dimmed",
@@ -3874,7 +4904,7 @@
         "props": "packages/ui/src/components/custom/Workout/ExerciseIndicator.tsx",
         "status": "packages/ui/src/components/custom/Workout/ExerciseIndicator.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-exerciseindicator--all-kinds",
         "custom-workout-exerciseindicator--imbalance",
@@ -3935,7 +4965,7 @@
           "description": "Zone boundary thresholds (loss %): green→gold, gold→orange, orange→red.",
           "name": "thresholds",
           "required": false,
-          "type": "[number, number, number]"
+          "type": "VelocityLossThresholds"
         },
         {
           "default": null,
@@ -3964,7 +4994,7 @@
         "props": "packages/ui/src/components/custom/Workout/FatigueMeter.tsx",
         "status": "packages/ui/src/components/custom/Workout/FatigueMeter.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-dataviz-fatiguemeter--custom-scale",
         "custom-workout-dataviz-fatiguemeter--fresh",
@@ -4564,7 +5594,7 @@
         "props": "packages/ui/src/components/custom/Workout/GoalMuscleCard.tsx",
         "status": "packages/ui/src/components/custom/Workout/GoalMuscleCard.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-goalmusclecard--default",
         "custom-workout-goalmusclecard--no-week-variance",
@@ -4650,7 +5680,7 @@
         "props": "packages/ui/src/components/custom/Workout/GoalPriorityIndex.tsx",
         "status": "packages/ui/src/components/custom/Workout/GoalPriorityIndex.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-goals-goalpriorityindex--default",
         "custom-workout-goals-goalpriorityindex--small"
@@ -4660,9 +5690,8 @@
     {
       "composes": [
         "GoalTrajectoryBand",
-        "GoalTrajectoryCalibrating",
-        "GoalTrajectoryPlot",
-        "GoalTrajectoryWeekTips"
+        "GoalTrajectoryChartParts",
+        "GoalTrajectoryPlot"
       ],
       "family": "custom/Workout",
       "file": "packages/ui/src/components/custom/Workout/GoalTrajectoryChart.tsx",
@@ -4681,27 +5710,6 @@
           "name": "animate",
           "required": false,
           "type": "boolean"
-        },
-        {
-          "default": "monotone",
-          "description": "Band edge interpolation.",
-          "name": "bandCurve",
-          "required": false,
-          "type": "BandCurve"
-        },
-        {
-          "default": "centre-14",
-          "description": "Band fade.",
-          "name": "bandFade",
-          "required": false,
-          "type": "BandFade"
-        },
-        {
-          "default": "lip",
-          "description": "What marks the plane's bottom edge.",
-          "name": "baseline",
-          "required": false,
-          "type": "PlotBaseline"
         },
         {
           "default": null,
@@ -4750,13 +5758,6 @@
           "description": "Chart plot height in px.",
           "name": "height",
           "required": true,
-          "type": "number"
-        },
-        {
-          "default": "0.04",
-          "description": "Fraction of the plot width the plane's left inner shadow fades over.",
-          "name": "leftShadowSpread",
-          "required": false,
           "type": "number"
         },
         {
@@ -4849,7 +5850,7 @@
         "props": "packages/ui/src/components/custom/Workout/GoalTrajectoryChart.tsx",
         "status": "packages/ui/src/components/custom/Workout/GoalTrajectoryChart.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-dataviz-goaltrajectorychart--ahead",
         "custom-workout-dataviz-goaltrajectorychart--behind",
@@ -4875,13 +5876,13 @@
         "custom-workout-dataviz-goaltrajectorychart--phone-on-track",
         "custom-workout-dataviz-goaltrajectorychart--stalled",
         "custom-workout-dataviz-goaltrajectorychart--tolerated",
-        "custom-workout-dataviz-goaltrajectorychart--wall-motion"
+        "custom-workout-dataviz-goaltrajectorychart--wall-motion",
+        "custom-workout-dataviz-goaltrajectorychart--widths"
       ],
       "tier": "organism"
     },
     {
       "composes": [
-        "GoalTrajectoryChart",
         "GoalTrajectoryPlot"
       ],
       "family": "custom/Workout",
@@ -5040,7 +6041,7 @@
           "description": "",
           "name": "palette",
           "required": true,
-          "type": "{ status: \"#D14343\" | \"#F9B415\" | \"#C27400\" | \"#2ED573\" | \"#298732\" | \"#2196F3\" | \"#1072CB\" | \"#A29F9D\" | \"#72716F\" | \"#9E9A97\"; band: string; bandHue: \"#307B9B\"; lip: string; rule: \"#A29F9D\" | \"#65748B\"; ... 9 more ...; shadeScale: number; }"
+          "type": "{ status: \"#E05254\" | \"#D14343\" | \"#F9B415\" | \"#A45E00\" | \"#2ED573\" | \"#2B6B25\" | \"#2196F3\" | \"#135AA8\" | \"#A29F9D\" | \"#72716F\" | \"#9E9A97\"; band: string; bandHue: \"#2697B7\" | \"#307B9B\"; ... 11 more ...; shadeScale: number; }"
         },
         {
           "default": null,
@@ -5100,7 +6101,6 @@
         "Pill",
         "PrBadge",
         "TipTrigger",
-        "Tooltip",
         "Typography"
       ],
       "family": "custom/Workout",
@@ -5337,7 +6337,7 @@
         "props": "packages/ui/src/components/custom/Workout/InputBar.tsx",
         "status": "packages/ui/src/components/custom/Workout/InputBar.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-inputbar--default",
         "custom-workout-inputbar--disabled",
@@ -5407,7 +6407,7 @@
         "props": "packages/ui/src/components/custom/Workout/IntensityBar.tsx",
         "status": "packages/ui/src/components/custom/Workout/IntensityBar.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-dataviz-intensitybar--all-zones",
         "custom-workout-dataviz-intensitybar--high",
@@ -5450,7 +6450,7 @@
         "props": "packages/ui/src/components/custom/Workout/LiveAuraFrame.tsx",
         "status": "packages/ui/src/components/custom/Workout/LiveAuraFrame.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-liveauraframe--all-states",
         "custom-workout-liveauraframe--productive",
@@ -5559,7 +6559,7 @@
         "props": "packages/ui/src/components/custom/Workout/MesoCard.tsx",
         "status": "packages/ui/src/components/custom/Workout/MesoCard.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-mesocard--collapsed",
         "custom-workout-mesocard--expanded",
@@ -5609,7 +6609,7 @@
         "props": "packages/ui/src/components/custom/Workout/MesoProgressBar.tsx",
         "status": "packages/ui/src/components/custom/Workout/MesoProgressBar.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-mesoprogressbar--active-current",
         "custom-workout-mesoprogressbar--default",
@@ -5621,6 +6621,7 @@
     {
       "composes": [
         "Card",
+        "MesoStatusCard.parts",
         "StatusDot"
       ],
       "family": "custom/Workout",
@@ -5696,7 +6697,7 @@
         "props": "packages/ui/src/components/custom/Workout/MesoStatusCard.tsx",
         "status": "packages/ui/src/components/custom/Workout/MesoStatusCard.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-mesostatuscard--default",
         "custom-workout-mesostatuscard--info-badge",
@@ -5736,7 +6737,7 @@
         "props": "packages/ui/src/components/custom/Workout/MetricTiles.tsx",
         "status": "packages/ui/src/components/custom/Workout/MetricTiles.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-metrictiles--four-tiles",
         "custom-workout-metrictiles--session-stats",
@@ -5837,7 +6838,7 @@
         "props": "packages/ui/src/components/custom/Workout/MuscleGroupChip.tsx",
         "status": "packages/ui/src/components/custom/Workout/MuscleGroupChip.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-musclegroupchip--all-statuses",
         "custom-workout-musclegroupchip--approaching",
@@ -5888,7 +6889,7 @@
         "props": "packages/ui/src/components/custom/Workout/MuscleStrip.tsx",
         "status": "packages/ui/src/components/custom/Workout/MuscleStrip.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-musclestrip--default",
         "custom-workout-musclestrip--empty-untrained",
@@ -5938,7 +6939,7 @@
         "props": "packages/ui/src/components/custom/Workout/PlaceholderStrip.tsx",
         "status": "packages/ui/src/components/custom/Workout/PlaceholderStrip.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-placeholderstrip--default",
         "custom-workout-placeholderstrip--fixed-width",
@@ -6007,7 +7008,7 @@
         "props": "packages/ui/src/components/custom/Workout/PrBadge.tsx",
         "status": "packages/ui/src/components/custom/Workout/PrBadge.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-prbadge--all-types",
         "custom-workout-prbadge--animated",
@@ -6078,7 +7079,7 @@
         "props": "packages/ui/src/components/custom/Workout/PrHistoryModal.tsx",
         "status": "packages/ui/src/components/custom/Workout/PrHistoryModal.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-prhistorymodal--default",
         "custom-workout-prhistorymodal--empty",
@@ -6203,6 +7204,7 @@
         "ExerciseCard",
         "MesoCard",
         "MesoProgressBar",
+        "ProgramPlanningBreadcrumbs",
         "WeekRow",
         "WorkoutCard",
         "WorkoutPill"
@@ -6238,7 +7240,7 @@
         "props": "packages/ui/src/components/custom/Workout/ProgramPlanningPage.tsx",
         "status": "packages/ui/src/components/custom/Workout/ProgramPlanningPage.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "pages-program-planning--default",
         "pages-program-planning--single-meso"
@@ -6267,6 +7269,13 @@
           "name": "factors",
           "required": true,
           "type": "ReadinessFactor[]"
+        },
+        {
+          "default": "false",
+          "description": "Disables the start button so `onConfirm` cannot fire.",
+          "name": "isConfirmDisabled",
+          "required": false,
+          "type": "boolean"
         },
         {
           "default": null,
@@ -6302,7 +7311,7 @@
         "props": "packages/ui/src/components/custom/Workout/ReadinessCheck.tsx",
         "status": "packages/ui/src/components/custom/Workout/ReadinessCheck.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-readinesscheck--default",
         "custom-workout-readinesscheck--high-readiness",
@@ -6390,7 +7399,7 @@
         "props": "packages/ui/src/components/custom/Workout/RestTimer.tsx",
         "status": "packages/ui/src/components/custom/Workout/RestTimer.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-resttimer--default",
         "custom-workout-resttimer--just-started",
@@ -6442,7 +7451,7 @@
         "props": "packages/ui/src/components/custom/Workout/ScheduleTiles.tsx",
         "status": "packages/ui/src/components/custom/Workout/ScheduleTiles.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-scheduletiles--soon-under-a-day",
         "custom-workout-scheduletiles--two-days-out"
@@ -6510,7 +7519,7 @@
         "props": "packages/ui/src/components/custom/Workout/SegmentedBar.tsx",
         "status": "packages/ui/src/components/custom/Workout/SegmentedBar.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-segmentedbar--equal-segments",
         "custom-workout-segmentedbar--partial-fills",
@@ -6549,7 +7558,7 @@
           "type": "number"
         },
         {
-          "default": "primitiveRamps.green[500]",
+          "default": null,
           "description": "Overlay-marker colour.",
           "name": "markerColor",
           "required": false,
@@ -6582,7 +7591,7 @@
         "props": "packages/ui/src/components/custom/Workout/SegmentedProgressBar.tsx",
         "status": "packages/ui/src/components/custom/Workout/SegmentedProgressBar.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-segmentedprogressbar--ahead",
         "custom-workout-segmentedprogressbar--behind",
@@ -6673,7 +7682,7 @@
         "props": "packages/ui/src/components/custom/Workout/SessionHeader.tsx",
         "status": "packages/ui/src/components/custom/Workout/SessionHeader.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "shell-sessionrail-sessionheader--live-behind",
         "shell-sessionrail-sessionheader--live-no-time",
@@ -6793,7 +7802,7 @@
         "props": "packages/ui/src/components/custom/Workout/SessionRail.tsx",
         "status": "packages/ui/src/components/custom/Workout/SessionRail.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "shell-sessionrail--default",
         "shell-sessionrail--no-time-target",
@@ -6847,7 +7856,7 @@
         "props": "packages/ui/src/components/custom/Workout/SessionsGoalCard.tsx",
         "status": "packages/ui/src/components/custom/Workout/SessionsGoalCard.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-goals-sessionsgoalcard--default",
         "custom-workout-goals-sessionsgoalcard--large-commitment",
@@ -6885,7 +7894,7 @@
         "props": "packages/ui/src/components/custom/Workout/SetBar.tsx",
         "status": "packages/ui/src/components/custom/Workout/SetBar.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-setbar--active",
         "custom-workout-setbar--active-range-set",
@@ -6900,6 +7909,108 @@
     },
     {
       "composes": [
+        "SetLossStripParts",
+        "Typography"
+      ],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/SetLossStrip.tsx",
+      "name": "SetLossStrip",
+      "props": [
+        {
+          "default": null,
+          "description": "The `index` of the session's best e1RM; its cell gets the brand dot.",
+          "name": "bestE1rmIndex",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Tailwind overrides for the outer stack, merged with `cn()`.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": "0",
+          "description": "Minimum column count.",
+          "name": "columns",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": "40",
+          "description": "The loss (%) a full-height bar shows.",
+          "name": "lossCeilingPct",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "The `index` of the set the verdict read; it gets a ring and a glyph in `markedTone`.",
+          "name": "markedIndex",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "The verdict word for the marked set, spoken by its glyph and the strip label.",
+          "name": "markedLabel",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": "neutral",
+          "description": "Defaults to `neutral`.",
+          "name": "markedTone",
+          "required": false,
+          "type": "StatusGlyphTone"
+        },
+        {
+          "default": "phone",
+          "description": "Column width and plot height.",
+          "name": "scale",
+          "required": false,
+          "type": "SetLossStripScale"
+        },
+        {
+          "default": null,
+          "description": "The exercise's sets in the order performed.",
+          "name": "sets",
+          "required": true,
+          "type": "readonly SetLossStripSet[]"
+        },
+        {
+          "default": "set-loss-strip",
+          "description": "Defaults to `set-loss-strip`.",
+          "name": "testID",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": "[10, 20, 30]",
+          "description": "Where the VL lines sit (%).",
+          "name": "thresholds",
+          "required": false,
+          "type": "VelocityLossThresholds"
+        }
+      ],
+      "purpose": "One exercise's sets as velocity-loss bars on a fixed scale, the marked set ringed, with set, reps, load and e1RM rows aligned under each bar.",
+      "sources": {
+        "props": "packages/ui/src/components/custom/Workout/SetLossStrip.tsx",
+        "status": "packages/ui/src/components/custom/Workout/SetLossStrip.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-workout-setlossstrip--bilateral",
+        "custom-workout-setlossstrip--default",
+        "custom-workout-setlossstrip--no-data",
+        "custom-workout-setlossstrip--not-scored",
+        "custom-workout-setlossstrip--warm-up"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
         "Typography",
         "VelocityStrip"
       ],
@@ -6909,7 +8020,7 @@
       "props": [
         {
           "default": null,
-          "description": "Newest rep index — reserved; the compact spotlight strip is static.",
+          "description": "Rep the spotlight strip grows from the baseline as it lands.",
           "name": "liveRepIndex",
           "required": false,
           "type": "number"
@@ -6997,7 +8108,7 @@
         "props": "packages/ui/src/components/custom/Workout/SetRow.tsx",
         "status": "packages/ui/src/components/custom/Workout/SetRow.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-setrow--done",
         "custom-workout-setrow--live",
@@ -7042,7 +8153,7 @@
         "props": "packages/ui/src/components/custom/Workout/SetStrip.tsx",
         "status": "packages/ui/src/components/custom/Workout/SetStrip.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-setstrip--active-range-set",
         "custom-workout-setstrip--completed",
@@ -7094,7 +8205,7 @@
         "props": "packages/ui/src/components/custom/Workout/SetTableHeader.tsx",
         "status": "packages/ui/src/components/custom/Workout/SetTableHeader.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-settableheader--kg",
         "custom-workout-settableheader--lbs",
@@ -7118,7 +8229,7 @@
           "type": "string"
         },
         {
-          "default": null,
+          "default": "11",
           "description": "Cell font size (px).",
           "name": "fontSize",
           "required": false,
@@ -7160,12 +8271,12 @@
           "type": "string"
         }
       ],
-      "purpose": "The `sets × reps @ load` prescription line, in the TempoDisplay visual language (Inter · letter-spacing 1 · value cells with muted `×` / `@` separators).",
+      "purpose": "The `sets × reps @ load` prescription line, in the TempoDisplay visual language (Typography `mono` · value cells with muted `×` / `@` separators).",
       "sources": {
         "props": "packages/ui/src/components/custom/Workout/SetsRepsLoad.tsx",
         "status": "packages/ui/src/components/custom/Workout/SetsRepsLoad.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-setsrepsload--default",
         "custom-workout-setsrepsload--kilograms",
@@ -7175,7 +8286,7 @@
     },
     {
       "composes": [
-        "Typography"
+        "SparklineParts"
       ],
       "family": "custom/Workout",
       "file": "packages/ui/src/components/custom/Workout/Sparkline.tsx",
@@ -7271,7 +8382,7 @@
         "props": "packages/ui/src/components/custom/Workout/Sparkline.tsx",
         "status": "packages/ui/src/components/custom/Workout/Sparkline.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-dataviz-sparkline--all-shapes",
         "custom-workout-dataviz-sparkline--ascending",
@@ -7284,7 +8395,7 @@
         "custom-workout-dataviz-sparkline--u-curve",
         "custom-workout-dataviz-sparkline--with-reference-lines"
       ],
-      "tier": "molecule"
+      "tier": "organism"
     },
     {
       "composes": [
@@ -7342,7 +8453,7 @@
         "props": "packages/ui/src/components/custom/Workout/StatusDot.tsx",
         "status": "packages/ui/src/components/custom/Workout/StatusDot.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-statusdot--all-variants",
         "custom-workout-statusdot--deviation",
@@ -7394,7 +8505,7 @@
         "props": "packages/ui/src/components/custom/Workout/StatusPill.tsx",
         "status": "packages/ui/src/components/custom/Workout/StatusPill.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-statuspill--all-states",
         "custom-workout-statuspill--productive",
@@ -7479,7 +8590,7 @@
         "props": "packages/ui/src/components/custom/Workout/StrengthTrendChart.tsx",
         "status": "packages/ui/src/components/custom/Workout/StrengthTrendChart.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-dataviz-strengthtrendchart--compact",
         "custom-workout-dataviz-strengthtrendchart--declining",
@@ -7519,7 +8630,7 @@
         "props": "packages/ui/src/components/custom/Workout/SupersetWrapper.tsx",
         "status": "packages/ui/src/components/custom/Workout/SupersetWrapper.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-supersetwrapper--custom-color",
         "custom-workout-supersetwrapper--custom-label",
@@ -7605,7 +8716,7 @@
         "props": "packages/ui/src/components/custom/Workout/TempoDisplay.tsx",
         "status": "packages/ui/src/components/custom/Workout/TempoDisplay.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-tempodisplay--active-tempo-conditions",
         "custom-workout-tempodisplay--live-animated",
@@ -7666,7 +8777,7 @@
         "props": "packages/ui/src/components/custom/Workout/TrainingStatusPage.tsx",
         "status": "packages/ui/src/components/custom/Workout/TrainingStatusPage.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "pages-training-status--default",
         "pages-training-status--needs-attention",
@@ -7810,6 +8921,60 @@
         "SetBarChart"
       ],
       "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/VelocityLossBands.tsx",
+      "name": "VelocityLossBands",
+      "props": [
+        {
+          "default": null,
+          "description": "",
+          "name": "best",
+          "required": true,
+          "type": "number"
+        },
+        {
+          "default": "false",
+          "description": "The parent plot is vertically mirrored (a `down` wing) — counter-flip the labels upright.",
+          "name": "flip",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "plotHeight",
+          "required": true,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "scaleDenom",
+          "required": true,
+          "type": "number"
+        },
+        {
+          "default": "[10, 20, 30]",
+          "description": "The bar-colour thresholds; the amber band starts at the second, the red at the third.",
+          "name": "thresholds",
+          "required": false,
+          "type": "VelocityLossThresholds"
+        }
+      ],
+      "purpose": "Velocity-LOSS decision bands for the `hero` variant: the VL20 / VL30 coaching cues (off the running best) drawn as absolutely-positioned bands + dashed threshold lines BEHIND the bars, on the hero's own peak scale so a bar dropping into the amber → red band reads as \"these are your last effective reps\".",
+      "sources": {
+        "props": "packages/ui/src/components/custom/Workout/VelocityLossBands.tsx",
+        "status": null
+      },
+      "status": "review",
+      "storyIds": [],
+      "tier": "molecule"
+    },
+    {
+      "composes": [
+        "SetBarChart",
+        "VelocityStripVariants"
+      ],
+      "family": "custom/Workout",
       "file": "packages/ui/src/components/custom/Workout/VelocityStrip.tsx",
       "name": "VelocityStrip",
       "props": [
@@ -7847,13 +9012,6 @@
           "name": "height",
           "required": false,
           "type": "number"
-        },
-        {
-          "default": null,
-          "description": "`hero` only (internal): suppress this strip's own 2px baseline border.",
-          "name": "hideBaseline",
-          "required": false,
-          "type": "boolean"
         },
         {
           "default": null,
@@ -7973,7 +9131,7 @@
         "props": "packages/ui/src/components/custom/Workout/VelocityStrip.tsx",
         "status": "packages/ui/src/components/custom/Workout/VelocityStrip.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-dataviz-velocitystrip--all-views",
         "custom-workout-dataviz-velocitystrip--in-context",
@@ -8006,6 +9164,45 @@
         "custom-workout-dataviz-velocitystrip-hero--responsive",
         "custom-workout-dataviz-velocitystrip-hero--set-types"
       ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "SetBarChart"
+      ],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/VelocityStripFramed.tsx",
+      "name": "VelocityStripFramed",
+      "props": [
+        {
+          "default": null,
+          "description": "",
+          "name": "chart",
+          "required": true,
+          "type": "VelocityStripChart"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "chrome",
+          "required": true,
+          "type": "VelocityStripChrome"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "summary",
+          "required": true,
+          "type": "VelocityStripSummary"
+        }
+      ],
+      "purpose": "",
+      "sources": {
+        "props": "packages/ui/src/components/custom/Workout/VelocityStripFramed.tsx",
+        "status": null
+      },
+      "status": "review",
+      "storyIds": [],
       "tier": "molecule"
     },
     {
@@ -8073,7 +9270,7 @@
         "props": "packages/ui/src/components/custom/Workout/VolumeLandmarkBar.tsx",
         "status": "packages/ui/src/components/custom/Workout/VolumeLandmarkBar.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-dataviz-volumelandmarkbar--all-zones",
         "custom-workout-dataviz-volumelandmarkbar--approaching-mrv",
@@ -8156,7 +9353,7 @@
         "props": "packages/ui/src/components/custom/Workout/WeekRow.tsx",
         "status": "packages/ui/src/components/custom/Workout/WeekRow.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-weekrow--current-week",
         "custom-workout-weekrow--default",
@@ -8244,7 +9441,7 @@
         "props": "packages/ui/src/components/custom/Workout/WeightBadge.tsx",
         "status": "packages/ui/src/components/custom/Workout/WeightBadge.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-weightbadge--all-variants",
         "custom-workout-weightbadge--default",
@@ -8358,7 +9555,7 @@
         "props": "packages/ui/src/components/custom/Workout/WorkoutCard.tsx",
         "status": "packages/ui/src/components/custom/Workout/WorkoutCard.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-workoutcard--completed",
         "custom-workout-workoutcard--expanded",
@@ -8424,7 +9621,7 @@
         "props": "packages/ui/src/components/custom/Workout/WorkoutPill.tsx",
         "status": "packages/ui/src/components/custom/Workout/WorkoutPill.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-workoutpill--all-statuses",
         "custom-workout-workoutpill--completed",
@@ -8439,7 +9636,8 @@
     },
     {
       "composes": [
-        "Tooltip"
+        "ZoneTrackParts",
+        "ZoneTrackTicks"
       ],
       "family": "custom/Workout",
       "file": "packages/ui/src/components/custom/Workout/ZoneTrack.tsx",
@@ -8528,7 +9726,7 @@
         "props": "packages/ui/src/components/custom/Workout/ZoneTrack.tsx",
         "status": "packages/ui/src/components/custom/Workout/ZoneTrack.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-dataviz-zonetrack--band-with-marker",
         "custom-workout-dataviz-zonetrack--bare-track",
@@ -8580,7 +9778,7 @@
           "description": "Which corners round.",
           "name": "cornerStyle",
           "required": false,
-          "type": "\"all\" | \"top\""
+          "type": "\"top\" | \"all\""
         },
         {
           "default": null,
@@ -8868,11 +10066,11 @@
           "type": "string"
         },
         {
-          "default": "voltras",
-          "description": "Which app identity the default {@link TopBar} and nav accent render.",
+          "default": null,
+          "description": "Which app identity the default {@link TopBar} and nav accent render: a registry key or the app's own preset.",
           "name": "brand",
-          "required": false,
-          "type": "BrandKey"
+          "required": true,
+          "type": "BrandKey | BrandPreset"
         },
         {
           "default": null,
@@ -8887,6 +10085,20 @@
           "name": "className",
           "required": false,
           "type": "string"
+        },
+        {
+          "default": "default",
+          "description": "Gutter around the content region: `p-gutter-sm` below the `md` breakpoint, `p-gutter-md` from it.",
+          "name": "contentPadding",
+          "required": false,
+          "type": "AppShellContentPadding"
+        },
+        {
+          "default": "false",
+          "description": "Render the content region as the `main` landmark.",
+          "name": "isMainLandmark",
+          "required": false,
+          "type": "boolean"
         },
         {
           "default": "null",
@@ -8969,11 +10181,11 @@
           "type": "string"
         },
         {
-          "default": "voltras",
-          "description": "Which app's identity to render.",
+          "default": null,
+          "description": "Which app's identity to render: a registry key, or the app's own preset.",
           "name": "brand",
-          "required": false,
-          "type": "BrandKey"
+          "required": true,
+          "type": "BrandKey | BrandPreset"
         },
         {
           "default": null,
@@ -9042,14 +10254,14 @@
         },
         {
           "default": "text-brand-primary",
-          "description": "Semantic `text-*` token for the active glyph and label.",
+          "description": "Semantic `text-*` token for the active glyph (a non-text mark).",
           "name": "accentClassName",
           "required": false,
           "type": "string"
         },
         {
           "default": "false",
-          "description": "Active category → left accent bar + accent-colored glyph & label.",
+          "description": "Active category → left accent bar + accent-colored glyph, label on `text-primary`.",
           "name": "active",
           "required": false,
           "type": "boolean"
@@ -9081,6 +10293,13 @@
           "name": "live",
           "required": false,
           "type": "boolean"
+        },
+        {
+          "default": "live",
+          "description": "The words appended to the accessible name while a set runs in this category and it is not active (\"Train, live\").",
+          "name": "liveLabel",
+          "required": false,
+          "type": "string"
         },
         {
           "default": null,
@@ -9120,8 +10339,15 @@
         },
         {
           "default": null,
-          "description": "Semantic `text-*` token for the active item.",
+          "description": "Semantic `text-*` token for the active item's glyph.",
           "name": "accentClassName",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": "Primary",
+          "description": "Accessible name of the navigation landmark.",
+          "name": "accessibilityLabel",
           "required": false,
           "type": "string"
         },
@@ -9186,11 +10412,11 @@
       "name": "TopBar",
       "props": [
         {
-          "default": "voltras",
+          "default": null,
           "description": "Which app identity the default {@link BrandLockup} renders.",
           "name": "brand",
-          "required": false,
-          "type": "BrandKey"
+          "required": true,
+          "type": "BrandKey | BrandPreset"
         },
         {
           "default": null,
@@ -9251,6 +10477,7 @@
       "storyIds": [
         "shell-topbar--default",
         "shell-topbar--single-trailing-item",
+        "shell-topbar--widths",
         "shell-topbar--with-app-chrome"
       ],
       "tier": "organism"
@@ -9272,7 +10499,7 @@
         },
         {
           "default": "Devices",
-          "description": "Accessible label (names the glyph / the wrapping trigger button).",
+          "description": "Accessible label (names the glyph / the wrapping trigger button); the state word is appended.",
           "name": "label",
           "required": false,
           "type": "string"
@@ -9405,8 +10632,8 @@
     },
     {
       "composes": [
+        "DualVelocityStrip",
         "Typography",
-        "VelocityStrip",
         "icons",
         "pinnedLiveStripParts"
       ],
@@ -9528,7 +10755,6 @@
     {
       "composes": [
         "SetBarChart",
-        "VelocityStrip",
         "icons",
         "pinnedLiveStripParts"
       ],
@@ -9739,6 +10965,13 @@
           "type": "string"
         },
         {
+          "default": null,
+          "description": "Passed to {@link AppShell}: `none` when the children own their gutter.",
+          "name": "contentPadding",
+          "required": false,
+          "type": "AppShellContentPadding"
+        },
+        {
           "default": "[\n  { id: 'Voltra-A3F2', nickname: 'Left Cable', slot: 'L', state: 'connected' },\n  { id: 'Voltra-9B1C', nickname: 'Right Cable', slot: 'R', state: 'connected' },\n]",
           "description": "Connected devices → the TopBar connection glyph + dropdown.",
           "name": "devices",
@@ -9876,7 +11109,8 @@
       "status": "candidate",
       "storyIds": [
         "shell-workout-workouttopbar--default",
-        "shell-workout-workouttopbar--device-lost"
+        "shell-workout-workouttopbar--device-lost",
+        "shell-workout-workouttopbar--idle"
       ],
       "tier": "organism"
     },
@@ -9902,7 +11136,7 @@
         },
         {
           "default": null,
-          "description": "Convenience single-line content: renders as **status-colored, bold** text (white on `solid`) — the batteries-included cue message, so a `compact` cue is just `<Alert status=\"warning\" size=\"compact\" message=\"VL20 · …\" />` with no need to hand-color the text (RN doesn't cascade color).",
+          "description": "Convenience single-line content: renders as **status-colored, bold** text (the on-colour on `solid`) — the batteries-included cue message, so a `compact` cue is just `<Alert status=\"warning\" size=\"compact\" message=\"VL20 · …\" />` with no need to hand-color the text (RN doesn't cascade color).",
           "name": "message",
           "required": false,
           "type": "string"
@@ -9969,7 +11203,83 @@
     },
     {
       "composes": [
-        "Surface"
+        "Typography"
+      ],
+      "family": "ui/animated-number",
+      "file": "packages/ui/src/components/ui/animated-number/AnimatedNumber.tsx",
+      "name": "AnimatedNumber",
+      "props": [
+        {
+          "default": null,
+          "description": "Tailwind overrides for the root, merged with `cn()`.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": "0",
+          "description": "Fraction digits for the default format.",
+          "name": "decimals",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Overrides the default grouped format; `decimals` is then ignored.",
+          "name": "format",
+          "required": false,
+          "type": "AnimatedNumberFormat"
+        },
+        {
+          "default": "0",
+          "description": "Where the number starts at progress 0.",
+          "name": "from",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": "count",
+          "description": "`count` rewrites the text; `reel` rolls one clipped column per digit.",
+          "name": "mode",
+          "required": false,
+          "type": "AnimatedNumberMode"
+        },
+        {
+          "default": null,
+          "description": "0..1, driven by the caller's clock.",
+          "name": "progress",
+          "required": true,
+          "type": "number"
+        },
+        {
+          "default": "md",
+          "description": "Default `md`.",
+          "name": "size",
+          "required": false,
+          "type": "AnimatedNumberSize"
+        },
+        {
+          "default": null,
+          "description": "The value the number lands on.",
+          "name": "value",
+          "required": true,
+          "type": "number"
+        }
+      ],
+      "purpose": "A number that counts or rolls from `from` to `value` as `progress` goes 0 → 1.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/animated-number/AnimatedNumber.tsx",
+        "status": "packages/ui/src/components/ui/animated-number/AnimatedNumber.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-atoms-animatednumber--default"
+      ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [
+        "AutocompleteParts"
       ],
       "family": "ui/autocomplete",
       "file": "packages/ui/src/components/ui/autocomplete/Autocomplete.tsx",
@@ -10135,7 +11445,7 @@
         "components-molecules-autocomplete--with-error",
         "components-molecules-autocomplete--with-label"
       ],
-      "tier": "molecule"
+      "tier": "organism"
     },
     {
       "composes": [],
@@ -10531,10 +11841,107 @@
         "components-molecules-card--outline",
         "components-molecules-card--simple-card",
         "components-molecules-card--skeleton",
+        "components-molecules-card--stat",
         "components-molecules-card--status-filled-cards",
         "components-molecules-card--status-outline-cards"
       ],
       "tier": "molecule"
+    },
+    {
+      "composes": [
+        "Card",
+        "Metric"
+      ],
+      "family": "ui/card",
+      "file": "packages/ui/src/components/ui/card/CardStat.tsx",
+      "name": "CardStat",
+      "props": [
+        {
+          "default": "center",
+          "description": "Aligns the figure and label to the start, centre or end of the column.",
+          "name": "align",
+          "required": false,
+          "type": "MetricAlign"
+        },
+        {
+          "default": null,
+          "description": "Custom background color.",
+          "name": "bgColor",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Merged onto the card.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": "1",
+          "description": "Planes to lift above the enclosing Surface (default 2: page → the card plane).",
+          "name": "elevation",
+          "required": false,
+          "type": "CardElevation"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "label",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Passed to the inner Metric.",
+          "name": "metricProps",
+          "required": false,
+          "type": "CardStatMetricProps"
+        },
+        {
+          "default": "sm",
+          "description": "",
+          "name": "size",
+          "required": false,
+          "type": "\"sm\" | \"md\" | \"lg\""
+        },
+        {
+          "default": null,
+          "description": "Colours the value from a semantic token.",
+          "name": "tone",
+          "required": false,
+          "type": "MetricTone"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "unit",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "value",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": "filled",
+          "description": "How the card separates from its host: - `elevated` (default): lifts `elevation` planes and wears the lift (rim + shadow).",
+          "name": "variant",
+          "required": false,
+          "type": "CardVariant"
+        }
+      ],
+      "purpose": "The Card stat preset: one labelled figure on a card plane (roadmap decision 1).",
+      "sources": {
+        "props": "packages/ui/src/components/ui/card/CardStat.tsx",
+        "status": null
+      },
+      "status": "review",
+      "storyIds": [],
+      "tier": "organism"
     },
     {
       "composes": [
@@ -10607,15 +12014,193 @@
         "props": "packages/ui/src/components/ui/carousel/Carousel.tsx",
         "status": "packages/ui/src/components/ui/carousel/Carousel.stories.tsx"
       },
-      "status": "candidate",
+      "status": "stable",
       "storyIds": [
         "components-molecules-carousel--default"
       ],
       "tier": "organism"
     },
     {
+      "composes": [
+        "Eyebrow",
+        "Surface",
+        "Typography"
+      ],
+      "family": "ui/chapter-card",
+      "file": "packages/ui/src/components/ui/chapter-card/ChapterCard.tsx",
+      "name": "ChapterCard",
+      "props": [
+        {
+          "default": null,
+          "description": "Tailwind classes merged onto the root.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "The chapter's number, shown zero-padded to two digits.",
+          "name": "index",
+          "required": true,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "A short line above the title.",
+          "name": "kicker",
+          "required": false,
+          "type": "ReactNode"
+        },
+        {
+          "default": null,
+          "description": "Progress through the card's life, 0..1.",
+          "name": "progress",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "The chapter's name, set as a heading.",
+          "name": "title",
+          "required": true,
+          "type": "string"
+        }
+      ],
+      "purpose": "ChapterCard: a chapter title card, its number, an optional kicker and the title.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/chapter-card/ChapterCard.tsx",
+        "status": "packages/ui/src/components/ui/chapter-card/ChapterCard.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-molecules-chaptercard--default"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "BarListCells",
+        "BarListParts",
+        "BarListTip",
+        "EmptyState"
+      ],
+      "family": "ui/charts",
+      "file": "packages/ui/src/components/ui/charts/bar-list/BarList.tsx",
+      "name": "BarList",
+      "props": [
+        {
+          "default": null,
+          "description": "Names the list; the summary is appended to it for assistive tech.",
+          "name": "accessibilityLabel",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Tailwind classes merged onto the list root.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Replaces the default empty state, shown when `rows` is empty.",
+          "name": "emptyState",
+          "required": false,
+          "type": "ReactNode"
+        },
+        {
+          "default": null,
+          "description": "Formats each row's `secondaryValue`.",
+          "name": "formatSecondary",
+          "required": false,
+          "type": "((value: number, row: BarListRow) => string)"
+        },
+        {
+          "default": null,
+          "description": "Formats each row's value, and the total of the rows past the cap (called without a row).",
+          "name": "formatValue",
+          "required": false,
+          "type": "BarListValueFormatter"
+        },
+        {
+          "default": "false",
+          "description": "Shows skeleton rows in place of the data.",
+          "name": "isLoading",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": "false",
+          "description": "Hides each row's value after its bar.",
+          "name": "isValueHidden",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": "inline",
+          "description": "`inline` puts label, bar and value on one line; `stacked` puts the bar under them.",
+          "name": "layout",
+          "required": false,
+          "type": "\"inline\" | \"stacked\""
+        },
+        {
+          "default": null,
+          "description": "Value that fills a whole bar.",
+          "name": "max",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Rows shown before the rest fold into one overflow row.",
+          "name": "maxRows",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "One labelled line on the value axis (a cutoff, a budget).",
+          "name": "referenceMarker",
+          "required": false,
+          "type": "BarListMarker"
+        },
+        {
+          "default": null,
+          "description": "The data, one row per bar.",
+          "name": "rows",
+          "required": true,
+          "type": "BarListRow[]"
+        },
+        {
+          "default": "md",
+          "description": "Text size and bar thickness.",
+          "name": "size",
+          "required": false,
+          "type": "\"sm\" | \"md\""
+        },
+        {
+          "default": "descending",
+          "description": "`descending` ranks by value; `none` keeps input order (a funnel).",
+          "name": "sort",
+          "required": false,
+          "type": "\"none\" | \"descending\""
+        }
+      ],
+      "purpose": "BarList: a ranked horizontal bar list.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/charts/bar-list/BarList.tsx",
+        "status": "packages/ui/src/components/ui/charts/bar-list/BarList.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-molecules-barlist--default"
+      ],
+      "tier": "organism"
+    },
+    {
       "composes": [],
-      "family": "ui/charts/gauge",
+      "family": "ui/charts",
       "file": "packages/ui/src/components/ui/charts/gauge/Gauge.tsx",
       "name": "Gauge",
       "props": [
@@ -10632,6 +12217,13 @@
           "name": "color",
           "required": false,
           "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Replaces the \"No data\" placeholder in the centre when `value` is `null` or not finite.",
+          "name": "emptyState",
+          "required": false,
+          "type": "ReactNode"
         },
         {
           "default": null,
@@ -10680,7 +12272,7 @@
           "description": "Current value.",
           "name": "value",
           "required": true,
-          "type": "number"
+          "type": "number | null"
         }
       ],
       "purpose": "SVG-free radial gauge (absolutely-positioned segment Views), matching the codebase's chart convention so it renders identically on web and native.",
@@ -10692,7 +12284,7 @@
       "storyIds": [
         "components-atoms-gauge--arbitrary-domain",
         "components-atoms-gauge--critical",
-        "components-atoms-gauge--healthy",
+        "components-atoms-gauge--default",
         "components-atoms-gauge--over-max",
         "components-atoms-gauge--override-color",
         "components-atoms-gauge--warning",
@@ -10701,8 +12293,182 @@
       "tier": "atom"
     },
     {
-      "composes": [],
-      "family": "ui/charts/scatter",
+      "composes": [
+        "EmptyState",
+        "NetworkGraphCanvas",
+        "NetworkGraphParts",
+        "Skeleton"
+      ],
+      "family": "ui/charts",
+      "file": "packages/ui/src/components/ui/charts/network-graph/NetworkGraph.tsx",
+      "name": "NetworkGraph",
+      "props": [
+        {
+          "default": null,
+          "description": "The root is named `\"<label>.",
+          "name": "accessibilityLabel",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Default true.",
+          "name": "animate",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "Tailwind classes for the outer view.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Initial selection when uncontrolled.",
+          "name": "defaultSelection",
+          "required": false,
+          "type": "GraphItemRef | null"
+        },
+        {
+          "default": null,
+          "description": "Labels and strokes for edge kinds.",
+          "name": "edgeKinds",
+          "required": false,
+          "type": "GraphEdgeKind[]"
+        },
+        {
+          "default": null,
+          "description": "Cleaned before layout: self edges and unknown ends are dropped, duplicates merge.",
+          "name": "edges",
+          "required": true,
+          "type": "GraphEdge[]"
+        },
+        {
+          "default": null,
+          "description": "Shown when no node is drawn; default `<EmptyState title=\"No nodes\" />`.",
+          "name": "emptyState",
+          "required": false,
+          "type": "ReactNode"
+        },
+        {
+          "default": null,
+          "description": "Replaces an edge's accessible name.",
+          "name": "formatEdgeLabel",
+          "required": false,
+          "type": "((edge: GraphEdge, source: GraphNode, target: GraphNode) => string)"
+        },
+        {
+          "default": null,
+          "description": "Replaces a node's accessible name.",
+          "name": "formatNodeLabel",
+          "required": false,
+          "type": "((node: GraphNode, context: GraphNodeContext) => string)"
+        },
+        {
+          "default": null,
+          "description": "Viewport height in px; a larger layout scrolls.",
+          "name": "height",
+          "required": true,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Keeps focus, traversal, hover and reading; stops selection changes; sets `aria-disabled`.",
+          "name": "isDisabled",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": "false",
+          "description": "Renders a skeleton of `width` by `height` instead of the graph.",
+          "name": "isLoading",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "Default `layeredLayout()`.",
+          "name": "layout",
+          "required": false,
+          "type": "GraphLayout"
+        },
+        {
+          "default": null,
+          "description": "Labels and colours for node kinds, in list order.",
+          "name": "nodeKinds",
+          "required": false,
+          "type": "GraphKind[]"
+        },
+        {
+          "default": null,
+          "description": "Replaces the active node's tooltip content (label, kind and description by default).",
+          "name": "nodeTooltip",
+          "required": false,
+          "type": "((node: GraphNode) => ReactNode)"
+        },
+        {
+          "default": null,
+          "description": "Cleaned before layout: the first of duplicate ids is kept and the rest are counted.",
+          "name": "nodes",
+          "required": true,
+          "type": "GraphNode[]"
+        },
+        {
+          "default": null,
+          "description": "Called with the new selection, or `null` when it clears.",
+          "name": "onSelectionChange",
+          "required": false,
+          "type": "((selection: GraphItemRef | null) => void)"
+        },
+        {
+          "default": null,
+          "description": "Controlled selection; a ref to an item that is not drawn reads as `null`.",
+          "name": "selection",
+          "required": false,
+          "type": "GraphItemRef | null"
+        },
+        {
+          "default": null,
+          "description": "Default false.",
+          "name": "showLegend",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "Replaces the summary sentence in the root's name.",
+          "name": "summarize",
+          "required": false,
+          "type": "((model: GraphModel) => string)"
+        },
+        {
+          "default": null,
+          "description": "Viewport width in px; a larger layout scrolls.",
+          "name": "width",
+          "required": true,
+          "type": "number"
+        }
+      ],
+      "purpose": "A directed graph of things and the relations between them, on a layout the caller picks.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/charts/network-graph/NetworkGraph.tsx",
+        "status": "packages/ui/src/components/ui/charts/network-graph/NetworkGraph.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-organisms-networkgraph--default"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "ScatterFrame",
+        "ScatterGridlines",
+        "ScatterPointMark"
+      ],
+      "family": "ui/charts",
       "file": "packages/ui/src/components/ui/charts/scatter/Scatter.tsx",
       "name": "Scatter",
       "props": [
@@ -10733,6 +12499,13 @@
           "name": "diagonal",
           "required": false,
           "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "Replaces the default \"No data\" placeholder drawn over the plot box when `data` is empty.",
+          "name": "emptyState",
+          "required": false,
+          "type": "ReactNode"
         },
         {
           "default": null,
@@ -10785,11 +12558,129 @@
         "components-atoms-scatter--selected",
         "components-atoms-scatter--single-point"
       ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [],
+      "family": "ui/charts",
+      "file": "packages/ui/src/components/ui/charts/scatter/ScatterFrame.tsx",
+      "name": "ScatterFrame",
+      "props": [
+        {
+          "default": null,
+          "description": "",
+          "name": "axis",
+          "required": true,
+          "type": "ScatterAxis"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "colors",
+          "required": true,
+          "type": "{ readonly 'brand-primary': \"#FF7900\"; readonly 'brand-primary-light': \"#FFA063\"; readonly 'brand-primary-dark': \"#DA5F00\"; readonly 'brand-primary-subtle': \"rgba(255, 121, 0, 0.12)\"; ... 151 more ...; readonly 'avatar-text': \"#FFFFFF\"; } | { ...; }"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "layout",
+          "required": true,
+          "type": "ScatterLayout"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "segments",
+          "required": true,
+          "type": "{ testID: string; segment: ScatterSegment; }[]"
+        }
+      ],
+      "purpose": "Left and bottom axis frame, the reference lines, and the axis titles.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/charts/scatter/ScatterFrame.tsx",
+        "status": null
+      },
+      "status": "review",
+      "storyIds": [],
       "tier": "atom"
     },
     {
       "composes": [],
-      "family": "ui/charts/spark-bars",
+      "family": "ui/charts",
+      "file": "packages/ui/src/components/ui/charts/scatter/ScatterGridlines.tsx",
+      "name": "ScatterGridlines",
+      "props": [
+        {
+          "default": null,
+          "description": "",
+          "name": "colors",
+          "required": true,
+          "type": "{ readonly 'brand-primary': \"#FF7900\"; readonly 'brand-primary-light': \"#FFA063\"; readonly 'brand-primary-dark': \"#DA5F00\"; readonly 'brand-primary-subtle': \"rgba(255, 121, 0, 0.12)\"; ... 151 more ...; readonly 'avatar-text': \"#FFFFFF\"; } | { ...; }"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "layout",
+          "required": true,
+          "type": "ScatterLayout"
+        }
+      ],
+      "purpose": "Horizontal then vertical gridlines, each carrying its tick label.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/charts/scatter/ScatterGridlines.tsx",
+        "status": null
+      },
+      "status": "review",
+      "storyIds": [],
+      "tier": "atom"
+    },
+    {
+      "composes": [],
+      "family": "ui/charts",
+      "file": "packages/ui/src/components/ui/charts/scatter/ScatterPointMark.tsx",
+      "name": "ScatterPointMark",
+      "props": [
+        {
+          "default": null,
+          "description": "",
+          "name": "isSelected",
+          "required": true,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "onPress",
+          "required": false,
+          "type": "((id: string) => void)"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "point",
+          "required": true,
+          "type": "ScatterPoint"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "ringColor",
+          "required": true,
+          "type": "string"
+        }
+      ],
+      "purpose": "One pressable bubble, ringed when selected, labelled when large or selected.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/charts/scatter/ScatterPointMark.tsx",
+        "status": null
+      },
+      "status": "review",
+      "storyIds": [],
+      "tier": "atom"
+    },
+    {
+      "composes": [],
+      "family": "ui/charts",
       "file": "packages/ui/src/components/ui/charts/spark-bars/SparkBars.tsx",
       "name": "SparkBars",
       "props": [
@@ -10874,8 +12765,93 @@
       "tier": "atom"
     },
     {
+      "composes": [
+        "EmptyState",
+        "Skeleton",
+        "Typography"
+      ],
+      "family": "ui/charts",
+      "file": "packages/ui/src/components/ui/charts/timeline/Timeline.tsx",
+      "name": "Timeline",
+      "props": [
+        {
+          "default": null,
+          "description": "Names the timeline for assistive tech.",
+          "name": "accessibilityLabel",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Tailwind classes merged onto the root.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "The axis span.",
+          "name": "domain",
+          "required": false,
+          "type": "TimelineRange<number | Date>"
+        },
+        {
+          "default": null,
+          "description": "Replaces the default empty state, shown when `items` is empty.",
+          "name": "emptyState",
+          "required": false,
+          "type": "ReactNode"
+        },
+        {
+          "default": "false",
+          "description": "Shows a skeleton track in place of the events.",
+          "name": "isLoading",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "The events.",
+          "name": "items",
+          "required": true,
+          "type": "TimelineItem[]"
+        },
+        {
+          "default": "horizontal",
+          "description": "Axis direction.",
+          "name": "orientation",
+          "required": false,
+          "type": "TimelineOrientation"
+        },
+        {
+          "default": null,
+          "description": "Playhead as a fraction of the domain, 0..1.",
+          "name": "playhead",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "The visible part of the domain as fractions of it, e.g. `[0.5, 1]` for the second half.",
+          "name": "window",
+          "required": false,
+          "type": "TimelineRange"
+        }
+      ],
+      "purpose": "Timeline: events on one time axis, with an optional playhead and a pan window.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/charts/timeline/Timeline.tsx",
+        "status": "packages/ui/src/components/ui/charts/timeline/Timeline.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-organisms-timeline--default"
+      ],
+      "tier": "molecule"
+    },
+    {
       "composes": [],
-      "family": "ui/charts/treemap",
+      "family": "ui/charts",
       "file": "packages/ui/src/components/ui/charts/treemap/Treemap.tsx",
       "name": "Treemap",
       "props": [
@@ -10892,6 +12868,13 @@
           "name": "data",
           "required": true,
           "type": "TreemapDatum[]"
+        },
+        {
+          "default": null,
+          "description": "Replaces the default \"No data\" placeholder drawn when no datum has a positive `value`.",
+          "name": "emptyState",
+          "required": false,
+          "type": "ReactNode"
         },
         {
           "default": null,
@@ -10965,6 +12948,13 @@
           "type": "string"
         },
         {
+          "default": "false",
+          "description": "Initial checked state when `isChecked` is not provided",
+          "name": "defaultIsChecked",
+          "required": false,
+          "type": "boolean"
+        },
+        {
           "default": null,
           "description": "Helper text",
           "name": "helperText",
@@ -10972,7 +12962,7 @@
           "type": "string"
         },
         {
-          "default": "false",
+          "default": null,
           "description": "Whether the checkbox is checked",
           "name": "isChecked",
           "required": false,
@@ -11077,6 +13067,13 @@
         },
         {
           "default": null,
+          "description": "Pressed state of a toggle chip.",
+          "name": "isSelected",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
           "description": "Left element (icon, avatar)",
           "name": "leftElement",
           "required": false,
@@ -11095,6 +13092,13 @@
           "name": "onPress",
           "required": false,
           "type": "(() => void)"
+        },
+        {
+          "default": null,
+          "description": "Right element (count, icon).",
+          "name": "rightElement",
+          "required": false,
+          "type": "ReactNode"
         },
         {
           "default": "md",
@@ -11126,6 +13130,222 @@
         "components-atoms-chip--default",
         "components-atoms-chip--disabled",
         "components-atoms-chip--dismissible"
+      ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [
+        "EvidenceChip",
+        "ScaledPill"
+      ],
+      "family": "ui/chip",
+      "file": "packages/ui/src/components/ui/chip/ChipBand.tsx",
+      "name": "ChipBand",
+      "props": [
+        {
+          "default": null,
+          "description": "The beat's citations, lead first.",
+          "name": "chips",
+          "required": true,
+          "type": "BandChip[]"
+        },
+        {
+          "default": null,
+          "description": "Additional className on the band.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "`rise` fades in and rises; `fade` only fades.",
+          "name": "entry",
+          "required": false,
+          "type": "\"rise\" | \"fade\""
+        },
+        {
+          "default": null,
+          "description": "Chip font size in px.",
+          "name": "fontPx",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": "1080",
+          "description": "Frame height in px; the chip font is 40 px per 1080.",
+          "name": "frameHeight",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": "3",
+          "description": "Most chips shown, counting the lead.",
+          "name": "max",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Seconds since the band's cue.",
+          "name": "progress",
+          "required": true,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Show the end state at any `progress`.",
+          "name": "reducedMotion",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "Band width in px.",
+          "name": "width",
+          "required": true,
+          "type": "number"
+        }
+      ],
+      "purpose": "ChipBand — one beat's citations on a single line at video scale: the lead chip with its citation, the next chips as kind tabs, the rest as a `+d` count.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/chip/ChipBand.tsx",
+        "status": "packages/ui/src/components/ui/chip/ChipBand.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-molecules-chipband--default"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "Pill",
+        "Typography"
+      ],
+      "family": "ui/chip",
+      "file": "packages/ui/src/components/ui/chip/EvidenceChip.tsx",
+      "name": "EvidenceChip",
+      "props": [
+        {
+          "default": null,
+          "description": "Additional className on the row.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Video size in px, for frames with no Tailwind rung (`40 × frameHeight / 1080`).",
+          "name": "fontPx",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "What kind of evidence backs the on-screen fact; picks the capsule's tone and label.",
+          "name": "kind",
+          "required": true,
+          "type": "\"target\" | \"verified\" | \"measured\" | \"computed\" | \"docs-claim\" | \"estimated\" | \"our-framing\" | \"reconstructed\" | \"illustrative\""
+        },
+        {
+          "default": null,
+          "description": "Character budget for `text`.",
+          "name": "maxChars",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": "md",
+          "description": "App size, one Pill rung.",
+          "name": "size",
+          "required": false,
+          "type": "EvidenceChipSize"
+        },
+        {
+          "default": null,
+          "description": "The citation: refs joined by `\"; \"`, e.g. `ab@1a2b3c4:src/core/loop.ts:12-30`.",
+          "name": "text",
+          "required": true,
+          "type": "string"
+        }
+      ],
+      "purpose": "EvidenceChip — a `Pill` preset that cites the source behind an on-screen fact: a tone capsule naming the evidence kind, then the citation in mono.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/chip/EvidenceChip.tsx",
+        "status": "packages/ui/src/components/ui/chip/EvidenceChip.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-molecules-evidencechip--default"
+      ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [
+        "Pill"
+      ],
+      "family": "ui/chip",
+      "file": "packages/ui/src/components/ui/chip/StateChip.tsx",
+      "name": "StateChip",
+      "props": [
+        {
+          "default": null,
+          "description": "Additional className on the capsule.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Video size in px, for frames with no Tailwind rung (`40 × frameHeight / 1080`).",
+          "name": "fontPx",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "The state the chip is leaving.",
+          "name": "from",
+          "required": false,
+          "type": "\"met\" | \"unmet\""
+        },
+        {
+          "default": "1",
+          "description": "How far the move from `from` has run, 0..1.",
+          "name": "progress",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": "md",
+          "description": "App size, one Pill rung.",
+          "name": "size",
+          "required": false,
+          "type": "StateChipSize"
+        },
+        {
+          "default": null,
+          "description": "The state the chip is in, or moving to.",
+          "name": "state",
+          "required": true,
+          "type": "\"met\" | \"unmet\""
+        },
+        {
+          "default": null,
+          "description": "What the chip names, e.g. `ci:green@h`.",
+          "name": "text",
+          "required": true,
+          "type": "string"
+        }
+      ],
+      "purpose": "StateChip — a `Pill` preset that shows whether a requirement is met.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/chip/StateChip.tsx",
+        "status": "packages/ui/src/components/ui/chip/StateChip.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-molecules-statechip--default"
       ],
       "tier": "molecule"
     },
@@ -11265,14 +13485,14 @@
         },
         {
           "default": null,
-          "description": "Custom format string (overrides format)",
+          "description": "Custom format string.",
           "name": "customFormat",
           "required": false,
           "type": "string"
         },
         {
           "default": "-",
-          "description": "Fallback text when value is null/undefined",
+          "description": "Text for a null, undefined or unparseable value (default '-').",
           "name": "fallback",
           "required": false,
           "type": "string"
@@ -11293,14 +13513,14 @@
         },
         {
           "default": null,
-          "description": "Track the current time and re-render on an interval (ignores `value`).",
+          "description": "Re-render on an interval.",
           "name": "isLive",
           "required": false,
           "type": "boolean"
         },
         {
           "default": "false",
-          "description": "Whether to show in UTC",
+          "description": "Show in UTC rather than the runtime's zone.",
           "name": "isUTC",
           "required": false,
           "type": "boolean"
@@ -11314,7 +13534,7 @@
         },
         {
           "default": "1000",
-          "description": "Refresh interval in ms when `isLive` (default 1000).",
+          "description": "Refresh interval in ms for a live clock (default 1000).",
           "name": "refreshMs",
           "required": false,
           "type": "number"
@@ -11513,6 +13733,13 @@
           "type": "ComponentType<{ size?: number | undefined; className?: string | undefined; }>"
         },
         {
+          "default": "false",
+          "description": "Draw the icon bare above the title, without the rounded well behind it",
+          "name": "isIconBare",
+          "required": false,
+          "type": "boolean"
+        },
+        {
           "default": null,
           "description": "Title text",
           "name": "title",
@@ -11559,6 +13786,162 @@
       "status": "candidate",
       "storyIds": [
         "components-molecules-eyebrow--default"
+      ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [
+        "Chip",
+        "Eyebrow"
+      ],
+      "family": "ui/facet-bar",
+      "file": "packages/ui/src/components/ui/facet-bar/FacetBar.tsx",
+      "name": "FacetBar",
+      "props": [
+        {
+          "default": null,
+          "description": "",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Colour of a selected chip.",
+          "name": "color",
+          "required": false,
+          "type": "ChipColor"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "defaultValue",
+          "required": false,
+          "type": "string | readonly T[] | null"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "formatCount",
+          "required": false,
+          "type": "((count: number) => string)"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "isDisabled",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "isLabelHidden",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "Names the group.",
+          "name": "label",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "onValueChange",
+          "required": false,
+          "type": "((value: T[]) => void) | ((value: T | null) => void)"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "options",
+          "required": true,
+          "type": "readonly FacetOption<T>[]"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "selectionMode",
+          "required": false,
+          "type": "\"multiple\" | \"single\""
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "size",
+          "required": false,
+          "type": "ChipSize"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "value",
+          "required": false,
+          "type": "string | readonly T[] | null"
+        }
+      ],
+      "purpose": "FacetBar — one labelled row of toggle chips for one facet.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/facet-bar/FacetBar.tsx",
+        "status": "packages/ui/src/components/ui/facet-bar/FacetBar.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-molecules-facetbar--default"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "Typography"
+      ],
+      "family": "ui/file-path-label",
+      "file": "packages/ui/src/components/ui/file-path-label/FilePathLabel.tsx",
+      "name": "FilePathLabel",
+      "props": [
+        {
+          "default": "false",
+          "description": "Render only the basename, dropping the directory prefix.",
+          "name": "baseOnly",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "A repo-relative path, e.g. `src/commands/open.ts`.",
+          "name": "path",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": "md",
+          "description": "`md` for standalone rows; `sm` for dense contexts like chips, where basename and directory share `text-xs`.",
+          "name": "size",
+          "required": false,
+          "type": "FilePathLabelSize"
+        }
+      ],
+      "purpose": "FilePathLabel — a file path with the directory dimmed and the basename bright.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/file-path-label/FilePathLabel.tsx",
+        "status": "packages/ui/src/components/ui/file-path-label/FilePathLabel.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-atoms-filepathlabel--base-only",
+        "components-atoms-filepathlabel--default",
+        "components-atoms-filepathlabel--no-directory",
+        "components-atoms-filepathlabel--small"
       ],
       "tier": "molecule"
     },
@@ -11669,101 +14052,63 @@
     },
     {
       "composes": [
-        "Surface"
+        "Typography"
       ],
-      "family": "ui/help-tip",
-      "file": "packages/ui/src/components/ui/help-tip/HelpTip.tsx",
-      "name": "HelpTip",
+      "family": "ui/highlight-text",
+      "file": "packages/ui/src/components/ui/highlight-text/HighlightText.tsx",
+      "name": "HighlightText",
       "props": [
         {
-          "default": "default",
-          "description": "Icon color",
-          "name": "color",
-          "required": false,
-          "type": "\"default\" | \"primary\" | \"secondary\" | \"muted\""
-        },
-        {
           "default": null,
-          "description": "Tooltip content",
-          "name": "content",
-          "required": true,
-          "type": "ReactNode"
-        },
-        {
-          "default": "true",
-          "description": "Whether to show an arrow",
-          "name": "hasArrow",
-          "required": false,
-          "type": "boolean"
-        },
-        {
-          "default": "help",
-          "description": "Icon type",
-          "name": "icon",
-          "required": false,
-          "type": "HelpTipIcon"
-        },
-        {
-          "default": null,
-          "description": "Additional className for the icon",
-          "name": "iconClassName",
+          "description": "Additional className for the root.",
+          "name": "className",
           "required": false,
           "type": "string"
         },
         {
-          "default": null,
-          "description": "Whether the tooltip is always visible (controlled)",
-          "name": "isOpen",
+          "default": "primary",
+          "description": "Text colour; matched segments inherit it.",
+          "name": "color",
           "required": false,
-          "type": "boolean"
+          "type": "TypographyColor"
         },
         {
-          "default": "250",
-          "description": "Max width of the tooltip",
-          "name": "maxWidth",
+          "default": null,
+          "description": "Maximum number of lines before truncating.",
+          "name": "maxLines",
           "required": false,
           "type": "number"
         },
         {
-          "default": "top",
-          "description": "Placement of the tooltip",
-          "name": "placement",
-          "required": false,
-          "type": "HelpTipPlacement"
-        },
-        {
-          "default": "md",
-          "description": "Size of the icon",
-          "name": "size",
-          "required": false,
-          "type": "HelpTipSize"
+          "default": null,
+          "description": "Matched ranges, end exclusive.",
+          "name": "ranges",
+          "required": true,
+          "type": "readonly HighlightRange[]"
         },
         {
           "default": null,
-          "description": "Additional className for the tooltip",
-          "name": "tooltipClassName",
-          "required": false,
+          "description": "The full string to render.",
+          "name": "text",
+          "required": true,
           "type": "string"
+        },
+        {
+          "default": "body2",
+          "description": "Typography variant of the whole string.",
+          "name": "variant",
+          "required": false,
+          "type": "TypographyVariant"
         }
       ],
-      "purpose": "HelpTip component for displaying contextual help information.",
+      "purpose": "A string with matched ranges emphasised by weight only, so no colour pair is added.",
       "sources": {
-        "props": "packages/ui/src/components/ui/help-tip/HelpTip.tsx",
-        "status": "packages/ui/src/components/ui/help-tip/HelpTip.stories.tsx"
+        "props": "packages/ui/src/components/ui/highlight-text/HighlightText.tsx",
+        "status": "packages/ui/src/components/ui/highlight-text/HighlightText.stories.tsx"
       },
       "status": "candidate",
       "storyIds": [
-        "components-molecules-helptip--all-colors",
-        "components-molecules-helptip--all-icons",
-        "components-molecules-helptip--all-placements",
-        "components-molecules-helptip--all-sizes",
-        "components-molecules-helptip--default",
-        "components-molecules-helptip--form-example",
-        "components-molecules-helptip--inline-with-label",
-        "components-molecules-helptip--label-with-help-component",
-        "components-molecules-helptip--no-arrow",
-        "components-molecules-helptip--with-long-content",
-        "components-molecules-helptip--with-rich-content"
+        "components-atoms-highlighttext--default"
       ],
       "tier": "molecule"
     },
@@ -12031,6 +14376,54 @@
       "tier": "atom"
     },
     {
+      "composes": [
+        "Typography"
+      ],
+      "family": "ui/kbd",
+      "file": "packages/ui/src/components/ui/kbd/Kbd.tsx",
+      "name": "Kbd",
+      "props": [
+        {
+          "default": null,
+          "description": "Overrides the spoken name derived from `keys`.",
+          "name": "accessibilityLabel",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Tailwind classes merged onto the root through `cn()`.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "One keycap per entry, e.g. `['⌘', 'K']`.",
+          "name": "keys",
+          "required": true,
+          "type": "string[]"
+        },
+        {
+          "default": "sm",
+          "description": "Keycap size.",
+          "name": "size",
+          "required": false,
+          "type": "KbdSize"
+        }
+      ],
+      "purpose": "Kbd — a display-only keyboard shortcut hint, one keycap per key.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/kbd/Kbd.tsx",
+        "status": "packages/ui/src/components/ui/kbd/Kbd.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-atoms-kbd--default"
+      ],
+      "tier": "molecule"
+    },
+    {
       "composes": [],
       "family": "ui/link",
       "file": "packages/ui/src/components/ui/link/Link.tsx",
@@ -12052,7 +14445,7 @@
         },
         {
           "default": null,
-          "description": "URL to navigate to (for accessibility)",
+          "description": "URL to navigate to; on web the link renders a real `<a href>`",
           "name": "href",
           "required": false,
           "type": "string"
@@ -12181,7 +14574,7 @@
         "props": "packages/ui/src/components/ui/menu/Menu.tsx",
         "status": "packages/ui/src/components/ui/menu/Menu.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "components-molecules-menu--controlled",
         "components-molecules-menu--default",
@@ -12192,6 +14585,108 @@
         "components-molecules-menu--with-icons"
       ],
       "tier": "molecule"
+    },
+    {
+      "composes": [],
+      "family": "ui/metric",
+      "file": "packages/ui/src/components/ui/metric/Metric.tsx",
+      "name": "Metric",
+      "props": [
+        {
+          "default": "center",
+          "description": "Aligns the figure and label to the start, centre or end of the column.",
+          "name": "align",
+          "required": false,
+          "type": "MetricAlign"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "label",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Merged onto the label text, e.g. to hold it at one size whatever the figure's `size`.",
+          "name": "labelClassName",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": "below",
+          "description": "Puts the label above or below the figure.",
+          "name": "labelPosition",
+          "required": false,
+          "type": "MetricLabelPosition"
+        },
+        {
+          "default": "md",
+          "description": "",
+          "name": "size",
+          "required": false,
+          "type": "\"sm\" | \"md\" | \"lg\""
+        },
+        {
+          "default": "neutral",
+          "description": "Colours the value from a semantic token.",
+          "name": "tone",
+          "required": false,
+          "type": "MetricTone"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "trend",
+          "required": false,
+          "type": "MetricTrend"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "unit",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "value",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Merged onto the value text, e.g. `leading-none` to sit the figure tight under a header.",
+          "name": "valueClassName",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Inline style on the value text, for a value a token class cannot express.",
+          "name": "valueStyle",
+          "required": false,
+          "type": "StyleProp<TextStyle>"
+        }
+      ],
+      "purpose": "",
+      "sources": {
+        "props": "packages/ui/src/components/ui/metric/Metric.tsx",
+        "status": "packages/ui/src/components/ui/metric/Metric.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-molecules-metric--default"
+      ],
+      "tier": "atom"
     },
     {
       "composes": [
@@ -12263,7 +14758,7 @@
         "props": "packages/ui/src/components/ui/modal/Modal.tsx",
         "status": "packages/ui/src/components/ui/modal/Modal.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "components-organisms-modal--backdrop-blur",
         "components-organisms-modal--default",
@@ -12276,6 +14771,163 @@
         "components-organisms-modal--with-form-content"
       ],
       "tier": "molecule"
+    },
+    {
+      "composes": [],
+      "family": "ui/motion",
+      "file": "packages/ui/src/components/ui/motion/Beat.tsx",
+      "name": "Beat",
+      "props": [
+        {
+          "default": null,
+          "description": "The beat's content, timed from the beat's start.",
+          "name": "children",
+          "required": false,
+          "type": "ReactNode"
+        },
+        {
+          "default": null,
+          "description": "Named moments in seconds from the beat's start, each within `[0, durationS]`; content reads one with `useCue(name)`.",
+          "name": "cues",
+          "required": false,
+          "type": "Readonly<Record<string, number>>"
+        },
+        {
+          "default": null,
+          "description": "Length of the window in seconds.",
+          "name": "durationS",
+          "required": true,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Seconds from the enclosing origin at which the beat's window starts.",
+          "name": "startS",
+          "required": true,
+          "type": "number"
+        }
+      ],
+      "purpose": "A window of the timeline: moves the time origin to `startS` and mounts only near its window.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/motion/Beat.tsx",
+        "status": null
+      },
+      "status": "review",
+      "storyIds": [],
+      "tier": "atom"
+    },
+    {
+      "composes": [],
+      "family": "ui/motion",
+      "file": "packages/ui/src/components/ui/motion/MotionProvider.tsx",
+      "name": "MotionProvider",
+      "props": [
+        {
+          "default": null,
+          "description": "The timeline.",
+          "name": "children",
+          "required": false,
+          "type": "ReactNode"
+        },
+        {
+          "default": null,
+          "description": "The time source for every motion hook below.",
+          "name": "clock",
+          "required": true,
+          "type": "Clock"
+        },
+        {
+          "default": "0",
+          "description": "Total timeline length in seconds, published as `__titanMotion.duration`.",
+          "name": "durationS",
+          "required": false,
+          "type": "number"
+        }
+      ],
+      "purpose": "Puts every motion hook below it on `clock`, so a seek clock can drive a render frame by frame.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/motion/MotionProvider.tsx",
+        "status": null
+      },
+      "status": "review",
+      "storyIds": [],
+      "tier": "atom"
+    },
+    {
+      "composes": [
+        "Typography"
+      ],
+      "family": "ui/page",
+      "file": "packages/ui/src/components/ui/page/Page.tsx",
+      "name": "Page",
+      "props": [
+        {
+          "default": null,
+          "description": "The body.",
+          "name": "children",
+          "required": false,
+          "type": "ReactNode"
+        },
+        {
+          "default": null,
+          "description": "Tailwind classes merged onto the root.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "The padded outer column.",
+          "name": "contentClassName",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": "md",
+          "description": "`md` widens from 640px and a consumer `p-*` in `contentClassName` loses to it there; pass `sm` for a fixed narrow gutter.",
+          "name": "gutter",
+          "required": false,
+          "type": "PageGutter"
+        },
+        {
+          "default": null,
+          "description": "Stacked above the body.",
+          "name": "header",
+          "required": false,
+          "type": "ReactNode"
+        },
+        {
+          "default": "false",
+          "description": "true: the header sits in a ruled band that stays put while the body scrolls under it, and casts a shadow once content is under it.",
+          "name": "isHeaderPinned",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": "true",
+          "description": "false: the page fills the region and the view owns its own scroll.",
+          "name": "isScrollable",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": "full",
+          "description": "Caps the content column, gutters excluded.",
+          "name": "maxWidth",
+          "required": false,
+          "type": "PageMaxWidth"
+        }
+      ],
+      "purpose": "A page container for a view's content region: a gutter, an optional width cap, a header slot and a scroller.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/page/Page.tsx",
+        "status": "packages/ui/src/components/ui/page/Page.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-molecules-page--default"
+      ],
+      "tier": "page"
     },
     {
       "composes": [],
@@ -12376,7 +15028,7 @@
         },
         {
           "default": null,
-          "description": "Visual variant",
+          "description": "Visual variant.",
           "name": "variant",
           "required": false,
           "type": "PillVariant"
@@ -12395,6 +15047,7 @@
         "components-atoms-pill--default",
         "components-atoms-pill--leading-slot",
         "components-atoms-pill--on-both-planes",
+        "components-atoms-pill--outline-on-all-elevations",
         "components-atoms-pill--solid-tones",
         "components-atoms-pill--square-corners"
       ],
@@ -12471,7 +15124,7 @@
         "props": "packages/ui/src/components/ui/popover/Popover.tsx",
         "status": "packages/ui/src/components/ui/popover/Popover.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "components-molecules-popover--controlled",
         "components-molecules-popover--default",
@@ -12589,6 +15242,82 @@
       "tier": "atom"
     },
     {
+      "composes": [
+        "Progress"
+      ],
+      "family": "ui/progress",
+      "file": "packages/ui/src/components/ui/progress/ProgressSteps.tsx",
+      "name": "ProgressSteps",
+      "props": [
+        {
+          "default": null,
+          "description": "Additional className",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Color of completed steps.",
+          "name": "color",
+          "required": false,
+          "type": "ProgressColor"
+        },
+        {
+          "default": null,
+          "description": "Current step (0-indexed)",
+          "name": "currentStep",
+          "required": true,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Labels for each step",
+          "name": "labels",
+          "required": false,
+          "type": "string[]"
+        },
+        {
+          "default": null,
+          "description": "Fractional position along the steps, 0..totalSteps-1.",
+          "name": "progress",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Size of step indicators.",
+          "name": "size",
+          "required": false,
+          "type": "\"sm\" | \"md\" | \"lg\""
+        },
+        {
+          "default": null,
+          "description": "Total number of steps",
+          "name": "totalSteps",
+          "required": true,
+          "type": "number"
+        },
+        {
+          "default": "dots",
+          "description": "`dots` (default) or `rail`: state chips joined by connectors that fill with `progress`.",
+          "name": "variant",
+          "required": false,
+          "type": "ProgressStepsVariant"
+        }
+      ],
+      "purpose": "Step-based progress indicator.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/progress/ProgressSteps.tsx",
+        "status": "packages/ui/src/components/ui/progress/ProgressSteps.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-molecules-progresssteps--default"
+      ],
+      "tier": "molecule"
+    },
+    {
       "composes": [],
       "family": "ui/radio",
       "file": "packages/ui/src/components/ui/radio/Radio.tsx",
@@ -12679,7 +15408,7 @@
     },
     {
       "composes": [
-        "Surface"
+        "SelectPopover"
       ],
       "family": "ui/select",
       "file": "packages/ui/src/components/ui/select/Select.tsx",
@@ -12768,7 +15497,7 @@
         "props": "packages/ui/src/components/ui/select/Select.tsx",
         "status": "packages/ui/src/components/ui/select/Select.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "components-molecules-select--controlled",
         "components-molecules-select--default",
@@ -12782,6 +15511,31 @@
         "components-molecules-select--with-placeholder",
         "components-molecules-select--with-preselected-value"
       ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "Surface"
+      ],
+      "family": "ui/select",
+      "file": "packages/ui/src/components/ui/select/SelectPopover.tsx",
+      "name": "SelectPopover",
+      "props": [
+        {
+          "default": null,
+          "description": "",
+          "name": "onClose",
+          "required": true,
+          "type": "() => void"
+        }
+      ],
+      "purpose": "",
+      "sources": {
+        "props": "packages/ui/src/components/ui/select/SelectPopover.tsx",
+        "status": null
+      },
+      "status": "review",
+      "storyIds": [],
       "tier": "molecule"
     },
     {
@@ -12806,7 +15560,7 @@
         },
         {
           "default": null,
-          "description": "Border radius (only for 'rect' variant)",
+          "description": "Border radius in pixels; applies to every variant and overrides the variant's radius class",
           "name": "borderRadius",
           "required": false,
           "type": "number"
@@ -12923,7 +15677,7 @@
           "description": "",
           "name": "align",
           "required": false,
-          "type": "\"center\" | \"stretch\" | \"start\" | \"end\""
+          "type": "\"start\" | \"center\" | \"end\" | \"stretch\""
         },
         {
           "default": null,
@@ -12944,7 +15698,7 @@
           "description": "",
           "name": "justify",
           "required": false,
-          "type": "\"center\" | \"between\" | \"start\" | \"end\" | \"around\""
+          "type": "\"start\" | \"center\" | \"end\" | \"between\" | \"around\""
         },
         {
           "default": null,
@@ -13132,6 +15886,56 @@
       "tier": "organism"
     },
     {
+      "composes": [
+        "SvgIcon",
+        "icons",
+        "statusIcons"
+      ],
+      "family": "ui/status-glyph",
+      "file": "packages/ui/src/components/ui/status-glyph/StatusGlyph.tsx",
+      "name": "StatusGlyph",
+      "props": [
+        {
+          "default": null,
+          "description": "Tailwind overrides for the wrapper, merged with `cn()`.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "The status word, spoken as the glyph's accessible name.",
+          "name": "label",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": "md",
+          "description": "Defaults to `md`.",
+          "name": "size",
+          "required": false,
+          "type": "StatusGlyphSize"
+        },
+        {
+          "default": null,
+          "description": "The condition shown.",
+          "name": "tone",
+          "required": true,
+          "type": "StatusGlyphTone"
+        }
+      ],
+      "purpose": "One status condition as a shaped, coloured mark: circle-check, alert-triangle, octagon-x or a dashed ring.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/status-glyph/StatusGlyph.tsx",
+        "status": "packages/ui/src/components/ui/status-glyph/StatusGlyph.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-atoms-statusglyph--default"
+      ],
+      "tier": "organism"
+    },
+    {
       "composes": [],
       "family": "ui/surface",
       "file": "packages/ui/src/components/ui/surface/Surface.tsx",
@@ -13251,6 +16055,13 @@
         },
         {
           "default": "false",
+          "description": "Initial checked state when `isChecked` is not provided",
+          "name": "defaultIsChecked",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
           "description": "Whether the switch is on",
           "name": "isChecked",
           "required": false,
@@ -13275,7 +16086,7 @@
           "description": "Label position",
           "name": "labelPosition",
           "required": false,
-          "type": "\"right\" | \"left\""
+          "type": "\"left\" | \"right\""
         },
         {
           "default": null,
@@ -13439,7 +16250,7 @@
           "description": "Text alignment",
           "name": "align",
           "required": false,
-          "type": "\"right\" | \"left\" | \"center\""
+          "type": "\"left\" | \"right\" | \"center\""
         },
         {
           "default": null,
@@ -13529,7 +16340,7 @@
           "description": "Text alignment",
           "name": "align",
           "required": false,
-          "type": "\"right\" | \"left\" | \"center\""
+          "type": "\"left\" | \"right\" | \"center\""
         },
         {
           "default": null,
@@ -13542,6 +16353,13 @@
           "default": null,
           "description": "Sort key for this column",
           "name": "sortKey",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Accessible sort name; required when `children` is not a string.",
+          "name": "sortLabel",
           "required": false,
           "type": "string"
         },
@@ -13648,25 +16466,39 @@
           "type": "string"
         },
         {
-          "default": "0",
-          "description": "Currently active tab index",
+          "default": null,
+          "description": "Initial active index when uncontrolled.",
           "name": "defaultIndex",
           "required": false,
           "type": "number"
         },
         {
           "default": null,
-          "description": "Controlled active index",
+          "description": "Initial value when uncontrolled.",
+          "name": "defaultValue",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Controlled active index.",
           "name": "index",
           "required": false,
           "type": "number"
         },
         {
           "default": null,
-          "description": "Callback when tab changes",
+          "description": "Fires with the next active index.",
           "name": "onChange",
           "required": false,
           "type": "((index: number) => void)"
+        },
+        {
+          "default": null,
+          "description": "Fires with the next value on every user-driven change.",
+          "name": "onValueChange",
+          "required": false,
+          "type": "((value: number) => void)"
         },
         {
           "default": "horizontal",
@@ -13674,6 +16506,13 @@
           "name": "orientation",
           "required": false,
           "type": "TabsOrientation"
+        },
+        {
+          "default": null,
+          "description": "Controlled value; leave `undefined` to let the component own the state.",
+          "name": "value",
+          "required": false,
+          "type": "number"
         },
         {
           "default": "line",
@@ -13711,11 +16550,11 @@
           "description": "Content alignment within the tile (default: 'center')",
           "name": "align",
           "required": false,
-          "type": "\"center\" | \"start\""
+          "type": "\"start\" | \"center\""
         },
         {
           "default": null,
-          "description": "Additional className",
+          "description": "Additional className.",
           "name": "className",
           "required": false,
           "type": "string"
@@ -13736,13 +16575,13 @@
         },
         {
           "default": null,
-          "description": "Tints the value (status/accent hex or CSS color); defaults to primary text",
+          "description": "Tints the value (status/accent hex or CSS color); defaults to primary text.",
           "name": "valueColor",
           "required": false,
           "type": "string"
         }
       ],
-      "purpose": "Tile — a compact label-over-value stat card.",
+      "purpose": "Tile — a compact label-over-value stat, now a wrapper over the `CardStat` preset.",
       "sources": {
         "props": "packages/ui/src/components/ui/tile/Tile.tsx",
         "status": "packages/ui/src/components/ui/tile/Tile.stories.tsx"
@@ -13840,7 +16679,7 @@
     },
     {
       "composes": [
-        "Surface"
+        "ToolbarButtonParts"
       ],
       "family": "ui/toolbar-button",
       "file": "packages/ui/src/components/ui/toolbar-button/ToolbarButton.tsx",
@@ -13944,7 +16783,7 @@
         "components-molecules-toolbarbutton--variants",
         "components-molecules-toolbarbutton--with-menu"
       ],
-      "tier": "molecule"
+      "tier": "organism"
     },
     {
       "composes": [
@@ -14030,6 +16869,7 @@
     {
       "composes": [
         "Surface",
+        "TooltipParts",
         "TriggerSurface"
       ],
       "family": "ui/tooltip",
@@ -14133,10 +16973,11 @@
         "props": "packages/ui/src/components/ui/tooltip/Tooltip.tsx",
         "status": "packages/ui/src/components/ui/tooltip/Tooltip.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "components-molecules-tooltip--all-placements",
         "components-molecules-tooltip--default",
+        "components-molecules-tooltip--help-beside-label",
         "components-molecules-tooltip--on-text",
         "components-molecules-tooltip--with-delay",
         "components-molecules-tooltip--without-arrow"
@@ -14286,11 +17127,39 @@
       "reason": "name-not-exported"
     },
     {
+      "file": "packages/ui/src/components/custom/ActiveWork/FileActivityGrowthWell.tsx",
+      "reason": "name-not-exported"
+    },
+    {
+      "file": "packages/ui/src/components/custom/ActiveWork/FilePathLabel.tsx",
+      "reason": "name-not-exported"
+    },
+    {
       "file": "packages/ui/src/components/custom/Chat/coach-cards.tsx",
       "reason": "not-pascal-case"
     },
     {
+      "file": "packages/ui/src/components/custom/Fatigue/DualGhostSparkParts.tsx",
+      "reason": "name-not-exported"
+    },
+    {
+      "file": "packages/ui/src/components/custom/Fatigue/GhostBandParts.tsx",
+      "reason": "name-not-exported"
+    },
+    {
       "file": "packages/ui/src/components/custom/Workout/BodyMapDetailSections.tsx",
+      "reason": "name-not-exported"
+    },
+    {
+      "file": "packages/ui/src/components/custom/Workout/CapacityBandOverlays.tsx",
+      "reason": "name-not-exported"
+    },
+    {
+      "file": "packages/ui/src/components/custom/Workout/DualVelocityCharts.tsx",
+      "reason": "name-not-exported"
+    },
+    {
+      "file": "packages/ui/src/components/custom/Workout/ExerciseDetailSectionCard.tsx",
       "reason": "name-not-exported"
     },
     {
@@ -14306,23 +17175,35 @@
       "reason": "name-not-exported"
     },
     {
+      "file": "packages/ui/src/components/custom/Workout/GoalTrajectoryChartParts.tsx",
+      "reason": "name-not-exported"
+    },
+    {
+      "file": "packages/ui/src/components/custom/Workout/ProgramPlanningBreadcrumbs.tsx",
+      "reason": "name-not-exported"
+    },
+    {
+      "file": "packages/ui/src/components/custom/Workout/SparklineParts.tsx",
+      "reason": "name-not-exported"
+    },
+    {
+      "file": "packages/ui/src/components/custom/Workout/VelocityStripVariants.tsx",
+      "reason": "name-not-exported"
+    },
+    {
+      "file": "packages/ui/src/components/custom/Workout/ZoneTrackParts.tsx",
+      "reason": "name-not-exported"
+    },
+    {
+      "file": "packages/ui/src/components/custom/Workout/ZoneTrackTicks.tsx",
+      "reason": "name-not-exported"
+    },
+    {
       "file": "packages/ui/src/components/custom/Workout/goalCarousel-fixture.tsx",
       "reason": "fixture"
     },
     {
       "file": "packages/ui/src/components/custom/Workout/icons.tsx",
-      "reason": "not-pascal-case"
-    },
-    {
-      "file": "packages/ui/src/components/custom/Workout/metricText.tsx",
-      "reason": "not-pascal-case"
-    },
-    {
-      "file": "packages/ui/src/components/custom/Workout/setHeadingKit.tsx",
-      "reason": "not-pascal-case"
-    },
-    {
-      "file": "packages/ui/src/components/custom/Workout/velocity-story-kit.tsx",
       "reason": "not-pascal-case"
     },
     {
@@ -14346,7 +17227,19 @@
       "reason": "not-pascal-case"
     },
     {
+      "file": "packages/ui/src/components/ui/autocomplete/AutocompleteParts.tsx",
+      "reason": "name-not-exported"
+    },
+    {
       "file": "packages/ui/src/components/ui/table/TableSelection.tsx",
+      "reason": "name-not-exported"
+    },
+    {
+      "file": "packages/ui/src/components/ui/toolbar-button/ToolbarButtonParts.tsx",
+      "reason": "name-not-exported"
+    },
+    {
+      "file": "packages/ui/src/components/ui/tooltip/TooltipParts.tsx",
       "reason": "name-not-exported"
     }
   ],

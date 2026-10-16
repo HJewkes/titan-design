@@ -3,6 +3,7 @@ import { spacingClassesAt, spacingClassesOf, resolveAll } from '../../../test/sp
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { MesoStatusCard, type MesoStatusCardProps } from './MesoStatusCard'
+import { Surface } from '../../ui/surface'
 
 const baseProps: MesoStatusCardProps = {
   mesoName: 'Hypertrophy Block',
@@ -144,6 +145,19 @@ describe('MesoStatusCard', () => {
       render(<MesoStatusCard {...baseProps} gauges={[{ label: 'Intensity', level: Number.NaN }]} />)
       expect(screen.getByLabelText('Intensity: 0%')).toBeInTheDocument()
       expect(screen.queryByLabelText('Intensity: NaN%')).not.toBeInTheDocument()
+    })
+
+    it('lifts the gauge marker for the surface mode it sits on', () => {
+      const { unmount } = render(<MesoStatusCard {...baseProps} />)
+      const darkShadow = screen.getAllByTestId('meso-status-card-gauge-marker')[0].style.boxShadow
+      unmount()
+      render(
+        <Surface theme="light">
+          <MesoStatusCard {...baseProps} />
+        </Surface>
+      )
+      const lightMarker = screen.getAllByTestId('meso-status-card-gauge-marker')[0]
+      expect(lightMarker.style.boxShadow).not.toBe(darkShadow)
     })
 
     it('renders every gauge even when labels repeat (stable unique keys)', () => {

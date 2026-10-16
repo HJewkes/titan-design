@@ -1,9 +1,11 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
+import { Text } from 'react-native'
 import { axe } from 'jest-axe'
 import { Scatter, type ScatterDatum } from './Scatter'
 import { Surface } from '../../surface'
 import { getSemanticColors } from '../../../../theme/tokens/semantic'
+import { capturedByNode, capturedClassNames } from '../../../../test/classname-capture'
 
 const data: ScatterDatum[] = [
   { id: 'a', x: 0.1, y: 0.9, label: 'core' },
@@ -30,7 +32,7 @@ describe('Scatter', () => {
   it('labels sub-1 tick values to 2 decimal places', () => {
     render(<Scatter {...base} />)
     const labels = screen.getAllByTestId('scatter-gridline-y').map((el) => el.textContent)
-    expect(labels).toContain('0.50')
+    expect(labels).toContain('0.40')
   })
 
   it('fires onPress with the point id', () => {
@@ -102,6 +104,19 @@ describe('Scatter', () => {
     expect(screen.getByTestId('scatter-y-label')).toHaveTextContent('Abstractness')
   })
 
+  it('sets the axis title in the heading face', () => {
+    render(<Scatter {...base} axis={{ xLabel: 'Instability' }} />)
+    expect(capturedClassNames.get('scatter-x-label')?.split(/\s+/)).toContain('font-heading')
+  })
+
+  it('sets tick numerals in mono tertiary', () => {
+    render(<Scatter {...base} />)
+    const tick = screen.getAllByTestId('scatter-gridline-y')[0].firstChild as object
+    expect(capturedByNode.get(tick)?.split(/\s+/)).toEqual(
+      expect.arrayContaining(['font-mono', 'text-text-tertiary'])
+    )
+  })
+
   it('labels a point by its label, falling back to id', () => {
     render(<Scatter data={[{ id: 'solo', x: 0.2, y: 0.4 }]} width={200} height={200} />)
     expect(screen.getByLabelText('solo')).toBeInTheDocument()
@@ -112,10 +127,36 @@ describe('Scatter', () => {
     expect(screen.getByTestId('scatter-point-one')).toBeInTheDocument()
   })
 
-  it('renders an empty plot frame with no points', () => {
-    render(<Scatter data={[]} width={200} height={200} />)
-    expect(screen.getByTestId('scatter-canvas')).toBeInTheDocument()
-    expect(screen.queryByTestId('scatter-points')?.childNodes.length ?? 0).toBe(0)
+  describe('empty state', () => {
+    it('keeps the axes and draws a "No data" placeholder over the plot box when there is no data', () => {
+      render(<Scatter data={[]} width={200} height={200} />)
+
+      expect(screen.getByTestId('scatter-empty')).toHaveTextContent('No data')
+      expect(screen.getByTestId('scatter-axis-x')).toBeInTheDocument()
+      expect(screen.getByTestId('scatter-axis-y')).toBeInTheDocument()
+      expect(screen.queryByTestId('scatter-points')).not.toBeInTheDocument()
+    })
+
+    it('centres the placeholder inside the axes, not the chart box', () => {
+      render(<Scatter data={[]} width={200} height={200} />)
+
+      const overlay = screen.getByTestId('scatter-empty')
+      expect(overlay).toHaveStyle({
+        width: '200px',
+        height: '200px',
+        paddingLeft: '40px',
+        paddingTop: '12px',
+        paddingRight: '12px',
+        paddingBottom: '34px',
+      })
+    })
+
+    it('shows the consumer emptyState instead of the default', () => {
+      render(<Scatter data={[]} width={200} height={200} emptyState={<Text>Nothing yet</Text>} />)
+
+      expect(screen.getByTestId('scatter-empty')).toHaveTextContent('Nothing yet')
+      expect(screen.queryByText('No data')).not.toBeInTheDocument()
+    })
   })
 
   it('places an outlier inside the plot when domains are overridden', () => {

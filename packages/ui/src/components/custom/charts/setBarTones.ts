@@ -32,8 +32,9 @@ export interface SetBarTreatment {
    */
   emptyColor?: Readonly<Record<ThemeMode, string>>
   /**
-   * `raised` (default): the paper material in both modes. `soft`: on a light plane only, a short
-   * low-alpha shadow in place of the paper's dark drop shadow, which smudges on white.
+   * `soft` (default): on a light plane only, a short low-alpha shadow in place of the paper's dark
+   * drop shadow, which smudges on white; dark planes keep the paper. `raised`: the paper material
+   * in both modes.
    */
   lightPaper?: 'raised' | 'soft'
 }
@@ -57,7 +58,7 @@ function softLightPaper(color: string, flip = false): ViewStyle {
 
 /** The surface-relative tones a SetBarChart paints its window cells and bars with. */
 export function useSetBarTones() {
-  const { emptyColor, lightPaper = 'raised' } = useContext(SetBarTreatmentContext)
+  const { emptyColor, lightPaper = 'soft' } = useContext(SetBarTreatmentContext)
   // Planned/to-do reps + the baseline draw in a SURFACE-relative neutral (on-surface tertiary)
   // so they stay legible on every plane instead of a fixed grey.
   const placeholder = useOnSurfaceColor('tertiary')

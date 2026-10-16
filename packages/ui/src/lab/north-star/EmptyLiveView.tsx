@@ -60,7 +60,7 @@ export function EmptyLiveView({ kind, exerciseName, weightLbs, unit = 'lbs' }: E
         title={copy.title(exerciseName)}
         description={copy.description}
       />
-      {showWeight && (
+      {!!showWeight && (
         <MetricGroup>
           <Metric size="md" value={String(weightLbs)} unit={unit} label="Loaded" />
         </MetricGroup>

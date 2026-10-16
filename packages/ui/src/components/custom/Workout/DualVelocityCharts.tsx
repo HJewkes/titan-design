@@ -52,10 +52,7 @@ export interface DualChartProps {
 }
 
 /** The per-variant wing props the value-height duals (`hero`, `dual-expanded`) pass each composed strip. */
-type ValueHeightWingProps = Pick<
-  VelocityStripProps,
-  'variant' | 'showNumbers' | 'showInfo' | 'hideBaseline'
->
+type ValueHeightWingProps = Pick<VelocityStripProps, 'variant' | 'showNumbers' | 'showInfo'>
 
 /**
  * The two composed wings both value-height duals share. ONE shared height scale across both wings,
@@ -119,8 +116,7 @@ function valueHeightWings(
 /**
  * The `hero` diverging chart — COMPOSED from two single {@link VelocityStrip} heroes: an `up` hero
  * over a `down` (vertically-mirrored) hero, sharing ONE height scale via {@link
- * VelocityStripProps.scaleMax} and meeting at one shared centre axis. Each wing hides its own
- * baseline ({@link VelocityStripProps.hideBaseline}) so the axis is a single crisp line. Because it
+ * VelocityStripProps.scaleMax} and meeting at one shared centre axis. Because it
  * is literally two heroes, every hero improvement — paper, loss bands, grow-from-bottom, the
  * running-best reference, surface-relative placeholders, per-side loss coloring — reaches the dual
  * for free. Side is POSITION only: both wings color reps by the SAME `barColor` scale; the shared
@@ -129,7 +125,7 @@ function valueHeightWings(
 export function DualVelocityHero(props: DualChartProps & { liveRepIndex?: number }) {
   const { leftLabel, rightLabel, height, className, label, viewProps } = props
   // The two wings are separated by the SAME small gap as the expanded/rail dual (no centre-axis rule).
-  const { plotHalf, wings } = valueHeightWings(props, { variant: 'hero', hideBaseline: true })
+  const { plotHalf, wings } = valueHeightWings(props, { variant: 'hero' })
   const { style: externalStyle, ...restProps } = viewProps
 
   return (

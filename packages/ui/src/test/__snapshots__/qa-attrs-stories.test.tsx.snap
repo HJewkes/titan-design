@@ -1,0 +1,23 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`qa-relevant stories emit the render-QA hooks > NetworkGraph › Default marks every node it dims as context once a node is hovered 1`] = `
+[
+  "network-graph-node-worker-01: data-qa-context",
+  "network-graph-node-worker-04: data-qa-context",
+]
+`;
+
+exports[`qa-relevant stories emit the render-QA hooks > ui/charts/network-graph/NetworkGraph.stories.tsx › Default 1`] = `[]`;
+
+exports[`qa-relevant stories emit the render-QA hooks > ui/chip/StateChip.stories.tsx › Default 1`] = `
+[
+  "state-chip-label: data-qa-glyph",
+]
+`;
+
+exports[`qa-relevant stories emit the render-QA hooks > ui/stat-card/StatCard.stories.tsx › Default 1`] = `
+[
+  "div: data-qa-container",
+  "stat-card-header: data-qa-title",
+]
+`;

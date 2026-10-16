@@ -8,7 +8,7 @@ const t = getSemanticColors('dark')
 const meta: Meta<typeof PlaceholderStrip> = {
   title: 'Custom/Workout/PlaceholderStrip',
   component: PlaceholderStrip,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   argTypes: {
     width: {
       control: 'text',

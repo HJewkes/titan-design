@@ -261,8 +261,9 @@ describe('surface ramp contract (dark) — token-value guardrails', () => {
   // R4 used to check that the solid `border-subtle` hex did not match the plane
   // it sat on. Those solid borders are gone (TD-07.14) — separation is R3's
   // alpha hairlines, which cannot collide with a plane by construction. What is
-  // left to guard is the one border still solid.
-  describe('R4 — border-prominent, the last solid border', () => {
+  // left to guard is `border-prominent`, the divider meant to be seen outright.
+  // It is white alpha too since item 42, so it is measured composited.
+  describe('R4 — border-prominent, the high-visibility divider', () => {
     it('clears ΔL* >= 3 on every content plane', () => {
       const planes = [
         'surface-base',
@@ -271,7 +272,8 @@ describe('surface ramp contract (dark) — token-value guardrails', () => {
         'surface-overlay',
       ] as const
       for (const plane of planes) {
-        const dL = Math.abs(lstar(dark['border-prominent']) - lstar(dark[plane]))
+        const composited = compositeOver(dark[plane], dark['border-prominent'])
+        const dL = Math.abs(lstar(composited) - lstar(dark[plane]))
         expect(dL, `border-prominent vs ${plane}`).toBeGreaterThanOrEqual(3)
       }
     })

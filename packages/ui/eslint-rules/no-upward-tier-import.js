@@ -29,6 +29,7 @@
  */
 
 const path = require('node:path')
+const { loadBaseline, baselineKey, srcRootOf } = require('./ratchet')
 const { registryFor, resolveModule } = require('./deprecated-export-registry')
 
 const TIER_ORDER = ['theme', 'icons', 'ui', 'custom', 'shell', 'pages']
@@ -39,13 +40,6 @@ function tierOf(srcRelativePath) {
   if (srcRelativePath.startsWith('theme/')) return 'theme'
   const match = /^components\/(icons|ui|custom|shell|pages)\//.exec(srcRelativePath)
   return match ? match[1] : null
-}
-
-/** Absolute path of the package's `src/` root, derived from the file being linted. */
-function srcRootOf(filename) {
-  const marker = `${path.sep}src${path.sep}`
-  const i = filename.indexOf(marker)
-  return i === -1 ? null : filename.slice(0, i + marker.length - 1)
 }
 
 /**
@@ -63,26 +57,6 @@ function resolveToSrcRelative(specifier, filename, srcRoot) {
     return null
   }
   return path.relative(srcRoot, absolute).split(path.sep).join('/')
-}
-
-let baselineCache = null
-function loadBaseline() {
-  if (baselineCache) return baselineCache
-  try {
-    baselineCache = require('./tier-import-baseline.json')
-  } catch {
-    baselineCache = {}
-  }
-  return baselineCache
-}
-
-/** Baseline keys are package-relative POSIX paths, so they're stable across machines. */
-function baselineKey(context) {
-  const cwd = context.getCwd?.() ?? process.cwd()
-  return path
-    .relative(cwd, context.filename ?? context.getFilename())
-    .split(path.sep)
-    .join('/')
 }
 
 /** `src`-relative path as a message names it: `components/` dropped, no extension or `/index`. */
@@ -137,7 +111,7 @@ module.exports = {
 
   create(context) {
     const filename = context.filename ?? context.getFilename()
-    const srcRoot = srcRootOf(filename)
+    const srcRoot = srcRootOf(context)
     if (!srcRoot) return {}
 
     const currentRelative = path.relative(srcRoot, filename).split(path.sep).join('/')
@@ -148,7 +122,9 @@ module.exports = {
     // Remaining allowance per import SPECIFIER, not a plain count — same
     // reasoning as no-raw-color: the message lands on the import you just
     // added rather than whichever grandfathered one sits at the boundary.
-    const remaining = new Map(Object.entries(loadBaseline()[baselineKey(context)] ?? {}))
+    const remaining = new Map(
+      Object.entries(loadBaseline('tier-import-baseline.json')[baselineKey(context)] ?? {})
+    )
 
     function check(node) {
       const sourceNode = node.source

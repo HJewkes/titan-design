@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { render } from '@testing-library/react'
 import { axe } from 'jest-axe'
+import { siblingSource } from '../../../test/spacing-resolver'
 import { Divider } from './Divider'
 
 describe('Divider', () => {
@@ -32,6 +33,12 @@ describe('Divider', () => {
   it('passes additional props through', () => {
     const { container } = render(<Divider testID="divider" />)
     expect(container.firstChild).toBeInTheDocument()
+  })
+
+  it('paints the hairline token, not the divider token', () => {
+    const source = siblingSource(import.meta.url, 'Divider.tsx')
+    expect(source).toContain("'bg-hairline'")
+    expect(source).not.toContain('bg-divider')
   })
 
   it('has accessibilityRole of none', () => {
