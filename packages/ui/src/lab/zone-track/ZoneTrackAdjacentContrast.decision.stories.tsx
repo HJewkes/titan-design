@@ -47,7 +47,7 @@ function ReadingRow({ palette, scale, mode, lit }: UnitProps & { scale: ScaleId;
         marker={{ type: 'needle', value: reading }}
         accessibilityLabel={`${SCALES[scale]}, reading ${reading}`}
       />
-      <View className="flex-row gap-1">
+      <View className="flex-row flex-wrap gap-1">
         {readings.map((r) => (
           <Swatch
             key={r.color.ramp}
@@ -67,7 +67,7 @@ function PlaneRow({ mode, reading }: { mode: ThemeMode; reading: PlaneReading })
   return (
     <View className="gap-1 rounded-sm p-2" style={{ backgroundColor: reading.plane }}>
       <Caption mode={mode}>{`plane ${reading.level} (${PLANES[reading.level]})`}</Caption>
-      <View className="flex-row gap-1">
+      <View className="flex-row flex-wrap gap-1">
         <Swatch mode={mode} fill={reading.track} label="track" caption="border-prominent" />
         {reading.zones.map(({ color, painted, vsTrack, vsPlane }) => (
           <Swatch
