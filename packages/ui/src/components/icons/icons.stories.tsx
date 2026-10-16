@@ -50,7 +50,7 @@ function Swatch({ label, children }: { label: string; children: ReactNode }) {
   return (
     <View className="items-center gap-2">
       {children}
-      <Text className="font-mono text-[10px] text-text-tertiary">{label}</Text>
+      <Text className="font-mono text-[10px] text-text-secondary">{label}</Text>
     </View>
   )
 }
