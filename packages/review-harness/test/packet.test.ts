@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto'
-import { access, mkdir, readFile, writeFile } from 'node:fs/promises'
+import { access, mkdir, readdir, readFile, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { sha256Of } from '../src/frames.ts'
@@ -100,7 +100,18 @@ describe('titan-review packet from-ci', () => {
 
     expect(result.code).toBe(2)
     expect(result.stderr).toContain('not a PNG')
+    expect(await readdir(out)).toEqual(['packet.json'])
     expect(await readFile(join(out, 'packet.json'), 'utf8')).toBe('earlier')
+  })
+
+  it('leaves no packet directory when the first build fails part way', async () => {
+    const out = join(await tempDir(), 'packet')
+    const corrupt = withArtifact(world(), COMPONENT.artifact, {
+      [path('broken')]: Buffer.from('not a png'),
+    })
+
+    expect((await build(corrupt, out)).code).toBe(2)
+    await expect(access(out)).rejects.toThrow()
   })
 
   it('builds a Ship-only packet from a green run with nothing regenerated', async () => {
