@@ -15,10 +15,13 @@ export interface SetLossStripSet {
   label?: string
   /** Velocity loss (%) across the set. `null` is no data and draws the hatch, never a zero bar. */
   lossPct: number | null
+  /** Working sets draw full width in colour; warm-up and other sets draw narrow and grey. */
   purpose: SetLossPurpose
   /** `false` draws the bar hollow: the set was logged but not scored. Defaults to `true`. */
   scored?: boolean
+  /** Reps performed. */
   reps: number
+  /** Reps against target; omitted or `null` draws no triangle. */
   repMark?: SetRepMark | null
   /** The load as the consumer formats it, unit included (`100lb`). */
   loadLabel: string
@@ -29,6 +32,7 @@ export interface SetLossStripSet {
 /** Column size: `phone` for the card, `wall` for the session-complete wall. */
 export type SetLossStripScale = 'phone' | 'wall'
 
+/** The marked set's tone: its ring colour and the StatusGlyph above it. */
 export type SetLossMarkTone = StatusGlyphTone
 
 /** Fixed per-scale geometry, so every strip on a page shares one column width and one height. */

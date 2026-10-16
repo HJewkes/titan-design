@@ -63,7 +63,9 @@ export function CircleDashedIcon(props: IconProps) {
 export function TriangleUpIcon(props: IconProps) {
   return (
     <SvgIcon {...props}>
-      <StrokePaths paths={['M13.73 4a2 2 0 0 0-3.46 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z']} />
+      <StrokePaths
+        paths={['M13.73 4a2 2 0 0 0-3.46 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z']}
+      />
     </SvgIcon>
   )
 }
@@ -72,7 +74,9 @@ export function TriangleUpIcon(props: IconProps) {
 export function TriangleDownIcon(props: IconProps) {
   return (
     <SvgIcon {...props}>
-      <StrokePaths paths={['M13.73 20a2 2 0 0 1-3.46 0l-8-14A2 2 0 0 1 4 3h16a2 2 0 0 1 1.73 3Z']} />
+      <StrokePaths
+        paths={['M13.73 20a2 2 0 0 1-3.46 0l-8-14A2 2 0 0 1 4 3h16a2 2 0 0 1 1.73 3Z']}
+      />
     </SvgIcon>
   )
 }

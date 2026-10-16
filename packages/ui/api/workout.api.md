@@ -208,6 +208,9 @@ export const DashboardShell: typeof WorkoutShell;
 // @public @deprecated (undocumented)
 export type DashboardShellProps = WorkoutShellProps;
 
+// @public
+export const DEFAULT_LOSS_CEILING_PCT = 40;
+
 // @public @deprecated (undocumented)
 export const defaultNavItems: SideNavItem[];
 
@@ -1993,6 +1996,49 @@ export interface SetBarProps {
     height?: number;
     set: SetStripSet;
 }
+
+// @public
+export type SetLossMarkTone = StatusGlyphTone;
+
+// @public
+export type SetLossPurpose = 'working' | 'warmup' | 'other';
+
+// @public
+export function SetLossStrip(input: SetLossStripProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface SetLossStripProps {
+    bestE1rmIndex?: number;
+    className?: string;
+    columns?: number;
+    lossCeilingPct?: number;
+    markedIndex?: number;
+    markedLabel?: string;
+    markedTone?: SetLossMarkTone;
+    scale?: SetLossStripScale;
+    sets: readonly SetLossStripSet[];
+    testID?: string;
+    thresholds?: VelocityLossThresholds;
+}
+
+// @public
+export type SetLossStripScale = 'phone' | 'wall';
+
+// @public
+export interface SetLossStripSet {
+    e1rm?: number | null;
+    index: number;
+    label?: string;
+    loadLabel: string;
+    lossPct: number | null;
+    purpose: SetLossPurpose;
+    repMark?: SetRepMark | null;
+    reps: number;
+    scored?: boolean;
+}
+
+// @public
+export type SetRepMark = 'over' | 'under';
 
 // @public
 export function SetRow(set: SetRowProps): react_jsx_runtime.JSX.Element;

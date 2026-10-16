@@ -113,7 +113,11 @@ export function PlotCell({ markTone, ...bar }: BarProps & { markTone?: SetLossMa
       testID={markTone ? `set-loss-ring-${String(set.index)}` : undefined}
     >
       {set.lossPct == null ? (
-        <NoDataHatch width={barWidthFor(set, column)} height={innerPlotPx(plot)} index={set.index} />
+        <NoDataHatch
+          width={barWidthFor(set, column)}
+          height={innerPlotPx(plot)}
+          index={set.index}
+        />
       ) : (
         <LossBar {...bar} set={{ ...set, lossPct: set.lossPct }} />
       )}
@@ -157,7 +161,11 @@ export function ThresholdLabels({ thresholds, ceiling, plot }: ThresholdProps) {
     <View
       key={t}
       accessibilityElementsHidden
-      style={{ position: 'absolute', right: 4, bottom: lossOffsetPx(t, ceiling, plot) - LABEL_HALF_HEIGHT }}
+      style={{
+        position: 'absolute',
+        right: 4,
+        bottom: lossOffsetPx(t, ceiling, plot) - LABEL_HALF_HEIGHT,
+      }}
     >
       <Typography variant="mono" color="secondary" className="leading-none">
         {`VL ${String(Math.round(t))}%`}

@@ -7248,6 +7248,12 @@ export function TrendingDownIcon(props: IconProps): react_jsx_runtime.JSX.Elemen
 export function TrendingUpIcon(props: IconProps): react_jsx_runtime.JSX.Element;
 
 // @public
+export function TriangleDownIcon(props: IconProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export function TriangleUpIcon(props: IconProps): react_jsx_runtime.JSX.Element;
+
+// @public
 export const TURN_ORIGIN_META: Record<TimelineTurnOrigin, TurnOriginMeta>;
 
 // @public

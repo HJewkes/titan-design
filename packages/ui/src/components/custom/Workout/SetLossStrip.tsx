@@ -36,6 +36,7 @@ import {
   type VelocityLossThresholds,
 } from './velocity-scale'
 
+/** Props for {@link SetLossStrip}. */
 export interface SetLossStripProps {
   /** The exercise's sets in the order performed. */
   sets: readonly SetLossStripSet[]
@@ -55,10 +56,16 @@ export interface SetLossStripProps {
   scale?: SetLossStripScale
   /** Minimum column count. Pass the page's longest set count so stacked strips align. */
   columns?: number
+  /** Defaults to `set-loss-strip`. */
   testID?: string
+  /** Tailwind overrides for the outer stack, merged with `cn()`. */
   className?: string
 }
 
+/**
+ * One exercise's sets as velocity-loss bars on a fixed scale, the marked set ringed, with set,
+ * reps, load and e1RM rows aligned under each bar. Its accessible name lists every set's loss.
+ */
 export function SetLossStrip({
   sets,
   thresholds = VL_LOSS_THRESHOLDS,
@@ -95,7 +102,7 @@ export function SetLossStrip({
           <View style={{ width: geometry.gutter, height: geometry.plot }}>
             <ThresholdLabels thresholds={lines} {...scaleProps} />
           </View>
-          <View className="relative flex-row gap-1 border-b border-border-default">
+          <View className="relative flex-row gap-1 border-b border-border">
             <ThresholdLines thresholds={lines} {...scaleProps} />
             {sets.map((set) => (
               <PlotCell
@@ -115,7 +122,9 @@ export function SetLossStrip({
           {setName(set)}
         </Typography>
       ))}
-      {row('Reps', (set) => <RepsValue set={set} />)}
+      {row('Reps', (set) => (
+        <RepsValue set={set} />
+      ))}
       {row('Load', (set) => (
         <Typography variant="mono" className="text-center tabular-nums">
           {set.loadLabel}

@@ -7909,6 +7909,108 @@
     },
     {
       "composes": [
+        "SetLossStripParts",
+        "Typography"
+      ],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/SetLossStrip.tsx",
+      "name": "SetLossStrip",
+      "props": [
+        {
+          "default": null,
+          "description": "The `index` of the session's best e1RM; its cell gets the brand dot.",
+          "name": "bestE1rmIndex",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Tailwind overrides for the outer stack, merged with `cn()`.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": "0",
+          "description": "Minimum column count.",
+          "name": "columns",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": "40",
+          "description": "The loss (%) a full-height bar shows.",
+          "name": "lossCeilingPct",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "The `index` of the set the verdict read; it gets a ring and a glyph in `markedTone`.",
+          "name": "markedIndex",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "The verdict word for the marked set, spoken by its glyph and the strip label.",
+          "name": "markedLabel",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": "neutral",
+          "description": "Defaults to `neutral`.",
+          "name": "markedTone",
+          "required": false,
+          "type": "StatusGlyphTone"
+        },
+        {
+          "default": "phone",
+          "description": "Column width and plot height.",
+          "name": "scale",
+          "required": false,
+          "type": "SetLossStripScale"
+        },
+        {
+          "default": null,
+          "description": "The exercise's sets in the order performed.",
+          "name": "sets",
+          "required": true,
+          "type": "readonly SetLossStripSet[]"
+        },
+        {
+          "default": "set-loss-strip",
+          "description": "Defaults to `set-loss-strip`.",
+          "name": "testID",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": "[10, 20, 30]",
+          "description": "Where the VL lines sit (%).",
+          "name": "thresholds",
+          "required": false,
+          "type": "VelocityLossThresholds"
+        }
+      ],
+      "purpose": "One exercise's sets as velocity-loss bars on a fixed scale, the marked set ringed, with set, reps, load and e1RM rows aligned under each bar.",
+      "sources": {
+        "props": "packages/ui/src/components/custom/Workout/SetLossStrip.tsx",
+        "status": "packages/ui/src/components/custom/Workout/SetLossStrip.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-workout-setlossstrip--bilateral",
+        "custom-workout-setlossstrip--default",
+        "custom-workout-setlossstrip--no-data",
+        "custom-workout-setlossstrip--not-scored",
+        "custom-workout-setlossstrip--warm-up"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
         "Typography",
         "VelocityStrip"
       ],
