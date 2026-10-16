@@ -24,6 +24,7 @@ import {
   ChevronsDownIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
+  CheckMark,
   SearchIcon,
   DatabaseIcon,
   ChartIcon,
@@ -166,6 +167,11 @@ export const All: Story = {
       <Swatch label="ChevronRightIcon">
         <View className="text-text-primary">
           <ChevronRightIcon size={28} />
+        </View>
+      </Swatch>
+      <Swatch label="CheckMark">
+        <View className="text-text-primary">
+          <CheckMark size={28} />
         </View>
       </Swatch>
       <Swatch label="SearchIcon">

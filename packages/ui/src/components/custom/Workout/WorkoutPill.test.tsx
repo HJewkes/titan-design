@@ -26,9 +26,11 @@ describe('WorkoutPill', () => {
     expect(screen.getByText('Upper A')).toBeInTheDocument()
   })
 
-  it('shows checkmark for completed status', () => {
+  it('shows an SVG check, not a ✓ text glyph, for completed status', () => {
     render(<WorkoutPill name="Upper A" status="completed" />)
-    expect(screen.getByTestId('workout-pill-check')).toBeInTheDocument()
+    expect(screen.queryByText('\u2713')).toBeNull()
+    const svg = screen.getByTestId('workout-pill-check').querySelector('svg')
+    expect(svg?.getAttribute('width')).toBe('12')
   })
 
   it('shows dash for missed status', () => {
