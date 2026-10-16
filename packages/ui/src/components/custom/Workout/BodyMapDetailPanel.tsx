@@ -263,7 +263,7 @@ export function BodyMapDetailPanel({
   upcomingExercises,
   strength,
   plan,
-  unit = 'lb',
+  unit,
   placement = 'bottom',
   isOpen,
   visible,

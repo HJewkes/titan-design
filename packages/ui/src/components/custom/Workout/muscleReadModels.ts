@@ -170,10 +170,7 @@ export function slopeLabel(row: MuscleStrengthExerciseRow): string {
  * load-velocity error figure that was never measured on a rep formula.
  * `unit` labels `seeLbs`; it is never converted.
  */
-export function bandLabel(
-  best: MuscleStrengthBestE1rm | null,
-  unit: 'lb' | 'kg' = 'lb'
-): string {
+export function bandLabel(best: MuscleStrengthBestE1rm | null, unit: 'lb' | 'kg' = 'lb'): string {
   if (best === null) return 'no e1RM in this window'
   const { band } = best
   if (band.seeLbs === null || band.seePct === null) {

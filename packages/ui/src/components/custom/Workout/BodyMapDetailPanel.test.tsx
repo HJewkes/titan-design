@@ -479,7 +479,7 @@ describe('BodyMapDetailPanel', () => {
       expect(chartLabel(0)).toContain('Current: 205 kg')
     })
 
-    it('keeps lb, and the chart\'s lbs, when no unit is passed', () => {
+    it("keeps lb, and the chart's lbs, when no unit is passed", () => {
       const { unmount } = render(
         <BodyMapDetailPanel {...baseProps} strength={singleExerciseStrength} unit="lb" />
       )

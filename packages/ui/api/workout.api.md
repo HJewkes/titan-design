@@ -79,7 +79,7 @@ export interface ActiveWorkoutSuperset {
 export const AGREEMENT_LABELS: Record<MuscleStrengthAgreement, string>;
 
 // @public
-export function bandLabel(best: MuscleStrengthBestE1rm | null): string;
+export function bandLabel(best: MuscleStrengthBestE1rm | null, unit?: 'lb' | 'kg'): string;
 
 // @public @deprecated (undocumented)
 export function BaseBadge(input: BaseBadgeProps): react_jsx_runtime.JSX.Element;
@@ -125,6 +125,7 @@ export interface BodyMapDetailPanelProps extends ViewProps {
     placement?: SheetPlacement;
     plan?: MusclePlanSection;
     strength?: MuscleStrengthSection;
+    unit?: 'lb' | 'kg';
     upcomingExercises?: UpcomingExercise[];
     visible?: boolean;
     volumeStatus: VolumeStatus;

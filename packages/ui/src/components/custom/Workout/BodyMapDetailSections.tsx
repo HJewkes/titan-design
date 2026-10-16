@@ -25,10 +25,6 @@ export type MassUnit = 'lb' | 'kg'
 /** StrengthTrendChart predates the panel's `'lb'` vocabulary and labels pounds `'lbs'`. */
 const CHART_UNIT = { lb: 'lbs', kg: 'kg' } as const satisfies Record<MassUnit, 'lbs' | 'kg'>
 
-function formatMass(value: number, unit: MassUnit): string {
-  return `${roundWeight(value)} ${unit}`
-}
-
 /** The mini trend chart: wide enough for the 26px y-axis gutter, short enough to be a row. */
 const MINI_CHART_WIDTH = 150
 const MINI_CHART_HEIGHT = 60
@@ -65,7 +61,7 @@ function StrengthRow({
 }) {
   const id = `${ID}-strength-${index}`
   const history = row.history ?? []
-  const e1rm = row.bestE1rm === null ? '—' : formatMass(row.bestE1rm.value, unit)
+  const e1rm = row.bestE1rm === null ? '—' : `${roundWeight(row.bestE1rm.value)} ${unit}`
   return (
     <View
       className="mb-stack-sm gap-stack-sm px-inset-md py-2 bg-surface-raised border-hairline"
@@ -117,10 +113,10 @@ function StrengthRow({
  */
 export function StrengthSection({
   section,
-  unit,
+  unit = 'lb',
 }: {
   section: MuscleStrengthSection
-  unit: MassUnit
+  unit?: MassUnit
 }) {
   if (section.exercises.length === 0) return null
   return (
@@ -146,8 +142,9 @@ export function StrengthSection({
 /** One PR: the shared badge, the exercise it was set on, and what it beat. */
 function PrRow({ row, index, unit }: { row: StrengthExerciseRow; index: number; unit: MassUnit }) {
   const id = `${ID}-pr-${index}`
-  const best = row.bestE1rm === null ? '—' : formatMass(row.bestE1rm.value, unit)
-  const prior = row.priorBest === null ? 'no prior best' : `prev ${formatMass(row.priorBest, unit)}`
+  const best = row.bestE1rm === null ? '—' : `${roundWeight(row.bestE1rm.value)} ${unit}`
+  const prior =
+    row.priorBest === null ? 'no prior best' : `prev ${roundWeight(row.priorBest)} ${unit}`
   return (
     <View className="mb-stack-sm gap-inline-md" style={SPLIT_ROW} testID={id}>
       <View className="gap-inline-md" style={{ ...SPLIT_ROW, flexShrink: 1 }}>
@@ -172,7 +169,13 @@ function PrRow({ row, index, unit }: { row: StrengthExerciseRow; index: number; 
  * An e1RM PR inside the estimate's own error band is still a PR to
  * `evaluateE1RMPr`, which is why each strength row carries its band above.
  */
-export function PrSection({ section, unit }: { section: MuscleStrengthSection; unit: MassUnit }) {
+export function PrSection({
+  section,
+  unit = 'lb',
+}: {
+  section: MuscleStrengthSection
+  unit?: MassUnit
+}) {
   const rows = prRows(section.exercises)
   if (rows.length === 0) return null
   return (
