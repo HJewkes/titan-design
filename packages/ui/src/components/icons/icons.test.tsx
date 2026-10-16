@@ -28,6 +28,7 @@ import {
   DatabaseIcon,
   ChartIcon,
 } from './icons'
+import { TriangleDownIcon, TriangleUpIcon } from './statusIcons'
 import { SvgIcon } from './SvgIcon'
 
 describe('icon primitives', () => {
@@ -46,6 +47,8 @@ describe('icon primitives', () => {
       CircleCheckIcon,
       OctagonXIcon,
       CircleDashedIcon,
+      TriangleUpIcon,
+      TriangleDownIcon,
       TrendingDownIcon,
       CircleSlashIcon,
       AwardIcon,

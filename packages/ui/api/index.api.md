@@ -6148,6 +6148,9 @@ export interface StateChipProps extends Omit<ViewProps, 'children'> {
 export type StateChipSize = 'sm' | 'md' | 'lg';
 
 // @public
+export const STATUS_GLYPH_FILL: Record<StatusGlyphTone, ColorToken>;
+
+// @public
 export function StatusGlyph(input: StatusGlyphProps): react_jsx_runtime.JSX.Element;
 
 // @public
@@ -6159,7 +6162,7 @@ export interface StatusGlyphProps extends Omit<ViewProps, 'children'> {
 }
 
 // @public
-export type StatusGlyphSize = 'sm' | 'md' | 'lg';
+export type StatusGlyphSize = 'sm' | 'md' | 'lg' | 'xl';
 
 // @public
 export type StatusGlyphTone = 'success' | 'warning' | 'error' | 'neutral';
@@ -7246,6 +7249,12 @@ export function TrendingDownIcon(props: IconProps): react_jsx_runtime.JSX.Elemen
 
 // @public
 export function TrendingUpIcon(props: IconProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export function TriangleDownIcon(props: IconProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export function TriangleUpIcon(props: IconProps): react_jsx_runtime.JSX.Element;
 
 // @public
 export const TURN_ORIGIN_META: Record<TimelineTurnOrigin, TurnOriginMeta>;
