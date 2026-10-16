@@ -482,7 +482,9 @@ titan-review packet from-ci --repo <owner/name> --pr <n> --head <40-hex> --run <
 `--repo` here is the GitHub repo (`owner/name`); the checkout git reads is `--clone` (default:
 this one). It only reads: `gh run view`, `gh pr view` and `gh api` (an artifact is fetched by id
 as a zip and unzipped into a scratch directory); `git fetch`, `rev-parse`, `merge-base`,
-`ls-tree`, `diff` and `show`.
+`ls-tree`, `diff` and `show`. Each zip's central directory is checked in code before `unzip` runs:
+a symlink, a path out of the directory, zip64, or over 128 MB declared is refused, and the PNGs
+read back are held to the same 128 MB.
 
 **Refusals** (exit 2, nothing written): the run's `headSha` is not `--head`; its workflow is not
 `CI`; it has not completed; the PR is not open, or its head has moved past `--head`; an artifact
