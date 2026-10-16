@@ -570,10 +570,12 @@ tree with `lstat` and never follows a link.
   and head.
 
 `--require` makes `prose.json` or `round.json` a problem when absent. `--gate-head` has no default,
-so the lint never trusts the packet's own head. Exit 0 when clean, 2 on any problem, an unreadable
-directory or a usage error. Each problem prints as `<rule>: <message>`; with `--json`, stdout is one
-object, `{ok, problems: [{rule, message}]}`. The rule ids are `PACKET_LINT_RULES` in
-`src/packet-lint.ts`.
+so the lint never trusts the packet's own head. Exit 0 when clean, 3 on any problem (as `build`),
+2 on an unreadable directory or a usage error. Each problem prints as `<rule>: <message>`; with
+`--json`, stdout is one object and nothing else:
+`{schema: "titan-review/packet-lint@1", ok, packetId, problems: [{rule, message}]}`, where
+`packetId` is packet.json's when it passes its schema and `null` otherwise. The rule ids are
+`PACKET_LINT_RULES` in `src/packet-lint.ts`.
 
 ### packet prompt (TD-924)
 

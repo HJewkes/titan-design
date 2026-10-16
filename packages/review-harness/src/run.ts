@@ -107,8 +107,9 @@ Ship question; run build on it next) and packet.json last, into --out (default:
 
 packet lint checks a packet directory against the gate's head: packet.json, draft.json and
 every image as from-ci wrote them, prose.json and round.json when present (or when --require
-names them), and no other file or link. It reads only the directory. Exit 0 clean, 2 on any
-problem, each printed as <rule>: <message>; with --json, one {ok, problems} object.
+names them), and no other file or link. It reads only the directory. Exit 0 clean, 3 on any
+problem, each printed as <rule>: <message>; with --json, one titan-review/packet-lint@1 object
+{schema, ok, packetId (null when packet.json does not parse), problems}.
 
 packet prompt prints the review packager's instructions: how to write prose.json for a packet
 and lint it.

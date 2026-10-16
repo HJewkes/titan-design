@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest'
 import { PACKAGER_PROMPT } from '../src/packet-cli.ts'
 import { runCli } from '../src/run.ts'
 import { HEAD, cliIo, fakeCi, fromCiArgs, tempDir, world } from './packet-fake.ts'
-import { OTHER_HEAD, packetDir, validProse, writeJsonFile } from './packet-lint-fake.ts'
+import { OTHER_HEAD, packetDir, readPacket, validProse, writeJsonFile } from './packet-lint-fake.ts'
 
 async function run(args: string[]) {
   const stdout: string[] = []
@@ -30,7 +30,12 @@ describe('packet lint command', () => {
       lintArgs(dir, '--gate-head', HEAD, '--require', 'prose', '--json')
     )
 
-    expect(JSON.parse(stdout)).toEqual({ ok: true, problems: [] })
+    expect(JSON.parse(stdout)).toEqual({
+      schema: 'titan-review/packet-lint@1',
+      ok: true,
+      packetId: (await readPacket(dir)).packetId,
+      problems: [],
+    })
     expect(code).toBe(0)
   })
 
@@ -41,14 +46,29 @@ describe('packet lint command', () => {
       lintArgs(dir, '--gate-head', HEAD, '--require', 'prose,round', '--json')
     )
 
-    expect(JSON.parse(stdout)).toEqual({
+    expect(JSON.parse(stdout)).toMatchObject({
       ok: false,
       problems: [{ rule: 'round-missing', message: 'round.json is required but not present' }],
     })
-    expect(code).toBe(2)
+    expect(code).toBe(3)
   })
 
-  it('exits 2 with one problem per broken rule on a tampered packet', async () => {
+  it('gives packetId null when packet.json does not parse', async () => {
+    const dir = await cleanDir()
+    await writeFile(join(dir, 'packet.json'), '{')
+
+    const { code, stdout } = await run(lintArgs(dir, '--gate-head', HEAD, '--json'))
+
+    expect(JSON.parse(stdout)).toEqual({
+      schema: 'titan-review/packet-lint@1',
+      ok: false,
+      packetId: null,
+      problems: [{ rule: 'packet-schema', message: 'packet.json is not JSON' }],
+    })
+    expect(code).toBe(3)
+  })
+
+  it('exits 3 with one problem per broken rule on a tampered packet', async () => {
     const dir = await cleanDir()
     await writeFile(join(dir, 'notes.txt'), 'extra')
 
@@ -56,7 +76,7 @@ describe('packet lint command', () => {
 
     const rules = JSON.parse(stdout).problems.map((p: { rule: string }) => p.rule)
     expect(rules.sort()).toEqual(['draft-head', 'file-extra', 'gate-head', 'prose-binding'])
-    expect(code).toBe(2)
+    expect(code).toBe(3)
   })
 
   it('prints each problem as rule: message without --json', async () => {
@@ -65,7 +85,7 @@ describe('packet lint command', () => {
     const { code, stdout } = await run(lintArgs(dir, '--gate-head', HEAD, '--require', 'prose'))
 
     expect(stdout).toBe('prose-missing: prose.json is required but not present\n')
-    expect(code).toBe(2)
+    expect(code).toBe(3)
   })
 
   it('refuses without --gate-head rather than trusting the packet head', async () => {

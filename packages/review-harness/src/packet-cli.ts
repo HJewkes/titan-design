@@ -7,12 +7,16 @@ import { ciIo, type CiIo } from './packet-ci.ts'
 import { packetUnit } from './packet-draft.ts'
 import {
   PACKET_REQUIREMENTS,
-  lintPacket,
+  lintPacketResult,
   type PacketLintProblem,
   type PacketRequirement,
 } from './packet-lint.ts'
+import { EXIT_REFUSED } from './build.ts'
 import { REPO_ROOT } from './locks.ts'
-import { EXIT_INVALID, EXIT_OK, ReviewError } from './review.ts'
+import { EXIT_OK, ReviewError } from './review.ts'
+
+/** The `--json` result of `packet lint`; factory parses it before an import. */
+export const PACKET_LINT_SCHEMA_ID = 'titan-review/packet-lint@1'
 
 export const PACKET_USAGE = `titan-review packet from-ci --repo <owner/name> --pr <n> --head <sha> --run <id> [--out <dir>]
                   [--clone <path>] [--side <questions.json>]
@@ -91,17 +95,18 @@ function requirements(parsed: PacketParsed): PacketRequirement[] {
 const lintText = (problems: PacketLintProblem[]) =>
   problems.map((p) => `${p.rule}: ${p.message}\n`).join('')
 
-/** Exit 0 when the packet is clean, 2 when it has problems or cannot be read. */
+/** Exit 0 when the packet is clean, 3 when it has problems; a usage error or unreadable dir is 2. */
 async function lint(parsed: PacketParsed, io: PacketIo): Promise<number> {
   const [, , dir] = parsed.positionals
   if (dir === undefined || parsed.positionals.length !== 3)
     throw usage('expected: packet lint <dir>')
   const opts = { gateHead: gateHead(parsed), require: requirements(parsed) }
-  const problems = await lintPacket(resolve(dir), opts)
+  const { packetId, problems } = await lintPacketResult(resolve(dir), opts)
   const ok = problems.length === 0
-  if (parsed.values.json) io.stdout(`${JSON.stringify({ ok, problems })}\n`)
+  if (parsed.values.json)
+    io.stdout(`${JSON.stringify({ schema: PACKET_LINT_SCHEMA_ID, ok, packetId, problems })}\n`)
   else io.stdout(ok ? 'packet lint: clean\n' : lintText(problems))
-  return ok ? EXIT_OK : EXIT_INVALID
+  return ok ? EXIT_OK : EXIT_REFUSED
 }
 
 async function prompt(parsed: PacketParsed, io: PacketIo): Promise<number> {

@@ -90,4 +90,14 @@ describe('review-packager prompt', () => {
     expect(Object.keys(example.cause)).toEqual(packet.images.map((i) => i.key))
     expect(await lint(dir, { require: ['prose'] })).toEqual([])
   })
+
+  it("asks the owner's four visual follow-ups in the guide and the example alike", () => {
+    const asked = [...section(fieldsSection, '### followUps').matchAll(/^- "(.+)"$/gm)].map(
+      (m) => m[1]
+    )
+    const example = JSON.parse(section(prompt, '## Example').match(/```json\n([\s\S]*?)```/)![1])
+
+    expect(asked).toHaveLength(4)
+    expect(example.followUps.map((f: { question: string }) => f.question)).toEqual(asked)
+  })
 })

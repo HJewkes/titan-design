@@ -83,16 +83,23 @@ Fields: `answer`, `confidence`, `flip`.
 
 ### followUps
 
-The questions the owner is likely to ask next, each already answered. 3 to 5 items.
+The questions the owner asks of a visual change, each already answered. 3 to 5 items.
 
 Fields: `question`, `answer`, `pointer`.
 
 - `question`: at most 200 characters.
 - `answer`: at most 300 characters.
-- `pointer`: where the answer comes from, such as an image key, a file path or a task id. At most 300 characters.
+- `pointer`: where the answer comes from, such as a montage, an image key or a source file. At most 300 characters.
 
-Cover these when they apply: which other screens show the changed component; whether both light and dark changed; why
-an image changed size; whether anything changed that the PR did not mean to change.
+Ask these four, in these words:
+
+- "Show it moving, with play/loop and a scrubber."
+- "Compared to what? What is the reference at 1080p scale?"
+- "Where does it render in the product?"
+- "Was anything rendered at all?"
+
+When the packet cannot answer one, the answer says so and points at the montage that comes closest. Answer with
+before/after pairs (the montages), not lists of files. A fifth item may cover what the four miss.
 
 ## Example
 
@@ -121,19 +128,24 @@ an image changed size; whether anything changed that the PR did not mean to chan
   },
   "followUps": [
     {
-      "question": "Which other screens show the widget?",
-      "answer": "Only the gallery story; no page renders it yet.",
+      "question": "Show it moving, with play/loop and a scrubber.",
+      "answer": "The packet holds stills only; the change has no motion. The montage shows before and after.",
+      "pointer": "montage/img-001.png"
+    },
+    {
+      "question": "Compared to what? What is the reference at 1080p scale?",
+      "answer": "The reference is main's baseline, shown as BEFORE. The packet has no 1080p render.",
+      "pointer": "montage/img-001.png"
+    },
+    {
+      "question": "Where does it render in the product?",
+      "answer": "Only in the widget gallery story; no page renders the widget yet.",
       "pointer": "img-002"
     },
     {
-      "question": "Did dark mode change too?",
-      "answer": "Yes. The fill is a token with a value for each mode.",
-      "pointer": "src/widget/Widget.tsx"
-    },
-    {
-      "question": "Did anything change that the PR did not mean to change?",
-      "answer": "No. Every changed pixel is in the corner.",
-      "pointer": "img-001"
+      "question": "Was anything rendered at all?",
+      "answer": "Yes. Both images have pixels; the new state shows a red widget.",
+      "pointer": "montage/img-002.png"
     }
   ]
 }
