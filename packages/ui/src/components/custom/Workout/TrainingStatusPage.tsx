@@ -11,6 +11,7 @@ import { MesoStatusCard, type MesoStatusCardProps } from './MesoStatusCard'
 import { useSurfaceMode } from '../../ui/surface/SurfaceContext'
 import {
   MuscleGroup,
+  VOLUME_STATUSES,
   VOLUME_STATUS_LABELS,
   getHeatmapColor,
   volumeStatusDotStyle,
@@ -19,14 +20,7 @@ import {
 } from './muscleTaxonomy'
 
 /** Volume statuses in display order for the legend and summary cards. */
-const STATUS_ORDER: VolumeStatus[] = [
-  'noverdict',
-  'behind',
-  'ontrack',
-  'target',
-  'approaching',
-  'over',
-]
+const STATUS_ORDER = VOLUME_STATUSES.filter((status) => status !== 'untrained')
 
 /** One muscle's full volume picture — feeds the body maps and the detail panel. */
 export interface TrainingStatusMuscle {
