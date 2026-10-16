@@ -51,7 +51,7 @@ export function AxisLabels({ geometry, frame, width, labels, xLabelGap }: AxisLa
         <Typography
           key={tick.value}
           variant="caption"
-          color="tertiary"
+          color="secondary"
           align="right"
           className={TIGHT}
           style={{ left: 0, width: frame.left - 8, top: frame.top + tick.position - 8 }}
@@ -64,7 +64,7 @@ export function AxisLabels({ geometry, frame, width, labels, xLabelGap }: AxisLa
           key={tick.value}
           testID="line-chart-x-label"
           variant="caption"
-          color="tertiary"
+          color="secondary"
           align="center"
           truncate
           className={TIGHT}
@@ -121,7 +121,7 @@ export function BoundaryLabels({ geometry, frame }: LabelLayerProps) {
             key={i}
             testID="line-chart-boundary-label"
             variant="caption"
-            color="tertiary"
+            color="secondary"
             align={flipped ? 'right' : 'left'}
             truncate
             className={TIGHT}
