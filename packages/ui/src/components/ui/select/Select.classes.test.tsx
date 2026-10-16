@@ -12,11 +12,19 @@ vi.mock('react-native', async (importOriginal) => {
 })
 
 import { Select } from './Select'
+import { Surface } from '../surface'
+import { insetFieldStyle } from '../surface/insetField'
 
 const options = [
   { value: '1', label: 'Option 1' },
   { value: '2', label: 'Option 2' },
 ]
+
+function normalisedColor(color: string) {
+  const probe = document.createElement('div')
+  probe.style.backgroundColor = color
+  return probe.style.backgroundColor
+}
 
 const classOf = (el: HTMLElement) => (el.getAttribute('data-class') ?? '').split(/\s+/)
 
@@ -28,10 +36,20 @@ describe('Select classes', () => {
     expect(classes).not.toContain('text-text-tertiary')
   })
 
-  it('keeps the filled fill on one scrim in both themes', () => {
-    render(<Select variant="filled" options={options} />)
-    const scrims = classOf(screen.getByRole('combobox')).filter((c) => c.includes('scrim'))
-    expect(scrims).toEqual(['bg-scrim-subtle'])
+  it.each([
+    ['dark', 'raised'],
+    ['light', 'raised'],
+  ] as const)('fills the filled trigger with the inset well, no bg class (%s)', (mode, level) => {
+    render(
+      <Surface theme={mode} level={level}>
+        <Select variant="filled" options={options} />
+      </Surface>
+    )
+    const trigger = screen.getByRole('combobox')
+    const expected = insetFieldStyle(level, mode) as { backgroundColor: string; boxShadow: string }
+    expect(classOf(trigger).filter((c) => c.startsWith('bg-'))).toEqual([])
+    expect(trigger.style.boxShadow).toBe(expected.boxShadow)
+    expect(trigger.style.backgroundColor).toBe(normalisedColor(expected.backgroundColor))
   })
 
   it('keeps the default variant on the plain surface', () => {
