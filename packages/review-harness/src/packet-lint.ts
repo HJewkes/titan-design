@@ -1,5 +1,6 @@
 // packet lint: proves a packet directory is the one from-ci wrote for the gate's head. Offline:
-// it reads only files inside the directory, walked with lstat, and never follows a link. Every
+// it reads only files inside the directory, walked with lstat, and never follows a link, plus git
+// blobs from a local clone when one is given (packet-derive.ts). Every
 // message names paths relative to the directory, so no host path reaches a report.
 import { createHash } from 'node:crypto'
 import { constants } from 'node:fs'
@@ -14,6 +15,8 @@ import {
   type CiPacket,
 } from './packet.ts'
 import { CONTRAST_FILE, ROUND_FILE } from './build.ts'
+import { ciIo } from './packet-ci.ts'
+import { deriveProblems, type DeriveIo } from './packet-derive.ts'
 import { draftHeadProblems, roundProblems } from './packet-lint-round.ts'
 import { PROSE_FILE, PROSE_SCHEMA_ID, ProseSchema, type Prose } from './packet-prose.ts'
 import { ReviewError } from './review.ts'
@@ -39,6 +42,9 @@ export const PACKET_LINT_RULES = [
   'round-unit',
   'round-draft',
   'round-head',
+  'before-source',
+  'after-source',
+  'derived',
 ] as const
 
 export type PacketLintRule = (typeof PACKET_LINT_RULES)[number]
@@ -57,6 +63,8 @@ export interface PacketLintOptions {
   gateHead: string
   /** Files that must be present: prose.json, round.json. */
   require?: readonly PacketRequirement[]
+  /** A local clone to re-derive the images from; without one, images are checked by sha only. */
+  clone?: string
 }
 
 /** The files a packet directory may hold beside the images packet.json names. */
@@ -258,10 +266,27 @@ export interface PacketLintResult {
   problems: PacketLintProblem[]
 }
 
-/** Every way `dir` differs from the packet from-ci writes for `opts.gateHead`, with its id. */
+async function cloneProblems(
+  dir: string,
+  walked: Walked,
+  packet: CiPacket,
+  opts: PacketLintOptions,
+  io: DeriveIo
+): Promise<PacketLintProblem[]> {
+  if (opts.clone === undefined) return []
+  const read = (file: string) =>
+    NAMED_PATH.test(file) && walked.files.has(file)
+      ? readNoFollow(dir, file)
+      : Promise.resolve(null)
+  return deriveProblems(packet, opts.clone, read, io)
+}
+
+/** Every way `dir` differs from the packet from-ci writes for `opts.gateHead`, with its id. With
+ * `opts.clone`, git reads go through `io`. */
 export async function lintPacketResult(
   dir: string,
-  opts: PacketLintOptions
+  opts: PacketLintOptions,
+  io: DeriveIo = ciIo
 ): Promise<PacketLintResult> {
   const walked = await walkPacketDir(dir)
   const links = walked.links.map((file) => ({
@@ -278,6 +303,7 @@ export async function lintPacketResult(
     ...(await fileProblems(dir, walked, packet)),
     ...(await proseProblems(dir, walked, packet, opts)),
     ...(await roundFileProblems(dir, walked, packet, opts, draft)),
+    ...(await cloneProblems(dir, walked, packet, opts, io)),
   ]
   return { packetId: packet.packetId, problems }
 }
@@ -285,7 +311,8 @@ export async function lintPacketResult(
 /** Every way `dir` differs from the packet from-ci writes for `opts.gateHead`. */
 export async function lintPacket(
   dir: string,
-  opts: PacketLintOptions
+  opts: PacketLintOptions,
+  io: DeriveIo = ciIo
 ): Promise<PacketLintProblem[]> {
-  return (await lintPacketResult(dir, opts)).problems
+  return (await lintPacketResult(dir, opts, io)).problems
 }
