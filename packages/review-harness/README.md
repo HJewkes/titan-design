@@ -474,6 +474,39 @@ Storybook and no agent-made image. Its input is each visual layer (`component`, 
 baselines to show and their bytes on each side, plus the PR, run and main they are bound to;
 `titan-review packet from-ci` gathers that input from one CI run and git.
 
+```sh
+titan-review packet from-ci --repo <owner/name> --pr <n> --head <40-hex> --run <id> \
+  [--out <dir>] [--clone <path>] [--side <questions.json>]
+```
+
+`--repo` here is the GitHub repo (`owner/name`); the checkout git reads is `--clone` (default:
+this one). It only reads: `gh run view`, `gh pr view` and `gh api` (an artifact is fetched by id
+as a zip and unzipped into a scratch directory); `git fetch`, `rev-parse`, `merge-base`,
+`ls-tree`, `diff` and `show`. Each zip's central directory is checked in code before `unzip` runs:
+a symlink, a path out of the directory, zip64, or over 128 MB declared is refused, and the PNGs
+read back are held to the same 128 MB.
+
+**Refusals** (exit 2, nothing written): the run's `headSha` is not `--head`; its workflow is not
+`CI`; it has not completed; the PR is not open, or its head has moved past `--head`; an artifact
+it reads has expired (an expired artifact is never read as "no changes").
+
+**Sources.** One row per visual layer. Only `*-chromium-linux.png` files count.
+
+| layer       | regenerated artifact         | repo prefix (the artifact's root)                               | diagnostics artifact     |
+| ----------- | ---------------------------- | --------------------------------------------------------------- | ------------------------ |
+| `component` | `component-visual-baselines` | `packages/ui/specimen/baseline/`                                | `component-visual-diffs` |
+| `story`     | `storybook-visual-baselines` | `packages/ui/tests/visual/reference/stories.spec.ts-snapshots/` | `storybook-visual-diffs` |
+
+A rerun attempt uploads its artifacts again under the same names, so from-ci reads each name's
+latest upload (by `created_at`, then id) across every page of the artifact list and refuses if that one has expired.
+
+Observed on a real failed run: the component artifact holds `<spec>-snapshots/<name>-chromium-linux.png`
+relative to its prefix, the story artifact holds the snapshot directory's files flat, and each holds
+the full set (every committed baseline, regenerated or not), so a file absent from it was removed.
+The baselines are regenerated only when the visual job fails, so a green run has no artifact. A
+third source covers that: the PNGs the PR's own commits add or modify under the prefixes
+(`git diff --diff-filter=AM <merge-base> <head>`), read at `--head` and marked `source: "git"`.
+
 **Classes.** Against `origin/main`, by git blob id: `unchanged` (counted, not shown), `changed`,
 `new` and `removed`. A layer with no artifact shows no removed images. A changed pair of one size
 gets a diff: CI's `<stem>-diff.png` when its `<stem>-expected.png` is main's bytes and its size
