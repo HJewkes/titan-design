@@ -3,10 +3,19 @@
 // refusal or a failure part way through leaves no packet and any earlier one as it was.
 import { createHash } from 'node:crypto'
 import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { z } from 'zod'
 import { QuestionSchema, RoundSchema, lintRound } from '@titan-design/review-schema'
 import { swapIn } from './frames.ts'
+import {
+  CI_SOURCES,
+  checkBinding,
+  gatherLayer,
+  liveArtifacts,
+  mainMoved,
+  type CiIo,
+} from './packet-ci.ts'
 import { stemOf } from './packet-classify.ts'
 import { diffImages } from './packet-diff.ts'
 import { packetDraft } from './packet-draft.ts'
@@ -297,5 +306,48 @@ export async function writePacketDir(c: Collected, out: string): Promise<CiPacke
     return packet
   } finally {
     await rm(staging, { recursive: true, force: true })
+  }
+}
+
+export interface PacketOptions extends CiTarget {
+  out: string
+  side?: string
+}
+
+function checkTarget(t: CiTarget): void {
+  if (!/^[^/\s]+\/[^/\s]+$/.test(t.repo))
+    throw new ReviewError(`--repo is owner/name, got ${t.repo}`)
+  if (!Number.isInteger(t.pr) || t.pr < 1) throw new ReviewError('--pr is a PR number')
+  if (!/^[0-9a-f]{40}$/.test(t.head)) throw new ReviewError('--head is a full 40-hex sha')
+  if (!/^\d+$/.test(t.run)) throw new ReviewError(`--run is a run id, got ${t.run}`)
+}
+
+async function collect(o: PacketOptions, scratch: string, io: CiIo): Promise<Collected> {
+  const side = o.side ? await readSide(o.side) : []
+  const binding = await checkBinding(o, io)
+  const live = await liveArtifacts(o, io)
+  const moved = await mainMoved(o, binding, io)
+  const warnings = moved.length
+    ? [`main changed ${moved.length} baselines since the merge-base: ${moved.join(', ')}`]
+    : []
+  const layers: LayerSources[] = []
+  for (const source of CI_SOURCES)
+    layers.push(await gatherLayer(source, { target: o, binding, live, scratch }, io))
+  return { target: o, binding, layers, warnings, side }
+}
+
+/** `packet from-ci`: gathers from the run and git, then writes the packet at `o.out`. Every refusal
+ * is a ReviewError and leaves `o.out` untouched. */
+export async function packetFromCi(
+  o: PacketOptions,
+  io: CiIo
+): Promise<{ packet: CiPacket; warnings: string[] }> {
+  checkTarget(o)
+  const scratch = await mkdtemp(join(tmpdir(), 'titan-packet-'))
+  try {
+    const collected = await collect(o, scratch, io)
+    return { packet: await writePacketDir(collected, o.out), warnings: collected.warnings }
+  } finally {
+    await rm(scratch, { recursive: true, force: true })
   }
 }
