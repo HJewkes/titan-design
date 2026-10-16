@@ -58,3 +58,21 @@ export function CircleDashedIcon(props: IconProps) {
     </SvgIcon>
   )
 }
+
+/** Up-pointing triangle (mirrors lucide-react `Triangle`). SetLossStrip → reps over target. */
+export function TriangleUpIcon(props: IconProps) {
+  return (
+    <SvgIcon {...props}>
+      <StrokePaths paths={['M13.73 4a2 2 0 0 0-3.46 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z']} />
+    </SvgIcon>
+  )
+}
+
+/** `TriangleUpIcon` mirrored top to bottom. SetLossStrip → reps under target. */
+export function TriangleDownIcon(props: IconProps) {
+  return (
+    <SvgIcon {...props}>
+      <StrokePaths paths={['M13.73 20a2 2 0 0 1-3.46 0l-8-14A2 2 0 0 1 4 3h16a2 2 0 0 1 1.73 3Z']} />
+    </SvgIcon>
+  )
+}
