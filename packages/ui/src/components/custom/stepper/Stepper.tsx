@@ -1,6 +1,7 @@
 import React, { createContext, useContext } from 'react'
 import { View, Text, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
+import { CheckMark } from '../../icons'
 
 export type StepStatus = 'completed' | 'active' | 'upcoming' | 'error'
 export type StepperOrientation = 'horizontal' | 'vertical'
@@ -178,11 +179,14 @@ export function StepIndicator({
         className
       )}
     >
-      {icon || (
-        <Text className={cn('text-sm font-semibold', glyphStyles[status])}>
-          {status === 'completed' ? '✓' : index + 1}
-        </Text>
-      )}
+      {icon ||
+        (status === 'completed' ? (
+          <View className={glyphStyles.completed}>
+            <CheckMark size={16} strokeWidth={3} />
+          </View>
+        ) : (
+          <Text className={cn('text-sm font-semibold', glyphStyles[status])}>{index + 1}</Text>
+        ))}
     </View>
   )
 }

@@ -83,17 +83,6 @@
   "src/components/shell/workout/WorkoutShell.test.tsx": {
     "DashboardShell": 1
   },
-  "src/components/ui/floating-overlay-depth.test.tsx": {
-    "HelpTip": 1
-  },
-  "src/components/ui/help-tip/HelpTip.stories.tsx": {
-    "HelpTip": 1,
-    "LabelWithHelp": 1
-  },
-  "src/components/ui/help-tip/HelpTip.test.tsx": {
-    "HelpTip": 1,
-    "LabelWithHelp": 1
-  },
   "src/components/ui/tile/Tile.stories.tsx": {
     "Tile": 1
   },

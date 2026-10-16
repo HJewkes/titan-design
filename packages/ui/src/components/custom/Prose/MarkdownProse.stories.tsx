@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View } from 'react-native'
+import { Surface } from '../../ui/surface'
 import { MarkdownProse, type ProseLinker } from './MarkdownProse'
 
 const SAMPLE = `# Shipped AW-17 and AW-18
@@ -112,4 +113,27 @@ export const CodeBlocks: Story = {
 /** A pipe table: alignment from the delimiter row, ragged rows padded to the header. */
 export const Tables: Story = {
   args: { body: TABLE_BODY, linkers: [] },
+}
+
+const PLANES = [
+  { label: 'background', props: { level: 'background' } },
+  { label: 'base', props: { level: 'base' } },
+  { label: 'raise 1', props: { raise: 1 } },
+  { label: 'raise 2', props: { raise: 2 } },
+  { label: 'raise 3', props: { raise: 3 } },
+] as const
+
+/** The same prose on every plane it renders on: bullets, brand, link and muted tones all clear AA on each. */
+export const OnEveryPlane: Story = {
+  render: function Render(args) {
+    return (
+      <Surface level="base" className="gap-4 p-2">
+        {PLANES.map(({ label, props }) => (
+          <Surface key={label} {...props} className="p-4" testID={`plane-${label}`}>
+            <MarkdownProse {...args} />
+          </Surface>
+        ))}
+      </Surface>
+    )
+  },
 }

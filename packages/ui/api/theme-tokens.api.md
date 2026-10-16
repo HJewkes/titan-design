@@ -23,6 +23,15 @@ export const categoricalPalette: {
 export type CategoricalVariant = keyof typeof categoricalPalette;
 
 // @public
+export type ControlPoints = readonly [number, number, number, number];
+
+// @public
+export type CubicBezierCss<P extends ControlPoints> = `cubic-bezier(${P[0]}, ${P[1]}, ${P[2]}, ${P[3]})`;
+
+// @public
+export function cubicBezierCss<const P extends ControlPoints>(points: P): CubicBezierCss<P>;
+
+// @public
 export const discreteRainbow: readonly ["#E8ECFB", "#D9CCE3", "#D1BBD7", "#CAACCB", "#BA8DB4", "#AE76A3", "#AA6F9E", "#994F88", "#882E72", "#1965B0", "#437DBF", "#5289C7", "#6195CF", "#7BAFDE", "#4EB265", "#90C987", "#CAE0AB", "#F7F056", "#F7CB45", "#F6C141", "#F4A736", "#F1932D", "#EE8026", "#E8601C", "#E65518", "#DC050C", "#A5170E", "#72190E", "#42150A"];
 
 // @public
@@ -42,8 +51,8 @@ export function getSemanticColors(mode: ThemeMode): {
     readonly 'brand-primary-subtle': "#FFE6D4";
     readonly 'brand-primary-muted': "#FFC7A2";
     readonly 'brand-primary-strong': "rgba(255, 121, 0, 0.50)";
-    readonly 'brand-primary-hover': "#DA5F00";
-    readonly 'brand-primary-active': "#B94A00";
+    readonly 'brand-primary-hover': "#B94A00";
+    readonly 'brand-primary-active': "#983804";
     readonly 'brand-secondary': "#307B9B";
     readonly 'brand-secondary-light': "#2697B7";
     readonly 'brand-secondary-dark': "#2A617F";
@@ -89,12 +98,12 @@ export function getSemanticColors(mode: ThemeMode): {
     readonly 'status-info-subtle': "#D9EFFF";
     readonly 'status-info-muted': "rgba(33, 150, 243, 0.30)";
     readonly 'status-info-strong': "rgba(33, 150, 243, 0.50)";
-    readonly 'brand-primary-solid': "#FF7900";
+    readonly 'brand-primary-solid': "#DA5F00";
     readonly 'brand-secondary-solid': "#307B9B";
     readonly 'status-success-solid': "#298732";
     readonly 'status-error-solid': "#D14343";
     readonly 'status-warning-solid': "#C27400";
-    readonly 'status-info-solid': "#2196F3";
+    readonly 'status-info-solid': "#1072CB";
     readonly 'on-status-success-subtle': "#2B6B25";
     readonly 'on-status-error-subtle': "#A4221C";
     readonly 'on-status-warning-subtle': "#814D14";
@@ -178,8 +187,6 @@ export function getSemanticColors(mode: ThemeMode): {
     readonly 'scrim-press-strong': "rgba(0, 0, 0, 0.20)";
     readonly 'scrim-subtle': "rgba(0, 0, 0, 0.30)";
     readonly 'scrim-default': "rgba(0, 0, 0, 0.50)";
-    readonly 'control-face': "#FFFFFF";
-    readonly 'control-face-active': "#D4D1CE";
     readonly 'control-face-disabled': "rgba(0, 0, 0, 0.06)";
     readonly 'on-control-idle': "#5A5958";
     readonly 'on-control-active': "#1C1916";
@@ -188,6 +195,7 @@ export function getSemanticColors(mode: ThemeMode): {
     readonly 'interactive-focus': "rgba(55, 65, 81, 0.12)";
     readonly 'interactive-active': "rgba(55, 65, 81, 0.16)";
     readonly 'interactive-selected': "rgba(55, 65, 81, 0.08)";
+    readonly 'interactive-selected-solid': "#5A5958";
     readonly 'interactive-disabled': "rgba(55, 65, 81, 0.12)";
     readonly 'interactive-disabled-text': "rgba(55, 65, 81, 0.26)";
     readonly divider: "rgba(0, 0, 0, 0.16)";
@@ -336,8 +344,6 @@ export function getSemanticColors(mode: ThemeMode): {
     readonly 'scrim-press-strong': "rgba(0, 0, 0, 0.20)";
     readonly 'scrim-subtle': "rgba(0, 0, 0, 0.30)";
     readonly 'scrim-default': "rgba(0, 0, 0, 0.50)";
-    readonly 'control-face': "#424140";
-    readonly 'control-face-active': "#2C2A28";
     readonly 'control-face-disabled': "rgba(255, 255, 255, 0.12)";
     readonly 'on-control-idle': "#D1D1D1";
     readonly 'on-control-active': "#FFFFFF";
@@ -346,6 +352,7 @@ export function getSemanticColors(mode: ThemeMode): {
     readonly 'interactive-focus': "rgba(255, 255, 255, 0.12)";
     readonly 'interactive-active': "rgba(255, 255, 255, 0.16)";
     readonly 'interactive-selected': "rgba(255, 255, 255, 0.08)";
+    readonly 'interactive-selected-solid': "#F9F6F3";
     readonly 'interactive-disabled': "rgba(255, 255, 255, 0.12)";
     readonly 'interactive-disabled-text': "rgba(255, 255, 255, 0.26)";
     readonly divider: "rgba(255, 255, 255, 0.09)";
@@ -371,6 +378,50 @@ export const greyRamp: {
     readonly 950: "#1C1916";
     readonly 975: "#100D0A";
 };
+
+// @public
+export const motion: {
+    readonly duration: {
+        readonly fast: 150;
+        readonly normal: 250;
+        readonly slow: 400;
+    };
+    readonly ease: {
+        readonly out: readonly [0.22, 1, 0.36, 1];
+        readonly inOut: readonly [0.65, 0, 0.35, 1];
+        readonly spring: readonly [0.34, 1.56, 0.64, 1];
+        readonly in: readonly [0.55, 0, 1, 0.45];
+    };
+    readonly video: {
+        readonly emphasis: 500;
+        readonly enter: 1000;
+        readonly hero: 1500;
+        readonly count: 1500;
+        readonly exit: 850;
+        readonly exitScale: 0.85;
+        readonly staggerEach: 60;
+        readonly staggerMax: 500;
+        readonly rise: 40;
+        readonly scaleFrom: 0.97;
+    };
+    readonly dim: {
+        readonly context: {
+            readonly opacity: 0.35;
+            readonly saturation: 0;
+        };
+    };
+};
+
+// @public
+export const motionCSSVars: Readonly<{
+    readonly '--ease-out': "cubic-bezier(0.22, 1, 0.36, 1)";
+    readonly '--ease-in-out': "cubic-bezier(0.65, 0, 0.35, 1)";
+    readonly '--ease-spring': "cubic-bezier(0.34, 1.56, 0.64, 1)";
+    readonly '--ease-in': "cubic-bezier(0.55, 0, 1, 0.45)";
+    readonly '--duration-fast': "150ms";
+    readonly '--duration-normal': "250ms";
+    readonly '--duration-slow': "400ms";
+}>;
 
 // @public (undocumented)
 export const primitiveBorderRadius: {
@@ -525,7 +576,7 @@ export const primitiveTypography: {
         readonly sans: readonly ["Inter", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Helvetica", "Arial", "sans-serif"];
         readonly body: readonly ["Nunito Sans", "sans-serif"];
         readonly heading: readonly ["Space Grotesk", "sans-serif"];
-        readonly mono: readonly ["SF Mono", "Monaco", "Inconsolata", "Fira Mono", "Droid Sans Mono", "Source Code Pro", "monospace"];
+        readonly mono: readonly ["JetBrains Mono", "monospace"];
     };
     readonly fontSizes: {
         readonly '2xs': "0.625rem";
@@ -735,8 +786,6 @@ export const semanticColorsDark: {
     readonly 'scrim-press-strong': "rgba(0, 0, 0, 0.20)";
     readonly 'scrim-subtle': "rgba(0, 0, 0, 0.30)";
     readonly 'scrim-default': "rgba(0, 0, 0, 0.50)";
-    readonly 'control-face': "#424140";
-    readonly 'control-face-active': "#2C2A28";
     readonly 'control-face-disabled': "rgba(255, 255, 255, 0.12)";
     readonly 'on-control-idle': "#D1D1D1";
     readonly 'on-control-active': "#FFFFFF";
@@ -745,6 +794,7 @@ export const semanticColorsDark: {
     readonly 'interactive-focus': "rgba(255, 255, 255, 0.12)";
     readonly 'interactive-active': "rgba(255, 255, 255, 0.16)";
     readonly 'interactive-selected': "rgba(255, 255, 255, 0.08)";
+    readonly 'interactive-selected-solid': "#F9F6F3";
     readonly 'interactive-disabled': "rgba(255, 255, 255, 0.12)";
     readonly 'interactive-disabled-text': "rgba(255, 255, 255, 0.26)";
     readonly divider: "rgba(255, 255, 255, 0.09)";
@@ -760,8 +810,8 @@ export const semanticColorsLight: {
     readonly 'brand-primary-subtle': "#FFE6D4";
     readonly 'brand-primary-muted': "#FFC7A2";
     readonly 'brand-primary-strong': "rgba(255, 121, 0, 0.50)";
-    readonly 'brand-primary-hover': "#DA5F00";
-    readonly 'brand-primary-active': "#B94A00";
+    readonly 'brand-primary-hover': "#B94A00";
+    readonly 'brand-primary-active': "#983804";
     readonly 'brand-secondary': "#307B9B";
     readonly 'brand-secondary-light': "#2697B7";
     readonly 'brand-secondary-dark': "#2A617F";
@@ -807,12 +857,12 @@ export const semanticColorsLight: {
     readonly 'status-info-subtle': "#D9EFFF";
     readonly 'status-info-muted': "rgba(33, 150, 243, 0.30)";
     readonly 'status-info-strong': "rgba(33, 150, 243, 0.50)";
-    readonly 'brand-primary-solid': "#FF7900";
+    readonly 'brand-primary-solid': "#DA5F00";
     readonly 'brand-secondary-solid': "#307B9B";
     readonly 'status-success-solid': "#298732";
     readonly 'status-error-solid': "#D14343";
     readonly 'status-warning-solid': "#C27400";
-    readonly 'status-info-solid': "#2196F3";
+    readonly 'status-info-solid': "#1072CB";
     readonly 'on-status-success-subtle': "#2B6B25";
     readonly 'on-status-error-subtle': "#A4221C";
     readonly 'on-status-warning-subtle': "#814D14";
@@ -896,8 +946,6 @@ export const semanticColorsLight: {
     readonly 'scrim-press-strong': "rgba(0, 0, 0, 0.20)";
     readonly 'scrim-subtle': "rgba(0, 0, 0, 0.30)";
     readonly 'scrim-default': "rgba(0, 0, 0, 0.50)";
-    readonly 'control-face': "#FFFFFF";
-    readonly 'control-face-active': "#D4D1CE";
     readonly 'control-face-disabled': "rgba(0, 0, 0, 0.06)";
     readonly 'on-control-idle': "#5A5958";
     readonly 'on-control-active': "#1C1916";
@@ -906,6 +954,7 @@ export const semanticColorsLight: {
     readonly 'interactive-focus': "rgba(55, 65, 81, 0.12)";
     readonly 'interactive-active': "rgba(55, 65, 81, 0.16)";
     readonly 'interactive-selected': "rgba(55, 65, 81, 0.08)";
+    readonly 'interactive-selected-solid': "#5A5958";
     readonly 'interactive-disabled': "rgba(55, 65, 81, 0.12)";
     readonly 'interactive-disabled-text': "rgba(55, 65, 81, 0.26)";
     readonly divider: "rgba(0, 0, 0, 0.16)";

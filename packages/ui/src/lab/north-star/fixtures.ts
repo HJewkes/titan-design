@@ -12,7 +12,7 @@
  * (see the `derive*` helpers) — the same projection the store→component adapter will do.
  * Numbers are realistic cable chest-press strength-training values.
  */
-import type { SessionRailExercise } from '../../components'
+import type { SessionRailExercise } from '../../workout'
 
 // --- Store read-model shapes (mirror voltras-mcp dashboard store) -------------
 

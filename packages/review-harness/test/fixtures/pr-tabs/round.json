@@ -1,0 +1,115 @@
+{
+  "schema": "titan-review/round@2",
+  "unit": "pr-tabs-fixture",
+  "round": 1,
+  "storybookUrl": "http://127.0.0.1:6100",
+  "context": "One PR group, split into Review, Diff and Context tabs, with the Ship bar under all three.",
+  "widths": [1280],
+  "variants": [
+    {
+      "key": "pill-built",
+      "image": "frames/pill-built.png",
+      "label": "Pill, filled",
+      "variantUnit": "pill-built",
+      "alternate": "A",
+      "change": "changed",
+      "baseImage": "frames/pill-built-base.png"
+    },
+    {
+      "key": "pill-outline",
+      "image": "frames/pill-outline.png",
+      "label": "Pill, outline",
+      "variantUnit": "pill-outline",
+      "alternate": "B",
+      "change": "new"
+    },
+    {
+      "key": "row",
+      "image": "frames/row.png",
+      "label": "Button row spacing",
+      "change": "changed",
+      "baseImage": "frames/row-base.png"
+    }
+  ],
+  "questions": [
+    {
+      "id": "pill-format",
+      "kind": "pick-one",
+      "decision": "iterate",
+      "prompt": "ITERATION: Which Pill format?",
+      "options": ["Filled", "Outline"],
+      "outcomes": { "Filled": "accept", "Outline": "changes" },
+      "implemented": "Filled",
+      "required": true,
+      "signsOff": "the Pill format",
+      "page": "example/widgets#42",
+      "topics": ["topic:iteration", "ask:pr-tabs-fixture/pill-format"],
+      "frames": ["pill-built", "pill-outline"]
+    },
+    {
+      "id": "row-spacing",
+      "kind": "pick-one",
+      "decision": "iterate",
+      "prompt": "ITERATION: Is the button row spacing right?",
+      "options": ["Gap inline-md", "Gap inline-lg"],
+      "outcomes": { "Gap inline-md": "accept", "Gap inline-lg": "changes" },
+      "implemented": "Gap inline-md",
+      "required": true,
+      "signsOff": "the button row spacing",
+      "page": "example/widgets#42",
+      "topics": ["topic:iteration", "ask:pr-tabs-fixture/row-spacing"],
+      "frames": ["row"]
+    },
+    {
+      "id": "ship-42",
+      "kind": "pick-one",
+      "decision": "ship",
+      "prompt": "SHIP: Ship example/widgets#42 at this head?",
+      "options": ["Ship", "Don't ship"],
+      "outcomes": { "Ship": "accept", "Don't ship": "changes" },
+      "required": true,
+      "signsOff": "the change in example/widgets#42",
+      "page": "example/widgets#42",
+      "topics": ["topic:ship", "ask:example/widgets#42/ship"],
+      "merge": {
+        "repo": "example/widgets",
+        "pr": 42,
+        "headSha": "4242424242424242424242424242424242424242",
+        "ship": ["Ship"]
+      }
+    }
+  ],
+  "sections": [
+    {
+      "id": "pr-42",
+      "title": "#42 Pill format and button row",
+      "deciding": "The Pill's format and the button row's spacing.",
+      "changed": "The Pill gains an outline format; the button row's gap grows by one step.",
+      "context": "The as-built Pill is shown beside the outline for comparison.",
+      "kind": "STATES",
+      "questionIds": ["pill-format", "row-spacing", "ship-42"],
+      "variantKeys": ["pill-built", "pill-outline", "row"]
+    }
+  ],
+  "prGroups": [
+    {
+      "pr": "example/widgets#42",
+      "headSha": "4242424242424242424242424242424242424242",
+      "sectionIds": ["pr-42"],
+      "title": "Add an outline Pill and loosen the button row",
+      "kind": "feature",
+      "description": "Adds an `outline` format to the Pill and widens the button row's gap from `inline-sm` to `inline-md`.\n\nNo new tokens.",
+      "task": {
+        "id": "EX-1",
+        "title": "Outline Pill",
+        "doneWhen": "The Pill renders an outline format in both themes, and the button row uses `gap-inline-md`."
+      },
+      "codewatch": "**No findings.** Two files changed; no new dependency edges.",
+      "files": [
+        { "path": "src/components/ui/pill/Pill.tsx", "status": "modified" },
+        { "path": "src/components/ui/pill/Pill.stories.tsx", "status": "modified" },
+        { "path": "src/components/ui/button-row/ButtonRow.tsx", "status": "modified" }
+      ]
+    }
+  ]
+}

@@ -6,13 +6,15 @@
  */
 
 import { semanticColorsLight, semanticColorsDark, type ThemeMode } from './tokens/semantic'
+import { motionCSSVars } from './tokens/motion-vars'
 import { spacingCSSVars } from './tokens/spacing-vars'
 
 // Theme-independent custom properties: identical in light and dark in
 // global.css (RGB glow decompositions, font families, animation tokens,
 // spacing + sizing). Kept as literals since they are not part of the semantic
 // COLOR maps, and spread into both theme maps so codegen mirrors global.css
-// exactly. `spacingCSSVars` is derived, not literal — see tokens/spacing-vars.ts.
+// exactly. `spacingCSSVars` and `motionCSSVars` are derived, not literal — see
+// tokens/spacing-vars.ts and tokens/motion-vars.ts.
 const themeIndependentCSSVars = {
   // RGB decomposed values for glow shadows
   '--color-brand-primary-rgb': '255, 121, 0',
@@ -28,15 +30,10 @@ const themeIndependentCSSVars = {
   '--font-family-sans': "'Inter'",
   '--font-family-body': "'Nunito Sans'",
   '--font-family-heading': "'Space Grotesk'",
-  '--font-family-mono': "'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace",
+  '--font-family-mono': "'JetBrains Mono', monospace",
 
-  // Animation tokens
-  '--ease-out': 'cubic-bezier(0.22, 1, 0.36, 1)',
-  '--ease-in-out': 'cubic-bezier(0.65, 0, 0.35, 1)',
-  '--ease-spring': 'cubic-bezier(0.34, 1.56, 0.64, 1)',
-  '--duration-fast': '150ms',
-  '--duration-normal': '250ms',
-  '--duration-slow': '400ms',
+  // Animation tokens (TD-838), derived from `motion` in tokens/semantic.ts.
+  ...motionCSSVars,
 
   // Spacing + sizing (AW-142). Theme-independent, so one derivation covers both.
   ...spacingCSSVars,
@@ -124,6 +121,7 @@ export const lightThemeCSSVars = {
   '--color-interactive-focus': semanticColorsLight['interactive-focus'],
   '--color-interactive-active': semanticColorsLight['interactive-active'],
   '--color-interactive-selected': semanticColorsLight['interactive-selected'],
+  '--color-interactive-selected-solid': semanticColorsLight['interactive-selected-solid'],
   '--color-interactive-disabled': semanticColorsLight['interactive-disabled'],
 
   '--color-divider': semanticColorsLight['divider'],
@@ -215,8 +213,6 @@ export const lightThemeCSSVars = {
   '--color-scrim-press-strong': semanticColorsLight['scrim-press-strong'],
   '--color-scrim-subtle': semanticColorsLight['scrim-subtle'],
   '--color-scrim-default': semanticColorsLight['scrim-default'],
-  '--color-control-face': semanticColorsLight['control-face'],
-  '--color-control-face-active': semanticColorsLight['control-face-active'],
   '--color-control-face-disabled': semanticColorsLight['control-face-disabled'],
   '--color-on-control-idle': semanticColorsLight['on-control-idle'],
   '--color-on-control-active': semanticColorsLight['on-control-active'],
@@ -312,6 +308,7 @@ export const darkThemeCSSVars = {
   '--color-interactive-focus': semanticColorsDark['interactive-focus'],
   '--color-interactive-active': semanticColorsDark['interactive-active'],
   '--color-interactive-selected': semanticColorsDark['interactive-selected'],
+  '--color-interactive-selected-solid': semanticColorsDark['interactive-selected-solid'],
   '--color-interactive-disabled': semanticColorsDark['interactive-disabled'],
 
   '--color-divider': semanticColorsDark['divider'],
@@ -403,8 +400,6 @@ export const darkThemeCSSVars = {
   '--color-scrim-press-strong': semanticColorsDark['scrim-press-strong'],
   '--color-scrim-subtle': semanticColorsDark['scrim-subtle'],
   '--color-scrim-default': semanticColorsDark['scrim-default'],
-  '--color-control-face': semanticColorsDark['control-face'],
-  '--color-control-face-active': semanticColorsDark['control-face-active'],
   '--color-control-face-disabled': semanticColorsDark['control-face-disabled'],
   '--color-on-control-idle': semanticColorsDark['on-control-idle'],
   '--color-on-control-active': semanticColorsDark['on-control-active'],

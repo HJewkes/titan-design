@@ -90,6 +90,8 @@ describe('Metric', () => {
   it.each([
     ['success', 'text-text-success', 'text-status-success'],
     ['warning', 'text-text-warning', 'text-status-warning'],
+    ['info', 'text-text-info', 'text-status-info'],
+    ['brand', 'text-text-brand', 'text-brand-primary'],
   ] as const)('tone=%s colours the value from %s, not %s', (tone, textRole, fillTone) => {
     render(<Metric value="12" label="Sets" tone={tone} />)
     const classes = classesOf(screen.getByText('12'))

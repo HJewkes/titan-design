@@ -29,7 +29,14 @@ const DARK: Record<string, string> = {
   'text-warning': ramp.amber[300],
   'text-info': ramp.blue[300],
 }
-const PLANES = ['surface-base', 'surface-raised', 'surface-elevated', 'surface-overlay'] as const
+// The 3b planes: grey 200 / 100 / 50 / white in light, the dark ramp in dark (TD-483).
+const PLANES = [
+  'background-base',
+  'surface-base',
+  'surface-elevated',
+  'surface-raised',
+  'surface-overlay',
+] as const
 
 describe.each([
   ['light', LIGHT],

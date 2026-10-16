@@ -1,4 +1,6 @@
 import { Text, Pressable } from 'react-native'
+import { cn } from '../../../../utils/cn'
+import { chartText } from '../kit/chartText'
 import type { ScatterPoint } from './scatterGeometry'
 
 /** One pressable bubble, ringed when selected, labelled when large or selected. */
@@ -36,7 +38,7 @@ export function ScatterPointMark({
       {showLabel && (
         <Text
           numberOfLines={1}
-          className="text-[9px] font-semibold text-text-primary"
+          className={cn(chartText.dataLabel, 'text-text-primary')}
           style={{
             position: 'absolute',
             left: p.radius * 2 + 3,

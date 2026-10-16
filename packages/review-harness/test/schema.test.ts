@@ -119,12 +119,17 @@ describe('image variants', () => {
     ).toEqual(['variants.2.args', 'variants.2.globals'])
   })
 
-  it('states the either-or rule in the exported JSON Schema too', () => {
+  it('states the one-source rule in the exported JSON Schema too', () => {
     const items = (manifestJsonSchema() as { properties: { variants: { items: object } } })
       .properties.variants.items
     expect(items).toMatchObject({
       required: ['key', 'label'],
-      oneOf: [{ required: ['storyId'] }, { required: ['image'] }],
+      oneOf: [
+        { required: ['storyId'] },
+        { required: ['image'] },
+        { required: ['clip', 'motion'] },
+        { required: ['audio', 'transcript'] },
+      ],
     })
   })
 })
