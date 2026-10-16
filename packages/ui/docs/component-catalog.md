@@ -96,10 +96,7 @@ Generated from `src/arch/component-catalog.json` by `pnpm catalog`. Do not edit 
 | IntensityBar | candidate | custom/Workout | — | — | custom-workout-dataviz-intensitybar--all-zones |
 | Kbd | candidate | ui/kbd | Kbd — a display-only keyboard shortcut hint, one keycap per key. | Typography | components-atoms-kbd--default |
 | KnowledgeClassLabel | candidate | custom/ActiveWork | KnowledgeClassLabel — a record class as a categorical dot plus its name. | Indicator, Typography | custom-activework-knowledgeclasslabel--default |
-| KnowledgeFilterBar | review | custom/ActiveWork | KnowledgeFilterBar — the knowledge list's built-in filter row: a query field and a date range. | Input, Select | — |
 | KnowledgeList | candidate | custom/ActiveWork | KnowledgeList — every note and source across initiatives in one filterable, sortable, paged table. | Alert, Button, EmptyState, Eyebrow, KnowledgeFilterBar, KnowledgeRow, KnowledgeTable | custom-activework-knowledgelist--default |
-| KnowledgeRow | review | custom/ActiveWork | KnowledgeRow — one note or source as a dense table row. | DateTime, Link, Pill, Table, TableCell, TagPills, Typography | — |
-| KnowledgeTable | review | custom/ActiveWork | KnowledgeTable — the knowledge list's sortable, paged grid, newest first. | KnowledgeRow, Skeleton, Table, TableCell, TableHeaderCell, TablePagination | — |
 | Link | stable | ui/link | Link component for navigation. | — | components-atoms-link--all-colors |
 | ListItem | stable | ui/list-item | — | — | components-molecules-listitem--basic |
 | LiveAuraFrame | candidate | custom/Workout | Full-surface color-flood frame tied to a coaching category. | — | custom-workout-liveauraframe--all-states |
@@ -191,7 +188,6 @@ Generated from `src/arch/component-catalog.json` by `pnpm catalog`. Do not edit 
 | TableHeaderCell | review | ui/table | Table header cell with optional sorting. | Tooltip | — |
 | TablePagination | review | ui/table | Pagination controls for table. | — | — |
 | Tabs | stable | ui/tabs | Tabs component for tabbed navigation. | — | components-molecules-tabs--all-variants |
-| TagPills | review | custom/ActiveWork | A table cell's tags: the first two as neutral pills, the rest folded into a `+N` count whose tooltip lists them. | Pill, Tooltip, Typography | — |
 | TaskRow | candidate | custom/ActiveWork | TaskRow — one task as a dense grid row: initiative, id, title, severity, priority, estimate, tags and age. | DateTime, Indicator, Pill, SeverityLabel, Table, TableCell, TagPills, Tooltip, Typography | custom-activework-taskrow--critical-with-overflowing-tags |
 | TaskStagePill | candidate | custom/ActiveWork | The one renderer of a stage outside the board columns; label and tone come from the stage table. | Pill | custom-activework-taskstagepill--default |
 | TaskTable | candidate | custom/ActiveWork | TaskTable — every open task across initiatives in one dense, sortable grid. | Eyebrow, SeverityLabel, Table, TableHeaderCell, TaskRow, Typography | custom-activework-tasktable--default |
