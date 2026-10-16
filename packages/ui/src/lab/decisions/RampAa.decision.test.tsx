@@ -56,13 +56,9 @@ describe('Elevation ramp AA decision', () => {
       'status-error-vivid': primitiveRamps.red[700],
     }
     // The shell accents wait for the categorical lock (FD6); brands.tsx is unchanged here.
-    const NOT_SHIPPED = new Set([
-      'status-error as text',
-      'active-work: dataviz-categorical-0',
-      'agents: dataviz-categorical-4',
-    ])
+    const NOT_SHIPPED = new Set(['status-error as text', 'active-work: dataviz-categorical-0'])
     const solved = solveRecolours(option('q5cInsets').planes)
-    expect(Object.keys(solved)).toHaveLength(16)
+    expect(Object.keys(solved)).toHaveLength(15)
     for (const [id, colour] of Object.entries(solved)) {
       if (NOT_SHIPPED.has(id)) continue
       const at = id in shipped ? shipped[id] : light[id.replace(/^[\w-]+: /, '')]
