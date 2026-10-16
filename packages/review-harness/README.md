@@ -537,7 +537,7 @@ draft.json        packet.json      (packet.json is written last)
 - `images[]`: `key` (`img-001`, ordinal), `layer`, `path`, `change`, `source` (`artifact` or
   `git`), `label`, `file` (the montage), `sha256`, `viewport`, `storyId` (story layer),
   `before` and `after` (`{file, sha256, width, height}`), `diff`, `size`, `pixelIdentical`, and
-  `cause: null` (the packager fills it)
+  `cause: null` (it stays null; the packager writes each image's cause to `prose.json`)
 - `unchanged` (`{component, story}`), `warnings` (main changed a baseline since the merge-base)
 - `draft`: `{file: "draft.json", sha256}`
 
@@ -547,6 +547,41 @@ changed frames only), then a `side` section holding the `--side` questions (a JS
 questions, each put on the PR page), then the one merge-bound Ship question, all in one PR
 group. It must pass the builder rules, the round contract and `lintRound`, or from-ci refuses with
 the problems. Run `titan-review build <out>/draft.json --tree <clone>` on it next.
+
+### packet lint (TD-924)
+
+```sh
+titan-review packet lint <dir> --gate-head <40-hex> [--require prose,round] [--json]
+```
+
+Checks that a packet directory is the one from-ci wrote for the gate's head, and that the files
+added since are well formed. It reads only the directory: no git, no gh, no network. It walks the
+tree with `lstat` and never follows a link.
+
+- `packet.json` passes `titan-review/ci-packet@1`, its `packetId` is the hash of what it names,
+  and its head is `--gate-head`.
+- `draft.json` hashes to `draft.sha256`, and its Ship question is bound to the gate head and the
+  packet's repo and PR.
+- Every PNG it names is present, under `before/ after/ diff/ montage/`, and hashes to its sha256.
+  Any other file, link or non-regular file is a problem.
+- `prose.json` (`titan-review/packet-prose@1`, `src/packet-prose.ts`), when present, is bound to the
+  packet and the gate head and gives exactly one cause per image.
+- `round.json`, when present, is `applyRoundRules(draft.json)` plus `build`, for the packet's unit
+  and head.
+
+`--require` makes `prose.json` or `round.json` a problem when absent. `--gate-head` has no default,
+so the lint never trusts the packet's own head. Exit 0 when clean, 2 on any problem, an unreadable
+directory or a usage error. Each problem prints as `<rule>: <message>`; with `--json`, stdout is one
+object, `{ok, problems: [{rule, message}]}`. The rule ids are `PACKET_LINT_RULES` in
+`src/packet-lint.ts`.
+
+### packet prompt (TD-924)
+
+`titan-review packet prompt` prints `prompts/review-packager.md`: the review packager agent's
+instructions. The agent runs from-ci, writes `prose.json` and nothing else, and finishes with
+`titan-review packet lint <dir> --gate-head <head> --require prose`. The prompt ships with the lint
+that judges it, and `test/packet-prompt.test.ts` fails when its field headings, its caps, its rule
+list or its example drift from `ProseSchema` and the lint.
 
 ## Contrast gate (TD-478)
 
