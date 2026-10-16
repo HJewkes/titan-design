@@ -111,6 +111,12 @@ names them), and no other file or link. It reads only the directory. Exit 0 clea
 problem, each printed as <rule>: <message>; with --json, one titan-review/packet-lint@1 object
 {schema, ok, packetId (null when packet.json does not parse), problems}.
 
+packet round builds a packet's round with no Storybook: round.json is the round rules applied to
+draft.json with build {mainSha, mergeSha: the packet head}, and frames/frames.json is the
+titan-review/frames@1 index the console imports, binding round.json, packet.json and prose.json
+by sha256. It refuses (exit 2, writing nothing) without a valid packet.json, its draft.json and
+prose.json.
+
 packet prompt prints the review packager's instructions: how to write prose.json for a packet
 and lint it.
 

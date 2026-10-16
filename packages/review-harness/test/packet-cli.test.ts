@@ -127,10 +127,10 @@ describe('packet prompt command', () => {
 
 describe('packet command', () => {
   it('refuses an unknown verb, naming the ones it has', async () => {
-    const { code, stderr } = await run(['packet', 'round'])
+    const { code, stderr } = await run(['packet', 'serve'])
 
     expect(code).toBe(2)
-    expect(stderr).toContain('expected: packet from-ci | lint | prompt')
+    expect(stderr).toContain('expected: packet from-ci | lint | round | prompt')
   })
 
   it('puts the --side questions into the from-ci draft', async () => {

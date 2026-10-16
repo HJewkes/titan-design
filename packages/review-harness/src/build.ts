@@ -103,7 +103,7 @@ async function treeProvenance(
 }
 
 /** The bytes round.json gets: the draft with the builder rules applied, and the build's provenance. */
-function roundBytes(ruled: ManifestInput, build: BuildProvenance | undefined) {
+export function roundBytes(ruled: ManifestInput, build: BuildProvenance | undefined) {
   return Buffer.from(`${JSON.stringify(build ? { ...ruled, build } : ruled, null, 2)}\n`)
 }
 

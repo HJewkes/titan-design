@@ -213,7 +213,7 @@ export function packetIdOf(p: PacketBody): string {
 }
 
 /** The checks `build` runs on a draft, so a packet never carries one build would refuse. */
-function checkDraft(draft: ReturnType<typeof packetDraft>): void {
+export function checkDraft(draft: ReturnType<typeof packetDraft>): void {
   const parsed = RoundSchema.safeParse(applyRoundRules(draft))
   if (!parsed.success)
     throw new ReviewError(
