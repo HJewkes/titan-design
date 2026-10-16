@@ -11,7 +11,7 @@ import {
   OctagonXIcon,
   type IconProps,
 } from '../../icons'
-import { StatusGlyph, type StatusGlyphTone } from './StatusGlyph'
+import { StatusGlyph, type StatusGlyphSize, type StatusGlyphTone } from './StatusGlyph'
 
 const TONE_SHAPES: [StatusGlyphTone, ComponentType<IconProps>][] = [
   ['success', CircleCheckIcon],
@@ -60,14 +60,22 @@ describe('StatusGlyph', () => {
     expect(glyphSvg('success').getAttribute('aria-hidden')).toBe('true')
   })
 
-  it('grows from sm to lg', () => {
-    const width = (size: 'sm' | 'md' | 'lg') => {
+  it('grows from sm to xl', () => {
+    const width = (size: StatusGlyphSize) => {
       const { container } = render(<StatusGlyph tone="success" label="Fresh" size={size} />)
       return Number(container.querySelector('svg')!.getAttribute('width'))
     }
 
     expect(width('sm')).toBeLessThan(width('md'))
     expect(width('md')).toBeLessThan(width('lg'))
+    expect(width('lg')).toBeLessThan(width('xl'))
+  })
+
+  it('draws xl at least the cap height of a 48px h2 word', () => {
+    // A ~0.7 cap-height ratio puts a 48px word's capitals near 34px; lg (24px) sat well under it.
+    const { container } = render(<StatusGlyph tone="error" label="Grinding" size="xl" />)
+
+    expect(Number(container.querySelector('svg')!.getAttribute('width'))).toBeGreaterThanOrEqual(34)
   })
 
   const SURFACES = ['surface-base', 'surface-raised'] as const

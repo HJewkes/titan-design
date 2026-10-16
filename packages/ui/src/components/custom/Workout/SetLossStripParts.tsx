@@ -7,7 +7,7 @@ import { alpha } from '../../../utils/colors'
 import { roundWeight, formatVelocityLoss } from '../../../utils/workout-format'
 import { TriangleDownIcon, TriangleUpIcon } from '../../icons'
 import { Indicator } from '../../ui/indicator'
-import { StatusGlyph } from '../../ui/status-glyph'
+import { STATUS_GLYPH_FILL, StatusGlyph } from '../../ui/status-glyph'
 import { useSurfaceMode } from '../../ui/surface'
 import { Typography } from '../../ui/typography'
 import { HatchPattern } from './GoalTrajectoryCalibrating'
@@ -37,14 +37,6 @@ export function innerPlotPx(plot: number): number {
 /** Where a loss sits, in px up from the plot row's bottom edge (the bars' baseline plus the inset). */
 export function lossOffsetPx(lossPct: number, ceiling: number, plot: number): number {
   return RING_INSET + lossToPx(lossPct, ceiling, innerPlotPx(plot))
-}
-
-/** The same fills StatusGlyph uses, so the ring and the glyph above it share one colour. */
-export const MARK_TONE_TOKEN: Record<SetLossMarkTone, ColorToken> = {
-  success: 'status-success',
-  warning: 'status-warning',
-  error: 'status-error',
-  neutral: 'text-secondary',
 }
 
 /** Working sets draw in the first categorical hue; warm-up, other and unscored sets in grey. */
@@ -104,7 +96,7 @@ interface BarProps {
 export function PlotCell({ markTone, ...bar }: BarProps & { markTone?: SetLossMarkTone }) {
   const { set, column, plot } = bar
   const ring: ViewStyle = markTone
-    ? { borderWidth: RING_WIDTH, borderColor: resolveColor(MARK_TONE_TOKEN[markTone]) }
+    ? { borderWidth: RING_WIDTH, borderColor: resolveColor(STATUS_GLYPH_FILL[markTone]) }
     : { borderWidth: RING_WIDTH, borderColor: 'transparent' }
   return (
     <View

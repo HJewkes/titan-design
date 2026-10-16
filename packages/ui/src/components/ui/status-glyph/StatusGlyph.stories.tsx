@@ -8,7 +8,7 @@ const meta: Meta<typeof StatusGlyph> = {
   args: { tone: 'error', label: 'Failed', size: 'md' },
   argTypes: {
     tone: { control: 'select', options: ['success', 'warning', 'error', 'neutral'] },
-    size: { control: 'select', options: ['sm', 'md', 'lg'] },
+    size: { control: 'select', options: ['sm', 'md', 'lg', 'xl'] },
     label: { control: 'text' },
   },
   parameters: {
