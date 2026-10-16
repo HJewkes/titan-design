@@ -192,8 +192,11 @@ function compareStyles(
 
 const CHECK_MARK_SVG_PROPS = ['width', 'height'] as const
 
+// The painted outline is the svg's direct child path; the component's other path is its mask spine.
+const CHECK_MARK_FILL = ':scope > path'
+
 /**
- * The check mark is an SVG polygon (TD-840), so it has no text to compare: match the painted
+ * The check mark is a filled SVG path (TD-840), so it has no text to compare: match the painted
  * fill (the ground truth's `currentColor` against the component's colour role) and the box.
  */
 async function assertCheckMarkMatch(
@@ -210,8 +213,8 @@ async function assertCheckMarkMatch(
 
   const mismatches = [
     ...compareStyles(
-      await getStyles(htmlSvg.locator('polygon'), ['fill']),
-      await getStyles(reactSvg.locator('polygon'), ['fill']),
+      await getStyles(htmlSvg.locator(CHECK_MARK_FILL), ['fill']),
+      await getStyles(reactSvg.locator(CHECK_MARK_FILL), ['fill']),
       ['fill']
     ),
     ...compareStyles(

@@ -20,7 +20,7 @@ import {
   ExerciseCard,
   SupersetWrapper,
 } from '../src/components/custom/Workout'
-import { checkMarkOutline } from '../src/components/icons/checkMarkGeometry'
+import { checkMarkPath } from '../src/components/icons/checkMarkGeometry'
 
 /* ─────────────────────────────────────────────
    HTML Ground Truth CSS (verbatim from component-demo.html lines 218-720)
@@ -692,10 +692,7 @@ const HTML_CSS = `
 
 /** The check the components draw since TD-840 replaced the ✓ glyph, in the wrapper's colour. */
 function checkMarkHtml(size: number, className = ''): string {
-  const points = checkMarkOutline(3)
-    .map(([x, y]) => `${String(x)},${String(y)}`)
-    .join(' ')
-  return `<svg class="${className}" width="${String(size)}" height="${String(size)}" viewBox="0 0 24 24" aria-hidden="true"><polygon points="${points}" fill="currentColor" /></svg>`
+  return `<svg class="${className}" width="${String(size)}" height="${String(size)}" viewBox="0 0 24 24" aria-hidden="true"><path d="${checkMarkPath(3)}" fill="currentColor" /></svg>`
 }
 
 function ComparisonPair({
