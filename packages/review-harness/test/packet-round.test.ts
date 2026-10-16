@@ -188,6 +188,15 @@ describe('packet lint: frames-index', () => {
     expect(await rules(dir)).toEqual(['frames-index'])
   })
 
+  it('refuses a required round whose frames.json is absent, and only when required', async () => {
+    const dir = await packetWithProse()
+    await packetRound(dir)
+    await rm(join(dir, FRAMES))
+
+    expect(await rules(dir, { require: ['prose', 'round'] })).toEqual(['frames-missing'])
+    expect(await rules(dir)).toEqual([])
+  })
+
   it('refuses a frames.json beside no round.json', async () => {
     const dir = await packetWithProse()
     await packetRound(dir)

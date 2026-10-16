@@ -48,7 +48,13 @@ describe('packet lint command', () => {
 
     expect(JSON.parse(stdout)).toMatchObject({
       ok: false,
-      problems: [{ rule: 'round-missing', message: 'round.json is required but not present' }],
+      problems: [
+        { rule: 'round-missing', message: 'round.json is required but not present' },
+        {
+          rule: 'frames-missing',
+          message: 'frames/frames.json is required with round.json but not present',
+        },
+      ],
     })
     expect(code).toBe(3)
   })

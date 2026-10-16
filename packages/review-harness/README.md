@@ -571,7 +571,9 @@ tree with `lstat` and never follows a link.
 - `frames/frames.json`, when present, is byte for byte the index `packet round` derives from
   packet.json, round.json and prose.json (rule `frames-index`).
 
-`--require` makes `prose.json` or `round.json` a problem when absent. `--gate-head` has no default,
+`--require` makes `prose.json` or `round.json` a problem when absent; `--require round` also
+requires `frames/frames.json` (rule `frames-missing`), since a round imported without its index
+shows no images. `--gate-head` has no default,
 so the lint never trusts the packet's own head. Exit 0 when clean, 3 on any problem (as `build`),
 2 on an unreadable directory or a usage error. Each problem prints as `<rule>: <message>`; with
 `--json`, stdout is one object and nothing else:

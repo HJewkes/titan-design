@@ -41,6 +41,7 @@ export const PACKET_LINT_RULES = [
   'round-draft',
   'round-head',
   'frames-index',
+  'frames-missing',
 ] as const
 
 export type PacketLintRule = (typeof PACKET_LINT_RULES)[number]
@@ -240,9 +241,22 @@ async function roundFileProblems(
   return roundProblems(read.json, draft?.json, packet, opts.gateHead)
 }
 
-/** frames/frames.json, when present, must be the index `packet round` derives from these bytes. */
-async function framesProblems(dir: string, walked: Walked, packet: CiPacket) {
-  if (!walked.files.has(PACKET_FRAMES_PATH)) return []
+/** frames/frames.json, required with round.json, must be the index `packet round` derives from these bytes. */
+async function framesProblems(
+  dir: string,
+  walked: Walked,
+  packet: CiPacket,
+  opts: PacketLintOptions
+) {
+  if (!walked.files.has(PACKET_FRAMES_PATH))
+    return opts.require?.includes('round')
+      ? [
+          {
+            rule: 'frames-missing' as const,
+            message: `${PACKET_FRAMES_PATH} is required with ${ROUND_FILE} but not present`,
+          },
+        ]
+      : []
   const refuse = (message: string) => [{ rule: 'frames-index' as const, message }]
   const absent = [ROUND_FILE, PROSE_FILE].filter((file) => !walked.files.has(file))
   if (absent.length) return refuse(`${PACKET_FRAMES_PATH} is present without ${absent.join(', ')}`)
@@ -307,7 +321,7 @@ export async function lintPacketResult(
     ...(await fileProblems(dir, walked, packet)),
     ...(await proseProblems(dir, walked, packet, opts)),
     ...(await roundFileProblems(dir, walked, packet, opts, draft)),
-    ...(await framesProblems(dir, walked, packet)),
+    ...(await framesProblems(dir, walked, packet, opts)),
   ]
   return { packetId: packet.packetId, problems }
 }
