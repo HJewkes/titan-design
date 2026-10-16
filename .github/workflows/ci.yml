@@ -150,6 +150,20 @@ jobs:
         if: steps.paths.outputs.run != 'false'
         run: pnpm --filter @titan-design/react-ui test:visual:baseline
 
+      # The regen step below empties Playwright's default test-results, so the gate's diff and
+      # expected images are saved first (TD-921).
+      - name: Upload Layer 1 diff and expected images
+        if: always() && steps.paths.outputs.run != 'false'
+        uses: actions/upload-artifact@v4
+        with:
+          name: component-visual-diffs
+          path: |
+            packages/ui/test-results/**/*-diff.png
+            packages/ui/test-results/**/*-expected.png
+            !packages/ui/test-results/playwright-*/**
+          if-no-files-found: ignore
+          retention-days: 7
+
       # Layer 1 — REGEN (refresh): regenerate the Layer-1 baselines IN this pinned
       # container and upload them, so a drifted baseline can be refreshed byte-exact.
       # Runs only when an earlier step failed (`if: failure()`), so a green run
@@ -189,6 +203,17 @@ jobs:
             packages/ui/test-results/playwright-stories/**/error-context.md
             packages/ui/test-results/playwright-stories/**/trace.zip
           if-no-files-found: warn
+          retention-days: 7
+
+      - name: Upload Layer 2 diff and expected images
+        if: always() && steps.paths.outputs.run != 'false'
+        uses: actions/upload-artifact@v4
+        with:
+          name: storybook-visual-diffs
+          path: |
+            packages/ui/test-results/playwright-stories/**/*-diff.png
+            packages/ui/test-results/playwright-stories/**/*-expected.png
+          if-no-files-found: ignore
           retention-days: 7
 
       # Layer 2 — REGEN (refresh): same pattern as Layer 1. Runs only on a failed
