@@ -30,11 +30,12 @@ describe('montage', () => {
   })
 
   it('stacks a wide shot top to bottom at 1x', () => {
-    const result = changed(solidImage(1280, 720, BEFORE), solidImage(1280, 720, AFTER))
+    // 600 wide is past 1080/2, so 1x, and 3 x 600 overflows 1600 across; short keeps the PNG cheap.
+    const result = changed(solidImage(600, 10, BEFORE), solidImage(600, 10, AFTER))
 
-    expect(result.width).toBe(1280)
-    expect(result.height).toBeGreaterThan(3 * 720)
-    expect(pixelAt(result, 0, 720 + BAR_H + GUTTER + BAR_H)).toEqual(AFTER)
+    expect(result.width).toBe(600)
+    expect(result.height).toBeGreaterThan(3 * 10)
+    expect(pixelAt(result, 0, 10 + BAR_H + GUTTER + BAR_H)).toEqual(AFTER)
   })
 
   it('draws a new baseline alone under a magenta bar', () => {
