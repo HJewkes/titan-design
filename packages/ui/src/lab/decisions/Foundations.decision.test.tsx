@@ -7,20 +7,35 @@ import * as stories from './Foundations.decision.stories'
 import {
   FAMILY_MEMBERS,
   TONES,
+  TONE_STATUS,
   familySubtleCell,
   lightLadder,
   planeLadder,
   readAll,
   solidCell,
   subtleCell,
+  toneBase,
   worst,
   type PackageId,
 } from './foundations'
+import { getSemanticColors } from '../../theme/tokens/semantic'
 
 expect.extend(toHaveNoViolations)
 
 const composed = composeStories(stories, { decorators: preview.decorators })
 const at2 = (n: number) => Number(n.toFixed(2))
+
+/** A custom property as the element inherits it: the nearest ancestor that sets it. */
+function resolveVar(el: HTMLElement, name: string): string {
+  for (let node: HTMLElement | null = el; node; node = node.parentElement) {
+    const value = node.style.getPropertyValue(name)
+    if (value) return value
+  }
+  return ''
+}
+
+/** The text glyph each hosted status draws; success draws an svg CheckMark. */
+const GLYPH: Partial<Record<string, string>> = { info: 'ℹ', warning: '⚠' }
 
 const worstLabel = (pkg: PackageId, mode: 'light' | 'dark') =>
   TONES.map((tone) => at2(worst(readAll(subtleCell(pkg, tone, mode), mode), 'label')))
@@ -76,6 +91,28 @@ describe('FD4 subtle packages', () => {
 
     expect(within(unit).getAllByText(/misses AA/).length).toBeGreaterThan(0)
     expect(within(screen.getByTestId('cell-today-brand-+3')).queryByText('brand pill')).toBeNull()
+  })
+
+  describe.each(['light', 'dark'] as const)('the %s subtle Alert', (mode) => {
+    const Story = mode === 'light' ? composed.Fd4SubtleL : composed.Fd4SubtleD
+    const red = getSemanticColors(mode)['status-error']
+
+    it.each(TONES.filter((t) => t !== 'error'))(
+      'draws %s in its own tone, not error red',
+      (tone) => {
+        render(<Story />)
+        const alert = within(screen.getByTestId(`cell-opaque-${tone}-+3`)).getByRole('alert')
+        const status = TONE_STATUS[tone]
+        const border = resolveVar(alert, `--color-status-${status}`)
+        const glyph = resolveVar(alert, `--color-on-status-${status}-subtle`)
+
+        expect(border).toBe(toneBase(tone, mode))
+        expect(border).not.toBe(red)
+        expect(glyph).toBe(subtleCell('opaque', tone, mode).on.hex)
+        expect(within(alert).queryByText('✕') === null).toBe(status !== 'error')
+        if (status in GLYPH) expect(within(alert).getByText(GLYPH[status]!)).toBeTruthy()
+      }
+    )
   })
 
   it('states that the 100/700 measurement was taken on a white page', () => {

@@ -1,3 +1,4 @@
+import type { AlertStatus } from '../../components/ui/alert'
 import { compositeOver, contrast } from '../../theme/color-checks'
 import { getElevationSurface, type ElevationLevel } from '../../theme/elevation'
 import { greyRamp, primitiveColors, primitiveRamps as ramp } from '../../theme/tokens/primitives'
@@ -166,6 +167,21 @@ const TONE_ROLE: Record<Tone, string> = {
   warning: 'status-warning',
   error: 'status-error',
   info: 'status-info',
+}
+
+/** The Alert status a tone is hosted through: its own, or `error` (glyph ✕) for the brand tones. */
+export const TONE_STATUS: Record<Tone, AlertStatus> = {
+  brand: 'error',
+  'brand-secondary': 'error',
+  success: 'success',
+  warning: 'warning',
+  error: 'error',
+  info: 'info',
+}
+
+/** The tone's shipped base token: the hairline a compact subtle Alert draws in it. */
+export function toneBase(tone: Tone, mode: ThemeMode): string {
+  return (getSemanticColors(mode) as Record<string, string>)[TONE_ROLE[tone]]
 }
 
 export type PackageId = 'opaque' | 'today' | 'alpha'

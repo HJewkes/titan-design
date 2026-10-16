@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import { Text, View } from 'react-native'
+import type { AlertStatus } from '../../components/ui/alert'
 import { compositeOver } from '../../theme/color-checks'
 import { cn } from '../../utils/cn'
 import { getSemanticColors, type ThemeMode } from '../../theme/tokens/semantic'
@@ -86,27 +87,35 @@ export function PlaneTile({
 }
 
 /**
- * Shipped components paint a cell through the `error` tone: its tokens are overridden locally,
- * and ToolBadge's neutral subtle pair is overridden with the cell's subtle pair.
+ * Shipped components paint a cell through one status (`error` unless named): every token of that
+ * status the hosted Pill, Badge and compact subtle Alert read is overridden locally, so no colour
+ * of the carrier status shows through. The base (the subtle Alert's hairline) is `base`, else the
+ * solid fill. ToolBadge's neutral subtle pair is overridden with the cell's subtle pair.
  */
 export function CellCarrier({
+  status = 'error',
+  base,
   solid,
   subtle,
   children,
 }: {
+  status?: AlertStatus
+  base?: string
   solid?: Cell
   subtle?: Cell
   children: ReactNode
 }) {
+  const role = `status-${status}`
   const overrides: Record<`--${string}`, string> = {}
+  const edge = base ?? solid?.fill
+  if (edge) overrides[`--color-${role}`] = edge
   if (solid) {
-    overrides['--color-status-error-solid'] = solid.fill
-    overrides['--color-status-error'] = solid.fill
-    overrides['--color-on-status-error'] = solid.on.hex
+    overrides[`--color-${role}-solid`] = solid.fill
+    overrides[`--color-on-${role}`] = solid.on.hex
   }
   if (subtle) {
-    overrides['--color-status-error-subtle'] = subtle.fill
-    overrides['--color-on-status-error-subtle'] = subtle.on.hex
+    overrides[`--color-${role}-subtle`] = subtle.fill
+    overrides[`--color-on-${role}-subtle`] = subtle.on.hex
     overrides['--color-hairline-subtle'] = subtle.fill
     overrides['--color-text-primary'] = subtle.on.hex
   }

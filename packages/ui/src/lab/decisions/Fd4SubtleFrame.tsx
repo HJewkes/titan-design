@@ -8,10 +8,12 @@ import {
   AA,
   SUBTLE_PACKAGES,
   TONES,
+  TONE_STATUS,
   fmt,
   readOn,
   subtleCell,
   textPlanes,
+  toneBase,
   type Plane,
   type SubtlePackage,
   type Tone,
@@ -25,16 +27,21 @@ import {
   PlaneTile,
 } from './FoundationsKit'
 
+const GLYPH_LINE =
+  "Each Alert keeps its own status glyph and draws its hairline in the tone base. Brand and brand-secondary have no Alert status: they ride status error, so their glyph is a fixed ✕; every colour is the tone's."
+
 const LINES: Record<ThemeMode, string[]> = {
   light: [
     'Three packages, one unit each. Every unit sets the six tones as subtle Pill, Badge and Alert on every text plane.',
     'Package 2 (fill 100, label 700, td-487) was measured on a white page. On 3b the page is grey 100.',
     'A label under AA is drawn as a swatch with its ratio, never as live text.',
+    GLYPH_LINE,
   ],
   dark: [
     'Three packages, one unit each. Every unit sets the six tones as subtle Pill, Badge and Alert on every text plane.',
     'Package 1 retires the alpha washes. Its dark fill is a candidate step (hue 900), shown here, not decided.',
     'A label under AA is drawn as a swatch with its ratio, never as live text.',
+    GLYPH_LINE,
   ],
 }
 
@@ -50,15 +57,16 @@ function ToneCell({
   mode: ThemeMode
 }) {
   const cell = subtleCell(pkg.id, tone, mode)
+  const status = TONE_STATUS[tone]
   const reading = readOn(cell, plane)
   const painted = { hex: compositeOver(cell.fill, plane.swatch.hex), label: cell.fillLabel }
   return (
     <View className="w-60 gap-1" testID={`cell-${pkg.id}-${tone}-${plane.level}`}>
       {reading.label >= AA ? (
-        <CellCarrier subtle={cell}>
-          <Pill variant="subtle" tone="error">{`${tone} pill`}</Pill>
-          <Badge variant="subtle" color="error">{`${tone} badge`}</Badge>
-          <Alert status="error" variant="subtle" size="compact" message={`${tone} alert`} />
+        <CellCarrier status={status} base={toneBase(tone, mode)} subtle={cell}>
+          <Pill variant="subtle" tone={status}>{`${tone} pill`}</Pill>
+          <Badge variant="subtle" color={status}>{`${tone} badge`}</Badge>
+          <Alert status={status} variant="subtle" size="compact" message={`${tone} alert`} />
         </CellCarrier>
       ) : (
         <MissSwatch fill={painted} label={cell.on} ratio={reading.label} />
