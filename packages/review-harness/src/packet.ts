@@ -70,7 +70,7 @@ const PacketImageSchema = z
     diff: DiffSchema.strict().nullable().optional(),
     size: z.object({ before: SizeSchema, after: SizeSchema }).optional(),
     pixelIdentical: z.literal(true).optional(),
-    /** Filled by the packager (V0-3): why the baseline changed. */
+    /** Stays null: the packager writes each image's cause to prose.json, so packet.json stays byte-stable. */
     cause: z.null(),
   })
   .strict()
@@ -200,7 +200,7 @@ function canonical(value: unknown): string {
 type PacketBody = Omit<CiPacket, 'packetId' | 'draft'>
 
 /** What the packet asserts: this head, this run, this main, these images on each side. */
-function packetIdOf(p: PacketBody): string {
+export function packetIdOf(p: PacketBody): string {
   const images = p.images.map((i) => ({
     path: i.path,
     change: i.change,
