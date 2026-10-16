@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
 import { render, screen, fireEvent, act } from '@testing-library/react'
 import { axe } from 'jest-axe'
+import { capturedByNode } from '../../../test/classname-capture'
 import { Toast, ToastProvider, useToast } from './Toast'
 import { resolveAll, spacingClassesAt } from '../../../test/spacing-resolver'
 
@@ -37,14 +38,18 @@ describe('Toast (standalone)', () => {
   })
 
   describe('icon visibility', () => {
-    it('shows icon by default', () => {
-      render(<Toast title="Test" status="success" />)
-      expect(screen.getByText('✓')).toBeInTheDocument()
+    it('draws the success icon as an SVG check, not a ✓ text glyph', () => {
+      const { container } = render(<Toast title="Test" status="success" />)
+      expect(screen.queryByText('✓')).toBeNull()
+      const svg = container.querySelector('svg')!
+      expect(svg.getAttribute('width')).toBe('18')
+      expect(svg.getAttribute('stroke')).toBe('currentColor')
     })
 
     it('hides icon when showIcon is false', () => {
-      render(<Toast title="Test" showIcon={false} />)
+      const { container } = render(<Toast title="Test" status="success" showIcon={false} />)
       expect(screen.getByText('Test')).toBeInTheDocument()
+      expect(container.querySelector('svg')).toBeNull()
     })
   })
 
@@ -90,8 +95,10 @@ describe('Toast (standalone)', () => {
     })
 
     it('hides the status glyph from assistive tech', () => {
-      render(<Toast title="Saved" status="success" />)
-      expect(screen.getByText('✓')).toHaveAttribute('aria-hidden', 'true')
+      const { container, rerender } = render(<Toast title="Saved" status="success" />)
+      expect(container.querySelector('svg')!.parentElement).toHaveAttribute('aria-hidden', 'true')
+      rerender(<Toast title="Careful" status="warning" />)
+      expect(screen.getByText('⚠')).toHaveAttribute('aria-hidden', 'true')
     })
 
     it('exposes the close control as a button and hides its glyph', () => {
@@ -296,5 +303,23 @@ describe('Toast geometry resolves to the spacing tokens', () => {
     render(<Toast title="Saved" description="Your changes have been saved." />)
     expect(spacingClassesAt(find())).toEqual([...classes])
     expect(resolveAll([...classes])).toEqual([...pixels])
+  })
+})
+
+// TD-483: the status glyph takes the text role, not the fill tone. TD-840: success draws an
+// SVG CheckMark that inherits the role as currentColor from its wrapper.
+describe('Toast status glyph', () => {
+  const glyphNode = (container: HTMLElement, glyph: string | null) =>
+    glyph ? screen.getByText(glyph) : container.querySelector('svg')!.parentElement!
+
+  it.each([
+    ['success', null, 'text-text-success', 'text-status-success'],
+    ['warning', '⚠', 'text-text-warning', 'text-status-warning'],
+    ['info', 'ℹ', 'text-text-info', 'text-status-info'],
+  ] as const)('status=%s paints its glyph in %s, not %s', (status, glyph, textRole, fillTone) => {
+    const { container } = render(<Toast title="Saved" status={status} />)
+    const classes = (capturedByNode.get(glyphNode(container, glyph)) ?? '').split(/\s+/)
+    expect(classes).toContain(textRole)
+    expect(classes).not.toContain(fillTone)
   })
 })

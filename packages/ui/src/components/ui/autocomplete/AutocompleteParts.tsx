@@ -45,7 +45,7 @@ export function AutocompleteDropdown({ children }: { children: React.ReactNode }
 }
 
 export function AutocompleteMessage({ children }: { children: React.ReactNode }) {
-  return <Text className="px-3 py-2 text-sm text-text-tertiary">{children}</Text>
+  return <Text className="px-3 py-2 text-sm text-text-secondary">{children}</Text>
 }
 
 interface AutocompleteOptionRowProps<T> {
@@ -84,15 +84,12 @@ export function AutocompleteOptionRow<T>({
       )}
     >
       <Text
-        className={cn(
-          'text-sm',
-          isSelected ? 'text-brand-primary font-medium' : 'text-text-primary'
-        )}
+        className={cn('text-sm', isSelected ? 'text-text-brand font-medium' : 'text-text-primary')}
       >
         {option.label}
       </Text>
       {option.description && (
-        <Text className="text-xs text-text-tertiary mt-0.5">{option.description}</Text>
+        <Text className="text-xs text-text-secondary mt-0.5">{option.description}</Text>
       )}
     </Pressable>
   )
@@ -100,7 +97,7 @@ export function AutocompleteOptionRow<T>({
 
 export function AutocompleteHelper({ text, isInvalid }: { text?: string; isInvalid: boolean }) {
   return (
-    <Text className={cn('text-xs mt-1', isInvalid ? 'text-text-error' : 'text-text-tertiary')}>
+    <Text className={cn('text-xs mt-1', isInvalid ? 'text-text-error' : 'text-text-secondary')}>
       {text}
     </Text>
   )

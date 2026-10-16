@@ -1,8 +1,6 @@
-import { resolveColor } from './resolve-color'
+import { resolveColor, type ColorToken } from './resolve-color'
 import { hexToRgb } from './color-utils'
 import { getSemanticColors, type ThemeMode } from './tokens/semantic'
-
-type ColorToken = keyof ReturnType<typeof getSemanticColors>
 
 /** A gradient stop: a bare token, or a token with its own alpha. */
 export type GradientStop = ColorToken | { token: ColorToken; alpha?: number }

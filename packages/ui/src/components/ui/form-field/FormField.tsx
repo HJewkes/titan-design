@@ -113,7 +113,7 @@ export function FormField({
 
           {helpContent && (
             <View className="ml-1">
-              {/* Inline help indicator - could use HelpTip here */}
+              {/* Inline help indicator - could use Tooltip here */}
               <Text className="text-text-tertiary text-xs">ℹ</Text>
             </View>
           )}
@@ -145,7 +145,7 @@ export function FormField({
         {(helperText || errorMessage) && (
           <Text
             id={isInvalid ? errorId : helperId}
-            className={cn('text-xs', isInvalid ? 'text-text-error' : 'text-text-tertiary')}
+            className={cn('text-xs', isInvalid ? 'text-text-error' : 'text-text-secondary')}
           >
             {errorMessage || helperText}
           </Text>

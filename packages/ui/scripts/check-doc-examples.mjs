@@ -47,6 +47,8 @@ const ENTRY_PATHS = {
   '@titan-design/react-ui': 'src/index.ts',
   '@titan-design/react-ui/bodymap': 'src/bodymap.ts',
   '@titan-design/react-ui/pages': 'src/pages.ts',
+  '@titan-design/react-ui/workout': 'src/workout.ts',
+  '@titan-design/react-ui/motion': 'src/motion.ts',
   '@titan-design/react-ui/theme': 'src/theme/index.ts',
   '@titan-design/react-ui/theme/tokens': 'src/theme/tokens/index.ts',
   '@titan-design/react-ui/theme/tokens-css': 'src/theme/tokens-css.ts',

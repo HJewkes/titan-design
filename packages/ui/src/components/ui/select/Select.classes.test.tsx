@@ -28,9 +28,11 @@ describe('Select classes', () => {
     expect(classes).not.toContain('text-text-tertiary')
   })
 
-  it('puts the filled variant on the scrim in both modes', () => {
+  it('leaves the filled variant fill to the inset well, not a background class', () => {
     render(<Select variant="filled" options={options} />)
-    expect(classOf(screen.getByRole('combobox'))).toContain('bg-scrim-subtle')
+    const classes = classOf(screen.getByRole('combobox'))
+    expect(classes).not.toContain('bg-surface-base')
+    expect(classes).not.toContain('bg-scrim-subtle')
   })
 
   it('keeps the default variant on the plain surface', () => {

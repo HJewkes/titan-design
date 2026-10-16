@@ -531,6 +531,46 @@
     },
     {
       "composes": [
+        "Input",
+        "Select"
+      ],
+      "family": "custom/ActiveWork",
+      "file": "packages/ui/src/components/custom/ActiveWork/KnowledgeFilterBar.tsx",
+      "name": "KnowledgeFilterBar",
+      "props": [
+        {
+          "default": null,
+          "description": "",
+          "name": "filters",
+          "required": true,
+          "type": "KnowledgeFilters"
+        },
+        {
+          "default": "false",
+          "description": "Keeps the row mounted but inert, while the list loads.",
+          "name": "isDisabled",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "onFiltersChange",
+          "required": true,
+          "type": "(filters: KnowledgeFilters) => void"
+        }
+      ],
+      "purpose": "KnowledgeFilterBar — the knowledge list's built-in filter row: a query field and a date range.",
+      "sources": {
+        "props": "packages/ui/src/components/custom/ActiveWork/KnowledgeFilterBar.tsx",
+        "status": null
+      },
+      "status": "review",
+      "storyIds": [],
+      "tier": "organism"
+    },
+    {
+      "composes": [
         "Alert",
         "Button",
         "EmptyState",
@@ -646,6 +686,144 @@
         "custom-activework-knowledgelist-interactions--enter-on-a-header-cycles-the-sort",
         "custom-activework-knowledgelist-interactions--enter-on-a-title-selects-its-row"
       ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "DateTime",
+        "Link",
+        "Pill",
+        "Table",
+        "TableCell",
+        "TagPills",
+        "Typography"
+      ],
+      "family": "custom/ActiveWork",
+      "file": "packages/ui/src/components/custom/ActiveWork/KnowledgeRow.tsx",
+      "name": "KnowledgeRow",
+      "props": [
+        {
+          "default": null,
+          "description": "Columns the list left out; the row skips their cells so header and body stay aligned.",
+          "name": "hideColumns",
+          "required": true,
+          "type": "KnowledgeColumnKey[]"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "isSelected",
+          "required": true,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "onSelect",
+          "required": true,
+          "type": "(id: string) => void"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "row",
+          "required": true,
+          "type": "KnowledgeSortRow"
+        }
+      ],
+      "purpose": "KnowledgeRow — one note or source as a dense table row.",
+      "sources": {
+        "props": "packages/ui/src/components/custom/ActiveWork/KnowledgeRow.tsx",
+        "status": null
+      },
+      "status": "review",
+      "storyIds": [],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "KnowledgeRow",
+        "Skeleton",
+        "Table",
+        "TableCell",
+        "TableHeaderCell",
+        "TablePagination"
+      ],
+      "family": "custom/ActiveWork",
+      "file": "packages/ui/src/components/custom/ActiveWork/KnowledgeTable.tsx",
+      "name": "KnowledgeTable",
+      "props": [
+        {
+          "default": null,
+          "description": "",
+          "name": "fitWidth",
+          "required": true,
+          "type": "number | undefined"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "hideColumns",
+          "required": true,
+          "type": "KnowledgeColumnKey[]"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "isLoading",
+          "required": true,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "onPageChange",
+          "required": true,
+          "type": "(page: number) => void"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "onSelect",
+          "required": true,
+          "type": "(id: string) => void"
+        },
+        {
+          "default": null,
+          "description": "1-based; clamped to the last page that has rows.",
+          "name": "page",
+          "required": true,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "pageSize",
+          "required": true,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "rows",
+          "required": true,
+          "type": "KnowledgeSortRow[]"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "selectedId",
+          "required": true,
+          "type": "string | undefined"
+        }
+      ],
+      "purpose": "KnowledgeTable — the knowledge list's sortable, paged grid, newest first.",
+      "sources": {
+        "props": "packages/ui/src/components/custom/ActiveWork/KnowledgeTable.tsx",
+        "status": null
+      },
+      "status": "review",
+      "storyIds": [],
       "tier": "organism"
     },
     {
@@ -1095,6 +1273,13 @@
         },
         {
           "default": null,
+          "description": "Receives the row's host node, so a list can move focus to it.",
+          "name": "focusRef",
+          "required": false,
+          "type": "((node: unknown) => void)"
+        },
+        {
+          "default": null,
           "description": "Reference instant for the age label, injected so renders are deterministic.",
           "name": "now",
           "required": true,
@@ -1120,6 +1305,13 @@
           "name": "session",
           "required": true,
           "type": "SessionSummary"
+        },
+        {
+          "default": null,
+          "description": "The row's tab stop, when a list roves focus across its rows.",
+          "name": "tabIndex",
+          "required": false,
+          "type": "0 | -1"
         }
       ],
       "purpose": "SessionListItem — one session in the reader's list, led by its title, with a footer of age · duration · tasks touched · track.",
@@ -1183,11 +1375,40 @@
     },
     {
       "composes": [
+        "Pill",
+        "Tooltip",
+        "Typography"
+      ],
+      "family": "custom/ActiveWork",
+      "file": "packages/ui/src/components/custom/ActiveWork/TagPills.tsx",
+      "name": "TagPills",
+      "props": [
+        {
+          "default": "[]",
+          "description": "",
+          "name": "tags",
+          "required": false,
+          "type": "string[]"
+        }
+      ],
+      "purpose": "A table cell's tags: the first two as neutral pills, the rest folded into a `+N` count whose tooltip lists them.",
+      "sources": {
+        "props": "packages/ui/src/components/custom/ActiveWork/TagPills.tsx",
+        "status": null
+      },
+      "status": "review",
+      "storyIds": [],
+      "tier": "organism"
+    },
+    {
+      "composes": [
         "DateTime",
+        "Indicator",
         "Pill",
         "SeverityLabel",
         "Table",
         "TableCell",
+        "TagPills",
         "Tooltip",
         "Typography"
       ],
@@ -1373,6 +1594,445 @@
         "custom-activework-tasktable--sorted-by-severity"
       ],
       "tier": "organism"
+    },
+    {
+      "composes": [
+        "AgentStateLabel",
+        "Avatar",
+        "Card",
+        "Pill",
+        "Progress",
+        "SparkBars",
+        "Typography"
+      ],
+      "family": "custom/Agents",
+      "file": "packages/ui/src/components/custom/Agents/AgentCard.tsx",
+      "name": "AgentCard",
+      "props": [
+        {
+          "default": null,
+          "description": "The session to show.",
+          "name": "agent",
+          "required": true,
+          "type": "AgentSummary"
+        },
+        {
+          "default": null,
+          "description": "Tailwind overrides on the card.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Host actions under the metrics.",
+          "name": "footer",
+          "required": false,
+          "type": "ReactNode"
+        },
+        {
+          "default": "false",
+          "description": "Marks the card with the accent stripe, for the agent the host has in focus.",
+          "name": "isHighlighted",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": "false",
+          "description": "Renders the card's skeleton in place of the content.",
+          "name": "isLoading",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "Shown in place of the metrics block when `agent.metrics` is null or absent.",
+          "name": "metricsEmpty",
+          "required": false,
+          "type": "ReactNode"
+        },
+        {
+          "default": null,
+          "description": "Reference instant for the recency label, injected so renders are deterministic.",
+          "name": "now",
+          "required": true,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Makes the agent name a link.",
+          "name": "onPress",
+          "required": false,
+          "type": "(() => void)"
+        },
+        {
+          "default": null,
+          "description": "Makes the task id pill a link.",
+          "name": "onPressTask",
+          "required": false,
+          "type": "((taskId: string) => void)"
+        },
+        {
+          "default": "agent-card",
+          "description": "Test id on the card root.",
+          "name": "testID",
+          "required": false,
+          "type": "string"
+        }
+      ],
+      "purpose": "One agent session: name, state, stated task, branch, recency, and the transcript's tokens, tool calls, errors, cost and activity.",
+      "sources": {
+        "props": "packages/ui/src/components/custom/Agents/AgentCard.tsx",
+        "status": "packages/ui/src/components/custom/Agents/AgentCard.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-agents-agentcard--default"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "AgentCardIdentity",
+        "AgentCardMetrics",
+        "Tooltip",
+        "TriggerSurface",
+        "Typography"
+      ],
+      "family": "custom/Agents",
+      "file": "packages/ui/src/components/custom/Agents/AgentHoverCard.tsx",
+      "name": "AgentHoverCard",
+      "props": [
+        {
+          "default": null,
+          "description": "The session to summarise.",
+          "name": "agent",
+          "required": true,
+          "type": "AgentSummary"
+        },
+        {
+          "default": null,
+          "description": "The trigger: a focusable agent name, avatar or row.",
+          "name": "children",
+          "required": true,
+          "type": "ReactNode"
+        },
+        {
+          "default": null,
+          "description": "Tailwind overrides on the content root.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": "100",
+          "description": "Delay before closing on hover out or blur (ms).",
+          "name": "closeDelay",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Initial visibility when uncontrolled.",
+          "name": "defaultIsOpen",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": "false",
+          "description": "Never opens, whatever `isOpen` says.",
+          "name": "isDisabled",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "Controlled visibility.",
+          "name": "isOpen",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "Reference instant for the recency label, injected so renders are deterministic.",
+          "name": "now",
+          "required": true,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Called with `true` on open and `false` on close.",
+          "name": "onOpenChange",
+          "required": false,
+          "type": "((isOpen: boolean) => void)"
+        },
+        {
+          "default": "300",
+          "description": "Delay before opening on hover or focus (ms).",
+          "name": "openDelay",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": "right",
+          "description": "Side of the trigger the card opens on.",
+          "name": "placement",
+          "required": false,
+          "type": "TooltipPlacement"
+        }
+      ],
+      "purpose": "An agent summary over a trigger, as a WAI-ARIA tooltip: hover or keyboard focus opens it after `openDelay`, hover out or blur close it after `closeDelay`, Escape closes it at once, and a long press opens it on touch.",
+      "sources": {
+        "props": "packages/ui/src/components/custom/Agents/AgentHoverCard.tsx",
+        "status": "packages/ui/src/components/custom/Agents/AgentHoverCard.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-agents-agenthovercard--default"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "AgentRosterRow",
+        "EmptyState",
+        "Skeleton",
+        "Typography"
+      ],
+      "family": "custom/Agents",
+      "file": "packages/ui/src/components/custom/Agents/AgentRoster.tsx",
+      "name": "AgentRoster",
+      "props": [
+        {
+          "default": null,
+          "description": "Every agent; duplicates by id collapse to the first, and the list sorts itself.",
+          "name": "agents",
+          "required": true,
+          "type": "AgentSummary[]"
+        },
+        {
+          "default": null,
+          "description": "Tailwind overrides on the root.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Initial selection when uncontrolled.",
+          "name": "defaultSelectedId",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Shown when `agents` is empty.",
+          "name": "emptyState",
+          "required": false,
+          "type": "ReactNode"
+        },
+        {
+          "default": null,
+          "description": "The details each row shows.",
+          "name": "fields",
+          "required": false,
+          "type": "AgentRosterField[]"
+        },
+        {
+          "default": "false",
+          "description": "Renders skeleton rows in place of the list.",
+          "name": "isLoading",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": "Agents",
+          "description": "Heading and accessible name of the list.",
+          "name": "label",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Reference instant for the recency labels, injected so renders are deterministic.",
+          "name": "now",
+          "required": true,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Called with the id of the row chosen by press, Enter or Space.",
+          "name": "onSelectedIdChange",
+          "required": false,
+          "type": "((id: string | undefined) => void)"
+        },
+        {
+          "default": null,
+          "description": "Controlled selection.",
+          "name": "selectedId",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": "agent-roster",
+          "description": "Test id on the root.",
+          "name": "testID",
+          "required": false,
+          "type": "string"
+        }
+      ],
+      "purpose": "The agents as a single-select listbox, live above past, each group sorted by state and then recency.",
+      "sources": {
+        "props": "packages/ui/src/components/custom/Agents/AgentRoster.tsx",
+        "status": "packages/ui/src/components/custom/Agents/AgentRoster.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-agents-agentroster--default"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "AgentStateLabel",
+        "Avatar",
+        "Typography"
+      ],
+      "family": "custom/Agents",
+      "file": "packages/ui/src/components/custom/Agents/AgentRosterRow.tsx",
+      "name": "AgentRosterRow",
+      "props": [
+        {
+          "default": null,
+          "description": "The session to show.",
+          "name": "agent",
+          "required": true,
+          "type": "AgentSummary"
+        },
+        {
+          "default": null,
+          "description": "Tailwind overrides on the row.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": "['task', 'idle', 'cost']",
+          "description": "The details under the name; printed in a fixed order whatever order is passed.",
+          "name": "fields",
+          "required": false,
+          "type": "AgentRosterField[]"
+        },
+        {
+          "default": null,
+          "description": "Receives the row's host node, so a list can move focus to it.",
+          "name": "focusRef",
+          "required": false,
+          "type": "((node: unknown) => void)"
+        },
+        {
+          "default": "false",
+          "description": "Renders the selected treatment (raised fill and leading accent bar).",
+          "name": "isSelected",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "Reference instant for the recency label, injected so renders are deterministic.",
+          "name": "now",
+          "required": true,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Makes the row a selectable option.",
+          "name": "onSelect",
+          "required": false,
+          "type": "(() => void)"
+        },
+        {
+          "default": null,
+          "description": "The row's tab stop, when a list roves focus across its rows.",
+          "name": "tabIndex",
+          "required": false,
+          "type": "0 | -1"
+        },
+        {
+          "default": "agent-roster-row",
+          "description": "Test id on the row root.",
+          "name": "testID",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Host content at the row's end.",
+          "name": "trailing",
+          "required": false,
+          "type": "ReactNode"
+        }
+      ],
+      "purpose": "One agent in a dense list: name, state and the chosen details.",
+      "sources": {
+        "props": "packages/ui/src/components/custom/Agents/AgentRosterRow.tsx",
+        "status": "packages/ui/src/components/custom/Agents/AgentRosterRow.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-agents-agentrosterrow--default"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "Indicator",
+        "Pill",
+        "Typography"
+      ],
+      "family": "custom/Agents",
+      "file": "packages/ui/src/components/custom/Agents/AgentStateLabel.tsx",
+      "name": "AgentStateLabel",
+      "props": [
+        {
+          "default": null,
+          "description": "Tailwind overrides on the row.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": "false",
+          "description": "The session holds pushes: a message sent to it queues in its inbox instead of interrupting.",
+          "name": "isDnd",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": "sm",
+          "description": "`sm` (caption) for cards and rows, `md` (body) for headers.",
+          "name": "size",
+          "required": false,
+          "type": "\"sm\" | \"md\""
+        },
+        {
+          "default": null,
+          "description": "The state to show.",
+          "name": "state",
+          "required": true,
+          "type": "AgentSummaryState"
+        }
+      ],
+      "purpose": "An agent's state as a dot and its word, never colour alone.",
+      "sources": {
+        "props": "packages/ui/src/components/custom/Agents/AgentStateLabel.tsx",
+        "status": "packages/ui/src/components/custom/Agents/AgentStateLabel.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-agents-agentstatelabel--default"
+      ],
+      "tier": "molecule"
     },
     {
       "composes": [
@@ -2159,6 +2819,61 @@
     },
     {
       "composes": [
+        "Pill"
+      ],
+      "family": "custom/Code",
+      "file": "packages/ui/src/components/custom/Code/StatusMark.tsx",
+      "name": "StatusMark",
+      "props": [
+        {
+          "default": null,
+          "description": "Tailwind overrides, merged by the Pill.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Score change, after minus before.",
+          "name": "delta",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Raises worsened from warning to error.",
+          "name": "isOverCutoff",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "Which change the mark names.",
+          "name": "kind",
+          "required": true,
+          "type": "CodeChangeKind"
+        },
+        {
+          "default": "sm",
+          "description": "Pill size; default `sm`.",
+          "name": "size",
+          "required": false,
+          "type": "\"sm\" | \"md\" | \"xs\""
+        }
+      ],
+      "purpose": "The change vocabulary of the Code family: one Pill, named in words for assistive tech.",
+      "sources": {
+        "props": "packages/ui/src/components/custom/Code/StatusMark.tsx",
+        "status": "packages/ui/src/components/custom/Code/StatusMark.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-code-statusmark--default"
+      ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [
         "DualGhostSparkParts",
         "GhostBand",
         "GhostSpark"
@@ -2249,7 +2964,9 @@
     },
     {
       "composes": [
+        "Pill",
         "StatusDot",
+        "StatusGlyph",
         "Tooltip"
       ],
       "family": "custom/Fatigue",
@@ -2269,6 +2986,13 @@
           "name": "spread",
           "required": false,
           "type": "boolean"
+        },
+        {
+          "default": "dots",
+          "description": "`dots` (default) are glowing status dots; `chips` are neutral pills led by a status glyph.",
+          "name": "variant",
+          "required": false,
+          "type": "\"dots\" | \"chips\""
         }
       ],
       "purpose": "",
@@ -2279,6 +3003,7 @@
       "status": "candidate",
       "storyIds": [
         "custom-fatigue-fatigue-lights--across-states",
+        "custom-fatigue-fatigue-lights--default",
         "custom-fatigue-fatigue-lights--spread"
       ],
       "tier": "organism"
@@ -2501,6 +3226,13 @@
           "type": "number"
         },
         {
+          "default": "column",
+          "description": "How the sections are arranged — the panel passes its tier's.",
+          "name": "layout",
+          "required": false,
+          "type": "CardLayout"
+        },
+        {
           "default": null,
           "description": "The live fatigue read-model for the current set.",
           "name": "model",
@@ -2594,8 +3326,8 @@
         "custom-fatigue-live-fatigue-panel--live-panel-v-2",
         "custom-fatigue-live-fatigue-panel--live-states",
         "custom-fatigue-live-fatigue-panel--on-light-surface",
-        "custom-fatigue-live-fatigue-panel--responsive-tiers",
-        "custom-fatigue-live-fatigue-panel--wall-width"
+        "custom-fatigue-live-fatigue-panel--wall-width",
+        "custom-fatigue-live-fatigue-panel--widths"
       ],
       "tier": "organism"
     },
@@ -2726,17 +3458,50 @@
       "tier": "organism"
     },
     {
-      "composes": [],
+      "composes": [
+        "Eyebrow",
+        "StatusGlyph",
+        "Tooltip",
+        "Typography"
+      ],
       "family": "custom/Fatigue",
       "file": "packages/ui/src/components/custom/Fatigue/VerdictHero.tsx",
       "name": "VerdictHero",
       "props": [
         {
           "default": null,
+          "description": "A label above the word naming what was read (\"HOW IT MOVED · WORST SET #2\").",
+          "name": "kicker",
+          "required": false,
+          "type": "ReactNode"
+        },
+        {
+          "default": null,
+          "description": "Lead with the RPE number.",
+          "name": "lead",
+          "required": false,
+          "type": "\"rpe\" | \"word\""
+        },
+        {
+          "default": null,
+          "description": "The set was not scored: `title` shows in place of the word, `reason` is the glyph's tip and spoken name.",
+          "name": "noVerdict",
+          "required": false,
+          "type": "{ title: string; reason: string; }"
+        },
+        {
+          "default": null,
           "description": "Exact (unrounded) RPE estimate; rounded to the conventional 0.5 for display.",
           "name": "rpe",
           "required": true,
           "type": "number | null"
+        },
+        {
+          "default": null,
+          "description": "`card` sets the word at h3; `wall` at h2 for reading across a room.",
+          "name": "scale",
+          "required": false,
+          "type": "\"wall\" | \"card\""
         },
         {
           "default": null,
@@ -2753,9 +3518,10 @@
       },
       "status": "candidate",
       "storyIds": [
-        "custom-fatigue-verdict-hero--across-states"
+        "custom-fatigue-verdict-hero--across-states",
+        "custom-fatigue-verdict-hero--default"
       ],
-      "tier": "atom"
+      "tier": "organism"
     },
     {
       "composes": [
@@ -2811,10 +3577,163 @@
         "custom-prose-markdownprose--code-blocks",
         "custom-prose-markdownprose--default",
         "custom-prose-markdownprose--no-linkers",
+        "custom-prose-markdownprose--on-every-plane",
         "custom-prose-markdownprose--pressable",
         "custom-prose-markdownprose--tables"
       ],
       "tier": "molecule"
+    },
+    {
+      "composes": [
+        "DateTime",
+        "Divider",
+        "Typography"
+      ],
+      "family": "custom/Session",
+      "file": "packages/ui/src/components/custom/Session/GapIndicator.tsx",
+      "name": "GapIndicator",
+      "props": [
+        {
+          "default": null,
+          "description": "Tailwind overrides on the row.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "The idle span.",
+          "name": "durationMs",
+          "required": true,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Shows the date in UTC rather than the runtime's zone.",
+          "name": "isUTC",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "When activity resumed.",
+          "name": "resumedAtMs",
+          "required": false,
+          "type": "number | null"
+        },
+        {
+          "default": "false",
+          "description": "Set on the first gap after a day change, so the reader sees the new day.",
+          "name": "showDate",
+          "required": false,
+          "type": "boolean"
+        }
+      ],
+      "purpose": "A hairline with the idle time in the middle: \"32m idle\".",
+      "sources": {
+        "props": "packages/ui/src/components/custom/Session/GapIndicator.tsx",
+        "status": "packages/ui/src/components/custom/Session/GapIndicator.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-session-gapindicator--default"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "Pill"
+      ],
+      "family": "custom/Session",
+      "file": "packages/ui/src/components/custom/Session/ToolBadge.tsx",
+      "name": "ToolBadge",
+      "props": [
+        {
+          "default": null,
+          "description": "Tailwind overrides on the pill.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "A ToolFamily, or any string from a newer read model (falls back to other_tool).",
+          "name": "family",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": "md",
+          "description": "`sm` for a dense row, `md` (default) beside a label.",
+          "name": "size",
+          "required": false,
+          "type": "\"sm\" | \"md\""
+        }
+      ],
+      "purpose": "A tool family as a one-character glyph in a neutral pill.",
+      "sources": {
+        "props": "packages/ui/src/components/custom/Session/ToolBadge.tsx",
+        "status": "packages/ui/src/components/custom/Session/ToolBadge.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-session-toolbadge--default"
+      ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [
+        "Collapse",
+        "DateTime",
+        "Indicator",
+        "TipTrigger",
+        "ToolBadge",
+        "Tooltip",
+        "Typography"
+      ],
+      "family": "custom/Session",
+      "file": "packages/ui/src/components/custom/Session/ToolCallRow.tsx",
+      "name": "ToolCallRow",
+      "props": [
+        {
+          "default": null,
+          "description": "The call to draw.",
+          "name": "call",
+          "required": true,
+          "type": "TimelineToolCall"
+        },
+        {
+          "default": null,
+          "description": "Tailwind overrides on the row.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Shows the time stamp in UTC rather than the runtime's zone.",
+          "name": "isUTC",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "Makes the row a button.",
+          "name": "onPress",
+          "required": false,
+          "type": "((call: TimelineToolCall) => void)"
+        }
+      ],
+      "purpose": "One tool call as a line: time, outcome dot (its word on hover and focus), family badge, tool name, what it acted on and the observed duration.",
+      "sources": {
+        "props": "packages/ui/src/components/custom/Session/ToolCallRow.tsx",
+        "status": "packages/ui/src/components/custom/Session/ToolCallRow.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-session-toolcallrow--default"
+      ],
+      "tier": "organism"
     },
     {
       "composes": [],
@@ -3283,6 +4202,13 @@
         },
         {
           "default": null,
+          "description": "Unit the `strength` masses arrive in.",
+          "name": "unit",
+          "required": false,
+          "type": "\"kg\" | \"lb\""
+        },
+        {
+          "default": null,
           "description": "Upcoming exercises targeting this muscle.",
           "name": "upcomingExercises",
           "required": false,
@@ -3418,7 +4344,8 @@
         "custom-workout-goals-bodyweightgoalcard--rate-vetoed",
         "custom-workout-goals-bodyweightgoalcard--slow-loss",
         "custom-workout-goals-bodyweightgoalcard--slow-loss-one-line",
-        "custom-workout-goals-bodyweightgoalcard--tag-tip"
+        "custom-workout-goals-bodyweightgoalcard--tag-tip",
+        "custom-workout-goals-bodyweightgoalcard--widths"
       ],
       "tier": "organism"
     },
@@ -5324,7 +6251,8 @@
         "custom-workout-dataviz-goaltrajectorychart--phone-on-track",
         "custom-workout-dataviz-goaltrajectorychart--stalled",
         "custom-workout-dataviz-goaltrajectorychart--tolerated",
-        "custom-workout-dataviz-goaltrajectorychart--wall-motion"
+        "custom-workout-dataviz-goaltrajectorychart--wall-motion",
+        "custom-workout-dataviz-goaltrajectorychart--widths"
       ],
       "tier": "organism"
     },
@@ -5488,7 +6416,7 @@
           "description": "",
           "name": "palette",
           "required": true,
-          "type": "{ status: \"#E05254\" | \"#D14343\" | \"#F9B415\" | \"#C27400\" | \"#2ED573\" | \"#298732\" | \"#2196F3\" | \"#1072CB\" | \"#A29F9D\" | \"#72716F\" | \"#9E9A97\"; band: string; bandHue: \"#2697B7\" | \"#307B9B\"; ... 11 more ...; shadeScale: number; }"
+          "type": "{ status: \"#E05254\" | \"#D14343\" | \"#F9B415\" | \"#A45E00\" | \"#2ED573\" | \"#2B6B25\" | \"#2196F3\" | \"#135AA8\" | \"#A29F9D\" | \"#72716F\" | \"#9E9A97\"; band: string; bandHue: \"#2697B7\" | \"#307B9B\"; ... 11 more ...; shadeScale: number; }"
         },
         {
           "default": null,
@@ -7356,6 +8284,108 @@
     },
     {
       "composes": [
+        "SetLossStripParts",
+        "Typography"
+      ],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/SetLossStrip.tsx",
+      "name": "SetLossStrip",
+      "props": [
+        {
+          "default": null,
+          "description": "The `index` of the session's best e1RM; its cell gets the brand dot.",
+          "name": "bestE1rmIndex",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Tailwind overrides for the outer stack, merged with `cn()`.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": "0",
+          "description": "Minimum column count.",
+          "name": "columns",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": "40",
+          "description": "The loss (%) a full-height bar shows.",
+          "name": "lossCeilingPct",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "The `index` of the set the verdict read; it gets a ring and a glyph in `markedTone`.",
+          "name": "markedIndex",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "The verdict word for the marked set, spoken by its glyph and the strip label.",
+          "name": "markedLabel",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": "neutral",
+          "description": "Defaults to `neutral`.",
+          "name": "markedTone",
+          "required": false,
+          "type": "StatusGlyphTone"
+        },
+        {
+          "default": "phone",
+          "description": "Column width and plot height.",
+          "name": "scale",
+          "required": false,
+          "type": "SetLossStripScale"
+        },
+        {
+          "default": null,
+          "description": "The exercise's sets in the order performed.",
+          "name": "sets",
+          "required": true,
+          "type": "readonly SetLossStripSet[]"
+        },
+        {
+          "default": "set-loss-strip",
+          "description": "Defaults to `set-loss-strip`.",
+          "name": "testID",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": "[10, 20, 30]",
+          "description": "Where the VL lines sit (%).",
+          "name": "thresholds",
+          "required": false,
+          "type": "VelocityLossThresholds"
+        }
+      ],
+      "purpose": "One exercise's sets as velocity-loss bars on a fixed scale, the marked set ringed, with set, reps, load and e1RM rows aligned under each bar.",
+      "sources": {
+        "props": "packages/ui/src/components/custom/Workout/SetLossStrip.tsx",
+        "status": "packages/ui/src/components/custom/Workout/SetLossStrip.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-workout-setlossstrip--bilateral",
+        "custom-workout-setlossstrip--default",
+        "custom-workout-setlossstrip--no-data",
+        "custom-workout-setlossstrip--not-scored",
+        "custom-workout-setlossstrip--warm-up"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
         "Typography",
         "VelocityStrip"
       ],
@@ -9123,7 +10153,7 @@
           "description": "Which corners round.",
           "name": "cornerStyle",
           "required": false,
-          "type": "\"all\" | \"top\""
+          "type": "\"top\" | \"all\""
         },
         {
           "default": null,
@@ -9430,6 +10460,13 @@
           "name": "className",
           "required": false,
           "type": "string"
+        },
+        {
+          "default": "default",
+          "description": "Gutter around the content region: `p-gutter-sm` below the `md` breakpoint, `p-gutter-md` from it.",
+          "name": "contentPadding",
+          "required": false,
+          "type": "AppShellContentPadding"
         },
         {
           "default": "false",
@@ -9815,6 +10852,7 @@
       "storyIds": [
         "shell-topbar--default",
         "shell-topbar--single-trailing-item",
+        "shell-topbar--widths",
         "shell-topbar--with-app-chrome"
       ],
       "tier": "organism"
@@ -10302,6 +11340,13 @@
           "type": "string"
         },
         {
+          "default": null,
+          "description": "Passed to {@link AppShell}: `none` when the children own their gutter.",
+          "name": "contentPadding",
+          "required": false,
+          "type": "AppShellContentPadding"
+        },
+        {
           "default": "[\n  { id: 'Voltra-A3F2', nickname: 'Left Cable', slot: 'L', state: 'connected' },\n  { id: 'Voltra-9B1C', nickname: 'Right Cable', slot: 'R', state: 'connected' },\n]",
           "description": "Connected devices → the TopBar connection glyph + dropdown.",
           "name": "devices",
@@ -10439,7 +11484,8 @@
       "status": "candidate",
       "storyIds": [
         "shell-workout-workouttopbar--default",
-        "shell-workout-workouttopbar--device-lost"
+        "shell-workout-workouttopbar--device-lost",
+        "shell-workout-workouttopbar--idle"
       ],
       "tier": "organism"
     },
@@ -10465,7 +11511,7 @@
         },
         {
           "default": null,
-          "description": "Convenience single-line content: renders as **status-colored, bold** text (white on `solid`) — the batteries-included cue message, so a `compact` cue is just `<Alert status=\"warning\" size=\"compact\" message=\"VL20 · …\" />` with no need to hand-color the text (RN doesn't cascade color).",
+          "description": "Convenience single-line content: renders as **status-colored, bold** text (the on-colour on `solid`) — the batteries-included cue message, so a `compact` cue is just `<Alert status=\"warning\" size=\"compact\" message=\"VL20 · …\" />` with no need to hand-color the text (RN doesn't cascade color).",
           "name": "message",
           "required": false,
           "type": "string"
@@ -10529,6 +11575,82 @@
         "components-molecules-alert--without-icon"
       ],
       "tier": "atom"
+    },
+    {
+      "composes": [
+        "Typography"
+      ],
+      "family": "ui/animated-number",
+      "file": "packages/ui/src/components/ui/animated-number/AnimatedNumber.tsx",
+      "name": "AnimatedNumber",
+      "props": [
+        {
+          "default": null,
+          "description": "Tailwind overrides for the root, merged with `cn()`.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": "0",
+          "description": "Fraction digits for the default format.",
+          "name": "decimals",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Overrides the default grouped format; `decimals` is then ignored.",
+          "name": "format",
+          "required": false,
+          "type": "AnimatedNumberFormat"
+        },
+        {
+          "default": "0",
+          "description": "Where the number starts at progress 0.",
+          "name": "from",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": "count",
+          "description": "`count` rewrites the text; `reel` rolls one clipped column per digit.",
+          "name": "mode",
+          "required": false,
+          "type": "AnimatedNumberMode"
+        },
+        {
+          "default": null,
+          "description": "0..1, driven by the caller's clock.",
+          "name": "progress",
+          "required": true,
+          "type": "number"
+        },
+        {
+          "default": "md",
+          "description": "Default `md`.",
+          "name": "size",
+          "required": false,
+          "type": "AnimatedNumberSize"
+        },
+        {
+          "default": null,
+          "description": "The value the number lands on.",
+          "name": "value",
+          "required": true,
+          "type": "number"
+        }
+      ],
+      "purpose": "A number that counts or rolls from `from` to `value` as `progress` goes 0 → 1.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/animated-number/AnimatedNumber.tsx",
+        "status": "packages/ui/src/components/ui/animated-number/AnimatedNumber.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-atoms-animatednumber--default"
+      ],
+      "tier": "molecule"
     },
     {
       "composes": [
@@ -11275,6 +12397,63 @@
     },
     {
       "composes": [
+        "Eyebrow",
+        "Surface",
+        "Typography"
+      ],
+      "family": "ui/chapter-card",
+      "file": "packages/ui/src/components/ui/chapter-card/ChapterCard.tsx",
+      "name": "ChapterCard",
+      "props": [
+        {
+          "default": null,
+          "description": "Tailwind classes merged onto the root.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "The chapter's number, shown zero-padded to two digits.",
+          "name": "index",
+          "required": true,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "A short line above the title.",
+          "name": "kicker",
+          "required": false,
+          "type": "ReactNode"
+        },
+        {
+          "default": null,
+          "description": "Progress through the card's life, 0..1.",
+          "name": "progress",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "The chapter's name, set as a heading.",
+          "name": "title",
+          "required": true,
+          "type": "string"
+        }
+      ],
+      "purpose": "ChapterCard: a chapter title card, its number, an optional kicker and the title.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/chapter-card/ChapterCard.tsx",
+        "status": "packages/ui/src/components/ui/chapter-card/ChapterCard.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-molecules-chaptercard--default"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
         "BarListCells",
         "BarListParts",
         "BarListTip",
@@ -11356,6 +12535,13 @@
         },
         {
           "default": null,
+          "description": "One labelled line on the value axis (a cutoff, a budget).",
+          "name": "referenceMarker",
+          "required": false,
+          "type": "BarListMarker"
+        },
+        {
+          "default": null,
           "description": "The data, one row per bar.",
           "name": "rows",
           "required": true,
@@ -11409,6 +12595,13 @@
         },
         {
           "default": null,
+          "description": "Replaces the \"No data\" placeholder in the centre when `value` is `null` or not finite.",
+          "name": "emptyState",
+          "required": false,
+          "type": "ReactNode"
+        },
+        {
+          "default": null,
           "description": "Caption under the big number.",
           "name": "label",
           "required": false,
@@ -11454,7 +12647,7 @@
           "description": "Current value.",
           "name": "value",
           "required": true,
-          "type": "number"
+          "type": "number | null"
         }
       ],
       "purpose": "SVG-free radial gauge (absolutely-positioned segment Views), matching the codebase's chart convention so it renders identically on web and native.",
@@ -11466,13 +12659,183 @@
       "storyIds": [
         "components-atoms-gauge--arbitrary-domain",
         "components-atoms-gauge--critical",
-        "components-atoms-gauge--healthy",
+        "components-atoms-gauge--default",
         "components-atoms-gauge--over-max",
         "components-atoms-gauge--override-color",
         "components-atoms-gauge--warning",
         "components-atoms-gauge--zero"
       ],
       "tier": "atom"
+    },
+    {
+      "composes": [
+        "EmptyState",
+        "NetworkGraphCanvas",
+        "NetworkGraphParts",
+        "Skeleton"
+      ],
+      "family": "ui/charts",
+      "file": "packages/ui/src/components/ui/charts/network-graph/NetworkGraph.tsx",
+      "name": "NetworkGraph",
+      "props": [
+        {
+          "default": null,
+          "description": "The root is named `\"<label>.",
+          "name": "accessibilityLabel",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Default true.",
+          "name": "animate",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "Tailwind classes for the outer view.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Initial selection when uncontrolled.",
+          "name": "defaultSelection",
+          "required": false,
+          "type": "GraphItemRef | null"
+        },
+        {
+          "default": null,
+          "description": "Labels and strokes for edge kinds.",
+          "name": "edgeKinds",
+          "required": false,
+          "type": "GraphEdgeKind[]"
+        },
+        {
+          "default": null,
+          "description": "Cleaned before layout: self edges and unknown ends are dropped, duplicates merge.",
+          "name": "edges",
+          "required": true,
+          "type": "GraphEdge[]"
+        },
+        {
+          "default": null,
+          "description": "Shown when no node is drawn; default `<EmptyState title=\"No nodes\" />`.",
+          "name": "emptyState",
+          "required": false,
+          "type": "ReactNode"
+        },
+        {
+          "default": null,
+          "description": "Replaces an edge's accessible name.",
+          "name": "formatEdgeLabel",
+          "required": false,
+          "type": "((edge: GraphEdge, source: GraphNode, target: GraphNode) => string)"
+        },
+        {
+          "default": null,
+          "description": "Replaces a node's accessible name.",
+          "name": "formatNodeLabel",
+          "required": false,
+          "type": "((node: GraphNode, context: GraphNodeContext) => string)"
+        },
+        {
+          "default": null,
+          "description": "Viewport height in px; a larger layout scrolls.",
+          "name": "height",
+          "required": true,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Keeps focus, traversal, hover and reading; stops selection changes; sets `aria-disabled`.",
+          "name": "isDisabled",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": "false",
+          "description": "Renders a skeleton of `width` by `height` instead of the graph.",
+          "name": "isLoading",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "Default `layeredLayout()`.",
+          "name": "layout",
+          "required": false,
+          "type": "GraphLayout"
+        },
+        {
+          "default": null,
+          "description": "Labels and colours for node kinds, in list order.",
+          "name": "nodeKinds",
+          "required": false,
+          "type": "GraphKind[]"
+        },
+        {
+          "default": null,
+          "description": "Replaces the active node's tooltip content (label, kind and description by default).",
+          "name": "nodeTooltip",
+          "required": false,
+          "type": "((node: GraphNode) => ReactNode)"
+        },
+        {
+          "default": null,
+          "description": "Cleaned before layout: the first of duplicate ids is kept and the rest are counted.",
+          "name": "nodes",
+          "required": true,
+          "type": "GraphNode[]"
+        },
+        {
+          "default": null,
+          "description": "Called with the new selection, or `null` when it clears.",
+          "name": "onSelectionChange",
+          "required": false,
+          "type": "((selection: GraphItemRef | null) => void)"
+        },
+        {
+          "default": null,
+          "description": "Controlled selection; a ref to an item that is not drawn reads as `null`.",
+          "name": "selection",
+          "required": false,
+          "type": "GraphItemRef | null"
+        },
+        {
+          "default": null,
+          "description": "Default false.",
+          "name": "showLegend",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "Replaces the summary sentence in the root's name.",
+          "name": "summarize",
+          "required": false,
+          "type": "((model: GraphModel) => string)"
+        },
+        {
+          "default": null,
+          "description": "Viewport width in px; a larger layout scrolls.",
+          "name": "width",
+          "required": true,
+          "type": "number"
+        }
+      ],
+      "purpose": "A directed graph of things and the relations between them, on a layout the caller picks.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/charts/network-graph/NetworkGraph.tsx",
+        "status": "packages/ui/src/components/ui/charts/network-graph/NetworkGraph.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-organisms-networkgraph--default"
+      ],
+      "tier": "organism"
     },
     {
       "composes": [
@@ -11511,6 +12874,13 @@
           "name": "diagonal",
           "required": false,
           "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "Replaces the default \"No data\" placeholder drawn over the plot box when `data` is empty.",
+          "name": "emptyState",
+          "required": false,
+          "type": "ReactNode"
         },
         {
           "default": null,
@@ -11583,7 +12953,7 @@
           "description": "",
           "name": "colors",
           "required": true,
-          "type": "{ readonly 'brand-primary': \"#FF7900\"; readonly 'brand-primary-light': \"#FFA063\"; readonly 'brand-primary-dark': \"#DA5F00\"; readonly 'brand-primary-subtle': \"rgba(255, 121, 0, 0.12)\"; ... 149 more ...; readonly 'avatar-text': \"#FFFFFF\"; } | { ...; }"
+          "type": "{ readonly 'brand-primary': \"#FF7900\"; readonly 'brand-primary-light': \"#FFA063\"; readonly 'brand-primary-dark': \"#DA5F00\"; readonly 'brand-primary-subtle': \"rgba(255, 121, 0, 0.12)\"; ... 151 more ...; readonly 'avatar-text': \"#FFFFFF\"; } | { ...; }"
         },
         {
           "default": null,
@@ -11620,7 +12990,7 @@
           "description": "",
           "name": "colors",
           "required": true,
-          "type": "{ readonly 'brand-primary': \"#FF7900\"; readonly 'brand-primary-light': \"#FFA063\"; readonly 'brand-primary-dark': \"#DA5F00\"; readonly 'brand-primary-subtle': \"rgba(255, 121, 0, 0.12)\"; ... 149 more ...; readonly 'avatar-text': \"#FFFFFF\"; } | { ...; }"
+          "type": "{ readonly 'brand-primary': \"#FF7900\"; readonly 'brand-primary-light': \"#FFA063\"; readonly 'brand-primary-dark': \"#DA5F00\"; readonly 'brand-primary-subtle': \"rgba(255, 121, 0, 0.12)\"; ... 151 more ...; readonly 'avatar-text': \"#FFFFFF\"; } | { ...; }"
         },
         {
           "default": null,
@@ -11770,6 +13140,91 @@
       "tier": "atom"
     },
     {
+      "composes": [
+        "EmptyState",
+        "Skeleton",
+        "Typography"
+      ],
+      "family": "ui/charts",
+      "file": "packages/ui/src/components/ui/charts/timeline/Timeline.tsx",
+      "name": "Timeline",
+      "props": [
+        {
+          "default": null,
+          "description": "Names the timeline for assistive tech.",
+          "name": "accessibilityLabel",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Tailwind classes merged onto the root.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "The axis span.",
+          "name": "domain",
+          "required": false,
+          "type": "TimelineRange<number | Date>"
+        },
+        {
+          "default": null,
+          "description": "Replaces the default empty state, shown when `items` is empty.",
+          "name": "emptyState",
+          "required": false,
+          "type": "ReactNode"
+        },
+        {
+          "default": "false",
+          "description": "Shows a skeleton track in place of the events.",
+          "name": "isLoading",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "The events.",
+          "name": "items",
+          "required": true,
+          "type": "TimelineItem[]"
+        },
+        {
+          "default": "horizontal",
+          "description": "Axis direction.",
+          "name": "orientation",
+          "required": false,
+          "type": "TimelineOrientation"
+        },
+        {
+          "default": null,
+          "description": "Playhead as a fraction of the domain, 0..1.",
+          "name": "playhead",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "The visible part of the domain as fractions of it, e.g. `[0.5, 1]` for the second half.",
+          "name": "window",
+          "required": false,
+          "type": "TimelineRange"
+        }
+      ],
+      "purpose": "Timeline: events on one time axis, with an optional playhead and a pan window.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/charts/timeline/Timeline.tsx",
+        "status": "packages/ui/src/components/ui/charts/timeline/Timeline.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-organisms-timeline--default"
+      ],
+      "tier": "molecule"
+    },
+    {
       "composes": [],
       "family": "ui/charts",
       "file": "packages/ui/src/components/ui/charts/treemap/Treemap.tsx",
@@ -11788,6 +13243,13 @@
           "name": "data",
           "required": true,
           "type": "TreemapDatum[]"
+        },
+        {
+          "default": null,
+          "description": "Replaces the default \"No data\" placeholder drawn when no datum has a positive `value`.",
+          "name": "emptyState",
+          "required": false,
+          "type": "ReactNode"
         },
         {
           "default": null,
@@ -12043,6 +13505,222 @@
         "components-atoms-chip--default",
         "components-atoms-chip--disabled",
         "components-atoms-chip--dismissible"
+      ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [
+        "EvidenceChip",
+        "ScaledPill"
+      ],
+      "family": "ui/chip",
+      "file": "packages/ui/src/components/ui/chip/ChipBand.tsx",
+      "name": "ChipBand",
+      "props": [
+        {
+          "default": null,
+          "description": "The beat's citations, lead first.",
+          "name": "chips",
+          "required": true,
+          "type": "BandChip[]"
+        },
+        {
+          "default": null,
+          "description": "Additional className on the band.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "`rise` fades in and rises; `fade` only fades.",
+          "name": "entry",
+          "required": false,
+          "type": "\"rise\" | \"fade\""
+        },
+        {
+          "default": null,
+          "description": "Chip font size in px.",
+          "name": "fontPx",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": "1080",
+          "description": "Frame height in px; the chip font is 40 px per 1080.",
+          "name": "frameHeight",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": "3",
+          "description": "Most chips shown, counting the lead.",
+          "name": "max",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Seconds since the band's cue.",
+          "name": "progress",
+          "required": true,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Show the end state at any `progress`.",
+          "name": "reducedMotion",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "Band width in px.",
+          "name": "width",
+          "required": true,
+          "type": "number"
+        }
+      ],
+      "purpose": "ChipBand — one beat's citations on a single line at video scale: the lead chip with its citation, the next chips as kind tabs, the rest as a `+d` count.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/chip/ChipBand.tsx",
+        "status": "packages/ui/src/components/ui/chip/ChipBand.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-molecules-chipband--default"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "Pill",
+        "Typography"
+      ],
+      "family": "ui/chip",
+      "file": "packages/ui/src/components/ui/chip/EvidenceChip.tsx",
+      "name": "EvidenceChip",
+      "props": [
+        {
+          "default": null,
+          "description": "Additional className on the row.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Video size in px, for frames with no Tailwind rung (`40 × frameHeight / 1080`).",
+          "name": "fontPx",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "What kind of evidence backs the on-screen fact; picks the capsule's tone and label.",
+          "name": "kind",
+          "required": true,
+          "type": "\"target\" | \"verified\" | \"measured\" | \"computed\" | \"docs-claim\" | \"estimated\" | \"our-framing\" | \"reconstructed\" | \"illustrative\""
+        },
+        {
+          "default": null,
+          "description": "Character budget for `text`.",
+          "name": "maxChars",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": "md",
+          "description": "App size, one Pill rung.",
+          "name": "size",
+          "required": false,
+          "type": "EvidenceChipSize"
+        },
+        {
+          "default": null,
+          "description": "The citation: refs joined by `\"; \"`, e.g. `ab@1a2b3c4:src/core/loop.ts:12-30`.",
+          "name": "text",
+          "required": true,
+          "type": "string"
+        }
+      ],
+      "purpose": "EvidenceChip — a `Pill` preset that cites the source behind an on-screen fact: a tone capsule naming the evidence kind, then the citation in mono.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/chip/EvidenceChip.tsx",
+        "status": "packages/ui/src/components/ui/chip/EvidenceChip.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-molecules-evidencechip--default"
+      ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [
+        "Pill"
+      ],
+      "family": "ui/chip",
+      "file": "packages/ui/src/components/ui/chip/StateChip.tsx",
+      "name": "StateChip",
+      "props": [
+        {
+          "default": null,
+          "description": "Additional className on the capsule.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Video size in px, for frames with no Tailwind rung (`40 × frameHeight / 1080`).",
+          "name": "fontPx",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "The state the chip is leaving.",
+          "name": "from",
+          "required": false,
+          "type": "\"met\" | \"unmet\""
+        },
+        {
+          "default": "1",
+          "description": "How far the move from `from` has run, 0..1.",
+          "name": "progress",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": "md",
+          "description": "App size, one Pill rung.",
+          "name": "size",
+          "required": false,
+          "type": "StateChipSize"
+        },
+        {
+          "default": null,
+          "description": "The state the chip is in, or moving to.",
+          "name": "state",
+          "required": true,
+          "type": "\"met\" | \"unmet\""
+        },
+        {
+          "default": null,
+          "description": "What the chip names, e.g. `ci:green@h`.",
+          "name": "text",
+          "required": true,
+          "type": "string"
+        }
+      ],
+      "purpose": "StateChip — a `Pill` preset that shows whether a requirement is met.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/chip/StateChip.tsx",
+        "status": "packages/ui/src/components/ui/chip/StateChip.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-molecules-statechip--default"
       ],
       "tier": "molecule"
     },
@@ -12488,6 +14166,111 @@
     },
     {
       "composes": [
+        "Chip",
+        "Eyebrow"
+      ],
+      "family": "ui/facet-bar",
+      "file": "packages/ui/src/components/ui/facet-bar/FacetBar.tsx",
+      "name": "FacetBar",
+      "props": [
+        {
+          "default": null,
+          "description": "",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Colour of a selected chip.",
+          "name": "color",
+          "required": false,
+          "type": "ChipColor"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "defaultValue",
+          "required": false,
+          "type": "string | readonly T[] | null"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "formatCount",
+          "required": false,
+          "type": "((count: number) => string)"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "isDisabled",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "isLabelHidden",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "Names the group.",
+          "name": "label",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "onValueChange",
+          "required": false,
+          "type": "((value: T[]) => void) | ((value: T | null) => void)"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "options",
+          "required": true,
+          "type": "readonly FacetOption<T>[]"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "selectionMode",
+          "required": false,
+          "type": "\"multiple\" | \"single\""
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "size",
+          "required": false,
+          "type": "ChipSize"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "value",
+          "required": false,
+          "type": "string | readonly T[] | null"
+        }
+      ],
+      "purpose": "FacetBar — one labelled row of toggle chips for one facet.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/facet-bar/FacetBar.tsx",
+        "status": "packages/ui/src/components/ui/facet-bar/FacetBar.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-molecules-facetbar--default"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
         "Typography"
       ],
       "family": "ui/file-path-label",
@@ -12641,106 +14424,6 @@
         "components-molecules-formfield--with-helper-text"
       ],
       "tier": "atom"
-    },
-    {
-      "composes": [
-        "Surface"
-      ],
-      "family": "ui/help-tip",
-      "file": "packages/ui/src/components/ui/help-tip/HelpTip.tsx",
-      "name": "HelpTip",
-      "props": [
-        {
-          "default": "default",
-          "description": "Icon color",
-          "name": "color",
-          "required": false,
-          "type": "\"default\" | \"primary\" | \"secondary\" | \"muted\""
-        },
-        {
-          "default": null,
-          "description": "Tooltip content",
-          "name": "content",
-          "required": true,
-          "type": "ReactNode"
-        },
-        {
-          "default": "true",
-          "description": "Whether to show an arrow",
-          "name": "hasArrow",
-          "required": false,
-          "type": "boolean"
-        },
-        {
-          "default": "help",
-          "description": "Icon type",
-          "name": "icon",
-          "required": false,
-          "type": "HelpTipIcon"
-        },
-        {
-          "default": null,
-          "description": "Additional className for the icon",
-          "name": "iconClassName",
-          "required": false,
-          "type": "string"
-        },
-        {
-          "default": null,
-          "description": "Whether the tooltip is always visible (controlled)",
-          "name": "isOpen",
-          "required": false,
-          "type": "boolean"
-        },
-        {
-          "default": "250",
-          "description": "Max width of the tooltip",
-          "name": "maxWidth",
-          "required": false,
-          "type": "number"
-        },
-        {
-          "default": "top",
-          "description": "Placement of the tooltip",
-          "name": "placement",
-          "required": false,
-          "type": "HelpTipPlacement"
-        },
-        {
-          "default": "md",
-          "description": "Size of the icon",
-          "name": "size",
-          "required": false,
-          "type": "HelpTipSize"
-        },
-        {
-          "default": null,
-          "description": "Additional className for the tooltip",
-          "name": "tooltipClassName",
-          "required": false,
-          "type": "string"
-        }
-      ],
-      "purpose": "HelpTip component for displaying contextual help information.",
-      "sources": {
-        "props": "packages/ui/src/components/ui/help-tip/HelpTip.tsx",
-        "status": "packages/ui/src/components/ui/help-tip/HelpTip.stories.tsx"
-      },
-      "status": "candidate",
-      "storyIds": [
-        "components-molecules-helptip--all-colors",
-        "components-molecules-helptip--all-icons",
-        "components-molecules-helptip--all-placements",
-        "components-molecules-helptip--all-sizes",
-        "components-molecules-helptip--default",
-        "components-molecules-helptip--form-example",
-        "components-molecules-helptip--inline-with-label",
-        "components-molecules-helptip--label-with-help-component",
-        "components-molecules-helptip--no-arrow",
-        "components-molecules-helptip--with-long-content",
-        "components-molecules-helptip--with-rich-content"
-      ],
-      "tier": "molecule"
     },
     {
       "composes": [
@@ -13137,7 +14820,7 @@
         },
         {
           "default": null,
-          "description": "URL to navigate to (for accessibility)",
+          "description": "URL to navigate to; on web the link renders a real `<a href>`",
           "name": "href",
           "required": false,
           "type": "string"
@@ -13465,6 +15148,87 @@
       "tier": "molecule"
     },
     {
+      "composes": [],
+      "family": "ui/motion",
+      "file": "packages/ui/src/components/ui/motion/Beat.tsx",
+      "name": "Beat",
+      "props": [
+        {
+          "default": null,
+          "description": "The beat's content, timed from the beat's start.",
+          "name": "children",
+          "required": false,
+          "type": "ReactNode"
+        },
+        {
+          "default": null,
+          "description": "Named moments in seconds from the beat's start, each within `[0, durationS]`; content reads one with `useCue(name)`.",
+          "name": "cues",
+          "required": false,
+          "type": "Readonly<Record<string, number>>"
+        },
+        {
+          "default": null,
+          "description": "Length of the window in seconds.",
+          "name": "durationS",
+          "required": true,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Seconds from the enclosing origin at which the beat's window starts.",
+          "name": "startS",
+          "required": true,
+          "type": "number"
+        }
+      ],
+      "purpose": "A window of the timeline: moves the time origin to `startS` and mounts only near its window.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/motion/Beat.tsx",
+        "status": null
+      },
+      "status": "review",
+      "storyIds": [],
+      "tier": "atom"
+    },
+    {
+      "composes": [],
+      "family": "ui/motion",
+      "file": "packages/ui/src/components/ui/motion/MotionProvider.tsx",
+      "name": "MotionProvider",
+      "props": [
+        {
+          "default": null,
+          "description": "The timeline.",
+          "name": "children",
+          "required": false,
+          "type": "ReactNode"
+        },
+        {
+          "default": null,
+          "description": "The time source for every motion hook below.",
+          "name": "clock",
+          "required": true,
+          "type": "Clock"
+        },
+        {
+          "default": "0",
+          "description": "Total timeline length in seconds, published as `__titanMotion.duration`.",
+          "name": "durationS",
+          "required": false,
+          "type": "number"
+        }
+      ],
+      "purpose": "Puts every motion hook below it on `clock`, so a seek clock can drive a render frame by frame.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/motion/MotionProvider.tsx",
+        "status": null
+      },
+      "status": "review",
+      "storyIds": [],
+      "tier": "atom"
+    },
+    {
       "composes": [
         "Typography"
       ],
@@ -13639,7 +15403,7 @@
         },
         {
           "default": null,
-          "description": "Visual variant",
+          "description": "Visual variant.",
           "name": "variant",
           "required": false,
           "type": "PillVariant"
@@ -13851,6 +15615,82 @@
         "components-molecules-progress--with-label"
       ],
       "tier": "atom"
+    },
+    {
+      "composes": [
+        "Progress"
+      ],
+      "family": "ui/progress",
+      "file": "packages/ui/src/components/ui/progress/ProgressSteps.tsx",
+      "name": "ProgressSteps",
+      "props": [
+        {
+          "default": null,
+          "description": "Additional className",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Color of completed steps.",
+          "name": "color",
+          "required": false,
+          "type": "ProgressColor"
+        },
+        {
+          "default": null,
+          "description": "Current step (0-indexed)",
+          "name": "currentStep",
+          "required": true,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Labels for each step",
+          "name": "labels",
+          "required": false,
+          "type": "string[]"
+        },
+        {
+          "default": null,
+          "description": "Fractional position along the steps, 0..totalSteps-1.",
+          "name": "progress",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Size of step indicators.",
+          "name": "size",
+          "required": false,
+          "type": "\"sm\" | \"md\" | \"lg\""
+        },
+        {
+          "default": null,
+          "description": "Total number of steps",
+          "name": "totalSteps",
+          "required": true,
+          "type": "number"
+        },
+        {
+          "default": "dots",
+          "description": "`dots` (default) or `rail`: state chips joined by connectors that fill with `progress`.",
+          "name": "variant",
+          "required": false,
+          "type": "ProgressStepsVariant"
+        }
+      ],
+      "purpose": "Step-based progress indicator.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/progress/ProgressSteps.tsx",
+        "status": "packages/ui/src/components/ui/progress/ProgressSteps.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-molecules-progresssteps--default"
+      ],
+      "tier": "molecule"
     },
     {
       "composes": [],
@@ -14435,6 +16275,56 @@
       "tier": "organism"
     },
     {
+      "composes": [
+        "SvgIcon",
+        "icons",
+        "statusIcons"
+      ],
+      "family": "ui/status-glyph",
+      "file": "packages/ui/src/components/ui/status-glyph/StatusGlyph.tsx",
+      "name": "StatusGlyph",
+      "props": [
+        {
+          "default": null,
+          "description": "Tailwind overrides for the wrapper, merged with `cn()`.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "The status word, spoken as the glyph's accessible name.",
+          "name": "label",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": "md",
+          "description": "Defaults to `md`.",
+          "name": "size",
+          "required": false,
+          "type": "StatusGlyphSize"
+        },
+        {
+          "default": null,
+          "description": "The condition shown.",
+          "name": "tone",
+          "required": true,
+          "type": "StatusGlyphTone"
+        }
+      ],
+      "purpose": "One status condition as a shaped, coloured mark: circle-check, alert-triangle, octagon-x or a dashed ring.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/status-glyph/StatusGlyph.tsx",
+        "status": "packages/ui/src/components/ui/status-glyph/StatusGlyph.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-atoms-statusglyph--default"
+      ],
+      "tier": "organism"
+    },
+    {
       "composes": [],
       "family": "ui/surface",
       "file": "packages/ui/src/components/ui/surface/Surface.tsx",
@@ -14585,7 +16475,7 @@
           "description": "Label position",
           "name": "labelPosition",
           "required": false,
-          "type": "\"right\" | \"left\""
+          "type": "\"left\" | \"right\""
         },
         {
           "default": null,
@@ -14749,7 +16639,7 @@
           "description": "Text alignment",
           "name": "align",
           "required": false,
-          "type": "\"right\" | \"center\" | \"left\""
+          "type": "\"left\" | \"right\" | \"center\""
         },
         {
           "default": null,
@@ -14839,7 +16729,7 @@
           "description": "Text alignment",
           "name": "align",
           "required": false,
-          "type": "\"right\" | \"center\" | \"left\""
+          "type": "\"left\" | \"right\" | \"center\""
         },
         {
           "default": null,
@@ -15476,6 +17366,7 @@
       "storyIds": [
         "components-molecules-tooltip--all-placements",
         "components-molecules-tooltip--default",
+        "components-molecules-tooltip--help-beside-label",
         "components-molecules-tooltip--on-text",
         "components-molecules-tooltip--with-delay",
         "components-molecules-tooltip--without-arrow"
@@ -15702,14 +17593,6 @@
     },
     {
       "file": "packages/ui/src/components/custom/Workout/icons.tsx",
-      "reason": "not-pascal-case"
-    },
-    {
-      "file": "packages/ui/src/components/custom/Workout/setHeadingKit.tsx",
-      "reason": "not-pascal-case"
-    },
-    {
-      "file": "packages/ui/src/components/custom/Workout/velocity-story-kit.tsx",
       "reason": "not-pascal-case"
     },
     {

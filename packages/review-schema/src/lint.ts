@@ -13,6 +13,10 @@ export const LINT_RULES = [
   'split-pr-group',
   'ship-not-last',
   'ship-head-mismatch',
+  'missing-implemented-option',
+  'question-outside-review',
+  'base-on-new-frame',
+  'sampled-animation',
 ] as const
 export type LintRule = (typeof LINT_RULES)[number]
 
@@ -212,6 +216,102 @@ function shipHeadProblems(m: Manifest): LintProblem[] {
   })
 }
 
+/** A decision that changes what the PR ships names the option the PR implements at its head. */
+function implementedProblems(m: Manifest): LintProblem[] {
+  return m.questions
+    .filter(
+      (q) =>
+        (q.kind === 'pick-one' || q.kind === 'pick-many') &&
+        (q.decision === 'iterate' || q.decision === 'decide') &&
+        !isMergeBound(q) &&
+        q.implemented === undefined
+    )
+    .map((q) =>
+      lint('missing-implemented-option')(
+        `question ${q.id}: its ${q.decision} decision changes what ships; declare the option the PR implements (implemented)`
+      )
+    )
+}
+
+/**
+ * Every question about a grouped PR sits in that group's sections, so its page's Review tab
+ * holds all of them (items 166 and 167): Diff and Context never ask anything.
+ */
+function reviewTabProblems(m: Manifest, prs: Map<string, string | undefined>): LintProblem[] {
+  const grouped = new Set(m.prGroups?.map((g) => g.pr))
+  return m.questions.flatMap((q) => {
+    if (!q.page || !grouped.has(q.page)) return []
+    const own = sectionOf(m, q.id)
+    if (own && prs.get(own.id) === q.page) return []
+    const where = own
+      ? `section ${own.id}, which is about ${prs.get(own.id) ?? 'no PR'}`
+      : 'no section'
+    return [
+      lint('question-outside-review')(
+        `question ${q.id}: it is about ${q.page} but sits in ${where}; put it in one of that PR group's sections so it is asked in its Review tab`
+      ),
+    ]
+  })
+}
+
+/** A frame that is new at head has no base render to set beside it. */
+function baseProblems(m: Manifest): LintProblem[] {
+  return m.variants
+    .filter((v) => v.change === 'new' && v.baseImage !== undefined)
+    .map((v) =>
+      lint('base-on-new-frame')(
+        `frame ${v.key}: it is new at head, so it has no base; drop baseImage or change its change class`
+      )
+    )
+}
+
+/** Args that time an animation; any other numeric arg counts only when every sample sits in 0..1. */
+const TIME_ARGS = new Set(['progress', 't', 'time', 'frame', 'playhead', 'elapsed'])
+
+/** The one numeric arg a set of frames of one story differs in, when it reads as time. */
+function sampledArg(views: Variant[]): string | null {
+  const names = new Set(views.flatMap((v) => Object.keys(v.args ?? {})))
+  const differing = [...names].filter(
+    (name) => new Set(views.map((v) => JSON.stringify(v.args?.[name]))).size > 1
+  )
+  if (differing.length !== 1) return null
+  const [arg] = differing
+  const values = views.map((v) => v.args?.[arg])
+  if (!values.every((x): x is number => typeof x === 'number')) return null
+  return TIME_ARGS.has(arg) || values.every((x) => x >= 0 && x <= 1) ? arg : null
+}
+
+/** Static frames of one live story, the same in all but its time arg, grouped per story and mode. */
+function sampledGroups(section: Section, m: Manifest): Variant[][] {
+  const groups = new Map<string, Variant[]>()
+  for (const v of m.variants)
+    if (section.variantKeys.includes(v.key) && v.storyId && !v.motion && !v.scale) {
+      const at = `${v.storyId} ${modeOf(v)}`
+      groups.set(at, [...(groups.get(at) ?? []), v])
+    }
+  return [...groups.values()].filter((views) => views.length > 1)
+}
+
+/** An animation is reviewed playing, with a scrubber, not as STATES sampled from it (339(2)). */
+function sampledAnimationProblems(m: Manifest): LintProblem[] {
+  return (m.sections ?? [])
+    .filter((s) => s.kind === 'STATES')
+    .flatMap((s) =>
+      sampledGroups(s, m).flatMap((views) => {
+        const arg = sampledArg(views)
+        if (!arg) return []
+        const at = views.map((v) => String(v.args?.[arg])).join(', ')
+        return [
+          lint('sampled-animation')(
+            `section ${s.id}: frames ${views.map((v) => v.key).join(', ')} sample ${views[0].storyId} ` +
+              `at ${arg} ${at}; show one variant with motion { mechanism: "arg", arg: "${arg}" } ` +
+              'so it plays with a scrubber'
+          ),
+        ]
+      })
+    )
+}
+
 /**
  * The review-layout problems of a parsed round, empty when it passes. Pure: builders refuse a
  * round with any problem, and a console lists one with its reasons.
@@ -225,5 +325,9 @@ export function lintRound(round: Manifest): LintProblem[] {
     ...groupProblems(round, prs),
     ...shipOrderProblems(round, prs),
     ...shipHeadProblems(round),
+    ...implementedProblems(round),
+    ...reviewTabProblems(round, prs),
+    ...baseProblems(round),
+    ...sampledAnimationProblems(round),
   ]
 }

@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { AppShell } from '../AppShell'
+import { AppShell, type AppShellContentPadding } from '../AppShell'
 import { type SideNavItem } from '../SideNav'
 import { WorkoutTopBar } from './WorkoutTopBar'
 import { workoutNavItems } from './workoutNavItems'
@@ -30,6 +30,8 @@ export interface WorkoutShellProps {
   onSelectDevice?: (device: Device) => void
   /** Main content region. A placeholder renders when omitted. */
   children?: ReactNode
+  /** Passed to {@link AppShell}: `none` when the children own their gutter. */
+  contentPadding?: AppShellContentPadding
   className?: string
 }
 
@@ -48,12 +50,14 @@ export function WorkoutShell({
   onNavigate,
   onSelectDevice,
   children,
+  contentPadding,
   className,
 }: WorkoutShellProps) {
   return (
     <AppShell
       brand="voltras"
       className={className}
+      contentPadding={contentPadding}
       navItems={navItems}
       activeKey={activeKey}
       liveKey={liveKey}

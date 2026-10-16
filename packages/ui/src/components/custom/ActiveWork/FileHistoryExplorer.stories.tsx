@@ -31,7 +31,7 @@ const meta: Meta<typeof FileHistoryExplorer> = {
           '[Divider](?path=/docs/components-atoms-divider--docs), ' +
           '[FileActivityRow](?path=/docs/custom-activework-fileactivityrow--docs), ' +
           '[FileActivityDetail](?path=/docs/custom-activework-fileactivitydetail--docs), ' +
-          '[CoChangeChip](?path=/docs/custom-activework-cochangechip--docs), and ' +
+          '[Pill](?path=/docs/components-atoms-pill--docs) co-change pairs, and ' +
           '[Eyebrow](?path=/docs/components-molecules-eyebrow--docs). ' +
           'Presentational only — the caller supplies every prop.',
       },

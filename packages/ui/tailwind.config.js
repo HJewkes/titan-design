@@ -312,7 +312,10 @@ module.exports = {
           hover: 'var(--color-interactive-hover)',
           focus: 'var(--color-interactive-focus)',
           active: 'var(--color-interactive-active)',
-          selected: 'var(--color-interactive-selected)',
+          selected: {
+            DEFAULT: 'var(--color-interactive-selected)',
+            solid: 'var(--color-interactive-selected-solid)',
+          },
           disabled: {
             DEFAULT: 'var(--color-interactive-disabled)',
             text: 'var(--color-interactive-disabled-text)',
@@ -332,6 +335,10 @@ module.exports = {
           subtle: 'var(--color-scrim-subtle)',
           press: 'var(--color-scrim-press)',
           'press-strong': 'var(--color-scrim-press-strong)',
+        },
+        // Toolbar control face (TD-264).
+        'control-face': {
+          disabled: 'var(--color-control-face-disabled)',
         },
         // Label on a toolbar control face (VW-82) — a grey plane, not a fill.
         'on-control': {
@@ -421,6 +428,7 @@ module.exports = {
         out: 'cubic-bezier(0.22, 1, 0.36, 1)',
         'in-out': 'cubic-bezier(0.65, 0, 0.35, 1)',
         spring: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
+        in: 'cubic-bezier(0.55, 0, 1, 0.45)',
       },
       transitionDuration: {
         fast: '150ms',
@@ -458,5 +466,10 @@ module.exports = {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    // TD-840: JetBrains Mono's contextual alternates draw "!=" as ≠ and "=>" as ⇒.
+    // Titan's mono text is code, paths and counts, so it shows the characters typed.
+    // `none` turns off calt as well as liga. Web only: NativeWind drops the property.
+    ({ addUtilities }) => addUtilities({ '.font-mono': { 'font-variant-ligatures': 'none' } }),
+  ],
 }

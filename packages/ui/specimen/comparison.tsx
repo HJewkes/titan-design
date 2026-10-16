@@ -20,6 +20,7 @@ import {
   ExerciseCard,
   SupersetWrapper,
 } from '../src/components/custom/Workout'
+import { checkMarkOutline } from '../src/components/icons/checkMarkGeometry'
 
 /* ─────────────────────────────────────────────
    HTML Ground Truth CSS (verbatim from component-demo.html lines 218-720)
@@ -30,6 +31,8 @@ const HTML_CSS = `
     --brand-primary: #FF7900;
     --brand-primary-light: #FF9630;
     --brand-primary-subtle: rgba(255, 121, 0, 0.12);
+    /* Pill's subtle brand label (dark :root in global.css). */
+    --on-brand-primary-subtle: #FF7900;
     --brand-secondary: #2697B7;
     --bg-base: #100D0A;
     --surface-elevated: #2C2A28;
@@ -138,15 +141,15 @@ const HTML_CSS = `
   .html-scope .pr-badge {
     display: inline-flex;
     align-items: center;
-    /* 4px, not 3: BaseBadge's icon gap moved to Pill's inline-sm rung (AW-142). */
+    /* The Pill face (tone brand, variant subtle, size sm, rounded false): TD-57. */
     gap: 4px;
     background: var(--brand-primary-subtle);
-    border: 1px solid rgba(255, 121, 0, 0.3);
-    border-radius: 2px;
+    border: 1px solid transparent;
+    border-radius: 8px;
     padding: 2px 8px;
     font-size: 12px;
     font-weight: 700;
-    color: var(--brand-primary);
+    color: var(--on-brand-primary-subtle);
     font-family: var(--font-body-token);
   }
   .html-scope .pr-badge-compact {
@@ -250,9 +253,10 @@ const HTML_CSS = `
     text-transform: uppercase;
     margin-right: 6px;
   }
-  /* Typography mono face (TD-60): the digits no longer carry the old MetricCell 1px tracking. */
+  /* Typography mono face (TD-60, TD-840): the digits no longer carry the old MetricCell 1px tracking. */
   .html-scope .tempo-value {
-    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+    font-family: var(--font-family-mono);
+    font-variant-ligatures: none;
     font-weight: 600;
     letter-spacing: 0;
   }
@@ -367,6 +371,8 @@ const HTML_CSS = `
     border: 1px solid var(--status-success-muted);
     color: var(--status-success);
   }
+  /* The check is an SVG flex item, so the prefix's space collapses; the gap is inline-sm. */
+  .html-scope .workout-pill .pill-check { margin-right: 4px; }
   .html-scope .workout-pill.active {
     background: var(--brand-primary-subtle);
     border: 1px solid var(--brand-primary-muted);
@@ -684,6 +690,14 @@ const HTML_CSS = `
    Comparison Pair wrapper
    ───────────────────────────────────────────── */
 
+/** The check the components draw since TD-840 replaced the ✓ glyph, in the wrapper's colour. */
+function checkMarkHtml(size: number, className = ''): string {
+  const points = checkMarkOutline(3)
+    .map(([x, y]) => `${String(x)},${String(y)}`)
+    .join(' ')
+  return `<svg class="${className}" width="${String(size)}" height="${String(size)}" viewBox="0 0 24 24" aria-hidden="true"><polygon points="${points}" fill="currentColor" /></svg>`
+}
+
 function ComparisonPair({
   testId,
   label,
@@ -923,7 +937,7 @@ function App() {
       {/* ── 3b. StatusDot with icons ── */}
       {(
         [
-          { variant: 'success', icon: 'check', iconChar: '\u2713' },
+          { variant: 'success', icon: 'check', iconChar: checkMarkHtml(12) },
           { variant: 'warning', icon: 'exclamation', iconChar: '!' },
           { variant: 'error', icon: 'dash', iconChar: '\u2014' },
         ] as const
@@ -1099,7 +1113,7 @@ function App() {
           missed: 'Core C',
         }
         const prefixes: Record<string, string> = {
-          completed: '\u2713 ',
+          completed: checkMarkHtml(12, 'pill-check'),
           missed: '\u2014 ',
         }
         const prefix = prefixes[status] ?? ''

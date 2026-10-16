@@ -2,6 +2,7 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { Link } from './Link'
+import { capturedByNode } from '../../../test/classname-capture'
 
 describe('Link', () => {
   it('renders children correctly', () => {
@@ -91,6 +92,22 @@ describe('Link', () => {
     })
   })
 
+  // TD-789 3b: brand-secondary as text missed 4.5:1 on the grey 100 page.
+  it('paints the secondary link in the brand-secondary text role', () => {
+    render(<Link color="secondary">Docs</Link>)
+    const classes = (capturedByNode.get(screen.getByText('Docs')) ?? '').split(/\s+/)
+    expect(classes).toContain('text-text-brand-secondary')
+    expect(classes).not.toContain('text-brand-secondary')
+  })
+
+  // TD-483: brand orange as link text missed 4.5:1 on the grey 100 and 200 planes.
+  it('paints the primary link in the brand text role', () => {
+    render(<Link color="primary">Docs</Link>)
+    const classes = (capturedByNode.get(screen.getByText('Docs')) ?? '').split(/\s+/)
+    expect(classes).toContain('text-text-brand')
+    expect(classes).not.toContain('text-brand-primary')
+  })
+
   it('renders with all underline options', () => {
     const underlines = ['always', 'hover', 'none'] as const
     underlines.forEach((underline) => {
@@ -111,6 +128,92 @@ describe('Link', () => {
     expect(screen.getByRole('link')).toHaveAttribute('aria-disabled', 'true')
   })
 
+  describe('with href on web', () => {
+    it('renders an anchor carrying the href', () => {
+      render(<Link href="/docs">Docs</Link>)
+      const anchor = screen.getByRole('link')
+      expect(anchor.tagName).toBe('A')
+      expect(anchor).toHaveAttribute('href', '/docs')
+    })
+
+    it('fires onPress and keeps routing in the handler on a plain click', () => {
+      const onPress = vi.fn()
+      render(
+        <Link href="/docs" onPress={onPress}>
+          Docs
+        </Link>
+      )
+      const notPrevented = fireEvent.click(screen.getByRole('link'))
+      expect(onPress).toHaveBeenCalledTimes(1)
+      expect(notPrevented).toBe(false)
+    })
+
+    it.each([{ metaKey: true }, { ctrlKey: true }])(
+      'leaves a modified click %o to the browser so it opens a new tab',
+      (modifier) => {
+        const onPress = vi.fn()
+        render(
+          <Link href="#docs" onPress={onPress}>
+            Docs
+          </Link>
+        )
+        const notPrevented = fireEvent.click(screen.getByRole('link'), modifier)
+        expect(notPrevented).toBe(true)
+        expect(onPress).not.toHaveBeenCalled()
+      }
+    )
+
+    it('opens an external href in a new tab without an opener', () => {
+      render(
+        <Link href="https://example.com" isExternal>
+          Example
+        </Link>
+      )
+      const anchor = screen.getByRole('link')
+      expect(anchor).toHaveAttribute('target', '_blank')
+      expect(anchor.getAttribute('rel')).toContain('noopener')
+    })
+
+    it('fires onPress on an external link without preventing navigation', () => {
+      const onPress = vi.fn()
+      render(
+        <Link href="#external" isExternal onPress={onPress}>
+          Example
+        </Link>
+      )
+      expect(fireEvent.click(screen.getByRole('link'))).toBe(true)
+      expect(onPress).toHaveBeenCalledTimes(1)
+    })
+
+    it('renders no href when disabled, though the same enabled link does', () => {
+      render(
+        <>
+          <Link href="/docs" isDisabled>
+            Disabled docs
+          </Link>
+          <Link href="/docs">Enabled docs</Link>
+        </>
+      )
+      const [disabled, enabled] = screen.getAllByRole('link')
+      expect(disabled.tagName).not.toBe('A')
+      expect(disabled).not.toHaveAttribute('href')
+      expect(enabled.tagName).toBe('A')
+      expect(enabled).toHaveAttribute('href', '/docs')
+    })
+
+    it('renders an anchor only for the link that has an href', () => {
+      render(
+        <>
+          <Link onPress={() => {}}>Without href</Link>
+          <Link href="/docs">With href</Link>
+        </>
+      )
+      const [withoutHref, withHref] = screen.getAllByRole('link')
+      expect(withoutHref.tagName).not.toBe('A')
+      expect(withHref.tagName).toBe('A')
+    })
+  })
+
   describe('accessibility', () => {
     it('has no accessibility violations', async () => {
       const { container } = render(<Link>Visit site</Link>)
@@ -120,6 +223,16 @@ describe('Link', () => {
 
     it('has no accessibility violations for external link', async () => {
       const { container } = render(<Link isExternal>External site</Link>)
+      const results = await axe(container)
+      expect(results).toHaveNoViolations()
+    })
+
+    it('has no accessibility violations as an anchor', async () => {
+      const { container } = render(
+        <Link href="https://example.com" isExternal>
+          External site
+        </Link>
+      )
       const results = await axe(container)
       expect(results).toHaveNoViolations()
     })
