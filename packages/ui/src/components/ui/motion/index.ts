@@ -22,6 +22,15 @@ export {
   type Easing,
 } from './easing'
 export { MOTION } from './tokens'
+export type {
+  MotionPreset,
+  MotionPresetFrame,
+  MotionPresetName,
+  MotionPresetValues,
+  MotionReduced,
+  MotionReducedFrame,
+  MotionTierName,
+} from './presets'
 export {
   interpolate,
   interpolateScale,
@@ -117,3 +126,21 @@ export {
   type AnnotationMarkProps,
   type AnnotationStroke,
 } from './annotate'
+export {
+  DEFAULT_MORPH_WINDOWS,
+  matchParts,
+  Morph,
+  partsMorph,
+  type MorphBox,
+  type MorphKeyMap,
+  type MorphLayer,
+  type MorphPart,
+  type MorphProps,
+  type MorphRole,
+  type MorphTransform,
+  type MorphWindow,
+  type MorphWindows,
+  type PartMatching,
+  type PartPair,
+  type PartsMorphOptions,
+} from './morph'
