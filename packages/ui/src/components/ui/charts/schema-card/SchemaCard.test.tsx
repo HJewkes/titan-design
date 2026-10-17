@@ -1,10 +1,7 @@
-import { act, render, screen, within } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { seekClock, type SeekClock } from '../../motion/clocks'
 import { capturedByNode } from '../../../../test/classname-capture'
-import { useMotionTime } from '../../motion/hooks'
-import { MotionProvider } from '../../motion/MotionProvider'
 import { Typography } from '../../typography'
 import { blogHighlights, blogSchema } from './fixtures'
 import { SchemaCard } from './SchemaCard'
@@ -29,18 +26,9 @@ function connectorStyle(container: HTMLElement, relation: string) {
   return { length: read('stroke-dasharray'), offset: read('stroke-dashoffset') }
 }
 
-function OnClock() {
-  const t = useMotionTime()
+function cardAt(t: number) {
   return (
     <SchemaCard data={blogSchema} highlights={blogHighlights} t={t} accessibilityLabel={LABEL} />
-  )
-}
-
-function renderOnClock(clock: SeekClock) {
-  return render(
-    <MotionProvider clock={clock}>
-      <OnClock />
-    </MotionProvider>
   )
 }
 
@@ -124,14 +112,12 @@ describe('SchemaCard', () => {
     expect(classesOf('schema-row-posts-title', 'text')).toContain('text-text-secondary')
   })
 
-  it('renders the same frame on a seek clock whether swept to t or seeked there cold', () => {
+  it('renders the same frame at t whether swept there or rendered cold', () => {
     // Catches: any state carried between frames, such as a latch on the furthest t seen.
-    const swept = seekClock(0)
-    const { container: sweptRoot } = renderOnClock(swept)
-    // One act per frame: a single act would batch the sweep down to its last seek.
-    for (let t = 0; t <= 4; t += 1 / 60) act(() => swept.seek(t))
-    act(() => swept.seek(2.4))
-    const { container: coldRoot } = renderOnClock(seekClock(2.4))
+    const { container: sweptRoot, rerender } = render(cardAt(0))
+    for (let t = 0; t <= 4; t += 1 / 60) rerender(cardAt(t))
+    rerender(cardAt(2.4))
+    const { container: coldRoot } = render(cardAt(2.4))
     expect(sweptRoot.innerHTML).toBe(coldRoot.innerHTML)
   })
 
