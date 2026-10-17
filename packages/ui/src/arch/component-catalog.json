@@ -12319,6 +12319,13 @@
           "type": "number"
         },
         {
+          "default": null,
+          "description": "0..1 from the caller's clock: the number counts up from `min` in tabular digits, the arc fills with it, and both land on `value` exactly at 1.",
+          "name": "progress",
+          "required": false,
+          "type": "number"
+        },
+        {
           "default": "160",
           "description": "Diameter in px.",
           "name": "size",
@@ -14796,6 +14803,13 @@
           "name": "labelPosition",
           "required": false,
           "type": "MetricLabelPosition"
+        },
+        {
+          "default": null,
+          "description": "0..1 from the caller's clock: the first number in `value` counts up from 0 in tabular digits and lands on `value` exactly at 1.",
+          "name": "progress",
+          "required": false,
+          "type": "number"
         },
         {
           "default": "md",
