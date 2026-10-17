@@ -119,7 +119,7 @@ jobs:
       - uses: actions/setup-node@v4
         if: steps.paths.outputs.run != 'false'
         with:
-          node-version: 22
+          node-version-file: .node-version
           cache: pnpm
 
       - run: pnpm install --frozen-lockfile
@@ -295,7 +295,7 @@ jobs:
       - uses: actions/setup-node@v4
         if: steps.paths.outputs.run != 'false'
         with:
-          node-version: 22
+          node-version-file: .node-version
           cache: pnpm
 
       - run: pnpm install --frozen-lockfile
@@ -369,7 +369,7 @@ jobs:
       # No cache when nothing installs: the post-step would save an empty store.
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version-file: .node-version
           cache: ${{ steps.paths.outputs.run != 'false' && 'pnpm' || '' }}
 
       # pnpm audit reads the lockfile only, so it runs before the install.
