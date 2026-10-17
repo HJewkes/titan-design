@@ -31,7 +31,7 @@ import {
 } from './icons'
 import { TriangleDownIcon, TriangleUpIcon } from './statusIcons'
 import { SvgIcon } from './SvgIcon'
-import { checkMarkOutline } from './checkMarkGeometry'
+import { checkMarkPath } from './checkMarkGeometry'
 
 describe('icon primitives', () => {
   it('every icon renders an svg', () => {
@@ -98,13 +98,9 @@ describe('icon primitives', () => {
     const { container } = render(<CheckMark size={12} strokeWidth={3} />)
     const [mask, mark] = Array.from(container.querySelectorAll('svg > *'))
     expect(mask.tagName).toBe('mask')
-    expect(mark.tagName).toBe('polygon')
+    expect(mark.tagName).toBe('path')
     expect(mark.getAttribute('mask')).toBe(`url(#${mask.id})`)
-    expect(mark.getAttribute('points')).toBe(
-      checkMarkOutline(3)
-        .map(([x, y]) => `${String(x)},${String(y)}`)
-        .join(' ')
-    )
+    expect(mark.getAttribute('d')).toBe(checkMarkPath(3))
     const spines = mask.querySelectorAll('path')
     expect(spines).toHaveLength(1)
     const [spine] = spines
@@ -113,7 +109,7 @@ describe('icon primitives', () => {
     const d = spine.getAttribute('d')!
     expect(d.match(/[Mm]/g)).toHaveLength(1)
     expect(d).not.toMatch(/[Zz]/)
-    expect(d.startsWith('M3.95 12.14 L9.3 17.6')).toBe(true)
+    expect(d.startsWith('M3.95 12.14 L8.6 16.89 Q9.3 17.6')).toBe(true)
   })
 
   it('every check mark masks with its own id', () => {

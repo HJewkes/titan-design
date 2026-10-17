@@ -1,8 +1,16 @@
 import { describe, expect, it } from 'vitest'
 import {
+  SAME_SHAPE_MIN_IOU,
+  compareSvgPaths,
+  flattenPath,
+  selfCrossings,
+} from '../../test/svg-overlap'
+import {
+  CHECK_MARK_APEX,
   CHECK_MARK_MASK_WIDTH,
   CHECK_MARK_SPINE,
   checkMarkOutline,
+  checkMarkPath,
   type CheckMarkPoint,
 } from './checkMarkGeometry'
 
@@ -36,32 +44,57 @@ function pointsOf(path: string): CheckMarkPoint[] {
   })
 }
 
-/** The spine's line and quadratic, sampled finely enough to stand in for the curve. */
+/** The spine, flattened and then split into steps of at most 0.02 units to stand in for the curve. */
 function spineSamples(): CheckMarkPoint[] {
-  const n = (CHECK_MARK_SPINE.match(/\d+(?:\.\d+)?/g) ?? []).map(Number)
-  const [start, apex, bend, end]: CheckMarkPoint[] = [0, 2, 4, 6].map((i) => [n[i], n[i + 1]])
-  const samples: CheckMarkPoint[] = []
-  for (let i = 0; i <= 200; i++) {
-    const t = i / 200
-    samples.push([start[0] + (apex[0] - start[0]) * t, start[1] + (apex[1] - start[1]) * t])
-  }
-  for (let i = 1; i <= 400; i++) {
-    const t = i / 400
-    const u = 1 - t
-    samples.push([
-      u * u * apex[0] + 2 * u * t * bend[0] + t * t * end[0],
-      u * u * apex[1] + 2 * u * t * bend[1] + t * t * end[1],
-    ])
-  }
+  const [vertices] = flattenPath(CHECK_MARK_SPINE)
+  const samples: CheckMarkPoint[] = [vertices[0]]
+  vertices.slice(1).forEach((b, k) => {
+    const a = vertices[k]
+    const steps = Math.ceil(Math.hypot(b[0] - a[0], b[1] - a[1]) / 0.02)
+    for (let i = 1; i <= steps; i++) {
+      samples.push([a[0] + ((b[0] - a[0]) * i) / steps, a[1] + ((b[1] - a[1]) * i) / steps])
+    }
+  })
   return samples
 }
+
+/** The largest turn, in degrees, between consecutive steps of a polyline. */
+function sharpestTurn(line: readonly CheckMarkPoint[]): number {
+  const heading = (a: CheckMarkPoint, b: CheckMarkPoint) => Math.atan2(b[1] - a[1], b[0] - a[0])
+  let sharpest = 0
+  for (let k = 2; k < line.length; k++) {
+    const turn = Math.abs(heading(line[k - 1], line[k]) - heading(line[k - 2], line[k - 1]))
+    sharpest = Math.max(sharpest, Math.min(turn, 2 * Math.PI - turn))
+  }
+  return (sharpest * 180) / Math.PI
+}
+
+/** Same pixels at 2048 px, give or take the rounding of the one point that replaces the loop. */
+const SAME_PIXELS_MIN_IOU = 0.9999
 
 describe('checkMarkOutline', () => {
   it.each([
     [3, APPROVED_WEIGHT_3],
     [2, APPROVED_WEIGHT_2],
-  ])('at weight %i is the approved outline, point for point', (weight, approved) => {
-    expect(checkMarkOutline(weight)).toEqual(pointsOf(approved))
+  ])("at weight %i fills the approved outline's pixels", (weight, approved) => {
+    expect(compareSvgPaths([checkMarkOutline(weight)], approved).iou).toBeGreaterThanOrEqual(
+      SAME_PIXELS_MIN_IOU
+    )
+  })
+
+  it.each([
+    [3, APPROVED_WEIGHT_3],
+    [2, APPROVED_WEIGHT_2],
+  ])('at weight %i drops the loop the approved outline wound at the apex', (weight, approved) => {
+    const [loop] = selfCrossings(pointsOf(approved))
+    expect(
+      Math.hypot(loop.at[0] - CHECK_MARK_APEX[0], loop.at[1] - CHECK_MARK_APEX[1])
+    ).toBeLessThan(3)
+    expect(selfCrossings(checkMarkOutline(weight))).toEqual([])
+  })
+
+  it.each([1, 4])('at weight %i crosses itself nowhere', (weight) => {
+    expect(selfCrossings(checkMarkOutline(weight))).toEqual([])
   })
 
   it('starts with a vertical cut and has no round cap', () => {
@@ -84,7 +117,7 @@ describe('checkMarkOutline', () => {
     (weight) => {
       const spine = spineSamples()
       const reach = (weight * CHECK_MARK_MASK_WIDTH) / 2
-      for (const q of checkMarkOutline(weight)) {
+      for (const q of [...checkMarkOutline(weight), ...flattenPath(checkMarkPath(weight))[0]]) {
         const distances = spine.map((s) => Math.hypot(s[0] - q[0], s[1] - q[1]))
         const nearest = distances.indexOf(Math.min(...distances))
         expect(distances[nearest]).toBeLessThan(reach)
@@ -93,4 +126,38 @@ describe('checkMarkOutline', () => {
       }
     }
   )
+})
+
+describe('checkMarkPath', () => {
+  it.each([
+    [3, APPROVED_WEIGHT_3],
+    [2, APPROVED_WEIGHT_2],
+  ])('at weight %i is the same shape as the approved outline', (weight, approved) => {
+    expect(compareSvgPaths(checkMarkPath(weight), approved).iou).toBeGreaterThanOrEqual(
+      SAME_SHAPE_MIN_IOU
+    )
+  })
+
+  it.each([1, 1.5, 2.5, 4])('at weight %i is the same shape as the sampled outline', (weight) => {
+    expect(
+      compareSvgPaths(checkMarkPath(weight), [checkMarkOutline(weight)]).iou
+    ).toBeGreaterThanOrEqual(SAME_SHAPE_MIN_IOU)
+  })
+
+  it('is a fifth of the size of the approved outline, in two cubics', () => {
+    const path = checkMarkPath(3)
+    expect(path.match(/C/g)).toHaveLength(2)
+    expect(path.length * 5).toBeLessThan(APPROVED_WEIGHT_3.length)
+  })
+
+  it.each([1, 2, 3, 4])('at weight %i crosses itself nowhere', (weight) => {
+    expect(selfCrossings(flattenPath(checkMarkPath(weight))[0])).toEqual([])
+  })
+})
+
+describe('CHECK_MARK_SPINE', () => {
+  it('turns the apex corner gradually, so the draw-on edge never swings round in one frame', () => {
+    const [spine] = flattenPath(CHECK_MARK_SPINE)
+    expect(sharpestTurn(spine)).toBeLessThan(15)
+  })
 })
