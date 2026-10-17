@@ -8,19 +8,23 @@ root `package.json`, `turbo.json`, `packages/ui/package.json`, `packages/ui/vite
 
 `ci.yml` runs on every pull request and on pushes to `main`.
 
-| Job        | Runs on                                                                            | What it runs                                                                                                                                              |
-| ---------- | ---------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `build`    | Node 22 (single-entry matrix)                                                      | Install, then the steps below                                                                                                                             |
-| `visual`   | Playwright container, Node 22                                                      | Layer 3 parity, offline fonts, Layer 1 and 2 baselines, interaction                                                                                       |
-| `contrast` | Playwright container, Node 22; a three-shard matrix (`contrast 1/3` to `3/3`)      | axe `color-contrast` on every story in both themes (`test:visual:contrast --shard=i/3`), path-gated; each shard uploads `contrast-report-<i>` (see below) |
-| `check`    | Playwright container, Node 22; always runs; needs `build`, `visual` and `contrast` | all-green over `needs`, then audit, stories axe and play functions (see below)                                                                            |
+| Job        | Runs on                                                                                        | What it runs                                                                                                                                              |
+| ---------- | ---------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `build`    | Node 22 (single-entry matrix; stays on 22 until the required `build (22)` check is renamed)    | Install, then the steps below                                                                                                                             |
+| `visual`   | Playwright container, `.node-version` pin                                                      | Layer 3 parity, offline fonts, Layer 1 and 2 baselines, interaction                                                                                       |
+| `contrast` | Playwright container, `.node-version` pin; a three-shard matrix (`contrast 1/3` to `3/3`)      | axe `color-contrast` on every story in both themes (`test:visual:contrast --shard=i/3`), path-gated; each shard uploads `contrast-report-<i>` (see below) |
+| `check`    | Playwright container, `.node-version` pin; always runs; needs `build`, `visual` and `contrast` | all-green over `needs`, then audit, stories axe and play functions (see below)                                                                            |
+
+Every job except `build` reads its Node version from `.node-version` (24.21.0). `build` stays on Node 22
+until the owner changes the ruleset so the required check is no longer named `build (22)`; until then the
+root `engines.node` range (`>=22 <25`) keeps both versions supported.
 
 `react-next.yml` is a separate, advisory workflow on the same triggers. It is not in `check.needs` and
 is never a required check, so it never blocks a merge. Advisory: green check, result in the summary and a warning annotation (the test step is `continue-on-error`, then a summary table of passed/failed tests and files plus the step outcome. The `::warning::` fires whenever the unit step failed, keyed on its outcome rather than the JSON counts, so type-check errors and files that fail to load are never silent).
 
-| Job                | Runs on | What it runs                                                                                                                                                                                          |
-| ------------------ | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `react-19-rnw-021` | Node 22 | Installs, then overrides `react`, `react-dom` and `react-native-web` to 19 / 19 / 0.21 in the job's checkout (nothing committed), and runs the `threads`, `local-time` and `types` unit projects once |
+| Job                | Runs on             | What it runs                                                                                                                                                                                          |
+| ------------------ | ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `react-19-rnw-021` | `.node-version` pin | Installs, then overrides `react`, `react-dom` and `react-native-web` to 19 / 19 / 0.21 in the job's checkout (nothing committed), and runs the `threads`, `local-time` and `types` unit projects once |
 
 ### `build` steps
 
