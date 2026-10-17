@@ -266,5 +266,8 @@
   },
   "components/ui/table/Table.tsx#Table": {
     "props": 14
+  },
+  "components/ui/tree-view/TreeView.tsx#TreeView": {
+    "props": 22
   }
 }

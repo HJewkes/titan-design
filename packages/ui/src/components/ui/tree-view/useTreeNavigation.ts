@@ -1,7 +1,8 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useControllableState } from '../../../hooks/useControllableState'
 import { createTypeaheadBuffer, isTypeaheadKey } from '../../../utils/listNavigation'
 import { indexNodes, nextFocus, typeaheadMatch, visibleRows } from './tree-model'
+import { useReveal, useSettledLoads } from './useTreeSync'
 import {
   applyExpansion,
   collapsedAncestor,
@@ -93,20 +94,6 @@ function useExpansion<T>(options: TreeNavigationOptions<T>): [ReadonlySet<string
   return [current, apply]
 }
 
-function useReveal<T>(
-  revealId: string | undefined,
-  index: TreeIndex<T>,
-  reveal: (id: string) => void
-) {
-  const revealed = useRef<string | undefined>(undefined)
-  useEffect(() => {
-    if (revealId === undefined || revealId === revealed.current) return
-    if (!index.byId.has(revealId)) return
-    revealed.current = revealId
-    reveal(revealId)
-  }, [revealId, index, reveal])
-}
-
 interface TreeState<T> {
   options: TreeNavigationOptions<T>
   index: TreeIndex<T>
@@ -130,6 +117,9 @@ function useTreeState<T>(options: TreeNavigationOptions<T>): TreeState<T> {
   })
   const [focusState, setFocusedId] = useState<string | null>(null)
   const focusedId = resolveFocus(rows, index, focusState, selectedId)
+  // A row hidden from outside the hook (a controlled collapse) hands its focus on for good, so
+  // re-expanding later does not pull focus back into the subtree.
+  if (focusState !== null && focusState !== focusedId) setFocusedId(focusedId)
   return {
     options,
     index,
@@ -239,6 +229,7 @@ function rowProps<T>(row: TreeRow<T>, state: TreeState<T>, actions: TreeActions)
 export function useTreeNavigation<T>(options: TreeNavigationOptions<T>): TreeNavigation<T> {
   const state = useTreeState(options)
   const actions = useTreeActions(state)
+  useSettledLoads(state.index, state.expandedIds, options.loadingIds ?? NO_IDS, state.applyIntents)
   const { rows, index, focusedId, selectedId, expandedIds, setFocusedId, applyIntents } = state
   const reveal = (id: string) => {
     applyIntents(revealIntents(index, id))
