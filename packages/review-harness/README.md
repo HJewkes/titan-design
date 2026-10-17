@@ -467,6 +467,158 @@ reasoning is recorded and is appended to the rationale. Each becomes the questio
 `recommendation` with `by: "decider"`, hidden until the owner answers (`after-answer`). An
 answer that is not one of the options, or a `questionId` no item has, is refused.
 
+## A packet from CI (TD-920)
+
+`writePacketDir` (`src/packet.ts`) writes a visual review packet for one PR head, in code, with no
+Storybook and no agent-made image. Its input is each visual layer (`component`, `story`) with the
+baselines to show and their bytes on each side, plus the PR, run and main they are bound to;
+`titan-review packet from-ci` gathers that input from one CI run and git.
+
+```sh
+titan-review packet from-ci --repo <owner/name> --pr <n> --head <40-hex> --run <id> \
+  [--out <dir>] [--clone <path>] [--side <questions.json>]
+```
+
+`--repo` here is the GitHub repo (`owner/name`); the checkout git reads is `--clone` (default:
+this one). It only reads: `gh run view`, `gh pr view` and `gh api` (an artifact is fetched by id
+as a zip and unzipped into a scratch directory); `git fetch`, `rev-parse`, `merge-base`,
+`ls-tree`, `diff` and `show`. Each zip's central directory is checked in code before `unzip` runs:
+a symlink, a path out of the directory, zip64, or over 128 MB declared is refused, and the PNGs
+read back are held to the same 128 MB.
+
+**Refusals** (exit 2, nothing written): the run's `headSha` is not `--head`; its workflow is not
+`CI`; it has not completed; the PR is not open, or its head has moved past `--head`; an artifact
+it reads has expired (an expired artifact is never read as "no changes").
+
+**Sources.** One row per visual layer. Only `*-chromium-linux.png` files count.
+
+| layer       | regenerated artifact         | repo prefix (the artifact's root)                               | diagnostics artifact     |
+| ----------- | ---------------------------- | --------------------------------------------------------------- | ------------------------ |
+| `component` | `component-visual-baselines` | `packages/ui/specimen/baseline/`                                | `component-visual-diffs` |
+| `story`     | `storybook-visual-baselines` | `packages/ui/tests/visual/reference/stories.spec.ts-snapshots/` | `storybook-visual-diffs` |
+
+A rerun attempt uploads its artifacts again under the same names, so from-ci reads each name's
+latest upload (by `created_at`, then id) across every page of the artifact list and refuses if that one has expired.
+
+Observed on a real failed run: the component artifact holds `<spec>-snapshots/<name>-chromium-linux.png`
+relative to its prefix, the story artifact holds the snapshot directory's files flat, and each holds
+the full set (every committed baseline, regenerated or not), so a file absent from it was removed.
+The baselines are regenerated only when the visual job fails, so a green run has no artifact. A
+third source covers that: the PNGs the PR's own commits add or modify under the prefixes
+(`git diff --diff-filter=AM <merge-base> <head>`), read at `--head` and marked `source: "git"`.
+
+**Classes.** Against `origin/main`, by git blob id: `unchanged` (counted, not shown), `changed`,
+`new` and `removed`. A layer with no artifact shows no removed images. A changed pair of one size
+gets a diff: CI's `<stem>-diff.png` when its `<stem>-expected.png` is main's bytes and its size
+matches (`diff.source: "ci"`), otherwise pixelmatch at threshold 0.02 (`"computed"`). Both
+`diffPixels` (at 0.02) and `anyChannelPixels` (exact) are recorded; a pair with no differing
+pixel is `pixelIdentical`. A pair that changed size gets `diff: null` and `size`.
+
+**Montage**, one per shown image: `BEFORE | AFTER | DIFF`; `BEFORE | AFTER` aligned top-left on a
+checker, labelled `SIZE 2686>2772 W`; the new image under a magenta `NEW` bar; main's image under a
+red `REMOVED` bar. Small shots are scaled up to 4x; panels stack top to bottom when three would
+not fit 1600 pixels across.
+
+**Output**, staged beside `--out` (default `./packets/<name>-pr<n>-<head12>/`) and swapped in
+whole, so a failure part way leaves any earlier packet as it was:
+
+```
+before/<key>.png  after/<key>.png  diff/<key>.png  montage/<key>.png
+draft.json        packet.json      (packet.json is written last)
+```
+
+`packet.json` is `titan-review/ci-packet@1`:
+
+- `packetId`: the sha256 of the canonical JSON of the repo, PR, head, head tree, run id, main
+  sha and each image's path, change and before and after sha256
+- `repo`, `pr`, `headSha`, `headTree`, `mainSha`, `mergeBase`
+- `ci`: `runId`, `url`, `conclusion`, `visualJob` (the `visual` job's conclusion),
+  `regenerated` and `diagnostics` (each `{component, story}`)
+- `images[]`: `key` (`img-001`, ordinal), `layer`, `path`, `change`, `source` (`artifact` or
+  `git`), `label`, `file` (the montage), `sha256`, `viewport`, `storyId` (story layer),
+  `before` and `after` (`{file, sha256, width, height}`), `diff`, `size`, `pixelIdentical`, and
+  `cause: null` (it stays null; the packager writes each image's cause to `prose.json`)
+- `unchanged` (`{component, story}`), `warnings` (main changed a baseline since the merge-base)
+- `draft`: `{file: "draft.json", sha256}`
+
+`draft.json` is a `round@2` draft (never `round.json`): a `STATES` section each for changed, new
+and removed images (empty ones omitted, every frame `unmeasured` in both modes, `baseImage` on
+changed frames only), then a `side` section holding the `--side` questions (a JSON array of
+questions, each put on the PR page), then the one merge-bound Ship question, all in one PR
+group. It must pass the builder rules, the round contract and `lintRound`, or from-ci refuses with
+the problems. Run `titan-review build <out>/draft.json --tree <clone>` on it next.
+
+### packet lint (TD-924)
+
+```sh
+titan-review packet lint <dir> --gate-head <40-hex> [--require prose,round] [--clone <path>] [--json]
+```
+
+Checks that a packet directory is the one from-ci wrote for the gate's head, and that the files
+added since are well formed. Without `--clone` it reads only the directory: no git, no gh, no
+network. It walks the tree with `lstat` and never follows a link.
+
+- `packet.json` passes `titan-review/ci-packet@1`, its `packetId` is the hash of what it names,
+  and its head is `--gate-head`.
+- `draft.json` hashes to `draft.sha256`, and its Ship question is bound to the gate head and the
+  packet's repo and PR.
+- Every PNG it names is present, under `before/ after/ diff/ montage/`, and hashes to its sha256.
+  Any other file, link or non-regular file is a problem.
+- `prose.json` (`titan-review/packet-prose@1`, `src/packet-prose.ts`), when present, is bound to the
+  packet and the gate head and gives exactly one cause per image.
+- `round.json`, when present, is `applyRoundRules(draft.json)` plus `build`, for the packet's unit
+  and head.
+- With `--clone`, the images are re-derived from git in that local clone (`src/packet-derive.ts`):
+  each before image is `git show <mainSha>:<path>` (`before-source`), each `source: "git"` after is
+  `git show <headSha>:<path>` (`after-source`), and each montage and computed diff is recomputed
+  bit-exact from the two sides (`derived`). A CI-regenerated after and a CI diff have no git source
+  and stay checked by sha only. `--clone` has no default, so no flag means no git read.
+- `frames/frames.json`, when present, is byte for byte the index `packet round` derives from
+  packet.json, round.json and prose.json (rule `frames-index`).
+
+`--require` makes `prose.json` or `round.json` a problem when absent; `--require round` also
+requires `frames/frames.json` (rule `frames-missing`), since a round imported without its index
+shows no images. `--gate-head` has no default,
+so the lint never trusts the packet's own head. Exit 0 when clean, 3 on any problem (as `build`),
+2 on an unreadable directory or a usage error. Each problem prints as `<rule>: <message>`; with
+`--json`, stdout is one object and nothing else:
+`{schema: "titan-review/packet-lint@1", ok, packetId, problems: [{rule, message}]}`, where
+`packetId` is packet.json's when it passes its schema and `null` otherwise. The rule ids are
+`PACKET_LINT_RULES` in `src/packet-lint.ts`.
+
+### packet round (TP-3235)
+
+```sh
+titan-review packet round <dir>
+```
+
+Builds a packet's round with no Storybook and no tree, for `titan-console rounds import`. It writes
+`round.json`, `applyRoundRules(draft.json)` plus `build {mainSha, mergeSha: headSha}` from
+packet.json (the bytes `build` would write, so lint's `round-draft` holds), and
+`frames/frames.json`, a `titan-review/frames@1` index:
+
+| field            | value                                                                       |
+| ---------------- | --------------------------------------------------------------------------- |
+| `unit`, `round`  | round.json's                                                                |
+| `manifestSha256` | sha256 of the round.json bytes                                              |
+| `packet`         | `{file: "packet.json", sha256}` of its bytes                                |
+| `prose`          | `{file: "prose.json", sha256}` of its bytes                                 |
+| `frames[]`       | per packet image: `key`; `file`, `sha256` = the montage (the round's head)  |
+|                  | `base` = before, `diff` = diff, `after` = after, each when the image has it |
+
+Paths are relative to the directory. The montage is the head view because the round's variant
+`image` names it, and the console copies only the files the index lists. Each file is written
+beside its target and renamed in; a run on the same directory writes the same bytes. It refuses
+(exit 2, writing nothing) without a valid packet.json, the draft.json it names, and prose.json.
+
+### packet prompt (TD-924)
+
+`titan-review packet prompt` prints `prompts/review-packager.md`: the review packager agent's
+instructions. The agent runs from-ci, writes `prose.json` and nothing else, and finishes with
+`titan-review packet lint <dir> --gate-head <head> --require prose`. The prompt ships with the lint
+that judges it, and `test/packet-prompt.test.ts` fails when its field headings, its caps, its rule
+list or its example drift from `ProseSchema` and the lint.
+
 ## Contrast gate (TD-478)
 
 `titan-review build <draft.json>` measures every story variant at every manifest width in

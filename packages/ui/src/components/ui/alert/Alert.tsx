@@ -3,6 +3,7 @@ import { View, Text, Pressable, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { paperFill } from '../../../theme/materials'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { CheckMark } from '../../icons'
 import { useSurfaceMode } from '../surface'
 
 export type AlertStatus = 'success' | 'info' | 'warning' | 'error'
@@ -103,12 +104,36 @@ const statusColors: Record<
   },
 }
 
-// Default icons for each status
-const defaultIcons: Record<AlertStatus, string> = {
-  success: '✓',
+// Text glyphs for the statuses with no titan icon yet; success draws `CheckMark` (TD-840).
+const defaultGlyphs: Record<Exclude<AlertStatus, 'success'>, string> = {
   info: 'ℹ',
   warning: '⚠',
   error: '✕',
+}
+
+interface DefaultGlyphProps {
+  status: AlertStatus
+  isCompact: boolean
+  className: string
+}
+
+/**
+ * The default glyph is 20px bold (large text, AA at 3:1) in the 20px line box of the first
+ * text line, so the two centre together; compact centres the row instead.
+ */
+function DefaultGlyph({ status, isCompact, className }: DefaultGlyphProps) {
+  if (status === 'success') {
+    return (
+      <View className={className}>
+        <CheckMark size={isCompact ? 16 : 20} strokeWidth={3} />
+      </View>
+    )
+  }
+  return (
+    <Text className={cn('font-bold', isCompact ? 'text-base' : 'text-xl leading-5', className)}>
+      {defaultGlyphs[status]}
+    </Text>
+  )
 }
 
 /** The on-colour class of the enclosing `solid` Alert, or `null` outside one. */
@@ -187,20 +212,7 @@ export function Alert({
     >
       {showIcon && (
         <View className={isCompact ? 'mr-2' : 'mr-3'}>
-          {icon || (
-            <Text
-              className={cn(
-                'font-bold',
-                // The default glyph is 20px bold (large text, AA at 3:1) in the 20px line
-                // box of the first text line, so the two centre together; compact centres
-                // the row instead.
-                isCompact ? 'text-base' : 'text-xl leading-5',
-                glyph
-              )}
-            >
-              {defaultIcons[status]}
-            </Text>
-          )}
+          {icon || <DefaultGlyph status={status} isCompact={isCompact} className={glyph} />}
         </View>
       )}
 
