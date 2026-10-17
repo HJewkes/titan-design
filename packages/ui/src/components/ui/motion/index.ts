@@ -21,6 +21,15 @@ export {
   type Easing,
 } from './easing'
 export { MOTION } from './tokens'
+export type {
+  MotionPreset,
+  MotionPresetFrame,
+  MotionPresetName,
+  MotionPresetValues,
+  MotionReduced,
+  MotionReducedFrame,
+  MotionTierName,
+} from './presets'
 export {
   interpolate,
   interpolateScale,
