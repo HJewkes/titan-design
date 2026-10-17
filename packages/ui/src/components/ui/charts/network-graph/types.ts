@@ -70,6 +70,18 @@ export interface GraphPoint {
   y: number
 }
 
+/** An axis-aligned rectangle in the layout's px space. */
+export interface GraphBox {
+  /** Left edge in px. */
+  x: number
+  /** Top edge in px. */
+  y: number
+  /** Width in px. */
+  width: number
+  /** Height in px. */
+  height: number
+}
+
 /** What a layout receives: the cleaned graph and the viewport. */
 export interface GraphLayoutInput {
   /** Cleaned: unique ids. */
@@ -90,7 +102,7 @@ export interface GraphGroup {
   label: string
 }
 
-/** A circle a layout asks to be drawn under the nodes: a cluster's region or an ego hop ring. */
+/** A shape a layout asks to be drawn under the nodes: a cluster's region, an ego hop ring or a compound box. */
 export interface GraphGroupRegion {
   /** The group id, or a ring's hop. */
   id: string
@@ -102,10 +114,12 @@ export interface GraphGroupRegion {
   cx: number
   /** Centre y in px. */
   cy: number
-  /** A radius of 0 is not painted. */
+  /** A radius of 0 is not painted; a `box` ignores it. */
   radius: number
-  /** `region`: a disc (clustered); `ring`: an outline (ego hop distance). */
-  variant: 'region' | 'ring'
+  /** `region`: a disc (clustered); `ring`: an outline (ego hop distance); `box`: a rectangle that holds its members. */
+  variant: 'region' | 'ring' | 'box'
+  /** The rectangle of a `box`; a `box` without one, or with no area, is not painted. */
+  box?: GraphBox
 }
 
 /** What a layout returns: positions, an order and a natural size. */
@@ -119,10 +133,16 @@ export interface GraphLayoutResult {
   /** Natural height in px. */
   height: number
   /** Default 'horizontal'. */
-  edgeShape?: 'horizontal' | 'arc'
+  edgeShape?: 'horizontal' | 'arc' | 'routed'
   /** Default 'all'. */
   labelMode?: 'all' | 'declutter'
-  /** Regions or rings to paint under the nodes. */
+  /** Default 'dot'. A `box` node is the rectangle `nodeBoxes` gives it, centred on its position. */
+  nodeShape?: 'dot' | 'box'
+  /** Each `box` node's rectangle, by node id. A box node without one is a default-sized box. */
+  nodeBoxes?: Readonly<Record<string, GraphBox>>
+  /** `routed` only: a polyline per edge id, source border to target border. An edge without one runs straight between the borders. */
+  routes?: Readonly<Record<string, readonly GraphPoint[]>>
+  /** Regions, rings or boxes to paint under the nodes. */
   groups?: readonly GraphGroupRegion[]
 }
 
@@ -197,10 +217,16 @@ export interface GraphModel {
   /** Natural height in px, at least the viewport. */
   height: number
   /** How edges are drawn; from the layout. */
-  edgeShape: 'horizontal' | 'arc'
+  edgeShape: 'horizontal' | 'arc' | 'routed'
+  /** How nodes are drawn; from the layout. */
+  nodeShape: 'dot' | 'box'
+  /** Every placed node's rectangle when `nodeShape` is `box`; empty for dots. */
+  nodeBoxes: Readonly<Record<string, GraphBox>>
+  /** The layout's finite routes of at least two points, by drawn edge id; empty unless `edgeShape` is `routed`. */
+  routes: Readonly<Record<string, readonly GraphPoint[]>>
   /** Whether labels may be hidden to avoid overlap; from the layout. */
   labelMode: 'all' | 'declutter'
-  /** The layout's regions or rings, limited to placed nodes; empty when the layout gives none. */
+  /** The layout's regions, rings or boxes, limited to placed nodes; empty when the layout gives none. */
   groups: readonly GraphGroupRegion[]
 }
 

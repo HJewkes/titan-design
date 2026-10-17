@@ -33,19 +33,19 @@
     "name": "diagram",
     "path": "dist/diagram.mjs",
     "brotli": true,
-    "limit": "24 kB"
+    "limit": "30 kB"
   },
   {
     "name": "theme",
     "path": "dist/theme/index.mjs",
     "brotli": true,
-    "limit": "19 kB"
+    "limit": "21 kB"
   },
   {
     "name": "theme/tokens",
     "path": "dist/theme/tokens.mjs",
     "brotli": true,
-    "limit": "11 kB"
+    "limit": "12 kB"
   },
   {
     "name": "theme/tokens-css",

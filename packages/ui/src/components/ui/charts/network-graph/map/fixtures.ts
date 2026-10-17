@@ -214,6 +214,37 @@ export const mapLayoutFixture: MapLayout = {
 }
 
 /**
+ * Three boxes and no routes, so every edge runs straight between borders: an import and a call share
+ * one pair, and an import and a traced edge run each way between another.
+ */
+export const straightMapFixture: MapLayout = {
+  version: 'repo-map/v1',
+  width: 1040,
+  height: 520,
+  levels: [{ id: 1, name: 'containers' }],
+  nodes: [
+    { id: 'pkg/web', label: 'web', level: 1, kind: 'package', box: box(40, 60, 240, 96) },
+    { id: 'pkg/api', label: 'api', level: 1, kind: 'package', box: box(440, 60, 240, 96) },
+    { id: 'pkg/store', label: 'store', level: 1, kind: 'package', box: box(440, 360, 240, 96) },
+  ],
+  edges: [
+    {
+      id: 'e:web->api:import',
+      source: 'pkg/web',
+      target: 'pkg/api',
+      level: 1,
+      edgeSource: 'import',
+    },
+    { id: 'e:web->api:call', source: 'pkg/web', target: 'pkg/api', level: 1, edgeSource: 'call' },
+    { id: 'e:api->store', source: 'pkg/api', target: 'pkg/store', level: 1, edgeSource: 'import' },
+    { id: 'e:store->api', source: 'pkg/store', target: 'pkg/api', level: 1, edgeSource: 'traced' },
+  ],
+  flows: [],
+  cards: [],
+  sha: 'sha256:synthetic-straight',
+}
+
+/**
  * Two map spans with a non-map span between them (6 s to 9 s), as when a video leaves the map for
  * another slide and comes back. The `lit` change at 5.8 s straddles the exit.
  */

@@ -1,3 +1,4 @@
+import { isPaintableBox } from './network-graph-boxes'
 import type { GraphGroupRegion } from './types'
 
 const finiteOr = (value: number, fallback: number) => (Number.isFinite(value) ? value : fallback)
@@ -14,5 +15,8 @@ export function placedGroups(
     cx: finiteOr(group.cx, 0),
     cy: finiteOr(group.cy, 0),
     radius: finiteOr(group.radius, 0),
+    ...(group.box === undefined
+      ? {}
+      : { box: isPaintableBox(group.box) ? { ...group.box } : undefined }),
   }))
 }
