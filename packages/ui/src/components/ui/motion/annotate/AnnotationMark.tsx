@@ -2,7 +2,7 @@
 // Geometry comes from annotation-geometry.ts and the dash maths from the paths toolkit, so this file only paints.
 import { useMemo, type CSSProperties } from 'react'
 import { usePrefersReducedMotion } from '../../../../hooks/usePrefersReducedMotion'
-import { resolveColor, type ColorToken } from '../../../../theme/resolve-color'
+import type { ColorToken } from '../../../../theme/resolve-color'
 import { drawOn } from '../paths/model'
 import {
   ANNOTATION_DEFAULTS,
@@ -123,7 +123,8 @@ export function AnnotationMark({
     drawn
   )
   const isMarker = kind === 'highlight'
-  const stroke = resolveColor(isMarker ? MARKER_COLOR[color] : PEN_COLOR[color])
+  // The SVG is web-only (C9), so the theme variable is emitted directly: resolveColor would pull the whole token table into /motion.
+  const stroke = `var(--color-${isMarker ? MARKER_COLOR[color] : PEN_COLOR[color]})`
 
   return (
     // eslint-disable-next-line titan/no-html-element -- DOM svg, web and React Native Web only (contract C9)
