@@ -15038,101 +15038,6 @@
       "tier": "atom"
     },
     {
-      "composes": [],
-      "family": "ui/motion",
-      "file": "packages/ui/src/components/ui/motion/morph/Morph.tsx",
-      "name": "Morph",
-      "props": [
-        {
-          "default": null,
-          "description": "Bows each moving part's path (Manim's `path_arc`): the peak sideways offset as a share of the distance travelled, to the left of travel.",
-          "name": "arc",
-          "required": false,
-          "type": "number"
-        },
-        {
-          "default": null,
-          "description": "Tailwind classes for the stage.",
-          "name": "className",
-          "required": false,
-          "type": "string"
-        },
-        {
-          "default": null,
-          "description": "Eases the move; may overshoot.",
-          "name": "ease",
-          "required": false,
-          "type": "Easing"
-        },
-        {
-          "default": null,
-          "description": "The scene the morph leaves.",
-          "name": "from",
-          "required": true,
-          "type": "readonly P[]"
-        },
-        {
-          "default": null,
-          "description": "Stage height in px.",
-          "name": "height",
-          "required": true,
-          "type": "number"
-        },
-        {
-          "default": null,
-          "description": "Source keys to target keys that transform although they differ; see `matchParts`.",
-          "name": "keyMap",
-          "required": false,
-          "type": "Readonly<Record<string, string>>"
-        },
-        {
-          "default": null,
-          "description": "0 shows `from`, 1 shows `to`.",
-          "name": "progress",
-          "required": true,
-          "type": "number"
-        },
-        {
-          "default": null,
-          "description": "Paints one part's content to fill its own box.",
-          "name": "renderPart",
-          "required": true,
-          "type": "(part: P, layer: MorphLayer<P>) => ReactNode"
-        },
-        {
-          "default": null,
-          "description": "The scene the morph arrives at.",
-          "name": "to",
-          "required": true,
-          "type": "readonly P[]"
-        },
-        {
-          "default": null,
-          "description": "Stage size in px; parts are placed in this box.",
-          "name": "width",
-          "required": true,
-          "type": "number"
-        },
-        {
-          "default": null,
-          "description": "Overrides some of `DEFAULT_MORPH_WINDOWS`.",
-          "name": "windows",
-          "required": false,
-          "type": "Partial<MorphWindows>"
-        }
-      ],
-      "purpose": "A keyed morph between two scenes (Manim's TransformMatchingParts): parts whose keys match move to their new box, key-mapped parts move and cross-fade, and the rest fade out and in.",
-      "sources": {
-        "props": "packages/ui/src/components/ui/motion/morph/Morph.tsx",
-        "status": "packages/ui/src/components/ui/motion/morph/Morph.stories.tsx"
-      },
-      "status": "candidate",
-      "storyIds": [
-        "components-molecules-morph--default"
-      ],
-      "tier": "atom"
-    },
-    {
       "composes": [
         "AnnotationMark"
       ],
@@ -15321,6 +15226,101 @@
       "status": "candidate",
       "storyIds": [
         "components-molecules-annotationmark--default"
+      ],
+      "tier": "atom"
+    },
+    {
+      "composes": [],
+      "family": "ui/motion",
+      "file": "packages/ui/src/components/ui/motion/morph/Morph.tsx",
+      "name": "Morph",
+      "props": [
+        {
+          "default": null,
+          "description": "Bows each moving part's path (Manim's `path_arc`): the peak sideways offset as a share of the distance travelled, to the left of travel.",
+          "name": "arc",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Tailwind classes for the stage.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Eases the move; may overshoot.",
+          "name": "ease",
+          "required": false,
+          "type": "Easing"
+        },
+        {
+          "default": null,
+          "description": "The scene the morph leaves.",
+          "name": "from",
+          "required": true,
+          "type": "readonly P[]"
+        },
+        {
+          "default": null,
+          "description": "Stage height in px.",
+          "name": "height",
+          "required": true,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Source keys to target keys that transform although they differ; see `matchParts`.",
+          "name": "keyMap",
+          "required": false,
+          "type": "Readonly<Record<string, string>>"
+        },
+        {
+          "default": null,
+          "description": "0 shows `from`, 1 shows `to`.",
+          "name": "progress",
+          "required": true,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Paints one part's content to fill its own box.",
+          "name": "renderPart",
+          "required": true,
+          "type": "(part: P, layer: MorphLayer<P>) => ReactNode"
+        },
+        {
+          "default": null,
+          "description": "The scene the morph arrives at.",
+          "name": "to",
+          "required": true,
+          "type": "readonly P[]"
+        },
+        {
+          "default": null,
+          "description": "Stage size in px; parts are placed in this box.",
+          "name": "width",
+          "required": true,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Overrides some of `DEFAULT_MORPH_WINDOWS`.",
+          "name": "windows",
+          "required": false,
+          "type": "Partial<MorphWindows>"
+        }
+      ],
+      "purpose": "A keyed morph between two scenes (Manim's TransformMatchingParts): parts whose keys match move to their new box, key-mapped parts move and cross-fade, and the rest fade out and in.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/motion/morph/Morph.tsx",
+        "status": "packages/ui/src/components/ui/motion/morph/Morph.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-molecules-morph--default"
       ],
       "tier": "atom"
     },
