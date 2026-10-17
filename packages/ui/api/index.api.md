@@ -2959,6 +2959,14 @@ export function grainForTone(baseColor: string): string;
 export function grainOpacityForTone(baseColor: string): number;
 
 // @public
+export interface GraphBox {
+    height: number;
+    width: number;
+    x: number;
+    y: number;
+}
+
+// @public
 export interface GraphEdge {
     activityAt?: number;
     id?: string;
@@ -2983,13 +2991,14 @@ export interface GraphGroup {
 
 // @public
 export interface GraphGroupRegion {
+    box?: GraphBox;
     cx: number;
     cy: number;
     id: string;
     label: string;
     nodeIds: readonly string[];
     radius: number;
-    variant: 'region' | 'ring';
+    variant: 'region' | 'ring' | 'box';
 }
 
 // @public
@@ -3021,12 +3030,15 @@ export interface GraphLayoutInput {
 
 // @public
 export interface GraphLayoutResult {
-    edgeShape?: 'horizontal' | 'arc';
+    edgeShape?: 'horizontal' | 'arc' | 'routed';
     groups?: readonly GraphGroupRegion[];
     height: number;
     labelMode?: 'all' | 'declutter';
+    nodeBoxes?: Readonly<Record<string, GraphBox>>;
+    nodeShape?: 'dot' | 'box';
     order: readonly string[];
     positions: Readonly<Record<string, GraphPoint>>;
+    routes?: Readonly<Record<string, readonly GraphPoint[]>>;
     width: number;
 }
 
@@ -3034,15 +3046,18 @@ export interface GraphLayoutResult {
 export interface GraphModel {
     drawnEdges: readonly GraphEdge[];
     edges: readonly GraphEdge[];
-    edgeShape: 'horizontal' | 'arc';
+    edgeShape: 'horizontal' | 'arc' | 'routed';
     groups: readonly GraphGroupRegion[];
     height: number;
     index: GraphIndex;
     labelMode: 'all' | 'declutter';
+    nodeBoxes: Readonly<Record<string, GraphBox>>;
     nodes: readonly GraphNode[];
+    nodeShape: 'dot' | 'box';
     order: readonly string[];
     positions: Readonly<Record<string, GraphPoint>>;
     report: GraphCleanReport;
+    routes: Readonly<Record<string, readonly GraphPoint[]>>;
     unplacedEdges: number;
     unplacedNodes: number;
     width: number;
