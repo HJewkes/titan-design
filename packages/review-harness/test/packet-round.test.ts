@@ -1,8 +1,9 @@
-import { readFile, readdir, rm, writeFile } from 'node:fs/promises'
+import { mkdir, readFile, readdir, rm, symlink, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import type { ManifestInput } from '@titan-design/review-schema'
 import { describe, expect, it } from 'vitest'
 import { writePacketDir } from '../src/packet.ts'
+import { lintPacket } from '../src/packet-lint.ts'
 import { packetRound, type PacketFramesIndex } from '../src/packet-round.ts'
 import type { Gathered } from '../src/packet-types.ts'
 import { ReviewError } from '../src/review.ts'
@@ -141,6 +142,48 @@ describe('packet round', () => {
   })
 })
 
+describe('packet round: links', () => {
+  const TARGET = '/srv/synthetic-owner/elsewhere'
+  const refusal = (dir: string, entry: string) =>
+    new RegExp(`${join(dir, entry).replace(/[.*+?^${}()|[\]\\]/g, '\\$&')} is a link`)
+
+  it.each([
+    ['round.json', 'round.json'],
+    ['frames/frames.json', 'frames/frames.json'],
+  ])('refuses a symlinked %s and writes nothing', async (_name, entry) => {
+    const dir = await packetWithProse()
+    await mkdir(join(dir, 'frames'), { recursive: true })
+    await symlink(TARGET, join(dir, entry))
+
+    await expect(packetRound(dir)).rejects.toThrow(refusal(dir, entry))
+
+    expect(await readdir(join(dir, 'frames'))).toEqual(
+      entry === 'round.json' ? [] : ['frames.json']
+    )
+    expect((await readdir(dir)).filter((f) => f.endsWith('.tmp'))).toEqual([])
+  })
+
+  it('refuses a symlinked frames/ directory and writes nothing', async () => {
+    const dir = await packetWithProse()
+    const outside = join(await tempDir(), 'outside')
+    await mkdir(outside)
+    await symlink(outside, join(dir, 'frames'))
+
+    await expect(packetRound(dir)).rejects.toThrow(refusal(dir, 'frames'))
+
+    expect(await readdir(outside)).toEqual([])
+    expect(await readdir(dir)).not.toContain('round.json')
+  })
+
+  it('exits 2 for a symlinked round.json', async () => {
+    const dir = await packetWithProse()
+    await symlink(TARGET, join(dir, 'round.json'))
+    const io = cliIo(fakeCi(world()).io, [])
+
+    expect(await runCli(['packet', 'round', dir], io)).toBe(2)
+  })
+})
+
 describe('packet round: the console import contract', () => {
   it('parses as the console reads frames@1, and names the sidecars where it copies them', async () => {
     const dir = await packetWithProse()
@@ -196,6 +239,21 @@ describe('packet lint: frames-index', () => {
     expect(await rules(dir, { require: ['prose', 'round'] })).toEqual(['frames-missing'])
     expect(await rules(dir)).toEqual([])
   })
+
+  it.each([['[]'], ['"x"'], ['null'], ['7']])(
+    'reports a round.json of %s as not a JSON object, without throwing',
+    async (text) => {
+      const dir = await packetWithProse()
+      await packetRound(dir)
+      await writeFile(join(dir, 'round.json'), text)
+
+      const problems = await lintPacket(dir, { gateHead: HEAD })
+
+      expect(problems.filter((p) => p.rule === 'frames-index').map((p) => p.message)).toEqual([
+        'round.json is not a JSON object',
+      ])
+    }
+  )
 
   it('refuses a frames.json beside no round.json', async () => {
     const dir = await packetWithProse()

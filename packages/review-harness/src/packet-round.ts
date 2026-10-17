@@ -1,9 +1,9 @@
 // packet round: the round a CI packet's draft builds into, and the frames@1 index the console imports
 // it with. No Storybook and no tree: round.json is the round rules over draft.json plus the packet's
 // provenance, and frames/frames.json lists the packet's PNGs and binds packet.json and prose.json.
-import { createHash } from 'node:crypto'
+import { createHash, randomBytes } from 'node:crypto'
 import { constants } from 'node:fs'
-import { mkdir, open, rename, rm, writeFile } from 'node:fs/promises'
+import { lstat, mkdir, open, rename, rm } from 'node:fs/promises'
 import { join } from 'node:path'
 import type { ManifestInput } from '@titan-design/review-schema'
 import { ROUND_FILE, roundBytes } from './build.ts'
@@ -114,13 +114,37 @@ async function readInputs(dir: string) {
   return { packet: parsed.data, draft, bytes: { packet: packetBytes, prose } }
 }
 
+/** Refuses a path that is a link, or is present but not the kind of entry the round writes there. */
+async function assertPlain(path: string, kind: 'file' | 'directory'): Promise<void> {
+  const stat = await lstat(path).catch((err: NodeJS.ErrnoException) => {
+    if (err.code === 'ENOENT') return null
+    throw new ReviewError(`${path} cannot be inspected, so packet round writes nothing`)
+  })
+  if (stat === null) return
+  const plain = kind === 'file' ? stat.isFile() : stat.isDirectory()
+  if (stat.isSymbolicLink() || !plain)
+    throw new ReviewError(`${path} is a link or not a regular ${kind}; packet round writes nothing`)
+}
+
+/** Stages a file beside its target without following a link at the temp name. */
+async function stage(tmp: string, bytes: Buffer): Promise<void> {
+  const flags = constants.O_WRONLY | constants.O_CREAT | constants.O_EXCL | constants.O_NOFOLLOW
+  const handle = await open(tmp, flags, 0o644)
+  try {
+    await handle.writeFile(bytes)
+  } finally {
+    await handle.close()
+  }
+}
+
 /** Writes each file beside its target first, then renames them in, so no file is ever half written. */
 async function writeAll(dir: string, files: [string, Buffer][]): Promise<void> {
+  const suffix = `.${process.pid}.${randomBytes(4).toString('hex')}.tmp`
   const staged = files.map(
-    ([file, bytes]) => [join(dir, file), `${join(dir, file)}.tmp`, bytes] as const
+    ([file, bytes]) => [join(dir, file), `${join(dir, file)}${suffix}`, bytes] as const
   )
   try {
-    for (const [, tmp, bytes] of staged) await writeFile(tmp, bytes)
+    for (const [, tmp, bytes] of staged) await stage(tmp, bytes)
     for (const [path, tmp] of staged) await rename(tmp, path)
   } finally {
     await Promise.all(staged.map(([, tmp]) => rm(tmp, { force: true })))
@@ -137,6 +161,9 @@ export async function packetRound(dir: string): Promise<PacketRoundResult> {
   const { packet, draft, bytes } = await readInputs(dir)
   const round = packetRoundBytes(packet, draft)
   const frames = framesIndexBytes(packet, { ...bytes, round })
+  await assertPlain(join(dir, FRAMES_DIR), 'directory')
+  await assertPlain(join(dir, PACKET_FRAMES_PATH), 'file')
+  await assertPlain(join(dir, ROUND_FILE), 'file')
   await mkdir(join(dir, FRAMES_DIR), { recursive: true })
   await writeAll(dir, [
     [PACKET_FRAMES_PATH, frames],

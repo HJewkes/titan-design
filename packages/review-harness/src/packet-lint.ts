@@ -250,6 +250,15 @@ async function roundFileProblems(
 }
 
 /** frames/frames.json, required with round.json, must be the index `packet round` derives from these bytes. */
+function isJsonObject(bytes: Buffer): boolean {
+  try {
+    const value: unknown = JSON.parse(bytes.toString('utf8'))
+    return typeof value === 'object' && value !== null && !Array.isArray(value)
+  } catch {
+    return true // not JSON is the derive step's own message
+  }
+}
+
 async function framesProblems(
   dir: string,
   walked: Walked,
@@ -271,6 +280,7 @@ async function framesProblems(
   const [frames, round, prose, packetBytes] = await Promise.all(
     [PACKET_FRAMES_PATH, ROUND_FILE, PROSE_FILE, PACKET_FILE].map((f) => readNoFollow(dir, f))
   )
+  if (!isJsonObject(round)) return refuse(`${ROUND_FILE} is not a JSON object`)
   let want: Buffer
   try {
     want = framesIndexBytes(packet, { packet: packetBytes, round, prose })
