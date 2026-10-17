@@ -363,6 +363,14 @@ describe('Autocomplete', () => {
   })
 })
 
+describe('Autocomplete label face', () => {
+  it('sets the label in the heading face', () => {
+    render(<Autocomplete label="Fruit" options={defaultOptions} />)
+
+    expect(capturedByNode.get(screen.getByText('Fruit'))).toContain('font-heading')
+  })
+})
+
 // TD-483: brand orange as the selected option label missed 4.5:1 on the light overlay planes.
 describe('Autocomplete selected option', () => {
   it('paints the selected label in the brand text role, not the brand fill', () => {

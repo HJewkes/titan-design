@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
+import { capturedByNode } from '../../../test/classname-capture'
 import type { ViewProps } from 'react-native'
 import { Radio, RadioGroup } from './Radio'
 
@@ -13,7 +14,9 @@ vi.mock('react-native', async (importOriginal) => {
     viewClassNames.push((props.className ?? '').split(/\s+/))
     return React.createElement(actual.View, { ...props, ref } as ViewProps)
   })
-  return { ...actual, View }
+  const { captureClassName } = await import('../../../test/classname-capture')
+  const Text = captureClassName(actual.Text as React.ComponentType<{ className?: string }>)
+  return { ...actual, View, Text }
 })
 
 describe('Radio', () => {
@@ -202,5 +205,18 @@ describe('Radio', () => {
       </RadioGroup>
     )
     expect(screen.getByText('0')).not.toBe(screen.getByRole('radio'))
+  })
+})
+
+describe('Radio label face', () => {
+  it('sets the group and item labels in the heading face', () => {
+    render(
+      <RadioGroup label="Plan" value="a" onChange={() => {}}>
+        <Radio value="a">Alpha</Radio>
+      </RadioGroup>
+    )
+
+    expect(capturedByNode.get(screen.getByText('Plan'))).toContain('font-heading')
+    expect(capturedByNode.get(screen.getByText('Alpha'))).toContain('font-heading')
   })
 })

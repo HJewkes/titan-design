@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
+import { capturedByNode } from '../../../test/classname-capture'
 import type { ViewProps } from 'react-native'
 import { Switch } from './Switch'
 
@@ -13,7 +14,9 @@ vi.mock('react-native', async (importOriginal) => {
     viewClassNames.push((props.className ?? '').split(/\s+/))
     return React.createElement(actual.View, { ...props, ref } as ViewProps)
   })
-  return { ...actual, View }
+  const { captureClassName } = await import('../../../test/classname-capture')
+  const Text = captureClassName(actual.Text as React.ComponentType<{ className?: string }>)
+  return { ...actual, View, Text }
 })
 
 describe('Switch', () => {
@@ -157,5 +160,15 @@ describe('Switch', () => {
       expect(track).toContain('bg-border-input')
       expect(track).not.toContain('bg-hairline-strong')
     })
+  })
+})
+
+describe('Switch label face', () => {
+  it('sets the label in the heading face on either side', () => {
+    render(<Switch label="Notify" />)
+    render(<Switch label="Sync" labelPosition="left" />)
+
+    expect(capturedByNode.get(screen.getByText('Notify'))).toContain('font-heading')
+    expect(capturedByNode.get(screen.getByText('Sync'))).toContain('font-heading')
   })
 })
