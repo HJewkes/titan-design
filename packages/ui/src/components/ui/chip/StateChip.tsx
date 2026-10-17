@@ -2,6 +2,7 @@ import { View, Text, type ViewProps } from 'react-native'
 import { usePrefersReducedMotion } from '../../../hooks/usePrefersReducedMotion'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { cn } from '../../../utils/cn'
+import { qaAttrs } from '../../../utils/qa-attrs'
 import { Pill } from '../pill'
 import { pillScale } from '../pill/pillScale'
 import { useSurfaceMode } from '../surface'
@@ -148,6 +149,7 @@ export function StateChip({
             : undefined,
         }}
         testID="state-chip-label"
+        {...qaAttrs({ glyph: true })}
       >
         {text}
       </Text>

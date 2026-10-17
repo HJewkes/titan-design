@@ -46,6 +46,11 @@ export function formatVelocity(velocity: number): string {
   return velocity.toFixed(2)
 }
 
+/** Format a velocity loss (%) as the whole percent a set-loss bar prints: `12%`, never `12 %`. */
+export function formatVelocityLoss(lossPct: number): string {
+  return `${String(Math.round(lossPct))}%`
+}
+
 /** Round an exact tempo tuple (seconds) to 1 dp per phase for display. */
 export function roundTempo(
   tempo: [number, number, number, number]

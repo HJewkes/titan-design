@@ -131,7 +131,7 @@ export const EVIDENCE_BEATS: EvidenceBeatFixture[] = [
     chips: [
       {
         kind: 'measured',
-        text: 'critique-pass-2026-09-30.md Round 3 items 2-3; flow-rework-2026-09-30.md §6',
+        text: 'cd@7b2e04a1:apps/runner/src/guard/heartbeat.ts:120-148; flow-rework-2026-09-30.md §6',
       },
       { kind: 'docs-claim', text: 'critique-pass-2026-09-30.md §1' },
       { kind: 'estimated', text: 'flow-rework-2026-09-30.md §7.2 (cost table)' },

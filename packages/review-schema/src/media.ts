@@ -146,6 +146,9 @@ export type FrameSize = z.output<typeof FrameSizeSchema>
 interface MediaFields {
   storyId?: string
   clip?: string
+  audio?: string
+  transcript?: string
+  durationMs?: number
   args?: Record<string, unknown>
   motion?: Motion
   scale?: ScaleReference
@@ -169,6 +172,7 @@ export function mediaProblems(v: MediaFields): [string, string][] {
       'frameReference',
       'a frame reference sizes an image or clip; a story uses scale',
     ])
+  problems.push(...audioProblems(v))
   const driven = [
     ...(v.motion?.mechanism === 'arg' ? [v.motion.arg] : []),
     ...(v.scale ? [v.scale.arg] : []),
@@ -179,6 +183,27 @@ export function mediaProblems(v: MediaFields): [string, string][] {
     if (v.args && Object.hasOwn(v.args, arg))
       problems.push(['args', `${arg} is driven by the frame's motion or scale; drop it from args`])
   return problems
+}
+
+/** An audio frame says what it reads and nothing else moves or sizes it; only audio has those fields. */
+function audioProblems(v: MediaFields): [string, string][] {
+  if (v.audio === undefined)
+    return (['transcript', 'durationMs'] as const)
+      .filter((field) => v[field] !== undefined)
+      .map((field) => [field, `${field} belongs to an audio variant; give the variant audio`])
+  return [
+    ...(v.transcript === undefined
+      ? [
+          ['transcript', 'an audio variant shows what it says: give it a transcript'] as [
+            string,
+            string,
+          ],
+        ]
+      : []),
+    ...(['motion', 'frameReference'] as const)
+      .filter((field) => v[field] !== undefined)
+      .map((field): [string, string] => [field, `an audio variant takes no ${field}`]),
+  ]
 }
 
 /** Why a recorded frame is not the size its frame reference declares, or null when it is. */
