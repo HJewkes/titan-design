@@ -87,13 +87,18 @@ export function indexCells(items: MatrixItem[], cells: MatrixCell[]): MatrixInde
   return index
 }
 
-const normalizeMaxItems = (maxItems: number): number =>
-  Number.isFinite(maxItems) ? Math.max(0, Math.floor(maxItems)) : DEFAULT_MAX_ITEMS
+/** `Infinity` means no limit; `NaN` falls back to the default. */
+function normalizeMaxItems(maxItems: number): number {
+  if (maxItems === Number.POSITIVE_INFINITY) return maxItems
+  return Number.isFinite(maxItems) ? Math.max(0, Math.floor(maxItems)) : DEFAULT_MAX_ITEMS
+}
 
 /**
  * Keeps the first `maxItems` items and folds the rest into one "+M more" item whose cells sum the
  * tail. A cell inside the tail becomes the fold item's self-reference. Cells naming an id outside
- * `items` are dropped; every other weight is preserved. Expects unique ids, as `indexCells` returns.
+ * `items` are dropped. Every other weight is preserved, except that a merged sum saturates at
+ * `Number.MAX_VALUE` instead of reaching `Infinity`. `maxItems` of `Infinity` folds nothing.
+ * Expects unique ids, as `indexCells` returns.
  */
 export function foldItems(
   items: MatrixItem[],
