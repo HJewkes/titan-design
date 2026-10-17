@@ -2589,7 +2589,9 @@
     },
     {
       "composes": [
+        "Pill",
         "StatusDot",
+        "StatusGlyph",
         "Tooltip"
       ],
       "family": "custom/Fatigue",
@@ -2609,6 +2611,13 @@
           "name": "spread",
           "required": false,
           "type": "boolean"
+        },
+        {
+          "default": "dots",
+          "description": "`dots` (default) are glowing status dots; `chips` are neutral pills led by a status glyph.",
+          "name": "variant",
+          "required": false,
+          "type": "\"dots\" | \"chips\""
         }
       ],
       "purpose": "",
@@ -2619,6 +2628,7 @@
       "status": "candidate",
       "storyIds": [
         "custom-fatigue-fatigue-lights--across-states",
+        "custom-fatigue-fatigue-lights--default",
         "custom-fatigue-fatigue-lights--spread"
       ],
       "tier": "organism"
@@ -3073,17 +3083,50 @@
       "tier": "organism"
     },
     {
-      "composes": [],
+      "composes": [
+        "Eyebrow",
+        "StatusGlyph",
+        "Tooltip",
+        "Typography"
+      ],
       "family": "custom/Fatigue",
       "file": "packages/ui/src/components/custom/Fatigue/VerdictHero.tsx",
       "name": "VerdictHero",
       "props": [
         {
           "default": null,
+          "description": "A label above the word naming what was read (\"HOW IT MOVED · WORST SET #2\").",
+          "name": "kicker",
+          "required": false,
+          "type": "ReactNode"
+        },
+        {
+          "default": null,
+          "description": "Lead with the RPE number.",
+          "name": "lead",
+          "required": false,
+          "type": "\"rpe\" | \"word\""
+        },
+        {
+          "default": null,
+          "description": "The set was not scored: `title` shows in place of the word, `reason` is the glyph's tip and spoken name.",
+          "name": "noVerdict",
+          "required": false,
+          "type": "{ title: string; reason: string; }"
+        },
+        {
+          "default": null,
           "description": "Exact (unrounded) RPE estimate; rounded to the conventional 0.5 for display.",
           "name": "rpe",
           "required": true,
           "type": "number | null"
+        },
+        {
+          "default": null,
+          "description": "`card` sets the word at h3; `wall` at h2 for reading across a room.",
+          "name": "scale",
+          "required": false,
+          "type": "\"wall\" | \"card\""
         },
         {
           "default": null,
@@ -3100,9 +3143,10 @@
       },
       "status": "candidate",
       "storyIds": [
-        "custom-fatigue-verdict-hero--across-states"
+        "custom-fatigue-verdict-hero--across-states",
+        "custom-fatigue-verdict-hero--default"
       ],
-      "tier": "atom"
+      "tier": "organism"
     },
     {
       "composes": [
@@ -3780,6 +3824,13 @@
           "name": "strength",
           "required": false,
           "type": "MuscleStrengthSection"
+        },
+        {
+          "default": null,
+          "description": "Unit the `strength` masses arrive in.",
+          "name": "unit",
+          "required": false,
+          "type": "\"kg\" | \"lb\""
         },
         {
           "default": null,
@@ -7855,6 +7906,108 @@
         "custom-workout-setbar--todo"
       ],
       "tier": "molecule"
+    },
+    {
+      "composes": [
+        "SetLossStripParts",
+        "Typography"
+      ],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/SetLossStrip.tsx",
+      "name": "SetLossStrip",
+      "props": [
+        {
+          "default": null,
+          "description": "The `index` of the session's best e1RM; its cell gets the brand dot.",
+          "name": "bestE1rmIndex",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Tailwind overrides for the outer stack, merged with `cn()`.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": "0",
+          "description": "Minimum column count.",
+          "name": "columns",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": "40",
+          "description": "The loss (%) a full-height bar shows.",
+          "name": "lossCeilingPct",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "The `index` of the set the verdict read; it gets a ring and a glyph in `markedTone`.",
+          "name": "markedIndex",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "The verdict word for the marked set, spoken by its glyph and the strip label.",
+          "name": "markedLabel",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": "neutral",
+          "description": "Defaults to `neutral`.",
+          "name": "markedTone",
+          "required": false,
+          "type": "StatusGlyphTone"
+        },
+        {
+          "default": "phone",
+          "description": "Column width and plot height.",
+          "name": "scale",
+          "required": false,
+          "type": "SetLossStripScale"
+        },
+        {
+          "default": null,
+          "description": "The exercise's sets in the order performed.",
+          "name": "sets",
+          "required": true,
+          "type": "readonly SetLossStripSet[]"
+        },
+        {
+          "default": "set-loss-strip",
+          "description": "Defaults to `set-loss-strip`.",
+          "name": "testID",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": "[10, 20, 30]",
+          "description": "Where the VL lines sit (%).",
+          "name": "thresholds",
+          "required": false,
+          "type": "VelocityLossThresholds"
+        }
+      ],
+      "purpose": "One exercise's sets as velocity-loss bars on a fixed scale, the marked set ringed, with set, reps, load and e1RM rows aligned under each bar.",
+      "sources": {
+        "props": "packages/ui/src/components/custom/Workout/SetLossStrip.tsx",
+        "status": "packages/ui/src/components/custom/Workout/SetLossStrip.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-workout-setlossstrip--bilateral",
+        "custom-workout-setlossstrip--default",
+        "custom-workout-setlossstrip--no-data",
+        "custom-workout-setlossstrip--not-scored",
+        "custom-workout-setlossstrip--warm-up"
+      ],
+      "tier": "organism"
     },
     {
       "composes": [
@@ -13062,6 +13215,90 @@
     },
     {
       "composes": [
+        "EvidenceChip",
+        "ScaledPill"
+      ],
+      "family": "ui/chip",
+      "file": "packages/ui/src/components/ui/chip/ChipBand.tsx",
+      "name": "ChipBand",
+      "props": [
+        {
+          "default": null,
+          "description": "The beat's citations, lead first.",
+          "name": "chips",
+          "required": true,
+          "type": "BandChip[]"
+        },
+        {
+          "default": null,
+          "description": "Additional className on the band.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "`rise` fades in and rises; `fade` only fades.",
+          "name": "entry",
+          "required": false,
+          "type": "\"rise\" | \"fade\""
+        },
+        {
+          "default": null,
+          "description": "Chip font size in px.",
+          "name": "fontPx",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": "1080",
+          "description": "Frame height in px; the chip font is 40 px per 1080.",
+          "name": "frameHeight",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": "3",
+          "description": "Most chips shown, counting the lead.",
+          "name": "max",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Seconds since the band's cue.",
+          "name": "progress",
+          "required": true,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Show the end state at any `progress`.",
+          "name": "reducedMotion",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "Band width in px.",
+          "name": "width",
+          "required": true,
+          "type": "number"
+        }
+      ],
+      "purpose": "ChipBand — one beat's citations on a single line at video scale: the lead chip with its citation, the next chips as kind tabs, the rest as a `+d` count.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/chip/ChipBand.tsx",
+        "status": "packages/ui/src/components/ui/chip/ChipBand.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-molecules-chipband--default"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
         "Pill",
         "Typography"
       ],
@@ -14681,7 +14918,7 @@
         },
         {
           "default": "0",
-          "description": "Total timeline length in seconds.",
+          "description": "Total timeline length in seconds, published as `__titanMotion.duration`.",
           "name": "durationS",
           "required": false,
           "type": "number"
@@ -15725,6 +15962,56 @@
       "status": "candidate",
       "storyIds": [
         "components-molecules-statcard--default"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "SvgIcon",
+        "icons",
+        "statusIcons"
+      ],
+      "family": "ui/status-glyph",
+      "file": "packages/ui/src/components/ui/status-glyph/StatusGlyph.tsx",
+      "name": "StatusGlyph",
+      "props": [
+        {
+          "default": null,
+          "description": "Tailwind overrides for the wrapper, merged with `cn()`.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "The status word, spoken as the glyph's accessible name.",
+          "name": "label",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": "md",
+          "description": "Defaults to `md`.",
+          "name": "size",
+          "required": false,
+          "type": "StatusGlyphSize"
+        },
+        {
+          "default": null,
+          "description": "The condition shown.",
+          "name": "tone",
+          "required": true,
+          "type": "StatusGlyphTone"
+        }
+      ],
+      "purpose": "One status condition as a shaped, coloured mark: circle-check, alert-triangle, octagon-x or a dashed ring.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/status-glyph/StatusGlyph.tsx",
+        "status": "packages/ui/src/components/ui/status-glyph/StatusGlyph.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-atoms-statusglyph--default"
       ],
       "tier": "organism"
     },

@@ -3,6 +3,7 @@ import { axe } from 'jest-axe'
 import { render, screen } from '@testing-library/react'
 import { FatigueLights } from './FatigueLights'
 import type { FatigueVerdict } from './fatigue-model'
+import { capturedByNode } from '../../../test/classname-capture'
 import { resolveAll, spacingClassesAt, spacingClassesOf } from '../../../test/spacing-resolver'
 
 const dims: FatigueVerdict['dimensions'] = { velocityLoss: 'alarm', rom: 'warn', tempo: 'ok' }
@@ -91,5 +92,56 @@ describe('FatigueLights dot variant per tone', () => {
     for (const dot of screen.getAllByTestId('status-dot')) {
       expect(dot).toHaveAttribute('aria-label', 'neutral status')
     }
+  })
+})
+
+describe('FatigueLights variant="chips"', () => {
+  it('has no accessibility violations', async () => {
+    const { container } = render(<FatigueLights dimensions={dims} variant="chips" />)
+    expect(await axe(container)).toHaveNoViolations()
+  })
+
+  it('gives each dimension a glyph and its label, with the tone word in the name', () => {
+    render(<FatigueLights dimensions={dims} variant="chips" />)
+
+    for (const [name, label] of [
+      ['Velocity loss, alarm', 'VEL'],
+      ['ROM depth, watch', 'ROM'],
+      ['Tempo, ok', 'TEMPO'],
+    ]) {
+      const chip = screen.getByRole('img', { name })
+      expect(chip.querySelector('svg')).not.toBeNull()
+      expect(chip).toHaveTextContent(label)
+    }
+    expect(screen.queryAllByTestId('status-dot')).toHaveLength(0)
+  })
+
+  it('draws the alarm chip with the error glyph and the ok chip with the success glyph', () => {
+    render(<FatigueLights dimensions={dims} variant="chips" />)
+
+    const stroke = (name: string) =>
+      screen.getByRole('img', { name }).querySelector('svg')!.getAttribute('stroke')
+    expect(stroke('Velocity loss, alarm')).toBe('var(--color-status-error)')
+    expect(stroke('Tempo, ok')).toBe('var(--color-status-success)')
+  })
+
+  it('sets every label in neutral text-primary ink, never a status colour', () => {
+    render(<FatigueLights dimensions={dims} variant="chips" />)
+
+    for (const label of ['VEL', 'ROM', 'TEMPO']) {
+      const classes = capturedByNode.get(screen.getByText(label)) ?? ''
+      expect(classes).toMatch(/\btext-text-primary\b/)
+      expect(classes).not.toMatch(/status-|text-text-(error|warning|success)/)
+    }
+  })
+
+  it('renders neutral chips while warming up', () => {
+    render(<FatigueLights dimensions={null} variant="chips" />)
+
+    const stroke = screen
+      .getByRole('img', { name: 'Tempo, warming up' })
+      .querySelector('svg')!
+      .getAttribute('stroke')
+    expect(stroke).toBe('var(--color-text-secondary)')
   })
 })

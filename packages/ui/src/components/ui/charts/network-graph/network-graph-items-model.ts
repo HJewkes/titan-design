@@ -1,3 +1,4 @@
+import { groupLabelsByNode } from './network-graph-labels'
 import { edgeLabel, nodeLabel } from './network-graph-text'
 import type { GraphModel, NetworkGraphProps } from './types'
 
@@ -15,12 +16,14 @@ export const kindLabel = (labels: ReadonlyMap<string, string>, kind: string | un
 
 function nodeNames(model: GraphModel, { nodeKinds, formatNodeLabel }: GraphNaming) {
   const labels = labelsById(nodeKinds)
+  const groups = groupLabelsByNode(model)
   const { index } = model
   return index.order.flatMap((id): [string, string][] => {
     const node = index.nodesById.get(id)
     if (!node) return []
     const context = {
       kindLabel: kindLabel(labels, node.kind),
+      ...(groups.has(id) ? { groupLabels: groups.get(id) } : {}),
       incoming: index.incoming.get(id)?.length ?? 0,
       outgoing: index.outgoing.get(id)?.length ?? 0,
     }

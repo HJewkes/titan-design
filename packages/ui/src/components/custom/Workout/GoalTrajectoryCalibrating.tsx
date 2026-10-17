@@ -157,17 +157,27 @@ interface LayerArgs {
   palette: TrajectoryPalette
 }
 
+/**
+ * The hatch tile: 1px diagonals every 8px, as an svg `<defs>` entry a `fill="url(#id)"` reads.
+ * "Not known yet" has one look (F7), so SetLossStrip's no-data column draws this tile too.
+ */
+export function HatchPattern({ id, stroke }: { id: string; stroke: string }) {
+  return (
+    <defs>
+      <pattern id={id} width={8} height={8} patternUnits="userSpaceOnUse">
+        <path d="M-2,2 l4,-4 M0,8 l8,-8 M6,10 l4,-4" stroke={stroke} strokeWidth={1} />
+      </pattern>
+    </defs>
+  )
+}
+
 /** Inside the plane's clip: the weeks still to come, hatched. */
 export function CalibratingHatch({ marks, geometry, palette }: LayerArgs) {
   const id = `gtc-hatch-${useId().replace(/[^a-zA-Z0-9]/g, '')}`
   const { plane } = geometry
   return (
     <>
-      <defs>
-        <pattern id={id} width={8} height={8} patternUnits="userSpaceOnUse">
-          <path d="M-2,2 l4,-4 M0,8 l8,-8 M6,10 l4,-4" stroke={palette.grid} strokeWidth={1} />
-        </pattern>
-      </defs>
+      <HatchPattern id={id} stroke={palette.grid} />
       <rect
         data-testid="goal-trajectory-chart-calibrating-hatch"
         x={marks.hatchX}

@@ -20,7 +20,7 @@ export const RENDERED_UI_PATTERNS = [
   /^packages\/ui\/\.storybook\//,
   /^packages\/ui\/(tailwind\.config\.js|postcss\.config\.js|vite-rn-svg-plugins\.ts|tsconfig\.json|vitest\.config\.ts)$/,
   /^packages\/ui\/specimen\//,
-  /^packages\/ui\/tests\/(visual|interaction|offline-fonts)\//,
+  /^packages\/ui\/tests\/(visual|interaction|offline-fonts|capture)\//,
   /^packages\/ui\/playwright[^/]*\.config\.[^/]+$/,
   // The Storybook launcher and its helpers.
   // test:storybook ends with the play-count check.

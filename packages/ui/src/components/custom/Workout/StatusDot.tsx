@@ -1,5 +1,6 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { View, type ViewProps, type ViewStyle } from 'react-native'
+import { CheckMark } from '../../icons'
 import { Typography } from '../../ui/typography'
 import { resolveColor } from '../../../theme/resolve-color'
 import { semanticColorsDark } from '../../../theme/tokens/semantic'
@@ -79,10 +80,30 @@ const glowStyles: Record<StatusDotVariant, ViewStyle> = Object.fromEntries(
   Object.entries(glowColors).map(([variant, color]) => [variant, getGlowShadow(color, 'subtle')])
 ) as Record<StatusDotVariant, ViewStyle>
 
-const iconChars: Record<string, string> = {
-  check: '\u2713',
+type StatusDotIcon = NonNullable<StatusDotProps['icon']>
+
+// Text glyphs; `check` draws `CheckMark` instead (TD-840).
+const iconChars: Record<Exclude<StatusDotIcon, 'check'>, string> = {
   exclamation: '!',
   dash: '\u2014',
+}
+
+/** The md dot's glyph, in the variant's glyph token. */
+function DotGlyph({ icon, color }: { icon: StatusDotIcon; color: string }) {
+  if (icon === 'check') return <CheckMark size={12} strokeWidth={3} color={color} />
+  // The glyph was 11px/900, off the type scale (TOKENS.md §4); `boldLabel` is
+  // the 12px sans label step and `font-black` keeps the original weight.
+  return (
+    <Typography
+      variant="boldLabel"
+      color="inherit"
+      className="font-black leading-none"
+      style={{ color }}
+      accessibilityElementsHidden
+    >
+      {iconChars[icon]}
+    </Typography>
+  )
 }
 
 const sizeDimensions = {
@@ -150,17 +171,7 @@ export function StatusDot({
       testID="status-dot"
     >
       {!!config.showIcon && !!icon && (
-        // The glyph was 11px/900, off the type scale (TOKENS.md §4); `boldLabel` is
-        // the 12px sans label step and `font-black` keeps the original weight.
-        <Typography
-          variant="boldLabel"
-          color="inherit"
-          className="font-black leading-none"
-          style={{ color: resolveColor(glyphToken[variant]) }}
-          accessibilityElementsHidden
-        >
-          {iconChars[icon]}
-        </Typography>
+        <DotGlyph icon={icon} color={resolveColor(glyphToken[variant])} />
       )}
     </View>
   )

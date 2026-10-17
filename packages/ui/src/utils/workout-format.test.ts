@@ -6,6 +6,7 @@ import {
   rpeColor,
   roundWeight,
   formatVelocity,
+  formatVelocityLoss,
   roundTempo,
   formatExpectedRange,
   formatRpe,
@@ -44,6 +45,13 @@ describe('formatVelocity', () => {
   it('formats m/s to 2 decimal places', () => {
     expect(formatVelocity(0.6)).toBe('0.60')
     expect(formatVelocity(1.234)).toBe('1.23')
+  })
+})
+
+describe('formatVelocityLoss', () => {
+  it('rounds to a whole percent with no space before the sign', () => {
+    expect(formatVelocityLoss(12.4)).toBe('12%')
+    expect(formatVelocityLoss(0)).toBe('0%')
   })
 })
 
