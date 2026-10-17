@@ -29,7 +29,7 @@ const meta: Meta<typeof SessionConversation> = {
   },
   decorators: [
     (Story) => (
-      <View style={{ height: 640, maxWidth: 720 }}>
+      <View style={{ height: 640, width: 720, maxWidth: 'calc(100vw - 2rem)' }}>
         <Story />
       </View>
     ),
