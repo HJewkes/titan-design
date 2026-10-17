@@ -1,6 +1,7 @@
 import { linkHorizontal } from 'd3-shape'
 import { compareText } from '../kit/compareText'
 import { arcPath, GRAPH_NODE_RADIUS } from './network-graph-arc'
+import { placedNodeBoxes, placedRoutes } from './network-graph-boxes'
 import { placedGroups } from './network-graph-groups'
 import type {
   GraphCleanReport,
@@ -191,6 +192,10 @@ const finitePoint = (p: unknown): p is GraphPoint =>
 
 const finiteOr = (value: number, fallback: number) => (Number.isFinite(value) ? value : fallback)
 
+const EDGE_SHAPES = ['horizontal', 'arc', 'routed'] as const
+const edgeShapeOf = (shape: unknown): GraphModel['edgeShape'] =>
+  EDGE_SHAPES.find((known) => known === shape) ?? 'horizontal'
+
 /** Cleans the data, runs the layout and drops what the layout left unplaced or non-finite. */
 export function buildGraphModel(
   nodes: readonly GraphNode[],
@@ -224,7 +229,10 @@ export function buildGraphModel(
     index,
     width: finiteOr(result.width, viewport.width),
     height: finiteOr(result.height, viewport.height),
-    edgeShape: result.edgeShape === 'arc' ? 'arc' : 'horizontal',
+    edgeShape: edgeShapeOf(result.edgeShape),
+    nodeShape: result.nodeShape === 'box' ? 'box' : 'dot',
+    nodeBoxes: placedNodeBoxes(result, positions),
+    routes: placedRoutes(result, new Set(index.edgesById.keys())),
     labelMode: result.labelMode === 'declutter' ? 'declutter' : 'all',
     groups: placedGroups(result.groups, index.order),
   }
