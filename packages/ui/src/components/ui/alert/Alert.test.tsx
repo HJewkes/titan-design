@@ -8,7 +8,13 @@ import { semanticColorsDark, semanticColorsLight } from '../../../theme/tokens/s
 import { resolveAll, siblingSource } from '../../../test/spacing-resolver'
 import { capturedByNode, capturedClassNames } from '../../../test/classname-capture'
 
-const defaultGlyph = { success: '✓', info: 'ℹ', warning: '⚠', error: '✕' } as const
+const defaultGlyph = { info: 'ℹ', warning: '⚠', error: '✕' } as const
+
+/** The host node carrying the default glyph's classes: the CheckMark's wrapper for success. */
+function glyphNode(status: 'success' | keyof typeof defaultGlyph): Element {
+  if (status !== 'success') return screen.getByText(defaultGlyph[status])
+  return screen.getByRole('alert').querySelector('svg')!.parentElement!
+}
 
 describe('Alert', () => {
   it('renders children correctly', () => {
@@ -126,7 +132,7 @@ describe('Alert', () => {
           expect(classes).not.toContain('text-text-primary')
           expect(classes).not.toContain('text-text-secondary')
         }
-        expect(capturedByNode.get(screen.getByText(defaultGlyph[status]))?.split(' ')).toContain(
+        expect(capturedByNode.get(glyphNode(status))?.split(' ')).toContain(
           `text-on-status-${status}`
         )
       }
@@ -148,9 +154,7 @@ describe('Alert', () => {
         expect(capturedByNode.get(screen.getByText('Body'))?.split(' ')).not.toContain(
           'text-text-primary'
         )
-        expect(capturedByNode.get(screen.getByText(defaultGlyph[status]))?.split(' ')).toContain(
-          expected
-        )
+        expect(capturedByNode.get(glyphNode(status))?.split(' ')).toContain(expected)
       }
     )
 
@@ -416,16 +420,35 @@ describe('Alert outline message', () => {
   })
 })
 
-// TD-483: the default status glyph is a Text node, so it takes the text role, not the fill tone.
+// TD-483: the default status glyph takes the text role, not the fill tone. TD-840: success
+// draws an SVG CheckMark that inherits the role as currentColor.
 describe('Alert outline icon', () => {
   it.each([
-    ['success', '✓', 'text-text-success', 'text-status-success'],
-    ['info', 'ℹ', 'text-text-info', 'text-status-info'],
-    ['warning', '⚠', 'text-text-warning', 'text-status-warning'],
-  ] as const)('paints the %s glyph %s in %s, not %s', (status, glyph, textRole, fillTone) => {
+    ['success', 'text-text-success', 'text-status-success'],
+    ['info', 'text-text-info', 'text-status-info'],
+    ['warning', 'text-text-warning', 'text-status-warning'],
+  ] as const)('paints the %s glyph in %s, not %s', (status, textRole, fillTone) => {
     render(<Alert status={status} variant="outline" message="Upload done" />)
-    const classes = (capturedByNode.get(screen.getByText(glyph)) ?? '').split(/\s+/)
+    const classes = (capturedByNode.get(glyphNode(status)) ?? '').split(/\s+/)
     expect(classes).toContain(textRole)
     expect(classes).not.toContain(fillTone)
+  })
+})
+
+describe('Alert success glyph', () => {
+  it.each([
+    ['default', undefined, '20'],
+    ['compact', 'compact', '16'],
+  ] as const)('draws an SVG check, not a ✓ text glyph (%s)', (_name, size, px) => {
+    render(<Alert status="success" size={size} message="Saved" />)
+    expect(screen.queryByText('✓')).toBeNull()
+    const svg = screen.getByRole('alert').querySelector('svg')!
+    expect(svg.getAttribute('width')).toBe(px)
+    expect(svg.getAttribute('stroke')).toBe('currentColor')
+  })
+
+  it('draws no glyph when showIcon is false', () => {
+    render(<Alert status="success" showIcon={false} message="Saved" />)
+    expect(screen.getByRole('alert').querySelector('svg')).toBeNull()
   })
 })

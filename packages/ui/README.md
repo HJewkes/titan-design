@@ -183,6 +183,8 @@ their heavier runtime dependencies or the code of a domain it does not need:
   curves, `noise2D`, `random`, `MOTION`). Moved off the root in 0.22.0. On web, a
   `MotionProvider` on a `seekClock` publishes `window.__titanMotion`
   (`TitanMotionApi`: `seek`, `ready`, `duration`) for a frame-capture renderer.
+  It also carries the video-only components and utils (`EvidenceChip`,
+  `elideSource`), which never shipped on the root.
 
 ## Component API
 

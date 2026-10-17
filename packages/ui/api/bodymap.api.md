@@ -38,6 +38,7 @@ export interface BodyMapDetailPanelProps extends ViewProps {
     placement?: SheetPlacement;
     plan?: MusclePlanSection;
     strength?: MuscleStrengthSection;
+    unit?: 'lb' | 'kg';
     upcomingExercises?: UpcomingExercise[];
     visible?: boolean;
     volumeStatus: VolumeStatus;

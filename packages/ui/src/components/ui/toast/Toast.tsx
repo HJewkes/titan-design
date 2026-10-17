@@ -1,8 +1,9 @@
 import React, { createContext, useContext, useState, useCallback } from 'react'
 import { View, Text, Pressable, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
+import { CheckMark } from '../../icons'
 import { Surface } from '../surface'
-import { statusStyles, iconColors, toastRole, type ToastStatus } from './toastStatus'
+import { statusStyles, iconColors, textGlyphs, toastRole, type ToastStatus } from './toastStatus'
 import { useAutoDismiss } from './useAutoDismiss'
 
 export type { ToastStatus }
@@ -155,6 +156,22 @@ export function useToast() {
   return context
 }
 
+/** The status glyph, hidden from assistive tech: the title and the live-region role carry it. */
+function ToastGlyph({ status }: { status: ToastStatus }) {
+  if (status === 'success') {
+    return (
+      <View aria-hidden className={iconColors.success}>
+        <CheckMark size={18} strokeWidth={3} />
+      </View>
+    )
+  }
+  return (
+    <Text aria-hidden className={cn('text-lg', iconColors[status])}>
+      {textGlyphs[status]}
+    </Text>
+  )
+}
+
 interface ToastItemProps extends ToastConfig {
   onClose: () => void
 }
@@ -168,7 +185,7 @@ function ToastItem({
   isClosable = true,
   onClose,
 }: ToastItemProps) {
-  const { bg, border, icon } = statusStyles[status]
+  const { bg, border } = statusStyles[status]
 
   const [isHovered, setIsHovered] = useState(false)
   const [isFocused, setIsFocused] = useState(false)
@@ -188,9 +205,7 @@ function ToastItem({
       <View className={cn('flex-row items-start p-inset-md', bg)}>
         {/* Icon */}
         <View className={cn('w-6 h-6 items-center justify-center mr-3')}>
-          <Text aria-hidden className={cn('text-lg', iconColors[status])}>
-            {icon}
-          </Text>
+          <ToastGlyph status={status} />
         </View>
 
         {/* Content */}
@@ -254,7 +269,7 @@ export function Toast({
   className,
   ...props
 }: ToastProps) {
-  const { bg, border, icon } = statusStyles[status]
+  const { bg, border } = statusStyles[status]
 
   return (
     <Surface
@@ -268,9 +283,7 @@ export function Toast({
         {/* Icon */}
         {showIcon && (
           <View className="w-6 h-6 items-center justify-center mr-3">
-            <Text aria-hidden className={cn('text-lg', iconColors[status])}>
-              {icon}
-            </Text>
+            <ToastGlyph status={status} />
           </View>
         )}
 

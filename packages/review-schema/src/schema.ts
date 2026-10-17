@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { BLIND_CHOICES, BlindPairSchema, audioDuration, audioPath } from './audio.ts'
 import { SHIP_OPTIONS, contractProblems, duplicates, type Problem } from './contract.ts'
 import { LOCK_AXES } from './locks.ts'
 import { FrameReferenceSchema, MotionSchema, ScaleReferenceSchema, mediaProblems } from './media.ts'
@@ -70,15 +71,21 @@ const clipPath = z
 /** How a frame differs from main, in reg-cli's classes; absent when the round does not say. */
 export const FRAME_CHANGES = ['changed', 'new', 'removed', 'unchanged'] as const
 
-const SOURCES = ['storyId', 'image', 'clip'] as const
+const SOURCES = ['storyId', 'image', 'clip', 'audio'] as const
 
-/** A frame is a Storybook story, a static PNG or a recorded clip: exactly one of the three. */
+/** A frame is a Storybook story, a static PNG, a recorded clip or a sound: exactly one of the four. */
 export const VariantSchema = z
   .object({
     key: id,
     storyId: storyId.optional(),
     image: imagePath.optional(),
     clip: clipPath.optional(),
+    /** A sound to listen to, played with loop and scrub; it needs its `transcript`. */
+    audio: audioPath.optional(),
+    /** What an audio frame says, shown under its player. */
+    transcript: z.string().min(1).optional(),
+    /** An audio frame's length, when the round wants it stated; the file is the authority. */
+    durationMs: audioDuration.optional(),
     /** How the frame moves; an animation is reviewed playing, never as sampled states. */
     motion: MotionSchema.optional(),
     /** A size question's candidates, rendered together in one full-size frame. */
@@ -102,7 +109,7 @@ export const VariantSchema = z
     if (SOURCES.filter((source) => v[source] !== undefined).length !== 1)
       ctx.addIssue({
         code: 'custom',
-        message: 'a variant has exactly one of storyId, image or clip',
+        message: 'a variant has exactly one of storyId, image, clip or audio',
       })
     for (const [field, message] of mediaProblems(v))
       ctx.addIssue({ code: 'custom', path: [field], message })
@@ -264,11 +271,30 @@ const ScaleSchema = z
   .refine((q) => q.min < q.max, { message: 'scale min must be below max' })
 const TextSchema = z.object({ ...questionBase, kind: z.literal('text') }).strict()
 
+/**
+ * A blind listening test: each pair is played as A and B in an order seeded per round (`seed`,
+ * else the unit, round and id), the owner picks one per pair, and the engines are revealed only
+ * after the round is sent. The server never sends a take's engine or path to the page.
+ */
+const BlindAbSchema = z
+  .object({
+    ...questionBase,
+    kind: z.literal('blind-ab'),
+    pairs: z.array(BlindPairSchema).min(1),
+    seed: z.string().min(1).optional(),
+  })
+  .strict()
+  .superRefine((q, ctx) => {
+    for (const pair of duplicates(q.pairs.map((p) => p.id)))
+      ctx.addIssue({ code: 'custom', path: ['pairs'], message: `pair ${pair} repeats` })
+  })
+
 export const QuestionSchema = z.discriminatedUnion('kind', [
   PickOneSchema,
   PickManySchema,
   ScaleSchema,
   TextSchema,
+  BlindAbSchema,
 ])
 
 const SIGNS_OFF = 'a pick-one question names the changed part it signs off (signsOff)'
@@ -278,6 +304,7 @@ const ContractQuestionSchema = z.discriminatedUnion('kind', [
   PickManySchema,
   ScaleSchema,
   TextSchema,
+  BlindAbSchema,
 ])
 
 export const THEME_MODES = ['light', 'dark'] as const
@@ -572,7 +599,7 @@ function contrastProblems(m: {
   )
 }
 
-type Recommendable = Exclude<z.output<typeof QuestionSchema>, { kind: 'text' }>
+type Recommendable = Exclude<Question, { kind: 'text' | 'blind-ab' }>
 
 function recommendationProblem(q: Recommendable, answer: Recommendation['answer']) {
   if (q.kind === 'scale')
@@ -590,7 +617,9 @@ function recommendationProblem(q: Recommendable, answer: Recommendation['answer'
 function recommendationProblems(m: { questions: z.output<typeof QuestionSchema>[] }): string[] {
   return m.questions.flatMap((q) => {
     const problem =
-      q.kind !== 'text' && q.recommendation && recommendationProblem(q, q.recommendation.answer)
+      takesRecommendation(q) &&
+      q.recommendation &&
+      recommendationProblem(q, q.recommendation.answer)
     return problem ? [`question ${q.id}: the recommended answer ${problem}`] : []
   })
 }
@@ -836,6 +865,21 @@ const answerSchema = z
      * round. Absent means blind. Only on a question with a recommendation and an answer.
      */
     recommendationSeen: z.literal(true).optional(),
+    /**
+     * A blind-ab answer: the position picked in each pair. The page sends `choice` only; the
+     * server adds the `engine` it maps to after the round is sent.
+     */
+    pairs: z
+      .array(
+        z
+          .object({
+            pair: z.string(),
+            choice: z.enum(BLIND_CHOICES),
+            engine: z.string().optional(),
+          })
+          .strict()
+      )
+      .optional(),
   })
   .strict()
 
@@ -865,10 +909,11 @@ export const VerdictSchema = z.enum(['chosen', 'rejected', 'maybe']).nullable()
 const variantFeedbackSchema = z
   .object({
     key: z.string(),
-    /** Echoes the frame's source: `storyId`, `image` or `clip`, whichever the variant has. */
+    /** Echoes the frame's source: `storyId`, `image`, `clip` or `audio`, whichever it has. */
     storyId: z.string().optional(),
     image: z.string().optional(),
     clip: z.string().optional(),
+    audio: z.string().optional(),
     verdict: VerdictSchema,
     comment: z.string(),
     annotations: z.array(AnnotationSchema),
@@ -900,6 +945,8 @@ export type Variant = Manifest['variants'][number]
 export type StoryVariant = Variant & { storyId: string }
 export type ImageVariant = Variant & { image: string }
 export type ClipVariant = Variant & { clip: string }
+export type AudioVariant = Variant & { audio: string; transcript: string }
+export type BlindAbQuestion = Extract<Question, { kind: 'blind-ab' }>
 export type Question = Manifest['questions'][number]
 export type TopicPrefix = (typeof TOPIC_PREFIXES)[number]
 export type StackedOn = z.infer<typeof StackedOnSchema>
@@ -936,6 +983,17 @@ export function isClipVariant(variant: Variant): variant is ClipVariant {
   return variant.clip !== undefined
 }
 
+/** The questions that may carry a recommendation: a text or blind-ab question takes none. */
+export function takesRecommendation(
+  q: Question
+): q is Exclude<Question, { kind: 'text' | 'blind-ab' }> {
+  return q.kind !== 'text' && q.kind !== 'blind-ab'
+}
+
+export function isAudioVariant(variant: Variant): variant is AudioVariant {
+  return variant.audio !== undefined
+}
+
 // zod can't express the object-level loopback superRefine as JSON Schema; a pattern
 // on the field is the closest honest approximation for schema consumers.
 const LOOPBACK_URL_PATTERN = '^https?://(127\\.0\\.0\\.1|localhost|\\[::1\\])(:[0-9]+)?(/.*)?$'
@@ -944,13 +1002,19 @@ const NO_STORY_FIELDS = {
   anyOf: [{ required: ['args'] }, { required: ['globals'] }, { required: ['scale'] }],
 }
 
+const NO_FRAME_FIELDS = {
+  anyOf: [...NO_STORY_FIELDS.anyOf, { required: ['frameReference'] }, { required: ['motion'] }],
+}
+
 // The variant superRefine (exactly one source; args, globals and scale only on stories; a frame
-// reference only on images and clips; a clip declares its motion), as JSON Schema.
+// reference only on images and clips; a clip declares its motion; audio names its transcript and
+// neither moves nor sizes), as JSON Schema.
 const VARIANT_SOURCE = {
   oneOf: [
     { required: ['storyId'], not: { required: ['frameReference'] } },
     { required: ['image'], not: NO_STORY_FIELDS },
     { required: ['clip', 'motion'], not: NO_STORY_FIELDS },
+    { required: ['audio', 'transcript'], not: NO_FRAME_FIELDS },
   ],
 }
 

@@ -6,12 +6,19 @@
 
 import * as react_jsx_runtime from 'react/jsx-runtime';
 import { ReactNode } from 'react';
+import { ViewProps } from 'react-native';
 
 // @public
 export function all(...spans: Span[]): Span;
 
 // @public
 export const back: (s?: number) => Easing;
+
+// @public
+export interface BandChip {
+    kind: EvidenceKind;
+    text: string;
+}
 
 // @public
 export function Beat(input: BeatProps): react_jsx_runtime.JSX.Element | null;
@@ -42,6 +49,22 @@ export interface BeatProps {
 
 // @public
 export function chain(...spans: Span[]): Span;
+
+// @public
+export function ChipBand(input: ChipBandProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface ChipBandProps extends Omit<ViewProps, 'children'> {
+    chips: BandChip[];
+    className?: string;
+    entry?: ChipEntryOptions['entry'];
+    fontPx?: number;
+    frameHeight?: number;
+    max?: number;
+    progress: number;
+    reducedMotion?: boolean;
+    width: number;
+}
 
 // @public
 export interface Clock {
@@ -95,6 +118,20 @@ export const easeOut: (f: Easing) => Easing;
 export type Easing = (p: number) => number;
 
 // @public
+export interface ElidedSource {
+    droppedRefs: number;
+    fits: boolean;
+    level: ElisionLevel;
+    text: string;
+}
+
+// @public
+export function elideSource(text: string, maxChars: number): ElidedSource;
+
+// @public
+export type ElisionLevel = 0 | 1 | 2 | 3 | 4;
+
+// @public
 export interface Envelope {
     holdS: number;
     holdT: number;
@@ -114,6 +151,25 @@ export interface EnvelopeOptions {
 
 // @public
 export type EnvelopePhase = 'before' | 'in' | 'hold' | 'out' | 'after';
+
+// @public
+export function EvidenceChip(input: EvidenceChipProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface EvidenceChipProps extends Omit<ViewProps, 'children'> {
+    className?: string;
+    fontPx?: number;
+    kind: EvidenceKind;
+    maxChars?: number;
+    size?: EvidenceChipSize;
+    text: string;
+}
+
+// @public
+export type EvidenceChipSize = 'sm' | 'md' | 'lg';
+
+// @public
+export type EvidenceKind = (typeof EVIDENCE_KINDS)[number];
 
 // @public
 export function interpolate(t: number, input: readonly [number, number], input2: readonly [number, number], input3?: InterpolateOptions): number;

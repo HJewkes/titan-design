@@ -31,6 +31,7 @@ describe('rendered-UI path classifier (TD-645, TD-725)', () => {
     ['a Layer 2 spec change', 'packages/ui/tests/visual/stories.spec.ts'],
     ['an interaction spec change', 'packages/ui/tests/interaction/carousel.spec.ts'],
     ['the offline-fonts fixture', 'packages/ui/tests/offline-fonts/fixture/main.ts'],
+    ['the capture proof page', 'packages/ui/tests/capture/page/ProofBeat.tsx'],
     ['a Playwright config', 'packages/ui/playwright.baseline.config.ts'],
     ['the Storybook launcher', 'packages/ui/scripts/storybook-launch.mjs'],
     ['this classifier', 'packages/ui/scripts/visual-paths.mjs'],

@@ -1,9 +1,10 @@
-import type {
-  Answer,
-  Feedback,
-  Manifest,
-  Question,
-  StoryVariant,
+import {
+  takesRecommendation,
+  type Answer,
+  type Feedback,
+  type Manifest,
+  type Question,
+  type StoryVariant,
 } from '@titan-design/review-schema'
 
 // Storybook drops URL arg keys and values outside these (docs: writing-stories/args).
@@ -89,7 +90,7 @@ export function pickedAfter(question: Question, answer: Answer): string | undefi
 
 function seenProblems(question: Question, answer: Answer): string[] {
   if (!answer.recommendationSeen) return []
-  if (question.kind === 'text' || !question.recommendation)
+  if (!takesRecommendation(question) || !question.recommendation)
     return [`${question.id}: recommendationSeen on a question with no recommendation`]
   return isAnswered(question, answer) ? [] : [`${question.id}: recommendationSeen with no answer`]
 }
@@ -109,10 +110,29 @@ function packetProblems(question: Question, answer: Answer): string[] {
   ]
 }
 
+/** A blind-ab answer names its own pairs once each, by position; only the server names engines. */
+function blindProblems(question: Question, answer: Answer): string[] {
+  if (!answer.pairs) return []
+  if (question.kind !== 'blind-ab') return [`${question.id}: only a blind-ab question has pairs`]
+  const ids = new Set(question.pairs.map((p) => p.id))
+  const given = answer.pairs.map((p) => p.pair)
+  return [
+    ...given.filter((p) => !ids.has(p)).map((p) => `${question.id}: unknown pair ${p}`),
+    ...given.filter((p, i) => given.indexOf(p) !== i).map((p) => `${question.id}: pair ${p} twice`),
+    ...(answer.pairs.some((p) => p.engine !== undefined)
+      ? [`${question.id}: engines are revealed by the server, never sent`]
+      : []),
+  ]
+}
+
 function answerProblems(question: Question, given: Answer | undefined, skipped: boolean) {
   if (!given) return question.required && !skipped ? [`${question.id}: required`] : []
   const answer = normalizeAnswer(question, given)
-  const problems = [...revisionProblems(question, answer), ...packetProblems(question, answer)]
+  const problems = [
+    ...revisionProblems(question, answer),
+    ...packetProblems(question, answer),
+    ...blindProblems(question, answer),
+  ]
   if (question.kind === 'pick-one' && answer.pick !== undefined) {
     if (!question.options.includes(answer.pick)) problems.push(`${question.id}: unknown option`)
   }
@@ -164,6 +184,10 @@ export function isAnswered(question: Question, given: Answer): boolean {
     return answer.pick !== undefined || answer.revisionRequested === true
   if (question.kind === 'pick-many') return (answer.picks ?? []).length > 0
   if (question.kind === 'scale') return answer.value !== undefined
+  if (question.kind === 'blind-ab') {
+    const chosen = new Set(answer.pairs?.map((p) => p.pair))
+    return question.pairs.every((p) => chosen.has(p.id))
+  }
   return (answer.text ?? '').trim() !== ''
 }
 
