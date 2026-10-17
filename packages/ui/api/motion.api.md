@@ -94,6 +94,9 @@ export function cubicBezier(x1: number, y1: number, x2: number, y2: number): Eas
 export function cutPath(path: string | PathModel, length: number): string;
 
 // @public
+export const DEFAULT_MORPH_WINDOWS: MorphWindows;
+
+// @public
 export function delay(s: number, inner: Span): Span;
 
 // @public
@@ -238,7 +241,73 @@ export interface LocalTime {
 export function localTime(raw: number, durationS: number): LocalTime;
 
 // @public
+export function matchParts(from: readonly MorphPart[], to: readonly MorphPart[], keyMap?: MorphKeyMap): PartMatching;
+
+// @public
 export function mediaClock(media: HTMLMediaElement): Clock;
+
+// @public
+export function Morph<P extends MorphPart>(input: MorphProps<P>): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface MorphBox {
+    height: number;
+    width: number;
+    x: number;
+    y: number;
+}
+
+// @public
+export type MorphKeyMap = Readonly<Record<string, string>>;
+
+// @public
+export interface MorphLayer<P extends MorphPart = MorphPart> {
+    box: MorphBox;
+    id: string;
+    opacity: number;
+    part: P;
+    role: MorphRole;
+    transform: MorphTransform;
+}
+
+// @public
+export interface MorphPart {
+    box: MorphBox;
+    id: string;
+    key?: string;
+}
+
+// @public
+export interface MorphProps<P extends MorphPart> extends PartsMorphOptions, Omit<ViewProps, 'children'> {
+    className?: string;
+    from: readonly P[];
+    height: number;
+    progress: number;
+    renderPart: (part: P, layer: MorphLayer<P>) => ReactNode;
+    to: readonly P[];
+    width: number;
+}
+
+// @public
+export type MorphRole = 'match' | 'mapped' | 'exit' | 'enter';
+
+// @public
+export interface MorphTransform {
+    scaleX: number;
+    scaleY: number;
+    translateX: number;
+    translateY: number;
+}
+
+// @public
+export type MorphWindow = readonly [start: number, end: number];
+
+// @public
+export interface MorphWindows {
+    enter: MorphWindow;
+    exit: MorphWindow;
+    move: MorphWindow;
+}
 
 // @public
 export const MOTION: {
@@ -316,6 +385,31 @@ export function noise2D(seed: number | string, x: number, y: number): number;
 
 // @public
 export function parsePath(d: string): PathCommand[];
+
+// @public
+export interface PartMatching {
+    enters: string[];
+    exits: string[];
+    pairs: PartPair[];
+}
+
+// @public
+export interface PartPair {
+    from: string;
+    to: string;
+    via: 'key' | 'keyMap';
+}
+
+// @public
+export function partsMorph<P extends MorphPart>(from: readonly P[], to: readonly P[], input?: PartsMorphOptions): (progress: number) => MorphLayer<P>[];
+
+// @public
+export interface PartsMorphOptions {
+    arc?: number;
+    ease?: Easing;
+    keyMap?: MorphKeyMap;
+    windows?: Partial<MorphWindows>;
+}
 
 // @public
 export type PathCommand = {

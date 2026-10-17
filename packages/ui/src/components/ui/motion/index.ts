@@ -110,3 +110,21 @@ export {
   type PathOp,
   type PathPoint,
 } from './paths'
+export {
+  DEFAULT_MORPH_WINDOWS,
+  matchParts,
+  Morph,
+  partsMorph,
+  type MorphBox,
+  type MorphKeyMap,
+  type MorphLayer,
+  type MorphPart,
+  type MorphProps,
+  type MorphRole,
+  type MorphTransform,
+  type MorphWindow,
+  type MorphWindows,
+  type PartMatching,
+  type PartPair,
+  type PartsMorphOptions,
+} from './morph'
