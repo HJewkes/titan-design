@@ -1,11 +1,10 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
-import type { TextProps, ViewProps } from 'react-native'
+import type { ViewProps } from 'react-native'
 import { Checkbox, CheckboxGroup } from './Checkbox'
 
 const viewClassNames: string[][] = []
-const textClassNames = new Map<unknown, string>()
 
 vi.mock('react-native', async (importOriginal) => {
   const actual = await importOriginal<typeof import('react-native')>()
@@ -14,11 +13,7 @@ vi.mock('react-native', async (importOriginal) => {
     viewClassNames.push((props.className ?? '').split(/\s+/))
     return React.createElement(actual.View, { ...props, ref } as ViewProps)
   })
-  const Text = React.forwardRef<unknown, TextProps & { className?: string }>((props, ref) => {
-    textClassNames.set(props.children, props.className ?? '')
-    return React.createElement(actual.Text, { ...props, ref } as TextProps)
-  })
-  return { ...actual, View, Text }
+  return { ...actual, View }
 })
 
 describe('Checkbox', () => {
@@ -81,11 +76,6 @@ describe('Checkbox', () => {
     render(<Checkbox label="Disabled" isDisabled onCheckedChange={onCheckedChange} />)
     fireEvent.click(screen.getByRole('checkbox'))
     expect(onCheckedChange).not.toHaveBeenCalled()
-  })
-
-  it('shows checkmark when checked', () => {
-    render(<Checkbox isChecked label="Checked" />)
-    expect(screen.getByText('\u2713')).toBeInTheDocument()
   })
 
   it('emits aria-checked true when checked', () => {
@@ -209,13 +199,23 @@ describe('Checkbox', () => {
   })
 })
 
-// TD-483: the tick is a Text node on the on-brand chip, so it takes the brand text role.
+// TD-483: the tick sits on the on-brand chip, so it takes the brand text role. TD-840: it is
+// an SVG CheckMark that inherits that role as currentColor, not a ✓ glyph in a host font.
 describe('Checkbox tick', () => {
-  it('paints the tick in the brand text role, not the brand fill', () => {
-    render(<Checkbox label="Toggle" isChecked />)
-    expect(screen.getByText('✓')).toBeInTheDocument()
-    const classes = (textClassNames.get('✓') ?? '').split(/\s+/)
-    expect(classes).toContain('text-text-brand')
-    expect(classes).not.toContain('text-brand-primary')
+  it('draws the tick as an SVG in the brand text role, not the brand fill', () => {
+    viewClassNames.length = 0
+    const { container } = render(<Checkbox label="Toggle" isChecked />)
+    expect(screen.queryByText('✓')).toBeNull()
+    expect(container.querySelector('svg')?.getAttribute('stroke')).toBe('currentColor')
+    const chip = viewClassNames.find((classes) => classes.includes('bg-on-brand-primary'))
+    expect(chip).toContain('text-text-brand')
+    expect(chip).not.toContain('text-brand-primary')
+  })
+
+  it('draws no tick when unchecked or indeterminate', () => {
+    const { container, rerender } = render(<Checkbox label="Toggle" />)
+    expect(container.querySelector('svg')).toBeNull()
+    rerender(<Checkbox label="Toggle" isIndeterminate />)
+    expect(container.querySelector('svg')).toBeNull()
   })
 })

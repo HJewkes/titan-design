@@ -1,6 +1,7 @@
 import { useState, createContext, useContext } from 'react'
 import { View, Text, Pressable, ScrollView, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
+import { CheckMark } from '../../icons'
 import { useInsetFieldStyle } from '../surface/insetField'
 import { SelectPopover } from './SelectPopover'
 import { hasSelection, isValueSelected, selectDisplayLabel, toggleValue } from './selectModel'
@@ -213,11 +214,15 @@ function SelectOption<T>({ option }: SelectOptionComponentProps<T>) {
       {isMulti && (
         <View
           className={cn(
-            'w-4 h-4 mr-3 rounded border',
+            'w-4 h-4 mr-3 rounded border items-center justify-center',
             selected ? 'bg-brand-primary border-brand-primary' : 'border-hairline-strong'
           )}
         >
-          {selected && <Text className="text-on-brand-primary text-xs text-center">✓</Text>}
+          {selected && (
+            <View className="text-on-brand-primary">
+              <CheckMark size={12} strokeWidth={3} />
+            </View>
+          )}
         </View>
       )}
       <Text

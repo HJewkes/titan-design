@@ -1020,6 +1020,9 @@ export interface CheckboxProps extends Omit<PressableProps, 'children'> {
 export type CheckboxSize = 'sm' | 'md' | 'lg';
 
 // @public
+export function CheckMark(props: IconProps): react_jsx_runtime.JSX.Element;
+
+// @public
 export function ChevronLeftIcon(props: IconProps): react_jsx_runtime.JSX.Element;
 
 // @public
@@ -1058,6 +1061,12 @@ export type ChipState = (typeof CHIP_STATES)[number];
 
 // @public (undocumented)
 export type ChipVariant = 'solid' | 'subtle' | 'outline';
+
+// @public
+export function CircleCheckIcon(props: IconProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export function CircleDashedIcon(props: IconProps): react_jsx_runtime.JSX.Element;
 
 // @public
 export function CircleSlashIcon(props: IconProps): react_jsx_runtime.JSX.Element;
@@ -1102,6 +1111,17 @@ export interface CircularTimerProps {
 
 // @public
 export function clampedContextFraction(metrics: AgentMetrics): number | null;
+
+// @public
+export function clusteredLayout(options?: ClusteredLayoutOptions): GraphLayout;
+
+// @public
+export interface ClusteredLayoutOptions {
+    groups?: readonly GraphGroup[];
+    iterations?: number;
+    seed?: number;
+    ungroupedLabel?: string;
+}
 
 // @public
 export function cn(...inputs: ClassValue[]): string;
@@ -1701,6 +1721,19 @@ export interface DualGhostSparkProps {
 // @public
 export function DumbbellIcon(props: IconProps): react_jsx_runtime.JSX.Element;
 
+// @public
+export type EgoDirection = 'both' | 'outgoing' | 'incoming';
+
+// @public
+export function egoLayout(options: EgoLayoutOptions): GraphLayout;
+
+// @public
+export interface EgoLayoutOptions {
+    direction?: EgoDirection;
+    focusId: string | null;
+    hops?: number;
+}
+
 // @public (undocumented)
 export const ELEVATION_PLANE: Record<ElevationLevel, SurfaceLevel>;
 
@@ -1709,20 +1742,6 @@ export type ElevationLevel = -2 | -1 | 0 | 1 | 2 | 3 | 4 | 5;
 
 // @public
 export function elevationPlane(level: ElevationLevel): SurfaceLevel;
-
-// @public
-export interface ElidedSource {
-    droppedRefs: number;
-    fits: boolean;
-    level: ElisionLevel;
-    text: string;
-}
-
-// @public
-export function elideSource(text: string, maxChars: number): ElidedSource;
-
-// @public
-export type ElisionLevel = 0 | 1 | 2 | 3 | 4;
 
 // @public (undocumented)
 export const EMPTY_TASK_FLOW_FILTERS: TaskFlowFilters;
@@ -1765,25 +1784,6 @@ export const ERROR_TEXT_LABEL = "Error text";
 export function errorRate(metrics: Pick<AgentMetrics, 'toolCalls' | 'errors'>): number | null;
 
 // @public
-export function EvidenceChip(input: EvidenceChipProps): react_jsx_runtime.JSX.Element;
-
-// @public
-export interface EvidenceChipProps extends Omit<ViewProps, 'children'> {
-    className?: string;
-    fontPx?: number;
-    kind: EvidenceKind;
-    maxChars?: number;
-    size?: EvidenceChipSize;
-    text: string;
-}
-
-// @public
-export type EvidenceChipSize = 'sm' | 'md' | 'lg';
-
-// @public
-export type EvidenceKind = (typeof EVIDENCE_KINDS)[number];
-
-// @public
 export function ExactTime(input: {
     session: SessionSummary;
 }): react_jsx_runtime.JSX.Element;
@@ -1823,6 +1823,7 @@ export function FatigueLights(input: FatigueLightsProps): react_jsx_runtime.JSX.
 export interface FatigueLightsProps {
     dimensions: FatigueVerdict['dimensions'] | null;
     spread?: boolean;
+    variant?: 'dots' | 'chips';
 }
 
 // @public
@@ -1994,6 +1995,15 @@ export const FLOATING_LIFT_MIN: LiftStep;
 
 // @public
 export function followWindow(playhead: number, width: number): TimelineRange;
+
+// @public
+export function forceLayout(options?: ForceLayoutOptions): GraphLayout;
+
+// @public
+export interface ForceLayoutOptions {
+    iterations?: number;
+    seed?: number;
+}
 
 // @public
 export function FormActions(input: FormActionsProps): react_jsx_runtime.JSX.Element;
@@ -2963,6 +2973,23 @@ export interface GraphEdgeKind {
     id: string;
     label: string;
     stroke?: 'solid' | 'dashed';
+}
+
+// @public
+export interface GraphGroup {
+    id: string;
+    label: string;
+}
+
+// @public
+export interface GraphGroupRegion {
+    cx: number;
+    cy: number;
+    id: string;
+    label: string;
+    nodeIds: readonly string[];
+    radius: number;
+    variant: 'region' | 'ring';
 }
 
 // @public
@@ -4100,6 +4127,9 @@ export interface NetworkGraphProps extends Omit<ViewProps, 'children'> {
     summarize?: (model: GraphModel) => string;
     width: number;
 }
+
+// @public
+export function OctagonXIcon(props: IconProps): react_jsx_runtime.JSX.Element;
 
 // @public
 export function onSurfaceColors(mode: ThemeMode): Record<OnSurfaceRole, string>;
@@ -6121,6 +6151,26 @@ export interface StateChipProps extends Omit<ViewProps, 'children'> {
 export type StateChipSize = 'sm' | 'md' | 'lg';
 
 // @public
+export const STATUS_GLYPH_FILL: Record<StatusGlyphTone, ColorToken>;
+
+// @public
+export function StatusGlyph(input: StatusGlyphProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface StatusGlyphProps extends Omit<ViewProps, 'children'> {
+    className?: string;
+    label: string;
+    size?: StatusGlyphSize;
+    tone: StatusGlyphTone;
+}
+
+// @public
+export type StatusGlyphSize = 'sm' | 'md' | 'lg' | 'xl';
+
+// @public
+export type StatusGlyphTone = 'success' | 'warning' | 'error' | 'neutral';
+
+// @public
 export function StatusMark(input: StatusMarkProps): react_jsx_runtime.JSX.Element;
 
 // @public
@@ -7012,6 +7062,13 @@ export interface ToastProviderProps {
 export type ToastStatus = 'success' | 'error' | 'warning' | 'info';
 
 // @public
+export const TONE_GLYPH: {
+    readonly ok: "success";
+    readonly warn: "warning";
+    readonly alarm: "error";
+};
+
+// @public
 export const TONE_TOKEN: {
     readonly ok: "status-success";
     readonly warn: "status-warning";
@@ -7195,6 +7252,12 @@ export function TrendingDownIcon(props: IconProps): react_jsx_runtime.JSX.Elemen
 
 // @public
 export function TrendingUpIcon(props: IconProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export function TriangleDownIcon(props: IconProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export function TriangleUpIcon(props: IconProps): react_jsx_runtime.JSX.Element;
 
 // @public
 export const TURN_ORIGIN_META: Record<TimelineTurnOrigin, TurnOriginMeta>;
@@ -7492,11 +7555,27 @@ export interface VelocitySample {
 }
 
 // @public (undocumented)
-export function VerdictHero(input: VerdictHeroProps): react_jsx_runtime.JSX.Element;
+export function VerdictHero(props: VerdictHeroProps): react_jsx_runtime.JSX.Element;
 
 // @public (undocumented)
-export interface VerdictHeroProps {
+export type VerdictHeroProps = VerdictHeroRpeProps | VerdictHeroWordProps;
+
+// @public
+export interface VerdictHeroRpeProps {
+    lead?: 'rpe';
     rpe: number | null;
+    verdict: FatigueVerdict | null;
+}
+
+// @public
+export interface VerdictHeroWordProps {
+    kicker?: ReactNode;
+    lead: 'word';
+    noVerdict?: {
+        title: string;
+        reason: string;
+    };
+    scale?: 'card' | 'wall';
     verdict: FatigueVerdict | null;
 }
 

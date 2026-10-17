@@ -22,7 +22,12 @@ export {
   type PanelTier,
 } from './panel-layout'
 export { LiveFatigueCard, type LiveFatigueCardProps } from './LiveFatigueCard'
-export { VerdictHero, type VerdictHeroProps } from './VerdictHero'
+export {
+  VerdictHero,
+  type VerdictHeroProps,
+  type VerdictHeroRpeProps,
+  type VerdictHeroWordProps,
+} from './VerdictHero'
 export { FatigueLights, type FatigueLightsProps } from './FatigueLights'
 export { RomProgressionChart, type RomProgressionChartProps } from './RomProgressionChart'
 export { GhostSpark, type GhostSparkProps } from './GhostSpark'
@@ -34,6 +39,7 @@ export {
   ghostLineColor,
   auraForVerdict,
   TONE_TOKEN,
+  TONE_GLYPH,
   STATE_LABEL,
   GRIND_THRESHOLD,
   SILVER,

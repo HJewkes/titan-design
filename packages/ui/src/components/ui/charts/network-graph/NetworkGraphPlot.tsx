@@ -9,6 +9,7 @@ import {
   EDGE_STRONG_COLOR,
   NEUTRAL_NODE_COLOR,
   NODE_RADIUS,
+  arrowRefX,
   isItem,
   type EdgeGeometry,
   type GraphEmphasis,
@@ -34,7 +35,7 @@ export const LAYER_STYLE: CSSProperties = {
   pointerEvents: 'none',
 }
 
-function ArrowMarker({ id, color }: { id: string; color: ColorToken }) {
+function ArrowMarker({ id, color, refX }: { id: string; color: ColorToken; refX: number }) {
   const half = ARROW_LENGTH / 2
   return (
     // eslint-disable-next-line titan/no-html-element -- DOM svg, web and React Native Web only (contract C9)
@@ -43,7 +44,7 @@ function ArrowMarker({ id, color }: { id: string; color: ColorToken }) {
       markerUnits="userSpaceOnUse"
       markerWidth={ARROW_LENGTH}
       markerHeight={ARROW_LENGTH}
-      refX={0}
+      refX={refX}
       refY={half}
       orient="auto"
     >
@@ -178,6 +179,7 @@ export interface NetworkGraphPlotProps {
 export function NetworkGraphPlot(props: NetworkGraphPlotProps) {
   const { model, geometries, nodeColors, emphasis, active, selection, pulsing, animate } = props
   const { markerPrefix } = props
+  const refX = arrowRefX(model.edgeShape)
   return (
     // eslint-disable-next-line titan/no-html-element -- DOM svg, web and React Native Web only (contract C9)
     <svg
@@ -189,8 +191,8 @@ export function NetworkGraphPlot(props: NetworkGraphPlotProps) {
     >
       {/* eslint-disable-next-line titan/no-html-element -- DOM svg, web and React Native Web only (contract C9) */}
       <defs>
-        <ArrowMarker id={`${markerPrefix}-rest`} color={EDGE_REST_COLOR} />
-        <ArrowMarker id={`${markerPrefix}-strong`} color={EDGE_STRONG_COLOR} />
+        <ArrowMarker id={`${markerPrefix}-rest`} color={EDGE_REST_COLOR} refX={refX} />
+        <ArrowMarker id={`${markerPrefix}-strong`} color={EDGE_STRONG_COLOR} refX={refX} />
       </defs>
       {geometries.map((geometry) => (
         <EdgeMark

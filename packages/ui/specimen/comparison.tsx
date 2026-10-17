@@ -20,6 +20,7 @@ import {
   ExerciseCard,
   SupersetWrapper,
 } from '../src/components/custom/Workout'
+import { checkMarkOutline } from '../src/components/icons/checkMarkGeometry'
 
 /* ─────────────────────────────────────────────
    HTML Ground Truth CSS (verbatim from component-demo.html lines 218-720)
@@ -370,6 +371,8 @@ const HTML_CSS = `
     border: 1px solid var(--status-success-muted);
     color: var(--status-success);
   }
+  /* The check is an SVG flex item, so the prefix's space collapses; the gap is inline-sm. */
+  .html-scope .workout-pill .pill-check { margin-right: 4px; }
   .html-scope .workout-pill.active {
     background: var(--brand-primary-subtle);
     border: 1px solid var(--brand-primary-muted);
@@ -687,6 +690,14 @@ const HTML_CSS = `
    Comparison Pair wrapper
    ───────────────────────────────────────────── */
 
+/** The check the components draw since TD-840 replaced the ✓ glyph, in the wrapper's colour. */
+function checkMarkHtml(size: number, className = ''): string {
+  const points = checkMarkOutline(3)
+    .map(([x, y]) => `${String(x)},${String(y)}`)
+    .join(' ')
+  return `<svg class="${className}" width="${String(size)}" height="${String(size)}" viewBox="0 0 24 24" aria-hidden="true"><polygon points="${points}" fill="currentColor" /></svg>`
+}
+
 function ComparisonPair({
   testId,
   label,
@@ -926,7 +937,7 @@ function App() {
       {/* ── 3b. StatusDot with icons ── */}
       {(
         [
-          { variant: 'success', icon: 'check', iconChar: '\u2713' },
+          { variant: 'success', icon: 'check', iconChar: checkMarkHtml(12) },
           { variant: 'warning', icon: 'exclamation', iconChar: '!' },
           { variant: 'error', icon: 'dash', iconChar: '\u2014' },
         ] as const
@@ -1102,7 +1113,7 @@ function App() {
           missed: 'Core C',
         }
         const prefixes: Record<string, string> = {
-          completed: '\u2713 ',
+          completed: checkMarkHtml(12, 'pill-check'),
           missed: '\u2014 ',
         }
         const prefix = prefixes[status] ?? ''

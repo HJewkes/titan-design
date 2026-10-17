@@ -117,7 +117,7 @@ describe('motion on a variant', () => {
         label: 'A',
         motion: { mechanism: 'clip' },
       })
-    ).toEqual([': a variant has exactly one of storyId, image or clip'])
+    ).toEqual([': a variant has exactly one of storyId, image, clip or audio'])
   })
 
   describe('keyframes on a clip', () => {

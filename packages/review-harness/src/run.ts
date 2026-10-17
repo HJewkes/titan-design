@@ -26,6 +26,7 @@ import {
   readRegistry,
   type LocksIo,
 } from './locks.ts'
+import { PACKET_USAGE, packetCommand, type PacketIo } from './packet-cli.ts'
 import {
   EXIT_INTERRUPTED,
   EXIT_INVALID,
@@ -48,6 +49,7 @@ titan-review round from-morning <items.json> [--decider <file>] [--out <draft.js
 titan-review locks footprint <pr> | --base <ref> --head <ref> [--repo <path>]
 titan-review locks sync [--registry <path>] [--repo <path>] [--json]
 titan-review locks check --files <globs|paths> --tokens <name/mode,...> [--registry <path>] [--json]
+${PACKET_USAGE}
 
 Serves one review round (live Storybook iframes or static PNGs, picks, comments, pins) on
 127.0.0.1, blocks until the human submits, writes <out>/feedback.json plus one PNG per story
@@ -94,6 +96,30 @@ locks check tells dispatch whether planned work overlaps an open lock: exit 0 cl
 on the holder (its branch is printed), 11 defer (the lock is printed). The text is ready to
 paste into an implementer brief.
 
+packet from-ci builds a visual review packet for a PR head from one CI run, with no Storybook.
+It refuses (exit 2, writing nothing) unless the run is a completed CI run of --head and the PR
+is open at --head, or when an artifact it reads has expired. Each visual layer's baselines come
+from the run's regenerated-baseline artifact (uploaded only when the visual job fails) and from
+the PNGs the PR's own commits add or change, classified against origin/main. It writes
+before/, after/, diff/ and montage/ PNGs, draft.json (a round@2 draft with one merge-bound
+Ship question; run build on it next) and packet.json last, into --out (default:
+./packets/<name>-pr<n>-<head12>/), staged and swapped in whole.
+
+packet lint checks a packet directory against the gate's head: packet.json, draft.json and
+every image as from-ci wrote them, prose.json and round.json when present (or when --require
+names them), and no other file or link. It reads only the directory. Exit 0 clean, 3 on any
+problem, each printed as <rule>: <message>; with --json, one titan-review/packet-lint@1 object
+{schema, ok, packetId (null when packet.json does not parse), problems}.
+
+packet round builds a packet's round with no Storybook: round.json is the round rules applied to
+draft.json with build {mainSha, mergeSha: the packet head}, and frames/frames.json is the
+titan-review/frames@1 index the console imports, binding round.json, packet.json and prose.json
+by sha256. It refuses (exit 2, writing nothing) without a valid packet.json, its draft.json and
+prose.json.
+
+packet prompt prints the review packager's instructions: how to write prose.json for a packet
+and lint it.
+
   --storybook <url>  Storybook base url (default: the manifest's storybookUrl)
   --tree <path>      The checkout the Storybook ran from, for build (see above)
   --prior-feedback <feedback.json>
@@ -103,16 +129,27 @@ paste into an implementer brief.
                      $${REGISTRY_ENV}); give it after the draft
   --decider <file>   Decider recommendations for round from-morning (questionId, answer, cite)
   --base <ref>       For locks footprint: the base ref, in place of the PR's base branch
-  --head <ref>       For locks footprint: the head ref, in place of the PR's head
-  --repo <path>      For locks footprint and sync: the checkout to read (default: this one)
+  --head <ref>       For locks footprint: the head ref, in place of the PR's head; for packet
+                     from-ci, the PR head the packet is for (40 hex)
+  --repo <path>      For locks footprint and sync: the checkout to read (default: this one);
+                     for packet from-ci, the GitHub repo as owner/name (the checkout is --clone)
+  --pr <n>           For packet from-ci: the PR number
+  --run <id>         For packet from-ci: the CI run id
+  --clone <path>     For packet from-ci: the checkout git reads main and the PR from (default:
+                     this one); for packet lint, the checkout to re-derive the images from (no
+                     default: without it, images are checked by sha only)
+  --side <file>      For packet from-ci: a JSON array of side questions, asked on the PR page
+                     before Ship
   --registry <path>  For locks sync and check: the titan-locks/1 registry (default: $${REGISTRY_ENV})
   --files <globs>    For locks check: planned paths or globs, comma-separated (repeatable)
   --tokens <list>    For locks check: planned tokens as name/mode, comma-separated (repeatable);
                      a name without /mode means both modes
-  --json             For locks sync and check: print JSON instead of text
+  --gate-head <sha>  For packet lint: the head the gate is open on (40 hex, required)
+  --require <list>   For packet lint: files that must be present, from prose,round
+  --json             For locks sync and check and packet lint: print JSON instead of text
   --out <dir>        Where feedback.json and PNGs go (default: the manifest's directory);
                      for round from-morning, the draft's file path (default: draft.json
-                     beside the items file)
+                     beside the items file); for packet from-ci, the packet directory
   --port <n>         Review page port (default: a free one)
   --no-open          Print the page url instead of opening the browser
   --no-capture       Skip the post-submit PNGs
@@ -125,9 +162,7 @@ paste into an implementer brief.
 const DRAFT_FILE = 'draft.json'
 
 export interface CliIo
-  extends Omit<ReviewDeps, 'onReady'>, Pick<BuildIo, 'measure' | 'renderFrames' | 'git'> {
-  stdout: (text: string) => void
-  stderr: (text: string) => void
+  extends Omit<ReviewDeps, 'onReady'>, Pick<BuildIo, 'measure' | 'renderFrames' | 'git'>, PacketIo {
   openBrowser: (url: string) => void
   capture: (round: LoadedRound, outDir: string) => Promise<string[]>
   harnessFreshness: () => Promise<HarnessFreshness>
@@ -162,10 +197,16 @@ function parseCli(argv: string[]) {
       base: { type: 'string' },
       head: { type: 'string' },
       repo: { type: 'string' },
+      pr: { type: 'string' },
+      run: { type: 'string' },
+      clone: { type: 'string' },
+      side: { type: 'string' },
       registry: { type: 'string' },
       files: { type: 'string', multiple: true },
       tokens: { type: 'string', multiple: true },
       json: { type: 'boolean' },
+      'gate-head': { type: 'string' },
+      require: { type: 'string' },
       'prior-feedback': { type: 'string', multiple: true },
       example: { type: 'boolean' },
       help: { type: 'boolean' },
@@ -384,6 +425,7 @@ async function dispatch(parsed: Parsed, io: CliIo): Promise<number> {
   if (parsed.positionals[0] === 'build') return build(parsed, io)
   if (parsed.positionals[0] === 'round') return fromMorning(parsed, io)
   if (parsed.positionals[0] === 'locks') return locks(parsed, io)
+  if (parsed.positionals[0] === 'packet') return packetCommand(parsed, io)
   if (parsed.positionals[0] === 'calibration') {
     const rounds = await readFeedbackFiles(parsed.positionals.slice(1).map((p) => resolve(p)))
     io.stdout(`${calibrationReport(rounds)}\n`)
