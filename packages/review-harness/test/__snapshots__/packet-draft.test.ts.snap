@@ -1,0 +1,157 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`packetDraft > words the Ship draft as today for images that all come from git 1`] = `
+{
+  "prGroups": [
+    {
+      "headSha": "a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1",
+      "pr": "acme/widgets#42",
+      "sectionIds": [
+        "changed",
+        "new",
+        "removed",
+        "ship",
+      ],
+    },
+  ],
+  "questions": [
+    {
+      "decision": "ship",
+      "id": "ship",
+      "kind": "pick-one",
+      "merge": {
+        "headSha": "a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1",
+        "pr": 42,
+        "repo": "acme/widgets",
+        "ship": [
+          "Ship",
+        ],
+      },
+      "options": [
+        "Ship",
+        "Don't ship",
+      ],
+      "page": "acme/widgets#42",
+      "prompt": "Ship acme/widgets#42 at a1a1a1a1a1a1?",
+      "required": true,
+      "signsOff": "the 3 baseline changes of run 1234 at a1a1a1a1a1a1",
+    },
+  ],
+  "recommendations": "after-answer",
+  "round": 1,
+  "schema": "titan-review/round@2",
+  "sections": [
+    {
+      "changed": "1 changed against main b2b2b2b2b2b2, from CI run 1234.",
+      "context": "Each frame shows BEFORE | AFTER | DIFF, or an aligned pair.",
+      "contrast": {
+        "unmeasured": [
+          {
+            "mode": "light",
+            "reason": "a CI baseline montage; no DOM to measure",
+            "variant": "img-001",
+          },
+          {
+            "mode": "dark",
+            "reason": "a CI baseline montage; no DOM to measure",
+            "variant": "img-001",
+          },
+        ],
+      },
+      "deciding": "Nothing on its own: these frames are the evidence for the Ship question.",
+      "id": "changed",
+      "kind": "STATES",
+      "title": "Changed baselines (1)",
+      "variantKeys": [
+        "img-001",
+      ],
+    },
+    {
+      "changed": "1 new against main b2b2b2b2b2b2, from CI run 1234.",
+      "context": "Each frame shows the new image under a NEW bar.",
+      "contrast": {
+        "unmeasured": [
+          {
+            "mode": "light",
+            "reason": "a CI baseline montage; no DOM to measure",
+            "variant": "img-002",
+          },
+          {
+            "mode": "dark",
+            "reason": "a CI baseline montage; no DOM to measure",
+            "variant": "img-002",
+          },
+        ],
+      },
+      "deciding": "Nothing on its own: these frames are the evidence for the Ship question.",
+      "id": "new",
+      "kind": "STATES",
+      "title": "New baselines (1)",
+      "variantKeys": [
+        "img-002",
+      ],
+    },
+    {
+      "changed": "1 removed against main b2b2b2b2b2b2, from CI run 1234.",
+      "context": "Each frame shows main's image under a REMOVED bar.",
+      "contrast": {
+        "unmeasured": [
+          {
+            "mode": "light",
+            "reason": "a CI baseline montage; no DOM to measure",
+            "variant": "img-003",
+          },
+          {
+            "mode": "dark",
+            "reason": "a CI baseline montage; no DOM to measure",
+            "variant": "img-003",
+          },
+        ],
+      },
+      "deciding": "Nothing on its own: these frames are the evidence for the Ship question.",
+      "id": "removed",
+      "kind": "STATES",
+      "title": "Removed baselines (1)",
+      "variantKeys": [
+        "img-003",
+      ],
+    },
+    {
+      "changed": "3 baselines differ from main b2b2b2b2b2b2; 8 are unchanged.",
+      "context": "Built by titan-review packet from-ci from CI run 1234.",
+      "deciding": "Whether this PR merges at this head with these baselines.",
+      "id": "ship",
+      "questionIds": [
+        "ship",
+      ],
+      "title": "Ship acme/widgets#42",
+    },
+  ],
+  "storybookUrl": "http://127.0.0.1:6006",
+  "unit": "widgets-pr42-a1a1a1a1a1a1",
+  "variants": [
+    {
+      "baseImage": "before/img-001.png",
+      "change": "changed",
+      "image": "montage/img-001.png",
+      "key": "img-001",
+      "label": "component: img-001",
+    },
+    {
+      "change": "new",
+      "image": "montage/img-002.png",
+      "key": "img-002",
+      "label": "component: img-002",
+    },
+    {
+      "change": "removed",
+      "image": "montage/img-003.png",
+      "key": "img-003",
+      "label": "component: img-003",
+    },
+  ],
+  "widths": [
+    1280,
+  ],
+}
+`;

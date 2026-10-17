@@ -31,6 +31,7 @@ export interface DraftPacket {
     label: string
     change: ShownChange
     file: string
+    source: 'artifact' | 'git'
     before?: { file: string }
   }[]
 }
@@ -100,12 +101,21 @@ function shipSection(p: DraftPacket, shown: number): DraftSection {
   }
 }
 
+/** A regenerated set came from a red CI run's artifact, so the head must commit those very images. */
+const isRegenerated = (p: DraftPacket) => p.images.some((i) => i.source === 'artifact')
+
+function shipPrompt(p: DraftPacket): string {
+  const ask = `Ship ${p.repo}#${p.pr} at ${short(p.headSha)}?`
+  if (!isRegenerated(p)) return ask
+  return `${ask} These images are regenerated from CI run ${p.ci.runId}; Ship means the head must have them committed exactly.`
+}
+
 function shipQuestion(p: DraftPacket): DraftQuestion {
   const page = `${p.repo}#${p.pr}`
   return {
     id: SHIP_ID,
     kind: 'pick-one',
-    prompt: `Ship ${page} at ${short(p.headSha)}?`,
+    prompt: shipPrompt(p),
     options: [...SHIP_OPTIONS],
     required: true,
     page,
