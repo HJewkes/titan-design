@@ -15725,6 +15725,123 @@
       "tier": "atom"
     },
     {
+      "composes": [],
+      "family": "ui/stage",
+      "file": "packages/ui/src/components/ui/stage/AmbientStage.tsx",
+      "name": "AmbientStage",
+      "props": [
+        {
+          "default": null,
+          "description": "What stands on the stage.",
+          "name": "children",
+          "required": false,
+          "type": "ReactNode"
+        },
+        {
+          "default": null,
+          "description": "Tailwind overrides for the root, merged with `cn()`.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": "0",
+          "description": "Picks the grain field.",
+          "name": "seed",
+          "required": false,
+          "type": "number"
+        }
+      ],
+      "purpose": "The stage plane: `background-base` with the `.atmosphere-warm` brand washes behind its content and the static `.grain` tile over it.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/stage/AmbientStage.tsx",
+        "status": "packages/ui/src/components/ui/stage/AmbientStage.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-organisms-ambientstage--default"
+      ],
+      "tier": "atom"
+    },
+    {
+      "composes": [
+        "AmbientStage",
+        "Surface"
+      ],
+      "family": "ui/stage",
+      "file": "packages/ui/src/components/ui/stage/BeatStage.tsx",
+      "name": "BeatStage",
+      "props": [
+        {
+          "default": null,
+          "description": "The stage content, fit-checked against the stage box.",
+          "name": "children",
+          "required": false,
+          "type": "ReactNode"
+        },
+        {
+          "default": null,
+          "description": "Rendered in the chip band, bottom-aligned.",
+          "name": "chips",
+          "required": false,
+          "type": "ReactNode"
+        },
+        {
+          "default": null,
+          "description": "The bands around the stage; see {@link stageBox}.",
+          "name": "chrome",
+          "required": false,
+          "type": "StageChrome"
+        },
+        {
+          "default": null,
+          "description": "The output frame, e.g. `{ width: 1920, height: 1080 }`.",
+          "name": "frame",
+          "required": true,
+          "type": "StageFrame"
+        },
+        {
+          "default": null,
+          "description": "Rendered in the header band.",
+          "name": "header",
+          "required": false,
+          "type": "ReactNode"
+        },
+        {
+          "default": null,
+          "description": "Names the beat in the overflow error thrown in development.",
+          "name": "label",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Picks the grain field; see {@link AmbientStage}.",
+          "name": "seed",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Default `canvas`: slots lay out on a 540-high design canvas scaled by `height / 540`, so titan's type steps land on the video scale (`h2` 48 → 96 px at 1080).",
+          "name": "units",
+          "required": false,
+          "type": "BeatStageUnits"
+        }
+      ],
+      "purpose": "A video beat's frame: the warm stage plane, a header band, a fit-checked stage and a chip band, placed by {@link stageBox}.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/stage/BeatStage.tsx",
+        "status": "packages/ui/src/components/ui/stage/BeatStage.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-organisms-beatstage--default",
+        "components-organisms-beatstage-interactions--overflow"
+      ],
+      "tier": "molecule"
+    },
+    {
       "composes": [
         "Card",
         "Typography"

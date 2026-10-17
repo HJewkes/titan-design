@@ -357,6 +357,16 @@ export type AlertVariant = 'subtle' | 'outline' | 'solid';
 export function alpha(color: string, opacity: number): string;
 
 // @public
+export function AmbientStage(input: AmbientStageProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface AmbientStageProps extends ViewProps {
+    children?: React__default.ReactNode;
+    className?: string;
+    seed?: number;
+}
+
+// @public
 export function AnimatedNumber(input: AnimatedNumberProps): react_jsx_runtime.JSX.Element;
 
 // @public
@@ -407,6 +417,9 @@ export interface AppShellProps {
     topBar?: ReactNode;
     topBarTrailing?: ReactNode | ReactNode[];
 }
+
+// @public
+export function atmosphereWashes(): [StageWash, StageWash];
 
 // @public @deprecated
 export const audiobookPreset: ThemePreset;
@@ -581,6 +594,24 @@ export type BarListValueFormatter = (value: number, row?: BarListRow) => string;
 
 // @public
 export function barPaper(color: string, flip?: boolean): ViewStyle;
+
+// @public
+export function BeatStage(props: BeatStageProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface BeatStageProps {
+    children?: React__default.ReactNode;
+    chips?: React__default.ReactNode;
+    chrome?: StageChrome;
+    frame: StageFrame;
+    header?: React__default.ReactNode;
+    label: string;
+    seed?: number;
+    units?: BeatStageUnits;
+}
+
+// @public
+export type BeatStageUnits = 'canvas' | 'frame';
 
 // @public
 export function bestTextColor(hex: string): '#000000' | '#FFFFFF';
@@ -6034,6 +6065,9 @@ export interface StageFrame {
 }
 
 // @public
+export function stageGrain(seed?: number): string;
+
+// @public
 export interface StageMeasure {
     boxes: readonly StageContentBox[];
     height: number;
@@ -6072,6 +6106,12 @@ export interface StageRect {
     width: number;
     x: number;
     y: number;
+}
+
+// @public
+export interface StageWash {
+    image: string;
+    opacity: number;
 }
 
 // @public

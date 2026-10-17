@@ -11,6 +11,7 @@ Generated from `src/arch/component-catalog.json` by `pnpm catalog`. Do not edit 
 | AgentRosterRow | candidate | custom/Agents | One agent in a dense list: name, state and the chosen details. | AgentStateLabel, Avatar, Typography | custom-agents-agentrosterrow--default |
 | AgentStateLabel | candidate | custom/Agents | An agent's state as a dot and its word, never colour alone. | Indicator, Pill, Typography | custom-agents-agentstatelabel--default |
 | Alert | stable | ui/alert | Alert component for displaying status messages. | — | components-molecules-alert--all-statuses |
+| AmbientStage | candidate | ui/stage | The stage plane: `background-base` with the `.atmosphere-warm` brand washes behind its content and the static `.grain` tile over it. | — | components-organisms-ambientstage--default |
 | AnimatedNumber | candidate | ui/animated-number | A number that counts or rolls from `from` to `value` as `progress` goes 0 → 1. | Typography | components-atoms-animatednumber--default |
 | AppShell | candidate | shell | `AppShell` — the generic dashboard chrome: a {@link TopBar} band over a {@link SideNav} rail and a `children` content region. | SideNav, Surface, TopBar, brands | pages-appshell--audiobook-app |
 | Autocomplete | stable | ui/autocomplete | Autocomplete component for searchable dropdown selection. | AutocompleteParts | components-molecules-autocomplete--custom-no-results-text |
@@ -19,6 +20,7 @@ Generated from `src/arch/component-catalog.json` by `pnpm catalog`. Do not edit 
 | BarList | candidate | ui/charts | BarList: a ranked horizontal bar list. | BarListCells, BarListParts, BarListTip, EmptyState | components-molecules-barlist--default |
 | BaseBadge | candidate | custom/Workout | — | — | custom-workout-basebadge--all-variants |
 | Beat | review | ui/motion | A window of the timeline: moves the time origin to `startS` and mounts only near its window. | — | — |
+| BeatStage | candidate | ui/stage | A video beat's frame: the warm stage plane, a header band, a fit-checked stage and a chip band, placed by {@link stageBox}. | AmbientStage, Surface | components-organisms-beatstage--default |
 | BodyMap | candidate | custom/Workout | Interactive SVG body map with tappable muscle groups and a volume heatmap. | — | custom-workout-dataviz-bodymap--back |
 | BodyMapDetailPanel | candidate | custom/Workout | Sheet of detailed weekly-volume info for a tapped muscle group: a MEV\|current\|MRV gradient progress bar, the big weekly set count against MRV, an optional volume sparkline, the per-exercise strength / this-week plan / PR sections, and the contributing / upcoming exercise lists. | Badge, BodyMapDetailSections, Sparkline | custom-workout-dataviz-bodymapdetailpanel--default |
 | BodyweightGoalCard | candidate | custom/Workout | A bodyweight goal on `#/goals`: the latest weight, its rate this week beside it ("Rate: -0.6%/wk", or "Rate: N/A" before there is one; the bands sit in the tip), then the weigh-in against this week's band in the goal chart's own band colour. | GoalTrajectoryBand, StatCard, Typography, ZoneTrack, wholeBodyCardParts | custom-workout-goals-bodyweightgoalcard--default |
