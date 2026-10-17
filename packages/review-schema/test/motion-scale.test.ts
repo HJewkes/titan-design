@@ -117,7 +117,7 @@ describe('motion on a variant', () => {
         label: 'A',
         motion: { mechanism: 'clip' },
       })
-    ).toEqual([': a variant has exactly one of storyId, image or clip'])
+    ).toEqual([': a variant has exactly one of storyId, image, clip or audio'])
   })
 
   describe('keyframes on a clip', () => {
@@ -205,6 +205,36 @@ describe('a scale reference on a variant', () => {
         motion: { mechanism: 'arg', durationMs: 900 },
       })
     ).toEqual(['scale: motion and scale both drive progress; they set different args'])
+  })
+})
+
+describe('a frame reference on a variant', () => {
+  it('defaults an image to a 1920x1080 frame and the 1080p reference ladder', () => {
+    const v = VariantSchema.parse({
+      key: 'shot',
+      image: 'shot.png',
+      label: 'Shot',
+      frameReference: {},
+    })
+    expect(v.frameReference).toEqual({
+      frame: DEFAULT_SCALE_FRAME,
+      ladder: [...DEFAULT_SCALE_LADDER],
+    })
+  })
+
+  it('takes a clip with its own frame and ladder', () => {
+    const frameReference = {
+      frame: { width: 1280, height: 720 },
+      ladder: [{ label: 'floor x-height', px: 21.6 }],
+    }
+    const clip = { key: 'reel', clip: 'reel.webm', label: 'Reel', motion: { mechanism: 'clip' } }
+    expect(VariantSchema.parse({ ...clip, frameReference }).frameReference).toEqual(frameReference)
+  })
+
+  it('refuses one on a story, which uses scale instead', () => {
+    expect(messages({ key: 'card', storyId: STORY, label: 'Card', frameReference: {} })).toEqual([
+      'frameReference: a frame reference sizes an image or clip; a story uses scale',
+    ])
   })
 })
 

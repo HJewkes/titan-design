@@ -67,6 +67,12 @@ message }[] }[]`, one per PR group: blocked when an answer in the group has free
   holder: its `shipBlocks` status carries `shipsAfter`, and it is blocked (kind
   `holder-not-shipped`, naming the holder) while the holder's Ship is answered Don't ship or asks
   for a revision. An unanswered holder does not block, as an unanswered question does not.
+- Audio (`audio.ts`): a variant's `audio` source with its `transcript` and optional `durationMs`
+  (`isAudioVariant`), and the `blind-ab` question, `{ pairs: [{ id, transcript, takes: [{ engine,
+src, durationMs? }, …] }], seed? }`. `blindAbOrder(seed, count)` is the balanced seeded A/B order,
+  `blindAbKey(round, question)` lists the pairs as played (the key a page must never see), and
+  `engineOf(key, pair, choice)` maps an answer's `pairs[].choice` back to its engine.
+  `takesRecommendation(question)` is false for a text or blind-ab question.
 - `lintRound(round)`, a pure check of a parsed round against the review-layout rules. It returns
   `{ rule, message }[]` (empty when the round passes; `LINT_RULES` lists the rules) and every
   round builder refuses a round with any problem.

@@ -1,8 +1,9 @@
-import { View, Text, type ViewProps } from 'react-native'
+import { View, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { elideSource } from '../../../utils/elideSource'
 import { Pill } from '../pill'
 import { pillScale } from '../pill/pillScale'
+import { ScaledPill } from '../pill/ScaledPill'
 import { Typography } from '../typography'
 import { EVIDENCE_LABEL, EVIDENCE_TONE, type EvidenceKind } from './evidence'
 
@@ -37,7 +38,12 @@ const besideGap: Record<EvidenceChipSize, string> = {
   lg: 'gap-inline-md',
 }
 
-function KindCapsule({ kind, size, fontPx }: Pick<EvidenceChipProps, 'kind' | 'size' | 'fontPx'>) {
+/** The kind's tone capsule alone; ChipBand renders it as a tab for chips beyond the lead. */
+export function EvidenceKindCapsule({
+  kind,
+  size,
+  fontPx,
+}: Pick<EvidenceChipProps, 'kind' | 'size' | 'fontPx'>) {
   const label = EVIDENCE_LABEL[kind]
   if (fontPx === undefined) {
     return (
@@ -46,18 +52,13 @@ function KindCapsule({ kind, size, fontPx }: Pick<EvidenceChipProps, 'kind' | 's
       </Pill>
     )
   }
-  const { fontSize, paddingHorizontal, paddingVertical } = pillScale(fontPx)
   return (
-    <Pill
+    <ScaledPill
       tone={EVIDENCE_TONE[kind]}
-      size="lg"
-      style={{ paddingHorizontal, paddingVertical }}
+      label={label}
+      fontPx={fontPx}
       testID="evidence-chip-kind"
-    >
-      <Text className="font-heading font-semibold text-inherit" style={{ fontSize }}>
-        {label}
-      </Text>
-    </Pill>
+    />
   )
 }
 
@@ -95,7 +96,7 @@ export function EvidenceChip({
       style={[video ? { gap: video.besideGap } : undefined, style]}
       {...props}
     >
-      <KindCapsule kind={kind} size={size} fontPx={fontPx} />
+      <EvidenceKindCapsule kind={kind} size={size} fontPx={fontPx} />
       <Typography
         variant="mono"
         color="secondary"

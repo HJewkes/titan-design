@@ -220,16 +220,15 @@ describe('BodyMapDetailPanel', () => {
       expect(await axe(container)).toHaveNoViolations()
     })
 
-    it('has no accessibility violations for each volume status', async () => {
-      const statuses = ['untrained', 'behind', 'ontrack', 'target', 'approaching', 'over'] as const
-      for (const volumeStatus of statuses) {
-        const { container, unmount } = render(
+    it.each(['untrained', 'behind', 'ontrack', 'target', 'approaching', 'over'] as const)(
+      'has no accessibility violations with volume status %s',
+      async (volumeStatus) => {
+        const { container } = render(
           <BodyMapDetailPanel {...baseProps} volumeStatus={volumeStatus} />
         )
         expect(await axe(container)).toHaveNoViolations()
-        unmount()
       }
-    })
+    )
 
     it('has no accessibility violations as a right side-sheet', async () => {
       const { container } = render(
@@ -350,6 +349,14 @@ describe('BodyMapDetailPanel', () => {
       expect(close).toHaveFocus()
     })
 
+    it('focuses the off-screen sheet without scrolling the page to it', () => {
+      const focus = vi.spyOn(HTMLElement.prototype, 'focus')
+      render(<BodyMapDetailPanel {...baseProps} placement="right" />)
+      expect(focus).toHaveBeenCalledOnce()
+      expect(focus).toHaveBeenCalledWith({ preventScroll: true })
+      focus.mockRestore()
+    })
+
     it('never traps focus onto the backdrop, which sits outside the sheet', () => {
       render(<BodyMapDetailPanel {...baseProps} placement="right" onViewExercises={vi.fn()} />)
       const sheet = screen.getByTestId('body-map-detail-panel')
@@ -447,6 +454,42 @@ describe('BodyMapDetailPanel', () => {
     })
   })
 
+  describe('mass unit', () => {
+    const chartLabel = (index: number) =>
+      screen
+        .getByTestId(`body-map-detail-panel-strength-${index}-chart`)
+        .querySelector('[aria-label^="Strength trend chart"]')
+        ?.getAttribute('aria-label') ?? ''
+
+    it('labels every strength and PR figure kg, as passed, when the lifter chose kg', () => {
+      render(<BodyMapDetailPanel {...baseProps} strength={singleExerciseStrength} unit="kg" />)
+      const sheet = screen.getByTestId('body-map-detail-panel')
+      expect(sheet.textContent).not.toMatch(/\blbs?\b/)
+      expect(chartLabel(0)).not.toMatch(/\blbs?\b/)
+      expect(screen.getByTestId('body-map-detail-panel-strength-0-e1rm')).toHaveTextContent(
+        '205 kg'
+      )
+      expect(screen.getByTestId('body-map-detail-panel-strength-0-band')).toHaveTextContent(
+        'trend only · ±20.1 kg (SEE 9.8%)'
+      )
+      expect(screen.getByTestId('body-map-detail-panel-pr-0-detail')).toHaveTextContent(
+        '205 kg · prev 198 kg'
+      )
+      expect(chartLabel(0)).toContain('Current: 205 kg')
+    })
+
+    it("keeps lb, and the chart's lbs, when no unit is passed", () => {
+      const { unmount } = render(
+        <BodyMapDetailPanel {...baseProps} strength={singleExerciseStrength} unit="lb" />
+      )
+      const explicitLb = screen.getByTestId('body-map-detail-panel').innerHTML
+      unmount()
+      render(<BodyMapDetailPanel {...baseProps} strength={singleExerciseStrength} />)
+      expect(screen.getByTestId('body-map-detail-panel').innerHTML).toBe(explicitLb)
+      expect(chartLabel(0)).toContain('Current: 205 lbs')
+    })
+  })
+
   describe('plan section', () => {
     it('renders done and upcoming rows under this week', () => {
       render(<BodyMapDetailPanel {...baseProps} plan={singleExercisePlan} />)
@@ -493,17 +536,22 @@ describe('BodyMapDetailPanel', () => {
       expect(screen.queryByTestId('body-map-detail-panel-plan')).not.toBeInTheDocument()
     })
 
-    it('has no accessibility violations with every section populated', async () => {
-      const { container } = render(
-        <BodyMapDetailPanel
-          {...baseProps}
-          placement="right"
-          strength={bilateralStrength}
-          plan={singleExercisePlan}
-        />
-      )
-      expect(await axe(container)).toHaveNoViolations()
-    })
+    // axe takes ~0.25 s alone but hit the 5 s default once on a loaded CI runner (TD-927).
+    it(
+      'has no accessibility violations with every section populated',
+      { timeout: 30_000 },
+      async () => {
+        const { container } = render(
+          <BodyMapDetailPanel
+            {...baseProps}
+            placement="right"
+            strength={bilateralStrength}
+            plan={singleExercisePlan}
+          />
+        )
+        expect(await axe(container)).toHaveNoViolations()
+      }
+    )
   })
 
   /**

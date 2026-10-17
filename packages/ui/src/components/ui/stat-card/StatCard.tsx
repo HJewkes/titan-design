@@ -3,6 +3,7 @@ import type { ReactNode } from 'react'
 import { View, type ViewProps } from 'react-native'
 
 import { cn } from '../../../utils/cn'
+import { qaAttrs } from '../../../utils/qa-attrs'
 import { Card, type CardProps } from '../card'
 import { Typography } from '../typography'
 import { TABULAR_STYLE, useCountedText } from '../animated-number/useCountedText'
@@ -115,11 +116,12 @@ export function StatCard({
       style={[{ overflow: 'visible' }, style]}
       isLoading={isLoading}
       testID={testID}
+      {...qaAttrs({ container: true })}
       {...props}
     >
       <View className="flex-1 gap-stack-md" onLayout={onContentLayout}>
         <View style={{ zIndex: Z.top }}>
-          <View style={{ zIndex: Z.header }} testID={part('header')}>
+          <View style={{ zIndex: Z.header }} testID={part('header')} {...qaAttrs({ title: true })}>
             {header}
           </View>
           <FigureRow

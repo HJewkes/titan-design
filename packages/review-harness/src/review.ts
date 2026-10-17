@@ -4,6 +4,8 @@ import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path'
 import {
   RoundSchema,
   choiceMismatchMessage,
+  frameSizeMismatch,
+  isAudioVariant,
   isClipVariant,
   isImageVariant,
   isLoopbackUrl,
@@ -12,6 +14,7 @@ import {
   type Feedback,
   type Manifest,
 } from '@titan-design/review-schema'
+import { blindTakeSources } from './blind-ab.ts'
 import { baseImageKey } from './pr-tabs.ts'
 import { urlParamProblems } from './round.ts'
 import { startReviewServer, type PageHandler } from './server.ts'
@@ -33,6 +36,8 @@ export interface LoadedRound {
   images: Record<string, string>
   /** Absolute path of each clip variant's mp4 or webm, by variant key. */
   clips: Record<string, string>
+  /** Absolute path of each audio variant's file by key, and of each blind take by `<q>/<pair>/<A|B>`. */
+  audio: Record<string, string>
   /** A page banner saying the harness is not origin/main's, or could not be checked. */
   harnessWarning?: string
 }
@@ -68,6 +73,20 @@ export function isVideoHead(head: Buffer): boolean {
   )
 }
 
+const startsWith = (head: Buffer, at: number, text: string) =>
+  head.subarray(at, at + text.length).toString('latin1') === text
+
+/** A wav (RIFF/WAVE), an mp3 (an ID3 tag or a frame sync), an ogg page, or an m4a `ftyp` box. */
+export function isAudioHead(head: Buffer): boolean {
+  return (
+    (startsWith(head, 0, 'RIFF') && startsWith(head, 8, 'WAVE')) ||
+    startsWith(head, 0, 'ID3') ||
+    (head[0] === 0xff && (head[1] & 0xe0) === 0xe0) ||
+    startsWith(head, 0, 'OggS') ||
+    startsWith(head, 4, 'ftyp')
+  )
+}
+
 /** Resolves a path against the round's directory, following symlinks, and refuses escapes. */
 async function resolveInside(roundDir: string, where: string, path: string): Promise<string> {
   const file = await realpath(resolve(roundDir, path)).catch(() => {
@@ -93,16 +112,44 @@ async function resolveClip(roundDir: string, where: string, clip: string): Promi
   return file
 }
 
-/** A PNG's pixel width, from its IHDR chunk, which the signature check has already placed. */
-async function pngWidth(file: string): Promise<number> {
+async function resolveAudioFile(roundDir: string, where: string, src: string): Promise<string> {
+  const file = await resolveInside(roundDir, where, src)
+  if (!isAudioHead(await readHead(file, 12).catch(() => Buffer.alloc(0))))
+    throw new ReviewError(`${where} is not a wav, mp3, ogg or m4a file`)
+  return file
+}
+
+/** The first `length` bytes of a PNG's IHDR data, which the signature check has already placed. */
+async function readIhdr(file: string, length: 4 | 8, what: string): Promise<Buffer> {
   const handle = await open(file)
   try {
-    const { buffer, bytesRead } = await handle.read(Buffer.alloc(4), 0, 4, 16)
-    if (bytesRead < 4) throw new ReviewError(`cannot read PNG width from ${file}`)
-    return buffer.readUInt32BE(0)
+    const { buffer, bytesRead } = await handle.read(Buffer.alloc(length), 0, length, 16)
+    if (bytesRead < length) throw new ReviewError(`cannot read PNG ${what} from ${file}`)
+    return buffer
   } finally {
     await handle.close()
   }
+}
+
+async function pngWidth(file: string): Promise<number> {
+  return (await readIhdr(file, 4, 'width')).readUInt32BE(0)
+}
+
+async function pngSize(file: string): Promise<{ width: number; height: number }> {
+  const ihdr = await readIhdr(file, 8, 'size')
+  return { width: ihdr.readUInt32BE(0), height: ihdr.readUInt32BE(4) }
+}
+
+/** An image that declares a true-size frame must be that size, in both dimensions. */
+async function frameReferenceProblems(manifest: Manifest, images: Record<string, string>) {
+  const problems = await Promise.all(
+    manifest.variants.filter(isImageVariant).map(async (v) => {
+      if (!v.frameReference) return []
+      const mismatch = frameSizeMismatch(await pngSize(images[v.key]), v.frameReference.frame)
+      return mismatch ? [`variant ${v.key}: image ${v.image} ${mismatch}`] : []
+    })
+  )
+  return problems.flat()
 }
 
 /** Image frames of one CHOICE strip are captured at one width; the manifest cannot see that. */
@@ -173,6 +220,21 @@ async function resolveClips(path: string, manifest: Manifest): Promise<Record<st
   return Object.fromEntries(entries)
 }
 
+/** Every sound the page may play, by route key: each audio variant, and each blind take. */
+async function resolveAudio(path: string, manifest: Manifest): Promise<Record<string, string>> {
+  const roundDir = await realpath(dirname(resolve(path)))
+  const sources = [
+    ...manifest.variants
+      .filter(isAudioVariant)
+      .map((v) => ({ key: v.key, where: `variant ${v.key}: audio ${v.audio}`, src: v.audio })),
+    ...blindTakeSources(manifest),
+  ]
+  const entries = await Promise.all(
+    sources.map(async (s) => [s.key, await resolveAudioFile(roundDir, s.where, s.src)] as const)
+  )
+  return Object.fromEntries(entries)
+}
+
 /** A JSON file and its bytes; the error names the path when it cannot be read or parsed. */
 export async function readJsonFile(path: string): Promise<{ json: unknown; raw: Buffer }> {
   const raw = await readFile(path).catch(() => {
@@ -207,12 +269,16 @@ export async function loadRound(path: string, storybookOverride?: string): Promi
     )
   const images = await resolveImages(path, manifest)
   const clips = await resolveClips(path, manifest)
-  const widthProblems = await choiceWidthProblems(manifest, images)
-  if (widthProblems.length)
-    throw new ReviewError(`invalid manifest ${path}:\n  ${widthProblems.join('\n  ')}`)
+  const audio = await resolveAudio(path, manifest)
+  const sizeProblems = [
+    ...(await choiceWidthProblems(manifest, images)),
+    ...(await frameReferenceProblems(manifest, images)),
+  ]
+  if (sizeProblems.length)
+    throw new ReviewError(`invalid manifest ${path}:\n  ${sizeProblems.join('\n  ')}`)
   const manifestSha256 = createHash('sha256').update(raw).digest('hex')
   const storybookUrl = (storybookOverride ?? manifest.storybookUrl).replace(/\/$/, '')
-  return { manifest, manifestSha256, storybookUrl, images, clips }
+  return { manifest, manifestSha256, storybookUrl, images, clips, audio }
 }
 
 /** An image-only round never touches Storybook, so it needs none running. */

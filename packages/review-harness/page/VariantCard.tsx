@@ -2,12 +2,14 @@ import type { Dispatch } from 'react'
 import type { VariantDraft } from '../src/feedback.ts'
 import { frameSizing } from '../src/sections.ts'
 import {
+  isAudioVariant,
   isClipVariant,
   isImageVariant,
   isStoryVariant,
   type Manifest,
   type Variant,
 } from '@titan-design/review-schema'
+import { AudioFrame } from './AudioFrame.tsx'
 import { ClipFrame } from './ClipFrame.tsx'
 import { Frame, type PinInput } from './Frame.tsx'
 import { ImageFrame } from './ImageFrame.tsx'
@@ -62,11 +64,25 @@ interface CardFramesProps extends VariantCardProps {
   liveArgs?: LiveArgs
 }
 
-/** A scale reference is one full-size frame; every other variant is drawn at each manifest width. */
+/** The widths a frame is drawn at: a true-size image or clip once, at its own frame width. */
+function frameWidths(manifest: Manifest, variant: Variant): number[] {
+  return variant.frameReference ? [variant.frameReference.frame.width] : manifest.widths
+}
+
+/**
+ * A scale reference is one full-size frame, and so is a true-size image or clip; a sound has one
+ * player; every other variant is drawn at each manifest width.
+ */
 function CardFrames(props: CardFramesProps) {
   const { manifest, variant, draft, onPin, liveArgs } = props
   const sizing = frameSizing(manifest, variant)
   const pins = draft.annotations
+  if (isAudioVariant(variant))
+    return (
+      <div className="frames">
+        <AudioFrame variant={variant} />
+      </div>
+    )
   if (isStoryVariant(variant) && variant.scale)
     return (
       <div className="frames">
@@ -81,7 +97,7 @@ function CardFrames(props: CardFramesProps) {
     )
   return (
     <div className="frames">
-      {manifest.widths.map((width) => {
+      {frameWidths(manifest, variant).map((width) => {
         const shared = { width, annotate: props.annotate, pins, onPin }
         if (isClipVariant(variant)) return <ClipFrame key={width} {...shared} variant={variant} />
         if (isImageVariant(variant))
@@ -134,7 +150,7 @@ export function VariantCard(props: VariantCardProps) {
         <h3>
           <span className="key">{variant.key}</span> {variant.label}
         </h3>
-        <code>{variant.storyId ?? variant.image ?? variant.clip}</code>
+        <code>{variant.storyId ?? variant.image ?? variant.clip ?? variant.audio}</code>
       </header>
       {argMotion && <MotionControls variantKey={variant.key} motion={argMotion} player={player} />}
       <CardFrames {...props} onPin={onPin} liveArgs={player.args} />
