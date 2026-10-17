@@ -3,6 +3,7 @@ import { memo, type ReactNode } from 'react'
 import { Pressable, View, type PressableProps, type ViewProps } from 'react-native'
 import { resolveColor, type ColorToken } from '../../../../theme/resolve-color'
 import { cn } from '../../../../utils/cn'
+import { qaAttrs } from '../../../../utils/qa-attrs'
 import { Tooltip } from '../../tooltip'
 import { Typography } from '../../typography'
 import {
@@ -79,6 +80,7 @@ export const NodeButton = memo(function NodeButton(props: NodeButtonProps) {
       }
       style={{ ...targetStyle(point, box), opacity: isDimmed ? DIM_OPACITY : 1 }}
       testID={`network-graph-node-${node.id}`}
+      {...qaAttrs({ context: isDimmed })}
       {...webProps}
     >
       {isLabelHidden ? null : (

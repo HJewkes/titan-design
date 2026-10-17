@@ -5,5 +5,3 @@ export { roundRpe, rpeColor, roundWeight, formatVelocity, roundTempo } from './w
 export { computeWindow } from './fixed-window'
 export type { FixedWindow, FixedWindowInput } from './fixed-window'
 export type { ControlledProps } from './controlled-props'
-export { elideSource } from './elideSource'
-export type { ElidedSource, ElisionLevel } from './elideSource'

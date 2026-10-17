@@ -1387,6 +1387,46 @@
       "standard": true
     },
     {
+      "name": "ChipBand",
+      "file": "packages/ui/src/components/ui/chip/ChipBand.tsx",
+      "dir": "ui",
+      "family": "ui/chip",
+      "exports": [
+        "ChipBand",
+        "ChipBandProps",
+        "isDev",
+        "droppedLabel",
+        "citationLabel",
+        "bandItems"
+      ],
+      "libDependents": 0,
+      "storyRefs": 2,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "EvidenceChip",
+        "ScaledPill"
+      ],
+      "leak": {
+        "rawView": 2,
+        "rawText": 0,
+        "inlineStyle": 1,
+        "rawHex": 0,
+        "loc": 137,
+        "score": 4
+      },
+      "tier": "organism",
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
       "name": "CircularTimer",
       "file": "packages/ui/src/components/custom/CircularTimer/CircularTimer.tsx",
       "dir": "custom",
@@ -2626,7 +2666,8 @@
       "exports": [
         "FatigueLights",
         "FatigueLightsProps",
-        "Light"
+        "Chip",
+        "Dot"
       ],
       "libDependents": 1,
       "storyRefs": 1,
@@ -2634,20 +2675,22 @@
         "mobile": 0,
         "mcp": 1,
         "dash": 0,
-        "audiobook": 0,
-        "total": 1
+        "audiobook": 1,
+        "total": 2
       },
       "dependsOn": [
+        "Pill",
         "StatusDot",
+        "StatusGlyph",
         "Tooltip"
       ],
       "leak": {
-        "rawView": 2,
+        "rawView": 3,
         "rawText": 1,
         "inlineStyle": 1,
         "rawHex": 0,
-        "loc": 80,
-        "score": 5
+        "loc": 109,
+        "score": 6
       },
       "tier": "organism",
       "verdict": "keep-core",
@@ -7011,6 +7054,46 @@
       "standard": false
     },
     {
+      "name": "SetLossStrip",
+      "file": "packages/ui/src/components/custom/Workout/SetLossStrip.tsx",
+      "dir": "workout",
+      "family": "custom/Workout",
+      "exports": [
+        "SetLossStrip",
+        "SetLossStripProps",
+        "SetLossStrip.toneFor",
+        "SetLossStrip.row",
+        "StripRow",
+        "PadCells"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "SetLossStripParts",
+        "Typography"
+      ],
+      "leak": {
+        "rawView": 8,
+        "rawText": 0,
+        "inlineStyle": 2,
+        "rawHex": 0,
+        "loc": 173,
+        "score": 12
+      },
+      "tier": "organism",
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
       "name": "SetRow",
       "file": "packages/ui/src/components/custom/Workout/SetRow.tsx",
       "dir": "workout",
@@ -7622,6 +7705,46 @@
         "score": 6
       },
       "tier": "molecule",
+      "verdict": "keep-internal",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "StatusGlyph",
+      "file": "packages/ui/src/components/ui/status-glyph/StatusGlyph.tsx",
+      "dir": "ui",
+      "family": "ui/status-glyph",
+      "exports": [
+        "StatusGlyph",
+        "StatusGlyphTone",
+        "StatusGlyphSize",
+        "StatusGlyphProps",
+        "STATUS_GLYPH_FILL"
+      ],
+      "libDependents": 5,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "SvgIcon",
+        "icons",
+        "statusIcons"
+      ],
+      "leak": {
+        "rawView": 1,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 73,
+        "score": 1
+      },
+      "tier": "organism",
       "verdict": "keep-internal",
       "deadByAssociation": false,
       "audited": "unaudited",
@@ -9335,7 +9458,11 @@
       "family": "custom/Fatigue",
       "exports": [
         "VerdictHero",
-        "VerdictHeroProps"
+        "VerdictHeroRpeProps",
+        "VerdictHeroWordProps",
+        "VerdictHeroProps",
+        "WordLead",
+        "RpeLead"
       ],
       "libDependents": 1,
       "storyRefs": 1,
@@ -9346,16 +9473,21 @@
         "audiobook": 0,
         "total": 1
       },
-      "dependsOn": [],
+      "dependsOn": [
+        "Eyebrow",
+        "StatusGlyph",
+        "Tooltip",
+        "Typography"
+      ],
       "leak": {
-        "rawView": 3,
+        "rawView": 6,
         "rawText": 4,
-        "inlineStyle": 5,
+        "inlineStyle": 6,
         "rawHex": 0,
-        "loc": 84,
-        "score": 17
+        "loc": 164,
+        "score": 22
       },
-      "tier": "atom",
+      "tier": "organism",
       "verdict": "keep-core",
       "deadByAssociation": false,
       "audited": "unaudited",
