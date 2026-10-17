@@ -1,7 +1,9 @@
-import { describe, it, expect } from 'vitest'
+import { afterEach, describe, it, expect, vi } from 'vitest'
+import { stubReducedMotion } from '../../../../test/reduced-motion-stub'
 import { render, screen } from '@testing-library/react'
 import { Text } from 'react-native'
 import { axe } from 'jest-axe'
+import { capturedByNode } from '../../../../test/classname-capture'
 import { contrast, compositeOver } from '../../../../theme/color-checks'
 import { getSemanticColors, type ThemeMode } from '../../../../theme/tokens/semantic'
 import { SurfaceContext } from '../../surface'
@@ -139,5 +141,61 @@ describe('Gauge', () => {
       const { container } = render(<Gauge value={82} unit="%" label="Health" />)
       expect(await axe(container)).toHaveNoViolations()
     })
+  })
+})
+
+describe('Gauge with progress', () => {
+  afterEach(() => vi.unstubAllGlobals())
+  // Normalised through the DOM, which reports colours as rgb() whatever the hex they were set as.
+  const probe = document.createElement('div')
+  probe.style.backgroundColor = getSemanticColors('dark')['border-prominent']
+  const track = probe.style.backgroundColor
+  const filled = () =>
+    screen.getAllByTestId('gauge-segment').filter((s) => s.style.backgroundColor !== track).length
+  const shown = () => screen.getByTestId('gauge-value').textContent
+  const valueClasses = () => capturedByNode.get(screen.getByTestId('gauge-value'))?.split(' ') ?? []
+
+  it.each([
+    [0, '0.0', 0],
+    [0.5, '61.9', 25],
+    [1, '82.5', 33],
+  ])('at progress %s shows %s with %s segments filled', (progress, text, segments) => {
+    render(<Gauge value={82.5} progress={progress} />)
+    expect(shown()).toBe(text)
+    expect(filled()).toBe(segments)
+  })
+
+  it('lands on the exact value text at progress 1', () => {
+    render(<Gauge value={98765.4} max={100000} progress={1} />)
+    expect(shown()).toBe('98765.4')
+  })
+
+  it('counts up from min', () => {
+    render(<Gauge value={80} min={20} progress={0} />)
+    expect(shown()).toBe('20')
+  })
+
+  it('draws the counting number in tabular digits', () => {
+    render(<Gauge value={82.5} progress={0.5} />)
+    expect(valueClasses()).toContain('tabular-nums')
+  })
+
+  it('shows the final value and fill when the reader prefers reduced motion', () => {
+    stubReducedMotion(true)
+    render(<Gauge value={82.5} progress={0.2} />)
+    expect(shown()).toBe('82.5')
+    expect(filled()).toBe(33)
+  })
+
+  it('labels the final value for assistive tech mid-count', () => {
+    render(<Gauge value={82.5} unit="%" progress={0.2} />)
+    expect(screen.getByLabelText('82.5% of 100')).toBeInTheDocument()
+  })
+
+  it('keeps proportional digits with no progress', () => {
+    render(<Gauge value={82.5} />)
+    expect(shown()).toBe('82.5')
+    expect(valueClasses()).not.toContain('tabular-nums')
+    expect(filled()).toBe(33)
   })
 })

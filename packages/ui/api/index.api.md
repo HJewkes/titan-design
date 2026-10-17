@@ -2122,6 +2122,7 @@ export interface GaugeProps extends Omit<ViewProps, 'children'> {
     max?: number;
     // (undocumented)
     min?: number;
+    progress?: number;
     size?: number;
     thresholds?: GaugeThreshold[];
     unit?: string;
@@ -3949,6 +3950,7 @@ export interface MetricProps extends ViewProps {
     label: string;
     labelClassName?: string;
     labelPosition?: MetricLabelPosition;
+    progress?: number;
     // (undocumented)
     size?: 'sm' | 'md' | 'lg';
     tone?: MetricTone;
@@ -6160,6 +6162,16 @@ export function StatCard(input: StatCardProps): react_jsx_runtime.JSX.Element;
 
 // @public (undocumented)
 export type StatCardCaptionPlacement = 'beside' | 'below';
+
+// @public
+export function StatCardFigure(input: StatCardFigureProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface StatCardFigureProps {
+    progress?: number;
+    testID?: string;
+    value: string;
+}
 
 // @public
 export function StatCardHeader(input: StatCardHeaderProps): react_jsx_runtime.JSX.Element;
