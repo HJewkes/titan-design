@@ -125,10 +125,11 @@ describe('packetDraft', () => {
     )
     const draft = packetDraft(packet(images), [])
     const [ship] = ships(draft)
+    if (ship.kind !== 'pick-one') throw new Error('Ship is a pick-one')
 
     expect(ship.prompt).toContain('CI run 1234')
     expect(ship.prompt).toContain('committed exactly')
-    expect(ship.kind === 'pick-one' && ship.options).toEqual([...SHIP_OPTIONS])
+    expect(ship.options).toEqual([...SHIP_OPTIONS])
     expect(ship.merge).toMatchObject({ headSha: HEAD, ship: ['Ship'] })
     expect(lint(draft)).toEqual([])
     expect(() => checkDraft(draft)).not.toThrow()
