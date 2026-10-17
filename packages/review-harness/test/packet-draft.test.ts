@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest'
-import { RoundSchema, lintRound, type ManifestInput } from '@titan-design/review-schema'
+import {
+  RoundSchema,
+  SHIP_OPTIONS,
+  lintRound,
+  type ManifestInput,
+} from '@titan-design/review-schema'
+import { checkDraft } from '../src/packet.ts'
 import { packetDraft, type DraftPacket } from '../src/packet-draft.ts'
 import { applyRoundRules } from '../src/round-rules.ts'
 
@@ -24,6 +30,7 @@ function defaultImages(): DraftPacket['images'] {
     label: `component: ${key}`,
     change,
     file: `montage/${key}.png`,
+    source: 'git' as const,
     ...(change === 'new' ? {} : { before: { file: `before/${key}.png` } }),
   })
   return [image('img-001', 'changed'), image('img-002', 'new'), image('img-003', 'removed')]
@@ -91,6 +98,7 @@ describe('packetDraft', () => {
         label: `story: ${stem}`,
         change: 'new' as const,
         file: 'montage/img-001.png',
+        source: 'git' as const,
       },
     ]
     const [variant] = packetDraft(packet(images), []).variants
@@ -105,5 +113,34 @@ describe('packetDraft', () => {
 
     expect(draft.sections?.map((s) => s.id)).toEqual(['ship'])
     expect(lint(draft)).toEqual([])
+  })
+
+  it('words the Ship draft as today for images that all come from git', () => {
+    expect(packetDraft(packet(), [])).toMatchSnapshot()
+  })
+
+  it('names the CI run and asks for exactly these images when one comes from the artifact', () => {
+    const images = defaultImages().map((i, n) =>
+      n === 0 ? { ...i, source: 'artifact' as const } : i
+    )
+    const draft = packetDraft(packet(images), [])
+    const [ship] = ships(draft)
+
+    expect(ship.prompt).toContain('CI run 1234')
+    expect(ship.prompt).toContain('committed exactly')
+    expect(ship.kind === 'pick-one' && ship.options).toEqual([...SHIP_OPTIONS])
+    expect(ship.merge).toMatchObject({ headSha: HEAD, ship: ['Ship'] })
+    expect(lint(draft)).toEqual([])
+    expect(() => checkDraft(draft)).not.toThrow()
+  })
+
+  it('fails checkDraft when the regenerated Ship question gains a third option', () => {
+    const images = defaultImages().map((i) => ({ ...i, source: 'artifact' as const }))
+    const draft = packetDraft(packet(images), [])
+    const ship = ships(draft)[0]
+    if (ship.kind !== 'pick-one') throw new Error('Ship is a pick-one')
+    ship.options = [...ship.options, 'Ship later']
+
+    expect(() => checkDraft(draft)).toThrow()
   })
 })
