@@ -9,7 +9,6 @@
 import * as colourProbes from './colour-probes.mjs'
 import * as elevationProbes from './elevation-probes.mjs'
 import { MAX_FINDINGS_PER_KIND, capPerKind, judgeLayout } from './layout-probes.mjs'
-import { RATCHETED_KINDS } from './ratchet.mjs'
 import * as relationProbes from './relation-probes.mjs'
 import * as typeProbes from './type-probes.mjs'
 
@@ -22,6 +21,8 @@ export const PROBE_MODULES = Object.freeze([
 
 export const PROBE_KINDS = Object.freeze(PROBE_MODULES.flatMap((m) => m.KINDS))
 export const PROBE_RULES = Object.freeze(Object.assign({}, ...PROBE_MODULES.map((m) => m.RULES)))
+/** Kinds gated by ratchet.mjs's baseline, exempt from the per-frame cap so their keys are exact. */
+export const RATCHETED_KINDS = Object.freeze([typeProbes.TEXT_FLOOR])
 
 // A capped ratcheted kind would report a different 25 once one is fixed, so it stays uncapped.
 export function judgeAll(layout, ctx, modules = PROBE_MODULES) {

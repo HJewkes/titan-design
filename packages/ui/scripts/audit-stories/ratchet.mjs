@@ -4,10 +4,9 @@
 import { readFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { TEXT_FLOOR } from './type-probes.mjs'
+import { RATCHETED_KINDS } from './probe-suite.mjs'
 
-/** Kinds gated by the baseline. They are exempt from the per-frame cap so their keys are exact. */
-export const RATCHETED_KINDS = Object.freeze([TEXT_FLOOR])
+export { RATCHETED_KINDS }
 export const BASELINE_SCHEMA = 1
 export const BASELINE_PATH = join(dirname(fileURLToPath(import.meta.url)), 'ratchet-baseline.json')
 
