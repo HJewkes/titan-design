@@ -143,7 +143,7 @@ function assertDeclaredTheme(shot: Shot, applied: ThemeMode): ThemeMode {
   return applied
 }
 
-async function sha256Of(file: string): Promise<string> {
+export async function sha256Of(file: string): Promise<string> {
   return createHash('sha256')
     .update(await readFile(file))
     .digest('hex')
@@ -177,7 +177,7 @@ async function shootAll(shots: Shot[], storybookUrl: string, open: OpenShooter) 
 }
 
 /** Replaces the frames dir with the staged one, so a reader sees the old set or the new, never a mix. */
-async function swapIn(staging: string, dir: string): Promise<void> {
+export async function swapIn(staging: string, dir: string): Promise<void> {
   await rm(dir, { recursive: true, force: true })
   await rename(staging, dir)
 }

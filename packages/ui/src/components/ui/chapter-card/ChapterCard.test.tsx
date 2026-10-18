@@ -33,6 +33,18 @@ describe('chapterCardFrame', () => {
     expect(chapterCardFrame(0.05).translateY).toBeGreaterThan(0)
     expect(chapterCardFrame(0.95).translateY).toBeLessThan(0)
   })
+
+  // Mutation caught: the card reading riseIn at the video tier (40 px), or riseIn's out curve
+  // replacing its own, moves these frames from the ones it rendered before TD-909.
+  it.each([
+    [0, { opacity: 0, translateY: 8 }],
+    [0.05, { opacity: 0.578125, translateY: 3.375 }],
+    [0.1, { opacity: 0.875, translateY: 1 }],
+    [0.9, { opacity: 0.8304498269896192, translateY: -1.3564013840830467 }],
+    [0.95, { opacity: 0.5017301038062286, translateY: -3.986159169550171 }],
+  ])('keeps its pre-preset frame at progress %f', (progress, frame) => {
+    expect(chapterCardFrame(progress)).toStrictEqual(frame)
+  })
 })
 
 describe('ChapterCard', () => {
