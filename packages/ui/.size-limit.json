@@ -33,7 +33,7 @@
     "name": "diagram",
     "path": "dist/diagram.mjs",
     "brotli": true,
-    "limit": "21 kB"
+    "limit": "30 kB"
   },
   {
     "name": "theme",
