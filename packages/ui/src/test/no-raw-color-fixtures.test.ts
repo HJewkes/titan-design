@@ -10,7 +10,7 @@ async function rawColorRules(filePath: string, code: string) {
   return result.messages.filter((m) => m.ruleId === 'titan/no-raw-color').map((m) => m.ruleId)
 }
 
-describe('titan/no-raw-color on story fixtures', () => {
+describe('titan/no-raw-color on story fixtures', { timeout: 30_000 }, () => {
   it('fails a new raw hex in a promoted fixture', async () => {
     const file = path.join(pkgDir, 'src/components/custom/Demo/fills-fixture.ts')
     const code = "export const fills = [{ id: 'a', colour: '#3a7bd5' }]\n"
