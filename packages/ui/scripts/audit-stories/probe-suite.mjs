@@ -21,10 +21,16 @@ export const PROBE_MODULES = Object.freeze([
 
 export const PROBE_KINDS = Object.freeze(PROBE_MODULES.flatMap((m) => m.KINDS))
 export const PROBE_RULES = Object.freeze(Object.assign({}, ...PROBE_MODULES.map((m) => m.RULES)))
+/** Kinds gated by ratchet.mjs's baseline, exempt from the per-frame cap so their keys are exact. */
+export const RATCHETED_KINDS = Object.freeze([typeProbes.TEXT_FLOOR])
 
+// A capped ratcheted kind would report a different 25 once one is fixed, so it stays uncapped.
 export function judgeAll(layout, ctx, modules = PROBE_MODULES) {
-  return capPerKind(
-    [...judgeLayout(layout, { limit: Infinity }), ...modules.flatMap((m) => m.judge(layout, ctx))],
-    MAX_FINDINGS_PER_KIND
-  )
+  const all = [
+    ...judgeLayout(layout, { limit: Infinity }),
+    ...modules.flatMap((m) => m.judge(layout, ctx)),
+  ]
+  const ratcheted = all.filter((f) => RATCHETED_KINDS.includes(f.kind))
+  const capped = all.filter((f) => !RATCHETED_KINDS.includes(f.kind))
+  return [...capPerKind(capped, MAX_FINDINGS_PER_KIND), ...ratcheted]
 }

@@ -41,7 +41,7 @@ export const CAPS_TRACKING_RANGE = Object.freeze([0.05, 0.12])
 export const LABEL_MAX_SIZE = 14
 export const LOOKS_PER_PAGE = 2
 export const LOOKS_PER_COMPONENT = 1
-/** DR-TY-06: the error tier, reported as a warning until audit:stories has a ratchet baseline. */
+/** DR-TY-06 error tier; gated by the audit:stories ratchet baseline (ratchet.mjs). */
 export const TEXT_FLOOR_PX = 10
 /** DR-TY-10. */
 export const SIZES_PER_INSTANCE = 4
@@ -99,16 +99,14 @@ export function judgeCapsTracking(layout, ctx = {}) {
 
 // --- DR-TY-06 text-floor
 
-/** Text under the 10px floor. `small-text` (under 11px) still reports the same text. */
+/** Text under the 10px floor. `small-text` owns the 10–11px band above it. */
 export function judgeTextFloor(layout) {
   return texts(layout)
     .filter((n) => n.text.fontSize < TEXT_FLOOR_PX)
     .map((n) => ({
       kind: TEXT_FLOOR,
       selector: n.selector,
-      detail:
-        `${px(n.text.fontSize)} text under the ${TEXT_FLOOR_PX}px floor ` +
-        '(error tier; reported as a warning until a ratchet baseline exists)',
+      detail: `${px(n.text.fontSize)} text under the ${TEXT_FLOOR_PX}px floor (error tier)`,
     }))
 }
 

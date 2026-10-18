@@ -6,6 +6,7 @@ import { createRequire } from 'node:module'
 import { join } from 'node:path'
 import { auditPage, fontSizeDrift, themeGeometryShift } from './checks.mjs'
 import { loadFontConfig } from './font-config.mjs'
+import { ratchetLines } from './ratchet.mjs'
 import { withRules } from './rules.mjs'
 import { loadSpacingConfig } from './spacing-scale.mjs'
 
@@ -259,9 +260,9 @@ function groupBlockers(entries) {
       groups.get(key).at.add(`${e.width}-${e.theme}`)
     }
   }
-  const renderFirst = (g) => (g.kind === 'render-error' ? 0 : 1)
+  const rank = (g) => (g.kind === 'render-error' ? 0 : g.ratchet === 'new' ? 1 : 2)
   return [...groups.values()]
-    .sort((a, b) => renderFirst(a) - renderFirst(b))
+    .sort((a, b) => rank(a) - rank(b))
     .map((g) => {
       const detail = g.detail.replace(/\s+/g, ' ').slice(0, 160)
       return `BLOCKER ${g.kind} ${g.id} [${[...g.at].join(' ')}] ${g.selector} :: ${detail}`
@@ -282,15 +283,19 @@ function countsLine(entries, distinct) {
   )
 }
 
-/** At most `maxLines` lines: grouped blockers, an overflow pointer if any, then the counts. */
-export function summarise(entries, maxLines = MAX_SUMMARY_LINES) {
+/**
+ * At most `maxLines` lines: grouped blockers (render errors, then ratchet failures), an overflow
+ * pointer if any, the ratchet line per ratcheted kind when `ratchet` is given, then the counts.
+ */
+export function summarise(entries, maxLines = MAX_SUMMARY_LINES, ratchet = []) {
   const blockerLines = groupBlockers(entries)
-  const room = maxLines - 2
+  const tail = [...ratchetLines(ratchet), countsLine(entries, blockerLines.length)]
+  const room = maxLines - 1 - tail.length
   const lines = blockerLines.slice(0, room)
   if (blockerLines.length > room) {
     lines.push(`... ${blockerLines.length - room} more blockers in dom.json`)
   }
-  lines.push(countsLine(entries, blockerLines.length))
+  lines.push(...tail)
   return lines.join('\n')
 }
 

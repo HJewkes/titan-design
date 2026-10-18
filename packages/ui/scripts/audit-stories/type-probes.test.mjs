@@ -143,7 +143,7 @@ describe('text-floor', () => {
       )
     )
     expect(found.map((f) => f.selector)).toEqual(['.n0-0'])
-    expect(found[0].detail).toMatch(/^8\.5px text under the 10px floor \(error tier/)
+    expect(found[0].detail).toMatch(/^8\.5px text under the 10px floor \(error tier\)$/)
   })
 })
 
