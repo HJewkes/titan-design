@@ -40,13 +40,33 @@ function baseCopy() {
   }
 }
 
+/**
+ * 'check' with a merge base; without one, 'skip' locally but 'fail' in CI, where a skipped check
+ * would silently stop holding the baseline shrink-only. A base with no readable copy also fails
+ * in CI: main holds the baseline, so its absence means REPO_PATH or git broke. Pure.
+ */
+function mergeBaseMode(base, env) {
+  const inCI = env.CI === 'true' || env.CI === '1'
+  if (base.skip) return inCI ? 'fail' : 'skip'
+  return inCI && base.file === null ? 'fail' : 'check'
+}
+
+/** Why a 'fail' mode fails. Pure. */
+const failureReason = (base) =>
+  base.skip
+    ? `CI must fetch origin/main (fetch-depth: 0): ${base.skip}`
+    : `merge base ${base.sha} has no readable ${REPO_PATH}; check REPO_PATH`
+
 const baseline = JSON.parse(readFileSync(BASELINE_PATH, 'utf8'))
 const base = baseCopy()
-if (base.skip) console.warn(`ratchet-baseline: skipping the merge-base check: ${base.skip}`)
-else
+const mode = mergeBaseMode(base, process.env)
+if (mode === 'check')
   console.log(
     `ratchet-baseline: merge base ${base.sha}, base file ${base.file ? 'found' : 'absent'}`
   )
+else if (mode === 'skip')
+  console.warn(`ratchet-baseline: skipping the merge-base check: ${base.skip}`)
+else console.error(`ratchet-baseline: failing the merge-base check in CI: ${failureReason(base)}`)
 
 const isSorted = (values) => values.every((v, i) => i === 0 || values[i - 1] < v)
 
@@ -68,12 +88,43 @@ describe('the committed ratchet baseline', () => {
       expect(keyCount(stories)).toBeLessThanOrEqual(baseline.ceiling[kind])
   })
 
-  it.skipIf(Boolean(base.skip))(
-    'has not grown since the merge base (vacuous when the base has no file, as in the seed PR)',
+  it.skipIf(mode === 'skip')(
+    'has not grown since the merge base (vacuous outside CI when the base has no file)',
     () => {
+      if (mode === 'fail') expect.fail(failureReason(base))
       expect(base.file ? growth(base.file, baseline) : []).toEqual([])
     }
   )
+})
+
+describe('mergeBaseMode', () => {
+  const missing = { skip: 'git or origin/main is unavailable' }
+
+  it('checks whenever a merge base and its copy were read, in CI or not', () => {
+    expect(mergeBaseMode({ sha: 'abc', file: { kinds: {} } }, {})).toBe('check')
+    expect(mergeBaseMode({ sha: 'abc', file: { kinds: {} } }, { CI: 'true' })).toBe('check')
+  })
+
+  it('checks a merge base with no readable copy outside CI', () => {
+    expect(mergeBaseMode({ sha: 'abc', file: null }, {})).toBe('check')
+  })
+
+  it('fails in CI when the merge base has no readable copy', () => {
+    const noCopy = { sha: 'abc', file: null }
+
+    expect(mergeBaseMode(noCopy, { CI: 'true' })).toBe('fail')
+    expect(mergeBaseMode(noCopy, { CI: '1' })).toBe('fail')
+    expect(failureReason(noCopy)).toContain(REPO_PATH)
+  })
+
+  it('skips a missing merge base outside CI', () => {
+    expect(mergeBaseMode(missing, {})).toBe('skip')
+  })
+
+  it('fails instead of skipping when CI is set and the merge base is missing', () => {
+    expect(mergeBaseMode(missing, { CI: 'true' })).toBe('fail')
+    expect(mergeBaseMode(missing, { CI: '1' })).toBe('fail')
+  })
 })
 
 describe('growth', () => {
