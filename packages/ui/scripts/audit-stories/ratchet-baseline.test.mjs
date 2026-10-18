@@ -40,13 +40,25 @@ function baseCopy() {
   }
 }
 
+/**
+ * 'check' with a merge base; without one, 'skip' locally but 'fail' in CI, where a skipped check
+ * would silently stop holding the baseline shrink-only. Pure.
+ */
+function mergeBaseMode(base, env) {
+  if (!base.skip) return 'check'
+  return env.CI === 'true' || env.CI === '1' ? 'fail' : 'skip'
+}
+
 const baseline = JSON.parse(readFileSync(BASELINE_PATH, 'utf8'))
 const base = baseCopy()
-if (base.skip) console.warn(`ratchet-baseline: skipping the merge-base check: ${base.skip}`)
-else
+const mode = mergeBaseMode(base, process.env)
+if (mode === 'check')
   console.log(
     `ratchet-baseline: merge base ${base.sha}, base file ${base.file ? 'found' : 'absent'}`
   )
+else if (mode === 'skip')
+  console.warn(`ratchet-baseline: skipping the merge-base check: ${base.skip}`)
+else console.error(`ratchet-baseline: failing the merge-base check in CI: ${base.skip}`)
 
 const isSorted = (values) => values.every((v, i) => i === 0 || values[i - 1] < v)
 
@@ -68,12 +80,31 @@ describe('the committed ratchet baseline', () => {
       expect(keyCount(stories)).toBeLessThanOrEqual(baseline.ceiling[kind])
   })
 
-  it.skipIf(Boolean(base.skip))(
+  it.skipIf(mode === 'skip')(
     'has not grown since the merge base (vacuous when the base has no file, as in the seed PR)',
     () => {
+      expect(base.skip, 'CI must fetch origin/main (fetch-depth: 0)').toBeUndefined()
       expect(base.file ? growth(base.file, baseline) : []).toEqual([])
     }
   )
+})
+
+describe('mergeBaseMode', () => {
+  const missing = { skip: 'git or origin/main is unavailable' }
+
+  it('checks whenever a merge base was read, in CI or not', () => {
+    expect(mergeBaseMode({ sha: 'abc', file: null }, {})).toBe('check')
+    expect(mergeBaseMode({ sha: 'abc', file: null }, { CI: 'true' })).toBe('check')
+  })
+
+  it('skips a missing merge base outside CI', () => {
+    expect(mergeBaseMode(missing, {})).toBe('skip')
+  })
+
+  it('fails instead of skipping when CI is set and the merge base is missing', () => {
+    expect(mergeBaseMode(missing, { CI: 'true' })).toBe('fail')
+    expect(mergeBaseMode(missing, { CI: '1' })).toBe('fail')
+  })
 })
 
 describe('growth', () => {
