@@ -12,6 +12,9 @@ const REGISTERED = [
   'router/catalogue.ts',
   'router/route.ts',
   'router/route.test.ts',
+  'router/catalogue-drift.test.ts',
+  '../visual-router.ts',
+  '../../docs/visual-router.md',
 ]
 
 // Reserved example domains are the only email hosts synthetic fixtures may use.

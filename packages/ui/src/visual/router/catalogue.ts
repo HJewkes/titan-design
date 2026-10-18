@@ -165,7 +165,7 @@ export const CATALOGUE: readonly VisualType[] = [
     budget: '3 to 8 axes and at most 3 series.',
     ...gap('new'),
     basis: 'ui/charts/radar',
-    fallback: ['bar', 'line'],
+    fallback: ['bar'],
   },
   {
     id: 'polar',
@@ -360,9 +360,10 @@ export const CATALOGUE: readonly VisualType[] = [
     ],
     patterns: [],
     budget: 'Up to 5 series.',
-    ...have('LineChart', 'Components/Organisms/LineChart'),
-    basis: 'ui/charts/line-chart; slope and bump are V2, ridgeline V5',
-    fallback: [],
+    ...gap('in-flight'),
+    basis:
+      'ui/charts/line-chart, built but not exported yet (TD-34); slope and bump are V2, ridgeline V5',
+    fallback: ['scatter', 'bar'],
   },
   {
     id: 'gantt',
@@ -525,7 +526,7 @@ export const CATALOGUE: readonly VisualType[] = [
     budget: '4 to 7 steps.',
     ...gap('template'),
     basis: 'StageGrid plus a LineChart sentiment row',
-    fallback: ['line', 'timeline'],
+    fallback: ['timeline'],
   },
   {
     id: 'service-blueprint',
