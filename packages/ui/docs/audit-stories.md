@@ -92,7 +92,9 @@ printed lines. The PNGs show what geometry cannot measure; look at them too.
 - `rendered`: `false` means the story did not render; `error` says why.
 - `blockers`, `warnings`, `contrast_token`: arrays of `{ kind, selector, detail }`. `selector` is a
   short path from `#storybook-root` (a `data-testid` when one exists); `detail` carries the measured
-  numbers, such as the box that left the viewport and by how far.
+  numbers, such as the box that left the viewport and by how far. A finding whose kind enforces a
+  design rule also carries `rule`, its id in [design-rules.md](./design-rules.md) (`DR-LA-04` for
+  `stacked-inset`); the map is `scripts/audit-stories/rules.mjs`.
 - `metrics`, `axe.violations`: raw page metrics and the axe contrast result.
 - `shot`: the PNG, relative to the output directory.
 
