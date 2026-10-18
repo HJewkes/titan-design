@@ -181,12 +181,19 @@ test('a node reports its data-concept and its ARIA state', async ({ page }) => {
     current: 'page',
     pressed: null,
     checked: null,
+    sort: null,
     disabled: false,
   })
   expect(byTestId(layout, 'disabled-child').state).toMatchObject({
     pressed: 'true',
     disabled: true,
   })
+})
+
+test('a node reports its aria-sort, and none counts as unsorted', async ({ page }) => {
+  const layout = await collect(page)
+  expect(byTestId(layout, 'sorted').state).toMatchObject({ sort: 'ascending' })
+  expect(byTestId(layout, 'unsorted').state).toMatchObject({ sort: null })
 })
 
 test('a story audit parameter resolves its selectors to node ids', async ({ page }) => {
