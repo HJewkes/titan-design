@@ -75,7 +75,7 @@ describe('visual catalogue', () => {
 
     expect(TYPE_BY_ID.size).toBe(45)
     expect(CATALOGUE).toHaveLength(45)
-    expect(counts).toEqual({ have: 8, 'in-flight': 2, ng: 13, new: 11, template: 9, skip: 2 })
+    expect(counts).toEqual({ have: 7, 'in-flight': 3, ng: 13, new: 11, template: 9, skip: 2 })
   })
 
   it('points every notThis and fallback at a type in the catalogue', () => {
