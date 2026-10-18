@@ -4,7 +4,7 @@
 import { toHex } from './colour.mjs'
 import { isMono } from './font-config.mjs'
 import { inInstance, instanceRoots, isPageScope, isSpecimen } from './instances.mjs'
-import { index, isFlexRow, textByRow, visualLines } from './layout-probes.mjs'
+import { FONT_SIZE_NEAR_MISS_MAX, index, isFlexRow, textByRow, visualLines } from './layout-probes.mjs'
 
 export const CAPS_TRACKING = 'caps-tracking'
 export const CAPS_LABEL_LOOKS = 'caps-label-looks'
@@ -56,9 +56,6 @@ export const LOWERCASE_OPEN_FROM = 12
 export const LOWERCASE_TIGHT_MIN = -0.03
 /** DR-CO-05: a size step this large reads as hero plus unit. */
 export const LINE_HERO_RATIO = 1.5
-// font-size-near-miss owns size steps up to this (its FONT_SIZE_NEAR_MISS_MAX, which
-// layout-probes.mjs does not export); type-probes.test.mjs pins the hand-off between the two.
-export const LINE_NEAR_MISS_MAX = 2
 export const LINE_MAX_WEIGHTS = 2
 export const LINE_MAX_COLOURS = 2
 
@@ -325,8 +322,8 @@ function sizeBreach(line) {
   const sizes = sortedNumbers(line.map((n) => n.text.fontSize))
   if (sizes.length < 2) return null
   const [min, max] = [sizes[0], sizes.at(-1)]
-  if (max / min >= LINE_HERO_RATIO || max - min <= LINE_NEAR_MISS_MAX) return null
-  return `${sizes.length} sizes ${sizes.join(', ')}px (max/min ${+(max / min).toFixed(2)} < ${LINE_HERO_RATIO}, Δ${quarter(max - min)} > ${LINE_NEAR_MISS_MAX}px)`
+  if (max / min >= LINE_HERO_RATIO || max - min <= FONT_SIZE_NEAR_MISS_MAX) return null
+  return `${sizes.length} sizes ${sizes.join(', ')}px (max/min ${+(max / min).toFixed(2)} < ${LINE_HERO_RATIO}, Δ${quarter(max - min)} > ${FONT_SIZE_NEAR_MISS_MAX}px)`
 }
 
 function lineBreaches(line) {
