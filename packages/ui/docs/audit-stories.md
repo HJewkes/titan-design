@@ -58,6 +58,17 @@ Kinds from `scripts/audit-stories/colour-probes.mjs` and `elevation-probes.mjs`.
 | `glow-scope`          | DR-CO-15 | A glow sits where the registry row says it may not. A glow layer is not inset, has x = y = 0, blur > 0 and a chromatic colour (C > 0.06), as `theme/elevation-planes.ts` `glowShadow` draws it; a focus ring (blur 0) is not one. It fires on a glow box over 24px on either side, on a glow node with its own text, on one inside an `svg`, and on the second and later glow in one instance (`instanceRoots`, so each cell of an `--all-colors`-style variant grid is its own instance). One finding per node. Detail: `glow on a 40×40 box (limit 24px)`, `glow 2 of 2 in one instance (limit 1)`.                                                                                                                                                                    |
 | `glyph-drift`         | DR-RB-04 | Two copies of one icon in one instance differ by more than 1px in width or height, or paint different colours on the same backdrop (the registry row's ">1px or any colour"). An icon is an `svg` 48px or smaller on both sides; copies share the collector's `glyph` (a geometry hash, or `data-icon`). The backdrop is the composited opaque fill behind the icon, so an icon in a filled button may take the on-\* colour. Copies whose controls differ in state (selected, current, pressed, checked, disabled), or that the story gives different roles in `parameters.audit.glyphRoles`, are not compared. One finding per glyph per instance, on the first copy that differs. Detail: `glyph 1x2y3z: size 18×18 vs 16×16 at [data-testid="a"] > svg (limit 1px)`. |
 
+**Exemptions decided before promotion (TD-957).** Neither kind exempts the two families that
+carried most of its findings, because neither rule's text carves them out:
+
+- `glow-scope`, one glow per light in a multi-light panel (`FatigueLights` and the cards and panels
+  that compose it). DR-CO-15 says a glow marks only a small live or alert indicator, at most one per
+  view. Three lights that glow at once, ok-tone lights among them, are not that, so the second and
+  later glows stay findings. The fix is TD-965.
+- `nested-lift`, chart bars with a contact shadow inside a lifted card (the ROM bars inside
+  `LiveFatigueCard`). DR-CO-14 says lift is used once per content stack. Its example is a card, but
+  the rule does not carve out data marks, and an ambiguous rule is not exempted. The fix is TD-966.
+
 ### Spacing-relation warnings (TD-937)
 
 Kinds from `scripts/audit-stories/relation-probes.mjs`. Each is a warning. A threshold that a
