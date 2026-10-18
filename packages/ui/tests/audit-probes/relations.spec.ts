@@ -20,6 +20,7 @@ const negatives = [
   'sg-token',
   'sg-outside',
   'sg-spread',
+  'sg-row',
   'db-ok',
   'db-centred',
   'ce-same',

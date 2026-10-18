@@ -249,6 +249,21 @@ describe('in-surface-section-gap (DR-LA-08)', () => {
       judge(noToken, { declared: {} }).filter((f) => f.kind === IN_SURFACE_SECTION_GAP)
     ).toEqual([])
   })
+
+  it('skips the column gaps of a row, such as a table header', () => {
+    const header = tree(
+      card('0', null, [0, 0, 300, 68], 24, { layout: row }),
+      bar('0.0', '0', 24, 24, { w: 60, role: 'columnheader' }),
+      bar('0.1', '0', 116, 24, { w: 60, role: 'columnheader' })
+    )
+    expect(of(header, IN_SURFACE_SECTION_GAP)).toEqual([])
+  })
+
+  it('skips a stack of table cells', () => {
+    const cells = stack(20)
+    for (const n of cells.nodes.slice(1)) n.role = 'cell'
+    expect(of(cells, IN_SURFACE_SECTION_GAP)).toEqual([])
+  })
 })
 
 describe('dead-band (DR-LA-09)', () => {

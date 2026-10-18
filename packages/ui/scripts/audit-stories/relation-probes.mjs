@@ -241,9 +241,12 @@ export function judgeInSurfaceSectionGap({ nodes }, declared = {}) {
   return nodes.flatMap((container) => {
     const surface = surfaceOf(container.id)
     if (!surface) return []
+    // stack-lg is a vertical step: a row's column gaps (a table header's cells) answer to inline steps.
     const { axis, runs } = stackRuns(container, children)
+    if (axis !== 'y') return []
     return runs
       .filter((run) => !spreadsChildren(container, run, axis))
+      .filter((run) => !run.some((n) => TABULAR_ROLES.has(n.role)))
       .flatMap((run) => sectionGaps(container, run, axis, children, declared, limit))
       .map(({ a, b, visible }) => ({
         kind: IN_SURFACE_SECTION_GAP,
