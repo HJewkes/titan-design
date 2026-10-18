@@ -1,7 +1,7 @@
 // Layout collector for the D-35 DOM probes (TD-650). Both functions are serialised into the page, so
 // they use browser globals and reach each other only as page globals: install them with
 // `layoutCollectorSource` (one classic script), then call `collectLayout` from page.evaluate.
-/* global document, getComputedStyle */
+/* global document, getComputedStyle, window */
 
 // Runs in the page. A short, stable selector for a finding: up to four steps from `el` towards
 // `root`, stopping at a data-testid. Each step is the tag, its role and aria-label when present, and
@@ -185,8 +185,111 @@ export function collectLayout({ spacingVars = [] } = {}) {
     }
   }
 
+  // --- colour: every computed colour becomes { r, g, b, a } (0-255, alpha 0-1). A colour the
+  // regex cannot read (oklch(), color()) is painted on the canvas and read back.
+  const pixel = Object.assign(document.createElement('canvas'), { width: 1, height: 1 }).getContext(
+    '2d',
+    { willReadFrequently: true }
+  )
+  function rgbaOf(colour) {
+    if (!colour || colour === 'transparent') return { r: 0, g: 0, b: 0, a: 0 }
+    const m = colour.match(/^rgba?\(([^)]+)\)$/)
+    if (m) {
+      const [r, g, b, a = '1'] = m[1].split(/[\s,/]+/).filter(Boolean)
+      return { r: +r, g: +g, b: +b, a: parseFloat(a) }
+    }
+    pixel.clearRect(0, 0, 1, 1)
+    pixel.fillStyle = colour
+    pixel.fillRect(0, 0, 1, 1)
+    const [r, g, b, a] = pixel.getImageData(0, 0, 1, 1).data
+    return { r, g, b, a: a / 255 }
+  }
+  const hex = ({ r, g, b }) =>
+    `#${[r, g, b]
+      .map((c) =>
+        Math.round(Math.min(255, Math.max(0, c)))
+          .toString(16)
+          .padStart(2, '0')
+      )
+      .join('')}`
+  // sRGB "over", rounded to a byte at each layer as color-checks.ts compositeOver does.
+  const over = (top, base) => {
+    const mix = (k) => Math.round(((top[k] / 255) * top.a + (base[k] / 255) * (1 - top.a)) * 255)
+    return { r: mix('r'), g: mix('g'), b: mix('b'), a: 1 }
+  }
+
+  // The opaque colour behind an element's text: its own background, then each ancestor's out to
+  // <html>, composited until one is opaque. A background image stops the walk, since its pixels
+  // are unknown. The canvas behind <html> is white.
+  const CANVAS = { colour: { r: 255, g: 255, b: 255, a: 1 }, image: false }
+  const backdrops = new Map()
+  function backdropOf(el) {
+    if (!el) return CANVAS
+    if (backdrops.has(el)) return backdrops.get(el)
+    const cs = getComputedStyle(el)
+    const bg = rgbaOf(cs.backgroundColor)
+    let out
+    if (cs.backgroundImage !== 'none') out = { colour: null, image: true }
+    else if (bg.a >= 1) out = { colour: bg, image: false }
+    else {
+      const below = backdropOf(el.parentElement)
+      out = below.image
+        ? below
+        : { colour: bg.a > 0 ? over(bg, below.colour) : below.colour, image: false }
+    }
+    backdrops.set(el, out)
+    return out
+  }
+
+  // Opacity multiplies down the tree, so an element's effective opacity is the product of its own
+  // and every ancestor's, out to <html>.
+  const opacities = new Map()
+  function effectiveOpacityOf(el) {
+    if (!el) return 1
+    if (!opacities.has(el))
+      opacities.set(el, Number(getComputedStyle(el).opacity) * effectiveOpacityOf(el.parentElement))
+    return opacities.get(el)
+  }
+
+  const styleOf = (el, cs) => ({
+    color: cs.color,
+    backgroundColor: cs.backgroundColor,
+    hasBackgroundImage: cs.backgroundImage !== 'none',
+    opacity: Number(cs.opacity),
+    effectiveOpacity: effectiveOpacityOf(el),
+    boxShadow: cs.boxShadow,
+    direction: cs.direction,
+    textAlign: cs.textAlign,
+  })
+
+  const ownWords = (nodes) =>
+    nodes
+      .map((n) => n.textContent.trim())
+      .join(' ')
+      .replace(/\s+/g, ' ')
+      .slice(0, 40)
+
+  function textStyleOf(el, cs, nodes) {
+    const backdrop = backdropOf(el)
+    return {
+      textTransform: cs.textTransform,
+      // Tracking is set in hundredths of an em, so it keeps finer steps than the quarter-px grid.
+      letterSpacing: Math.round((parseFloat(cs.letterSpacing) || 0) * 100) / 100,
+      fontWeight: Number(cs.fontWeight),
+      family: cs.fontFamily
+        .split(',')[0]
+        .trim()
+        .replace(/^['"]|['"]$/g, ''),
+      color: cs.color,
+      backdrop: backdrop.colour ? hex(backdrop.colour) : null,
+      backdropImage: backdrop.image,
+      ownText: ownWords(nodes),
+    }
+  }
+
   function textOf(el, cs) {
-    const chars = charRects(ownTextNodes(el))
+    const nodes = ownTextNodes(el)
+    const chars = charRects(nodes)
     if (!chars.length) return null
     const lines = groupLines(chars)
     return {
@@ -198,7 +301,60 @@ export function collectLayout({ spacingVars = [] } = {}) {
       right: q(Math.max(...chars.map((c) => c.r.right))),
       first: lineMetrics(lines[0]),
       last: lineMetrics(lines[lines.length - 1]),
+      ...textStyleOf(el, cs, nodes),
     }
+  }
+
+  // --- svg: a glyph identity (two copies of one icon hash alike) and the colour it paints.
+  const GEOMETRY = {
+    path: ['d'],
+    polygon: ['points'],
+    polyline: ['points'],
+    circle: ['cx', 'cy', 'r'],
+    ellipse: ['cx', 'cy', 'rx', 'ry'],
+    rect: ['x', 'y', 'width', 'height', 'rx'],
+    line: ['x1', 'y1', 'x2', 'y2'],
+  }
+  const djb2 = (s) => {
+    let h = 5381
+    for (let i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) >>> 0
+    return h.toString(36)
+  }
+  function glyphOf(svg) {
+    const icon = svg.getAttribute('data-icon')
+    if (icon) return icon
+    const shapes = [...svg.querySelectorAll(Object.keys(GEOMETRY).join(','))]
+    const geometry = shapes.map(
+      (s) => `${s.tagName}(${GEOMETRY[s.tagName].map((a) => s.getAttribute(a) ?? '').join(' ')})`
+    )
+    return geometry.length ? djb2(geometry.join(';')) : null
+  }
+  function paintOf(svg) {
+    for (const shape of svg.querySelectorAll(Object.keys(GEOMETRY).join(','))) {
+      const cs = getComputedStyle(shape)
+      if (cs.stroke !== 'none') return cs.stroke
+      if (cs.fill !== 'none') return cs.fill
+    }
+    return null
+  }
+
+  // --- semantics the probes key on.
+  const ariaValue = (el, name) => {
+    const v = el.getAttribute(name)
+    return v && v !== 'false' ? v : null
+  }
+  const stateOf = (el) => ({
+    selected: el.getAttribute('aria-selected') === 'true',
+    current: ariaValue(el, 'aria-current'),
+    pressed: ariaValue(el, 'aria-pressed'),
+    checked: ariaValue(el, 'aria-checked'),
+    disabled: Boolean(el.closest('[disabled], [aria-disabled="true"]')),
+  })
+  // RN-web renders accessibilityRole="header" as role="heading"; ARIA's default level is 2.
+  function headingOf(el) {
+    if (el.getAttribute('role') === 'heading') return Number(el.getAttribute('aria-level')) || 2
+    const tag = el.tagName.match(/^H([1-6])$/)
+    return tag ? Number(tag[1]) : null
   }
 
   // getComputedStyle reports the used width of an auto margin, so the keyword comes from the
@@ -210,6 +366,7 @@ export function collectLayout({ spacingVars = [] } = {}) {
 
   function describe(el, id, parent) {
     const cs = getComputedStyle(el)
+    const svg = el.tagName.toLowerCase() === 'svg'
     return {
       id,
       parent,
@@ -236,6 +393,11 @@ export function collectLayout({ spacingVars = [] } = {}) {
       paints: paintsBox(el, cs),
       text: textOf(el, cs),
       ink: null,
+      style: styleOf(el, cs),
+      ...(svg ? { glyph: glyphOf(el), paint: paintOf(el) } : {}),
+      concept: el.getAttribute('data-concept'),
+      state: stateOf(el),
+      heading: headingOf(el),
     }
   }
 
@@ -274,6 +436,33 @@ export function collectLayout({ spacingVars = [] } = {}) {
     )
   }
 
+  // A story's `parameters.audit` names elements by selector: `concepts` maps a concept to selectors,
+  // `glyphRoles` maps a selector to a role. Each selector becomes the ids of collected nodes. The
+  // parameters come from Storybook's preview, which is internal API; outside Storybook there are none.
+  function storyAudit() {
+    const declared = window.__STORYBOOK_PREVIEW__?.currentRender?.story?.parameters?.audit ?? {}
+    const idsOf = (selector) => {
+      try {
+        return [...root.querySelectorAll(selector)]
+          .filter((el) => collected.has(el))
+          .map((el) => ids.get(el))
+      } catch {
+        return []
+      }
+    }
+    const list = (v) => (Array.isArray(v) ? v : [v])
+    const concepts = Object.fromEntries(
+      Object.entries(declared.concepts ?? {}).map(([name, sels]) => [
+        name,
+        list(sels).flatMap(idsOf),
+      ])
+    )
+    const glyphRoles = {}
+    for (const [selector, role] of Object.entries(declared.glyphRoles ?? {}))
+      for (const id of idsOf(selector)) glyphRoles[id] = role
+    return { concepts, glyphRoles }
+  }
+
   const ids = new Map()
   const collected = new Set()
   const idOf = (el) => {
@@ -295,7 +484,12 @@ export function collectLayout({ spacingVars = [] } = {}) {
     nodes.push(describe(el, ids.get(el), nearestCollected(el)))
   }
   assignInk(nodes)
-  return { nodes, truncated: nodes.length >= MAX_NODES, declared: resolveSpacingVars() }
+  return {
+    nodes,
+    truncated: nodes.length >= MAX_NODES,
+    declared: resolveSpacingVars(),
+    audit: storyAudit(),
+  }
 }
 
 export const layoutCollectorSource = `${buildSelectorOf}\n${collectLayout}`
