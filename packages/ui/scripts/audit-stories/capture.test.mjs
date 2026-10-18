@@ -114,6 +114,27 @@ describe('summarise line cap', () => {
   it('leaves the command one line for the dom.json path', () => {
     expect(summarise(many(100), MAX_SUMMARY_LINES - 1).split('\n')).toHaveLength(29)
   })
+
+  it('keeps a ratchet failure and the ratchet line inside 30 lines among 100 blockers', () => {
+    const ratcheted = { ...blocker('text-floor', 'span.tiny', '8px text'), ratchet: 'new' }
+    const entries = [...many(100), frame({ id: 'other--default', blockers: [ratcheted] })]
+    const report = [
+      {
+        kind: 'text-floor',
+        added: ['other--default span.tiny'],
+        baselined: 0,
+        stale: [],
+        unbaselinedFrames: 0,
+      },
+    ]
+
+    const lines = summarise(entries, MAX_SUMMARY_LINES, report).split('\n')
+
+    expect(lines).toHaveLength(30)
+    expect(lines[0]).toMatch(/^BLOCKER text-floor other--default /)
+    expect(lines[28]).toMatch(/^ratchet text-floor: 1 new \(fail\)/)
+    expect(lines[29]).toMatch(/^2 frames audited/)
+  })
 })
 
 describe('exit codes', () => {
