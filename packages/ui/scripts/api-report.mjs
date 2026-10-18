@@ -25,6 +25,7 @@ const ENTRIES = {
   workout: 'dist/workout.d.ts',
   motion: 'dist/motion.d.ts',
   diagram: 'dist/diagram.d.ts',
+  'visual-router': 'dist/visual-router.d.ts',
   'theme-index': 'dist/theme/index.d.ts',
   'theme-tokens': 'dist/theme/tokens.d.ts',
   'theme-tokens-css': 'dist/theme/tokens-css.d.ts',
