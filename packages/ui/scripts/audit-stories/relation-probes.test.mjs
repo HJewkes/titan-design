@@ -264,6 +264,28 @@ describe('in-surface-section-gap (DR-LA-08)', () => {
     for (const n of cells.nodes.slice(1)) n.role = 'cell'
     expect(of(cells, IN_SURFACE_SECTION_GAP)).toEqual([])
   })
+
+  // A chart card: an svg whose tick labels sit 40px apart, then two blocks `gap` apart under it.
+  const chartCard = (gap) =>
+    tree(
+      card('0', null, [0, 0, 200, 300], 24, { layout: flow }),
+      node('0.0', '0', [24, 24, 152, 120], { tag: 'svg' }),
+      node('0.0.0', '0.0', [24, 24, 152, 120], { tag: 'g' }),
+      bar('0.0.0.0', '0.0.0', 24, 24, { tag: 'text', w: 30, h: 12 }),
+      bar('0.0.0.1', '0.0.0', 24, 76, { tag: 'text', w: 30, h: 12 }),
+      bar('0.0.0.2', '0.0.0', 24, 128, { tag: 'text', w: 30, h: 12 }),
+      bar('0.1', '0', 24, 144 + 8, { margin: [8, 0, gap, 0] }),
+      bar('0.2', '0', 24, 172 + gap)
+    )
+
+  it('skips the children of an svg, which the chart places by coordinates', () => {
+    expect(of(chartCard(8), IN_SURFACE_SECTION_GAP)).toEqual([])
+  })
+
+  it('still flags blocks beside an svg in the same surface', () => {
+    const found = of(chartCard(20), IN_SURFACE_SECTION_GAP)
+    expect(found.map((f) => f.selector)).toEqual(['.n0.1'])
+  })
 })
 
 describe('dead-band (DR-LA-09)', () => {

@@ -233,6 +233,13 @@ function sectionGaps(container, run, axis, children, declared, limit) {
   })
 }
 
+// An svg places its children by coordinates (a chart's tick labels sit where the scale puts them),
+// so the space between them is not a spacing step.
+function inSvg(n, byId) {
+  for (let a = n; a; a = byId.get(a.parent)) if (a.tag === 'svg') return true
+  return false
+}
+
 export function judgeInSurfaceSectionGap({ nodes }, declared = {}) {
   const limit = declared[STACK_LG_VAR]
   if (!(limit > 0)) return []
@@ -240,7 +247,7 @@ export function judgeInSurfaceSectionGap({ nodes }, declared = {}) {
   const surfaceOf = surfaceFinder(byId)
   return nodes.flatMap((container) => {
     const surface = surfaceOf(container.id)
-    if (!surface) return []
+    if (!surface || inSvg(container, byId)) return []
     // stack-lg is a vertical step: a row's column gaps (a table header's cells) answer to inline steps.
     const { axis, runs } = stackRuns(container, children)
     if (axis !== 'y') return []
