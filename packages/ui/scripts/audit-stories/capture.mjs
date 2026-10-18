@@ -5,6 +5,7 @@ import { mkdirSync, readFileSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import { join } from 'node:path'
 import { auditPage, fontSizeDrift, themeGeometryShift } from './checks.mjs'
+import { withRules } from './rules.mjs'
 import { loadSpacingConfig } from './spacing-scale.mjs'
 
 export const EXIT_CLEAN = 0
@@ -68,7 +69,7 @@ export async function captureAll({
   }
   const entries = results.flat()
   addFontSizeDrift(entries)
-  return entries.map(withoutProbeData)
+  return entries.map((e) => withRules(withoutProbeData(e)))
 }
 
 async function captureJob(browser, ctx, job) {
