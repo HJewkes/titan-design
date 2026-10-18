@@ -73,6 +73,19 @@
             "type": "string",
             "pattern": "^(?![/\\\\]|[A-Za-z]:)(?!(.*[/\\\\])?\\.\\.([/\\\\]|$)).+\\.(?:[Mm][Pp]4|[Ww][Ee][Bb][Mm])$"
           },
+          "audio": {
+            "type": "string",
+            "pattern": "^(?![/\\\\]|[A-Za-z]:)(?!(.*[/\\\\])?\\.\\.([/\\\\]|$)).+\\.(?:[Ww][Aa][Vv]|[Mm][Pp]3|[Oo][Gg][Gg]|[Mm]4[Aa])$"
+          },
+          "transcript": {
+            "type": "string",
+            "minLength": 1
+          },
+          "durationMs": {
+            "type": "integer",
+            "minimum": 100,
+            "maximum": 600000
+          },
           "motion": {
             "oneOf": [
               {
@@ -415,6 +428,18 @@
           "baseImage": {
             "type": "string",
             "pattern": "^(?![/\\\\]|[A-Za-z]:)(?!(.*[/\\\\])?\\.\\.([/\\\\]|$)).+\\.[Pp][Nn][Gg]$"
+          },
+          "marks": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{1,32}$"
+            },
+            "additionalProperties": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            }
           }
         },
         "required": [
@@ -453,6 +478,11 @@
                   "required": [
                     "scale"
                   ]
+                },
+                {
+                  "required": [
+                    "marks"
+                  ]
                 }
               ]
             }
@@ -477,6 +507,51 @@
                 {
                   "required": [
                     "scale"
+                  ]
+                },
+                {
+                  "required": [
+                    "marks"
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "required": [
+              "audio",
+              "transcript"
+            ],
+            "not": {
+              "anyOf": [
+                {
+                  "required": [
+                    "args"
+                  ]
+                },
+                {
+                  "required": [
+                    "globals"
+                  ]
+                },
+                {
+                  "required": [
+                    "scale"
+                  ]
+                },
+                {
+                  "required": [
+                    "marks"
+                  ]
+                },
+                {
+                  "required": [
+                    "frameReference"
+                  ]
+                },
+                {
+                  "required": [
+                    "motion"
                   ]
                 }
               ]
@@ -1557,6 +1632,195 @@
               "id",
               "prompt",
               "kind"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9_-]{1,32}$"
+              },
+              "prompt": {
+                "type": "string",
+                "minLength": 1
+              },
+              "required": {
+                "type": "boolean"
+              },
+              "scope": {
+                "type": "string",
+                "enum": [
+                  "variant",
+                  "round"
+                ]
+              },
+              "page": {
+                "type": "string",
+                "pattern": "^[^/\\s#]+\\/[^/\\s#]+#[1-9][0-9]*$"
+              },
+              "topics": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^(ask|component|token|topic):\\S+$"
+                }
+              },
+              "frames": {
+                "minItems": 1,
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_-]{1,32}$"
+                }
+              },
+              "decision": {
+                "type": "string",
+                "enum": [
+                  "iterate",
+                  "ship",
+                  "decide"
+                ]
+              },
+              "touches": {
+                "type": "object",
+                "properties": {
+                  "tokens": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "mode": {
+                          "type": "string",
+                          "enum": [
+                            "light",
+                            "dark"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "name"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "components": {
+                    "default": [],
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "axis": {
+                    "type": "string",
+                    "enum": [
+                      "colour",
+                      "typography",
+                      "spacing",
+                      "api",
+                      "motion"
+                    ]
+                  }
+                },
+                "required": [
+                  "tokens"
+                ],
+                "additionalProperties": false
+              },
+              "kind": {
+                "type": "string",
+                "const": "blind-ab"
+              },
+              "pairs": {
+                "minItems": 1,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "pattern": "^[A-Za-z0-9_-]{1,32}$"
+                    },
+                    "transcript": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "takes": {
+                      "type": "array",
+                      "prefixItems": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "engine": {
+                              "type": "string",
+                              "minLength": 1
+                            },
+                            "src": {
+                              "type": "string",
+                              "pattern": "^(?![/\\\\]|[A-Za-z]:)(?!(.*[/\\\\])?\\.\\.([/\\\\]|$)).+\\.(?:[Ww][Aa][Vv]|[Mm][Pp]3|[Oo][Gg][Gg]|[Mm]4[Aa])$"
+                            },
+                            "durationMs": {
+                              "type": "integer",
+                              "minimum": 100,
+                              "maximum": 600000
+                            }
+                          },
+                          "required": [
+                            "engine",
+                            "src"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "engine": {
+                              "type": "string",
+                              "minLength": 1
+                            },
+                            "src": {
+                              "type": "string",
+                              "pattern": "^(?![/\\\\]|[A-Za-z]:)(?!(.*[/\\\\])?\\.\\.([/\\\\]|$)).+\\.(?:[Ww][Aa][Vv]|[Mm][Pp]3|[Oo][Gg][Gg]|[Mm]4[Aa])$"
+                            },
+                            "durationMs": {
+                              "type": "integer",
+                              "minimum": 100,
+                              "maximum": 600000
+                            }
+                          },
+                          "required": [
+                            "engine",
+                            "src"
+                          ],
+                          "additionalProperties": false
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "transcript",
+                    "takes"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "seed": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "id",
+              "prompt",
+              "kind",
+              "pairs"
             ],
             "additionalProperties": false
           }

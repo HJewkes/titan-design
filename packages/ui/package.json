@@ -74,6 +74,17 @@
         "default": "./dist/motion.js"
       }
     },
+    "./diagram": {
+      "react-native": "./src/diagram.ts",
+      "import": {
+        "types": "./dist/diagram.d.mts",
+        "default": "./dist/diagram.mjs"
+      },
+      "require": {
+        "types": "./dist/diagram.d.ts",
+        "default": "./dist/diagram.js"
+      }
+    },
     "./theme": {
       "react-native": "./src/theme/index.ts",
       "import": {
@@ -154,13 +165,15 @@
     "test:visual:contrast:update": "node scripts/update-contrast-stories-baseline.mjs",
     "test:offline-fonts": "playwright test --config playwright.offline-fonts.config.ts",
     "test:audit-probes": "playwright test --config playwright.audit-probes.config.ts",
+    "test:capture": "playwright test --config playwright.capture.config.ts",
     "prepublishOnly": "node scripts/ci-only-publish.mjs && pnpm build && vitest --run --project threads --project local-time --project types --project stories-axe",
     "lint:colors:baseline": "node scripts/update-raw-color-baseline.mjs",
     "storybook:isolated": "node scripts/storybook-launch.mjs --isolated",
     "storybook:ports": "node scripts/storybook-launch.mjs --list",
     "storybook:reap": "node scripts/storybook-launch.mjs --reap --list",
     "storybook:reap:all": "node scripts/storybook-launch.mjs --reap=all --list",
-    "audit:stories": "node scripts/audit-stories.mjs"
+    "audit:stories": "node scripts/audit-stories.mjs",
+    "audit:stories:baseline": "node scripts/update-audit-stories-baseline.mjs"
   },
   "peerDependencies": {
     "nativewind": "^4.2.1",

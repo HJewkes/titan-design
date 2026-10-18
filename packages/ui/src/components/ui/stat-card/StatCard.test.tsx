@@ -1,11 +1,12 @@
-import { describe, it, expect } from 'vitest'
+import { afterEach, describe, it, expect, vi } from 'vitest'
+import { stubReducedMotion } from '../../../test/reduced-motion-stub'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { Text } from 'react-native'
 
-import { capturedClassNames } from '../../../test/classname-capture'
+import { capturedByNode, capturedClassNames } from '../../../test/classname-capture'
 import { resolveAll, spacingClassesOf } from '../../../test/spacing-resolver'
-import { StatCard, StatCardHeader, type StatCardProps } from './StatCard'
+import { StatCard, StatCardFigure, StatCardHeader, type StatCardProps } from './StatCard'
 
 function renderCard(props: Partial<StatCardProps> = {}) {
   return render(
@@ -140,6 +141,55 @@ describe('StatCardHeader', () => {
     const { container } = render(
       <StatCardHeader title="Bodyweight" trailing={<Text>On track</Text>} />
     )
+    expect(await axe(container)).toHaveNoViolations()
+  })
+})
+
+describe('StatCardFigure with progress', () => {
+  afterEach(() => vi.unstubAllGlobals())
+  const figureText = () => screen.getByTestId('figure')
+  const figureClasses = () => capturedByNode.get(figureText())?.split(' ') ?? []
+
+  it.each([
+    [0, '0.0 lb'],
+    [0.5, '147.6 lb'],
+    [1, '196.8 lb'],
+  ])('at progress %s counts the figure to %s', (progress, shown) => {
+    render(<StatCardFigure value="196.8 lb" progress={progress} testID="figure" />)
+    expect(figureText().textContent).toBe(shown)
+  })
+
+  it('lands on the exact figure text at progress 1', () => {
+    render(<StatCardFigure value="98,765.4 kg" progress={1} testID="figure" />)
+    expect(figureText().textContent).toBe('98,765.4 kg')
+  })
+
+  it('draws the counting figure in tabular digits', () => {
+    render(<StatCardFigure value="196.8 lb" progress={0.5} testID="figure" />)
+    expect(figureClasses()).toContain('tabular-nums')
+  })
+
+  it('shows the final figure when the reader prefers reduced motion', () => {
+    stubReducedMotion(true)
+    render(<StatCardFigure value="196.8 lb" progress={0.2} testID="figure" />)
+    expect(figureText().textContent).toBe('196.8 lb')
+  })
+
+  it('renders the figure as given, in proportional digits, with no progress', () => {
+    render(<StatCardFigure value="196.8 lb" testID="figure" />)
+    expect(figureText().textContent).toBe('196.8 lb')
+    expect(figureClasses()).not.toContain('tabular-nums')
+  })
+
+  it('names the final figure for assistive tech mid-count', () => {
+    render(<StatCardFigure value="196.8 lb" progress={0.2} testID="figure" />)
+    expect(screen.getByLabelText('196.8 lb')).toBe(figureText())
+  })
+
+  it('has no accessibility violations mid-count in a card', async () => {
+    const { container } = renderCard({
+      figure: <StatCardFigure value="196.8 lb" progress={0.4} />,
+    })
     expect(await axe(container)).toHaveNoViolations()
   })
 })

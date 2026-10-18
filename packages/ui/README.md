@@ -180,7 +180,11 @@ their heavier runtime dependencies or the code of a domain it does not need:
 
 - **`@titan-design/react-ui/motion`** — the motion kit (`MotionProvider`, `Beat`,
   `useLocalTime`, `interpolate`, `spring`, `stagger`, `sequence`, the easing
-  curves, `noise2D`, `random`, `MOTION`). Moved off the root in 0.22.0.
+  curves, `noise2D`, `random`, `MOTION`). Moved off the root in 0.22.0. On web, a
+  `MotionProvider` on a `seekClock` publishes `window.__titanMotion`
+  (`TitanMotionApi`: `seek`, `ready`, `duration`) for a frame-capture renderer.
+  It also carries the video-only components and utils (`EvidenceChip`,
+  `elideSource`), which never shipped on the root.
 
 ## Component API
 
@@ -468,3 +472,7 @@ Use NativeWind platform modifiers when needed:
 ## License
 
 MIT
+
+The `/motion` entry ports or follows MIT, BSD and Apache-2.0 licensed work, each noticed in a `LICENSE*` file beside
+the code in `src/components/ui/motion/`: simplex-noise, Theatre.js, @remotion/paths and its sources, and
+rough-notation with roughjs (the `Annotate` marks and `roughLine` / `roughEllipse`).

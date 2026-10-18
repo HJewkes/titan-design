@@ -2444,6 +2444,78 @@
     },
     {
       "composes": [
+        "DataRow",
+        "FilePathLabel",
+        "Pill",
+        "Typography"
+      ],
+      "family": "custom/Code",
+      "file": "packages/ui/src/components/custom/Code/FileCard.tsx",
+      "name": "FileCard",
+      "props": [
+        {
+          "default": null,
+          "description": "Tailwind classes merged onto the root.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Files that import this one; the `fan_in` row.",
+          "name": "fanIn",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Files this one imports; the `fan_out` row.",
+          "name": "fanOut",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Lines of code; the `loc` row.",
+          "name": "loc",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": "[]",
+          "description": "Further metrics.",
+          "name": "metrics",
+          "required": false,
+          "type": "readonly FileCardMetric[]"
+        },
+        {
+          "default": null,
+          "description": "The repo-relative path.",
+          "name": "path",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "How the file changed against the baseline.",
+          "name": "status",
+          "required": false,
+          "type": "FileCardStatus"
+        }
+      ],
+      "purpose": "FileCard: one file's facts for a map card.",
+      "sources": {
+        "props": "packages/ui/src/components/custom/Code/FileCard.tsx",
+        "status": "packages/ui/src/components/custom/Code/FileCard.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-code-filecard--default"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
         "Pill"
       ],
       "family": "custom/Code",
@@ -2589,7 +2661,9 @@
     },
     {
       "composes": [
+        "Pill",
         "StatusDot",
+        "StatusGlyph",
         "Tooltip"
       ],
       "family": "custom/Fatigue",
@@ -2609,6 +2683,13 @@
           "name": "spread",
           "required": false,
           "type": "boolean"
+        },
+        {
+          "default": "dots",
+          "description": "`dots` (default) are glowing status dots; `chips` are neutral pills led by a status glyph.",
+          "name": "variant",
+          "required": false,
+          "type": "\"dots\" | \"chips\""
         }
       ],
       "purpose": "",
@@ -2619,6 +2700,7 @@
       "status": "candidate",
       "storyIds": [
         "custom-fatigue-fatigue-lights--across-states",
+        "custom-fatigue-fatigue-lights--default",
         "custom-fatigue-fatigue-lights--spread"
       ],
       "tier": "organism"
@@ -3073,17 +3155,50 @@
       "tier": "organism"
     },
     {
-      "composes": [],
+      "composes": [
+        "Eyebrow",
+        "StatusGlyph",
+        "Tooltip",
+        "Typography"
+      ],
       "family": "custom/Fatigue",
       "file": "packages/ui/src/components/custom/Fatigue/VerdictHero.tsx",
       "name": "VerdictHero",
       "props": [
         {
           "default": null,
+          "description": "A label above the word naming what was read (\"HOW IT MOVED · WORST SET #2\").",
+          "name": "kicker",
+          "required": false,
+          "type": "ReactNode"
+        },
+        {
+          "default": null,
+          "description": "Lead with the RPE number.",
+          "name": "lead",
+          "required": false,
+          "type": "\"rpe\" | \"word\""
+        },
+        {
+          "default": null,
+          "description": "The set was not scored: `title` shows in place of the word, `reason` is the glyph's tip and spoken name.",
+          "name": "noVerdict",
+          "required": false,
+          "type": "{ title: string; reason: string; }"
+        },
+        {
+          "default": null,
           "description": "Exact (unrounded) RPE estimate; rounded to the conventional 0.5 for display.",
           "name": "rpe",
           "required": true,
           "type": "number | null"
+        },
+        {
+          "default": null,
+          "description": "`card` sets the word at h3; `wall` at h2 for reading across a room.",
+          "name": "scale",
+          "required": false,
+          "type": "\"wall\" | \"card\""
         },
         {
           "default": null,
@@ -3100,9 +3215,10 @@
       },
       "status": "candidate",
       "storyIds": [
-        "custom-fatigue-verdict-hero--across-states"
+        "custom-fatigue-verdict-hero--across-states",
+        "custom-fatigue-verdict-hero--default"
       ],
-      "tier": "atom"
+      "tier": "organism"
     },
     {
       "composes": [
@@ -4011,6 +4127,13 @@
           "name": "strength",
           "required": false,
           "type": "MuscleStrengthSection"
+        },
+        {
+          "default": null,
+          "description": "Unit the `strength` masses arrive in.",
+          "name": "unit",
+          "required": false,
+          "type": "\"kg\" | \"lb\""
         },
         {
           "default": null,
@@ -8086,6 +8209,108 @@
         "custom-workout-setbar--todo"
       ],
       "tier": "molecule"
+    },
+    {
+      "composes": [
+        "SetLossStripParts",
+        "Typography"
+      ],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/SetLossStrip.tsx",
+      "name": "SetLossStrip",
+      "props": [
+        {
+          "default": null,
+          "description": "The `index` of the session's best e1RM; its cell gets the brand dot.",
+          "name": "bestE1rmIndex",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Tailwind overrides for the outer stack, merged with `cn()`.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": "0",
+          "description": "Minimum column count.",
+          "name": "columns",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": "40",
+          "description": "The loss (%) a full-height bar shows.",
+          "name": "lossCeilingPct",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "The `index` of the set the verdict read; it gets a ring and a glyph in `markedTone`.",
+          "name": "markedIndex",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "The verdict word for the marked set, spoken by its glyph and the strip label.",
+          "name": "markedLabel",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": "neutral",
+          "description": "Defaults to `neutral`.",
+          "name": "markedTone",
+          "required": false,
+          "type": "StatusGlyphTone"
+        },
+        {
+          "default": "phone",
+          "description": "Column width and plot height.",
+          "name": "scale",
+          "required": false,
+          "type": "SetLossStripScale"
+        },
+        {
+          "default": null,
+          "description": "The exercise's sets in the order performed.",
+          "name": "sets",
+          "required": true,
+          "type": "readonly SetLossStripSet[]"
+        },
+        {
+          "default": "set-loss-strip",
+          "description": "Defaults to `set-loss-strip`.",
+          "name": "testID",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": "[10, 20, 30]",
+          "description": "Where the VL lines sit (%).",
+          "name": "thresholds",
+          "required": false,
+          "type": "VelocityLossThresholds"
+        }
+      ],
+      "purpose": "One exercise's sets as velocity-loss bars on a fixed scale, the marked set ringed, with set, reps, load and e1RM rows aligned under each bar.",
+      "sources": {
+        "props": "packages/ui/src/components/custom/Workout/SetLossStrip.tsx",
+        "status": "packages/ui/src/components/custom/Workout/SetLossStrip.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-workout-setlossstrip--bilateral",
+        "custom-workout-setlossstrip--default",
+        "custom-workout-setlossstrip--no-data",
+        "custom-workout-setlossstrip--not-scored",
+        "custom-workout-setlossstrip--warm-up"
+      ],
+      "tier": "organism"
     },
     {
       "composes": [
@@ -12325,6 +12550,13 @@
           "type": "number"
         },
         {
+          "default": null,
+          "description": "0..1 from the caller's clock: the number counts up from `min` in tabular digits, the arc fills with it, and both land on `value` exactly at 1.",
+          "name": "progress",
+          "required": false,
+          "type": "number"
+        },
+        {
           "default": "160",
           "description": "Diameter in px.",
           "name": "size",
@@ -13210,6 +13442,90 @@
         "components-atoms-chip--dismissible"
       ],
       "tier": "molecule"
+    },
+    {
+      "composes": [
+        "EvidenceChip",
+        "ScaledPill"
+      ],
+      "family": "ui/chip",
+      "file": "packages/ui/src/components/ui/chip/ChipBand.tsx",
+      "name": "ChipBand",
+      "props": [
+        {
+          "default": null,
+          "description": "The beat's citations, lead first.",
+          "name": "chips",
+          "required": true,
+          "type": "BandChip[]"
+        },
+        {
+          "default": null,
+          "description": "Additional className on the band.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "`rise` fades in and rises; `fade` only fades.",
+          "name": "entry",
+          "required": false,
+          "type": "\"rise\" | \"fade\""
+        },
+        {
+          "default": null,
+          "description": "Chip font size in px.",
+          "name": "fontPx",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": "1080",
+          "description": "Frame height in px; the chip font is 40 px per 1080.",
+          "name": "frameHeight",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": "3",
+          "description": "Most chips shown, counting the lead.",
+          "name": "max",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Seconds since the band's cue.",
+          "name": "progress",
+          "required": true,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Show the end state at any `progress`.",
+          "name": "reducedMotion",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "Band width in px.",
+          "name": "width",
+          "required": true,
+          "type": "number"
+        }
+      ],
+      "purpose": "ChipBand — one beat's citations on a single line at video scale: the lead chip with its citation, the next chips as kind tabs, the rest as a `+d` count.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/chip/ChipBand.tsx",
+        "status": "packages/ui/src/components/ui/chip/ChipBand.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-molecules-chipband--default"
+      ],
+      "tier": "organism"
     },
     {
       "composes": [
@@ -14528,6 +14844,104 @@
     {
       "composes": [
         "Surface",
+        "Typography"
+      ],
+      "family": "ui/map-card",
+      "file": "packages/ui/src/components/ui/map-card/MapCard.tsx",
+      "name": "MapCard",
+      "props": [
+        {
+          "default": null,
+          "description": "The card's spoken name.",
+          "name": "accessibilityLabel",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "The anchor's screen point in px, as `project()` returns it for the node's world point.",
+          "name": "anchor",
+          "required": true,
+          "type": "Point"
+        },
+        {
+          "default": null,
+          "description": "The content: a FileCard, a StatCard, a SchemaCard or any node.",
+          "name": "children",
+          "required": true,
+          "type": "ReactNode"
+        },
+        {
+          "default": null,
+          "description": "Tailwind classes merged onto the card's surface.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": "1",
+          "description": "Progress in, 0..1, from the map state.",
+          "name": "enter",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": "0",
+          "description": "Progress out, 0..1, from the map state.",
+          "name": "exit",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "The card stays above this fraction of the viewport height.",
+          "name": "keepOutFraction",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "`auto` sits right of the anchor and flips left near the right edge.",
+          "name": "side",
+          "required": false,
+          "type": "\"auto\" | \"left\" | \"right\""
+        },
+        {
+          "default": "{ width: 320, height: 180 }",
+          "description": "The card's box in px.",
+          "name": "size",
+          "required": false,
+          "type": "MapCardSize"
+        },
+        {
+          "default": null,
+          "description": "A heading above the content.",
+          "name": "title",
+          "required": false,
+          "type": "ReactNode"
+        },
+        {
+          "default": null,
+          "description": "The screen the map renders into.",
+          "name": "viewport",
+          "required": true,
+          "type": "Viewport"
+        }
+      ],
+      "purpose": "MapCard: a pop-out card beside a point on a map, joined to it by a leader line.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/map-card/MapCard.tsx",
+        "status": "packages/ui/src/components/ui/map-card/MapCard.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-molecules-mapcard--default"
+      ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [
+        "Surface",
         "TriggerSurface"
       ],
       "family": "ui/menu",
@@ -14620,6 +15034,13 @@
           "name": "labelPosition",
           "required": false,
           "type": "MetricLabelPosition"
+        },
+        {
+          "default": null,
+          "description": "0..1 from the caller's clock: the first number in `value` counts up from 0 in tabular digits and lands on `value` exactly at 1.",
+          "name": "progress",
+          "required": false,
+          "type": "number"
         },
         {
           "default": "md",
@@ -14832,7 +15253,7 @@
         },
         {
           "default": "0",
-          "description": "Total timeline length in seconds.",
+          "description": "Total timeline length in seconds, published as `__titanMotion.duration`.",
           "name": "durationS",
           "required": false,
           "type": "number"
@@ -14845,6 +15266,293 @@
       },
       "status": "review",
       "storyIds": [],
+      "tier": "atom"
+    },
+    {
+      "composes": [
+        "AnnotationMark"
+      ],
+      "family": "ui/motion",
+      "file": "packages/ui/src/components/ui/motion/annotate/Annotate.tsx",
+      "name": "Annotate",
+      "props": [
+        {
+          "default": null,
+          "description": "Pins the mark's box instead of measuring the children, for a story or a test.",
+          "name": "box",
+          "required": false,
+          "type": "AnnotationBox"
+        },
+        {
+          "default": null,
+          "description": "The annotated content, usually a `Typography` word or phrase.",
+          "name": "children",
+          "required": true,
+          "type": "ReactNode"
+        },
+        {
+          "default": null,
+          "description": "Tailwind classes merged onto the root.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Default `error` for the strike-through and the cross, else `primary`.",
+          "name": "color",
+          "required": false,
+          "type": "AnnotationColor"
+        },
+        {
+          "default": null,
+          "description": "Passes of the pen.",
+          "name": "iterations",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Which mark to draw.",
+          "name": "kind",
+          "required": true,
+          "type": "AnnotationKind"
+        },
+        {
+          "default": null,
+          "description": "Clearance round the box, px.",
+          "name": "padding",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "How far the mark is drawn, 0..1.",
+          "name": "progress",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "0 draws clean lines.",
+          "name": "roughness",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Picks the wobble; the same seed draws the same mark on every render.",
+          "name": "seed",
+          "required": false,
+          "type": "string | number"
+        },
+        {
+          "default": null,
+          "description": "Pen width, px; ignored by `highlight`, which fills the padded box height.",
+          "name": "strokeWidth",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Test id on the SVG layer.",
+          "name": "testID",
+          "required": false,
+          "type": "string"
+        }
+      ],
+      "purpose": "Annotate: marks its children with a hand-drawn highlight, underline, box, circle, strike-through or cross, drawn on as `progress` runs 0..1.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/motion/annotate/Annotate.tsx",
+        "status": "packages/ui/src/components/ui/motion/annotate/Annotate.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-molecules-annotate--default"
+      ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [],
+      "family": "ui/motion",
+      "file": "packages/ui/src/components/ui/motion/annotate/AnnotationMark.tsx",
+      "name": "AnnotationMark",
+      "props": [
+        {
+          "default": null,
+          "description": "The annotated area in the parent's px, e.g. a node box after `project`.",
+          "name": "box",
+          "required": true,
+          "type": "AnnotationBox"
+        },
+        {
+          "default": "defaultColor(kind)",
+          "description": "Default `error` for the strike-through and the cross, else `primary`.",
+          "name": "color",
+          "required": false,
+          "type": "AnnotationColor"
+        },
+        {
+          "default": "ANNOTATION_DEFAULTS[kind].iterations",
+          "description": "Passes of the pen.",
+          "name": "iterations",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Which mark to draw.",
+          "name": "kind",
+          "required": true,
+          "type": "AnnotationKind"
+        },
+        {
+          "default": "ANNOTATION_DEFAULTS[kind].padding",
+          "description": "Clearance round the box, px.",
+          "name": "padding",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "How far the mark is drawn, 0..1.",
+          "name": "progress",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": "1",
+          "description": "0 draws clean lines.",
+          "name": "roughness",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Picks the wobble; the same seed draws the same mark on every render.",
+          "name": "seed",
+          "required": false,
+          "type": "string | number"
+        },
+        {
+          "default": "2",
+          "description": "Pen width, px; ignored by `highlight`, which fills the padded box height.",
+          "name": "strokeWidth",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Test id on the SVG layer.",
+          "name": "testID",
+          "required": false,
+          "type": "string"
+        }
+      ],
+      "purpose": "AnnotationMark: a rough-notation style mark (highlight, underline, box, circle, strike-through or crossed-off) drawn round `box` as far as `progress`.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/motion/annotate/AnnotationMark.tsx",
+        "status": "packages/ui/src/components/ui/motion/annotate/AnnotationMark.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-molecules-annotationmark--default"
+      ],
+      "tier": "atom"
+    },
+    {
+      "composes": [],
+      "family": "ui/motion",
+      "file": "packages/ui/src/components/ui/motion/morph/Morph.tsx",
+      "name": "Morph",
+      "props": [
+        {
+          "default": null,
+          "description": "Bows each moving part's path (Manim's `path_arc`): the peak sideways offset as a share of the distance travelled, to the left of travel.",
+          "name": "arc",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Tailwind classes for the stage.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Eases the move; may overshoot.",
+          "name": "ease",
+          "required": false,
+          "type": "Easing"
+        },
+        {
+          "default": null,
+          "description": "The scene the morph leaves.",
+          "name": "from",
+          "required": true,
+          "type": "readonly P[]"
+        },
+        {
+          "default": null,
+          "description": "Stage height in px.",
+          "name": "height",
+          "required": true,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Source keys to target keys that transform although they differ; see `matchParts`.",
+          "name": "keyMap",
+          "required": false,
+          "type": "Readonly<Record<string, string>>"
+        },
+        {
+          "default": null,
+          "description": "0 shows `from`, 1 shows `to`.",
+          "name": "progress",
+          "required": true,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Paints one part's content to fill its own box.",
+          "name": "renderPart",
+          "required": true,
+          "type": "(part: P, layer: MorphLayer<P>) => ReactNode"
+        },
+        {
+          "default": null,
+          "description": "The scene the morph arrives at.",
+          "name": "to",
+          "required": true,
+          "type": "readonly P[]"
+        },
+        {
+          "default": null,
+          "description": "Stage size in px; parts are placed in this box.",
+          "name": "width",
+          "required": true,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Overrides some of `DEFAULT_MORPH_WINDOWS`.",
+          "name": "windows",
+          "required": false,
+          "type": "Partial<MorphWindows>"
+        }
+      ],
+      "purpose": "A keyed morph between two scenes (Manim's TransformMatchingParts): parts whose keys match move to their new box, key-mapped parts move and cross-fade, and the rest fade out and in.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/motion/morph/Morph.tsx",
+        "status": "packages/ui/src/components/ui/motion/morph/Morph.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-molecules-morph--default"
+      ],
       "tier": "atom"
     },
     {
@@ -15876,6 +16584,56 @@
       "status": "candidate",
       "storyIds": [
         "components-molecules-statcard--default"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "SvgIcon",
+        "icons",
+        "statusIcons"
+      ],
+      "family": "ui/status-glyph",
+      "file": "packages/ui/src/components/ui/status-glyph/StatusGlyph.tsx",
+      "name": "StatusGlyph",
+      "props": [
+        {
+          "default": null,
+          "description": "Tailwind overrides for the wrapper, merged with `cn()`.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "The status word, spoken as the glyph's accessible name.",
+          "name": "label",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": "md",
+          "description": "Defaults to `md`.",
+          "name": "size",
+          "required": false,
+          "type": "StatusGlyphSize"
+        },
+        {
+          "default": null,
+          "description": "The condition shown.",
+          "name": "tone",
+          "required": true,
+          "type": "StatusGlyphTone"
+        }
+      ],
+      "purpose": "One status condition as a shaped, coloured mark: circle-check, alert-triangle, octagon-x or a dashed ring.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/status-glyph/StatusGlyph.tsx",
+        "status": "packages/ui/src/components/ui/status-glyph/StatusGlyph.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-atoms-statusglyph--default"
       ],
       "tier": "organism"
     },

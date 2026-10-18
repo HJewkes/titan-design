@@ -5,14 +5,20 @@
  * COMPOSES the shared {@link StatusDot} primitive (glow) wrapped in a {@link Tooltip}
  * that reveals the dimension detail on hover.
  *
- * Warming up (`dimensions === null`) shows three neutral dots.
+ * `variant="chips"` draws each dimension as a neutral {@link Pill} led by a
+ * {@link StatusGlyph}: the shape and colour carry the tone, the label stays in neutral
+ * ink, and the tone word is in the accessible name.
+ *
+ * Warming up (`dimensions === null`) shows three neutral dots (or chips).
  */
 import { View, Text } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { StatusDot, type StatusDotVariant } from '../Workout/StatusDot'
+import { Pill } from '../../ui/pill'
+import { StatusGlyph } from '../../ui/status-glyph'
 import { Tooltip } from '../../ui/tooltip/Tooltip'
 import { useOnSurfaceColor } from '../../ui/surface'
-import { MONO_TEXT, TONE_TOKEN } from './fatigue-tokens'
+import { MONO_TEXT, TONE_GLYPH, TONE_TOKEN } from './fatigue-tokens'
 import type { DimensionTone, FatigueVerdict } from './fatigue-model'
 
 /** Tone → the StatusDot variant, read off the status token `TONE_TOKEN` names for it. */
@@ -26,17 +32,37 @@ export interface FatigueLightsProps {
   dimensions: FatigueVerdict['dimensions'] | null
   /** Distribute the three lights evenly across the full width (space-between). Default false (left-grouped). */
   spread?: boolean
+  /** `dots` (default) are glowing status dots; `chips` are neutral pills led by a status glyph. */
+  variant?: 'dots' | 'chips'
 }
 
-function Light({
-  label,
-  tone,
-  detail,
-}: {
+interface LightProps {
   label: string
   tone: DimensionTone | null
   detail: string
-}) {
+}
+
+function Chip({ label, tone, detail }: LightProps) {
+  const word = tone ? TONE_WORD[tone] : 'warming up'
+  return (
+    <Tooltip label={`${detail} · ${word}`} placement="bottom">
+      <View accessibilityRole="image" accessibilityLabel={`${detail}, ${word}`}>
+        <Pill
+          tone="neutral"
+          size="lg"
+          leading={
+            <StatusGlyph tone={tone ? TONE_GLYPH[tone] : 'neutral'} size="sm" label={word} />
+          }
+          textClassName="text-text-primary"
+        >
+          {label}
+        </Pill>
+      </View>
+    </Tooltip>
+  )
+}
+
+function Dot({ label, tone, detail }: LightProps) {
   const variant: StatusDotVariant = tone ? TONE_VARIANT[tone] : 'neutral'
   const word = tone ? TONE_WORD[tone] : 'warming up'
   const labelColor = useOnSurfaceColor('secondary')
@@ -63,7 +89,12 @@ function Light({
   )
 }
 
-export function FatigueLights({ dimensions, spread = false }: FatigueLightsProps) {
+export function FatigueLights({
+  dimensions,
+  spread = false,
+  variant = 'dots',
+}: FatigueLightsProps) {
+  const Light = variant === 'chips' ? Chip : Dot
   return (
     <View
       testID="fatigue-lights"

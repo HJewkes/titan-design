@@ -113,6 +113,12 @@ export interface BodyMapDetailPanelProps extends ViewProps {
   /** This week's plan for this muscle, mirroring `/api/muscle-plan` (B4). */
   plan?: MusclePlanSection
   /**
+   * Unit the `strength` masses arrive in. The panel only formats and labels
+   * (e1RM, PR and prior-best figures, the mini trend chart); it never converts.
+   * Defaults to `'lb'`.
+   */
+  unit?: 'lb' | 'kg'
+  /**
    * Where the sheet docks. `'bottom'` (default) is the phone slide-up sheet;
    * `'right'` is the wall side-sheet that slides in over the right third
    * without moving the figure beside it.
@@ -190,7 +196,8 @@ function useSheetKeyboard(open: boolean, onClose: () => void) {
     const sheet = sheetRef.current as unknown as HTMLElement | null
     if (!sheet?.focus) return
     openerRef.current = (sheet.ownerDocument?.activeElement as HTMLElement | null) ?? null
-    sheet.focus()
+    // An off-screen sheet mid-slide would otherwise scroll the page to reach it.
+    sheet.focus({ preventScroll: true })
     return () => {
       openerRef.current?.focus?.()
       openerRef.current = null
@@ -256,6 +263,7 @@ export function BodyMapDetailPanel({
   upcomingExercises,
   strength,
   plan,
+  unit,
   placement = 'bottom',
   isOpen,
   visible,
@@ -513,9 +521,9 @@ export function BodyMapDetailPanel({
             </View>
           )}
 
-          {strength != null && <StrengthSection section={strength} />}
+          {strength != null && <StrengthSection section={strength} unit={unit} />}
           {plan != null && <PlanSection section={plan} />}
-          {strength != null && <PrSection section={strength} />}
+          {strength != null && <PrSection section={strength} unit={unit} />}
 
           {!!hasContributing && (
             <View className="mt-stack-lg" testID="body-map-detail-panel-contributing">

@@ -86,6 +86,24 @@ export function makeHotspotRows(
   })
 }
 
+// ---- FileCard ----
+
+/** One invented file, its metrics given out of codewatch's order so a story shows the reordering. */
+export const fileCardFixture = {
+  path: syntheticPath(7),
+  loc: 412,
+  fanIn: 9,
+  fanOut: 4,
+  status: 'renamed' as const,
+  metrics: [
+    { key: 'instability', value: 0.31, delta: -0.04 },
+    { key: 'cyclomatic_max', value: 18, percentile: 92, delta: 3 },
+    { key: 'churn', label: 'Churn', value: 27 },
+    { key: 'function_count', value: 14 },
+    { key: 'max_nesting_depth', value: null },
+  ],
+}
+
 // ---- StatusMark ----
 
 export interface StatusMarkFixture {

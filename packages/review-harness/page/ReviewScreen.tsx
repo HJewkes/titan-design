@@ -22,6 +22,7 @@ function givenText(manifest: Manifest, a: Feedback['answers'][number]): string {
   if (a.pick !== undefined) return optionLabel(manifest, a.pick)
   if (a.picks) return a.picks.map((p) => optionLabel(manifest, p)).join(', ')
   if (a.value !== undefined) return String(a.value)
+  if (a.pairs) return a.pairs.map((p) => `${p.pair} ${p.choice}`).join(', ')
   return a.text ?? '(no answer)'
 }
 

@@ -12,6 +12,8 @@ Generated from `src/arch/component-catalog.json` by `pnpm catalog`. Do not edit 
 | AgentStateLabel | candidate | custom/Agents | An agent's state as a dot and its word, never colour alone. | Indicator, Pill, Typography | custom-agents-agentstatelabel--default |
 | Alert | stable | ui/alert | Alert component for displaying status messages. | — | components-molecules-alert--all-statuses |
 | AnimatedNumber | candidate | ui/animated-number | A number that counts or rolls from `from` to `value` as `progress` goes 0 → 1. | Typography | components-atoms-animatednumber--default |
+| Annotate | candidate | ui/motion | Annotate: marks its children with a hand-drawn highlight, underline, box, circle, strike-through or cross, drawn on as `progress` runs 0..1. | AnnotationMark | components-molecules-annotate--default |
+| AnnotationMark | candidate | ui/motion | AnnotationMark: a rough-notation style mark (highlight, underline, box, circle, strike-through or crossed-off) drawn round `box` as far as `progress`. | — | components-molecules-annotationmark--default |
 | AppShell | candidate | shell | `AppShell` — the generic dashboard chrome: a {@link TopBar} band over a {@link SideNav} rail and a `children` content region. | SideNav, Surface, TopBar, brands | pages-appshell--audiobook-app |
 | Autocomplete | stable | ui/autocomplete | Autocomplete component for searchable dropdown selection. | AutocompleteParts | components-molecules-autocomplete--custom-no-results-text |
 | Avatar | stable | ui/avatar | Avatar component for user/entity representation. | — | components-atoms-avatar--all-sizes |
@@ -34,6 +36,7 @@ Generated from `src/arch/component-catalog.json` by `pnpm catalog`. Do not edit 
 | ChatCard | candidate | custom/Chat | A structured card a message carries in a `data-*` part: a status line, a title, a subtitle, a body, small print and up to three actions. | Button, Card, Typography | custom-chat-chatcard--checkin |
 | Checkbox | stable | ui/checkbox | Checkbox component for boolean inputs. | — | components-molecules-checkbox--all-sizes |
 | Chip | stable | ui/chip | Chip — a `Pill` preset for tags, labels, and filters. | Pill | components-atoms-chip--all-colors |
+| ChipBand | candidate | ui/chip | ChipBand — one beat's citations on a single line at video scale: the lead chip with its citation, the next chips as kind tabs, the rest as a `+d` count. | EvidenceChip, ScaledPill | components-molecules-chipband--default |
 | CircularTimer | candidate | custom/CircularTimer | A circular countdown / countup with a time readout in the center — the graphical sibling of {@link TimerReadout }. | Progress | components-molecules-circulartimer--countdown-midway |
 | CoChangeChip | candidate | custom/ActiveWork | CoChangeChip — one symmetric "these two files change together" pair. | Card, FilePathLabel, Pill, Typography | custom-activework-cochangechip--default |
 | Collapse | stable | ui/collapse | Collapsible content container. | — | components-organisms-accordion--allow-multiple |
@@ -61,10 +64,11 @@ Generated from `src/arch/component-catalog.json` by `pnpm catalog`. Do not edit 
 | ExerciseIndicator | candidate | custom/Workout | A small circular outlined chip for an exercise heading. | SvgIcon, icons | custom-workout-exerciseindicator--all-kinds |
 | Eyebrow | candidate | ui/eyebrow | Eyebrow — an uppercase micro-label used above a value or a section of content (e.g. "Focused · by rank", a stat tile's caption). | Typography | components-molecules-eyebrow--default |
 | FacetBar | candidate | ui/facet-bar | FacetBar — one labelled row of toggle chips for one facet. | Chip, Eyebrow | components-molecules-facetbar--default |
-| FatigueLights | candidate | custom/Fatigue | — | StatusDot, Tooltip | custom-fatigue-fatigue-lights--across-states |
+| FatigueLights | candidate | custom/Fatigue | — | Pill, StatusDot, StatusGlyph, Tooltip | custom-fatigue-fatigue-lights--across-states |
 | FatigueMeter | candidate | custom/Workout | A fatigue meter: a sliding needle over a fixed green→gold→orange→red velocity-loss gradient with VL10/VL20/VL30/stop scale markers. | ZoneTrack | custom-workout-dataviz-fatiguemeter--custom-scale |
 | FileActivityDetail | candidate | custom/ActiveWork | FileActivityDetail — the right-hand pane of {@link FileHistoryExplorer }: one file's full mined history. | Card, DataRow, DateTime, Eyebrow, FileActivityGrowthWell, FileActivityRow, FilePathLabel, Pill, Tile, Typography | custom-activework-fileactivitydetail--default |
 | FileActivityRow | candidate | custom/ActiveWork | FileActivityRow — one file in the ranked "hottest files" list: its path, total touches, the read/write/edit split, and a sparkline of per-session growth. | FilePathLabel, SparkBars, Typography | custom-activework-fileactivityrow--default |
+| FileCard | candidate | custom/Code | FileCard: one file's facts for a map card. | DataRow, FilePathLabel, Pill, Typography | custom-code-filecard--default |
 | FileHistoryExplorer | candidate | custom/ActiveWork | FileHistoryExplorer — a file browser ranked by mined activity instead of alphabetised by name: a KPI strip, a two-pane hottest-files list ⇄ detail, and the repo's strongest co-change pairs. | Card, CoChangeChip, Divider, Eyebrow, FileActivityDetail, FileActivityRow, Tile, Typography | custom-activework-filehistoryexplorer--default |
 | FilePathLabel | candidate | ui/file-path-label | FilePathLabel — a file path with the directory dimmed and the basename bright. | Typography | components-atoms-filepathlabel--base-only |
 | FormField | stable | ui/form-field | FormField component for wrapping form inputs with label, help text, and error states. | — | components-molecules-formfield--complete-form-example |
@@ -100,6 +104,7 @@ Generated from `src/arch/component-catalog.json` by `pnpm catalog`. Do not edit 
 | LiveAuraFrame | candidate | custom/Workout | Full-surface color-flood frame tied to a coaching category. | — | custom-workout-liveauraframe--all-states |
 | LiveFatigueCard | candidate | custom/Fatigue | — | FatigueLights, GhostSpark, RomProgressionChart, Surface, VerdictHero | custom-fatigue-live-fatigue-card--default |
 | LiveFatiguePanel | candidate | custom/Fatigue | — | LiveAuraFrame, LiveFatigueCard, VelocityHero | custom-fatigue-live-fatigue-panel--live-panel-v-2 |
+| MapCard | candidate | ui/map-card | MapCard: a pop-out card beside a point on a map, joined to it by a leader line. | Surface, Typography | components-molecules-mapcard--default |
 | MarkdownProse | candidate | custom/Prose | MarkdownProse — renders a small, predictable markdown subset as themed prose and auto-links references the caller describes. | Typography | custom-prose-markdownprose--code-blocks |
 | Menu | candidate | ui/menu | Menu component for dropdown menus. | Surface, TriggerSurface | components-molecules-menu--controlled |
 | MesoCard | candidate | custom/Workout | A mesocycle card with name, goal, split, week range, an optional volume heatmap strip, and an expandable WeekRow list. | Badge, Card, WeekRow | custom-workout-mesocard--collapsed |
@@ -110,6 +115,7 @@ Generated from `src/arch/component-catalog.json` by `pnpm catalog`. Do not edit 
 | Metric | candidate | ui/metric | — | — | components-molecules-metric--default |
 | MetricTiles | candidate | custom/Workout | MetricTiles — a row of equal-width stat tiles. | Stack, Tile | custom-workout-metrictiles--four-tiles |
 | Modal | candidate | ui/modal | Modal component for dialogs and overlays. | Surface | components-organisms-modal--backdrop-blur |
+| Morph | candidate | ui/motion | A keyed morph between two scenes (Manim's TransformMatchingParts): parts whose keys match move to their new box, key-mapped parts move and cross-fade, and the rest fade out and in. | — | components-molecules-morph--default |
 | MotionProvider | review | ui/motion | Puts every motion hook below it on `clock`, so a seek clock can drive a render frame by frame. | — | — |
 | MuscleGlyph | review | custom/Workout | — | — | — |
 | MuscleGroupChip | candidate | custom/Workout | MuscleGroupChip — a `Pill` preset that labels a muscle group with a volume-status dot. | Pill | custom-workout-musclegroupchip--all-statuses |
@@ -156,6 +162,7 @@ Generated from `src/arch/component-catalog.json` by `pnpm catalog`. Do not edit 
 | SessionsGoalCard | candidate | custom/Workout | A training-days goal on `#/goals`: the count in the rolling window against the commitment, what is due beside it (the rest sit in the tip), then one cell per committed day, a darker cell per day past it, and a marker at the count due by now. | GoalCard, Progress, SegmentedBar, StatCard, wholeBodyCardParts | custom-workout-goals-sessionsgoalcard--default |
 | SetBar | candidate | custom/Workout | ONE set's multi-coloured bar: the butted per-rep colour segments for a single set (`done` = velocity-coloured reps · `active` = performed reps pulsing + grey remainder · `todo` = a solid grey bar), composed over {@link SegmentedBar}. | SegmentedBar | custom-workout-setbar--active |
 | SetBarChart | review | custom/charts | — | — | — |
+| SetLossStrip | candidate | custom/Workout | One exercise's sets as velocity-loss bars on a fixed scale, the marked set ringed, with set, reps, load and e1RM rows aligned under each bar. | SetLossStripParts, Typography | custom-workout-setlossstrip--bilateral |
 | SetRow | candidate | custom/Workout | ONE set row of the unified expanded exercise table. | Typography, VelocityStrip | custom-workout-setrow--done |
 | SetStrip | candidate | custom/Workout | The per-set segmented performance strip: one continuous {@link SetBar} per set (rep intensities as butted color segments, no rep gaps), sets separated by a fixed gap. | SetBar | custom-workout-setstrip--active-range-set |
 | SetTableHeader | candidate | custom/Workout | The expanded-set-table column-header row: SET · PREV · REPS · LOAD · RPE, with the weight column reflecting `unit`. | Typography | custom-workout-settableheader--kg |
@@ -171,6 +178,7 @@ Generated from `src/arch/component-catalog.json` by `pnpm catalog`. Do not edit 
 | StatCard | candidate | ui/stat-card | The stat card template: a header row, a lead figure with one caption, and a body pinned to the bottom. | Card, Typography | components-molecules-statcard--default |
 | StateChip | candidate | ui/chip | StateChip — a `Pill` preset that shows whether a requirement is met. | Pill | components-molecules-statechip--default |
 | StatusDot | candidate | custom/Workout | — | Typography | custom-workout-statusdot--all-variants |
+| StatusGlyph | candidate | ui/status-glyph | One status condition as a shaped, coloured mark: circle-check, alert-triangle, octagon-x or a dashed ring. | SvgIcon, icons, statusIcons | components-atoms-statusglyph--default |
 | StatusMark | candidate | custom/Code | The change vocabulary of the Code family: one Pill, named in words for assistive tech. | Pill | custom-code-statusmark--default |
 | StatusPill | candidate | custom/Workout | Verdict pill: a glowing status dot + coloured verdict text in a tinted capsule. | Pill, StatusDot | custom-workout-statuspill--all-states |
 | Stepper | candidate | custom/stepper | Stepper component for multi-step flows. | — | components-molecules-stepper--active-step-progression |
@@ -211,7 +219,7 @@ Generated from `src/arch/component-catalog.json` by `pnpm catalog`. Do not edit 
 | VelocityLossBands | review | custom/Workout | Velocity-LOSS decision bands for the `hero` variant: the VL20 / VL30 coaching cues (off the running best) drawn as absolutely-positioned bands + dashed threshold lines BEHIND the bars, on the hero's own peak scale so a bar dropping into the amber → red band reads as "these are your last effective reps". | SetBarChart | — |
 | VelocityStrip | candidate | custom/Workout | — | SetBarChart, VelocityStripVariants | custom-workout-dataviz-velocitystrip--all-views |
 | VelocityStripFramed | review | custom/Workout | — | SetBarChart | — |
-| VerdictHero | candidate | custom/Fatigue | — | — | custom-fatigue-verdict-hero--across-states |
+| VerdictHero | candidate | custom/Fatigue | — | Eyebrow, StatusGlyph, Tooltip, Typography | custom-fatigue-verdict-hero--across-states |
 | VolumeLandmarkBar | candidate | custom/Workout | Horizontal weekly-volume bar with MEV / MAV / MRV landmark ticks and a HEAT-scale fill positioned against the MAV target. | DataRow, Typography, ZoneTrack | custom-workout-dataviz-volumelandmarkbar--all-zones |
 | WeekRow | candidate | custom/Workout | A single week within a mesocycle, showing the week number, its workout pills, and a right-aligned vertical intensity indicator. | IntensityBar, Typography, WorkoutPill | custom-workout-weekrow--current-week |
 | WeightBadge | candidate | custom/Workout | — | BaseBadge, Typography, icons | custom-workout-weightbadge--all-variants |

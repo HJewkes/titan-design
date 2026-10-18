@@ -73,6 +73,7 @@
   ],
   "composes": [
     "Alert",
+    "AnnotationMark",
     "Avatar",
     "BaseBadge",
     "Beat",
@@ -99,6 +100,7 @@
     "LiveAuraFrame",
     "MesoProgressBar",
     "Metric",
+    "Morph",
     "MotionProvider",
     "MuscleGlyph",
     "Pill",
@@ -129,7 +131,6 @@
     "Tile",
     "Treemap",
     "TriggerSurface",
-    "Typography",
-    "VerdictHero"
+    "Typography"
   ]
 }

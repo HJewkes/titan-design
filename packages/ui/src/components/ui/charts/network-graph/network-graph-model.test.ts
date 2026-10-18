@@ -517,11 +517,12 @@ describe('edgePath arc', () => {
   it('gives each edge of Mutual pair its own slot and its own path', () => {
     const model = fixtureModel('Mutual pair', forceLayout())
     const slots = edgeSlots(model.drawnEdges)
+    expect(model.edgeShape).toBe('arc')
     const paths = model.drawnEdges.map((edge) =>
       edgePath(
         model.positions[edge.source] as GraphPoint,
         model.positions[edge.target] as GraphPoint,
-        model.edgeShape,
+        'arc',
         slots.get(edge.id as string)
       )
     )

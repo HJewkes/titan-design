@@ -58,6 +58,15 @@ export {
 export { MetricTiles, type MetricTilesProps, type MetricTileData } from './MetricTiles'
 export { ScheduleTiles, type ScheduleTilesProps } from './ScheduleTiles'
 export { SetBar, type SetBarProps } from './SetBar'
+export { SetLossStrip, type SetLossStripProps } from './SetLossStrip'
+export {
+  DEFAULT_LOSS_CEILING_PCT,
+  type SetLossStripSet,
+  type SetLossPurpose,
+  type SetRepMark,
+  type SetLossStripScale,
+  type SetLossMarkTone,
+} from './setLossStripModel'
 export {
   SetStrip,
   type SetStripProps,

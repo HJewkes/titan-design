@@ -9,16 +9,16 @@ export const GAP_OUTLIER = 'gap-outlier'
 export const PROXIMITY_INVERSION = 'proximity-inversion'
 export const FONT_SIZE_NEAR_MISS = 'font-size-near-miss'
 
-const MAX_FINDINGS_PER_KIND = 25
-const MIN_EXCESS = 4 // --space-stack-sm, the smallest stack step
+export const MAX_FINDINGS_PER_KIND = 25
+export const MIN_EXCESS = 4 // --space-stack-sm, the smallest stack step
 const EDGE_FLOOR = 4 // --space-inset-xs
-const PADDING_TOLERANCE = 1
+export const PADDING_TOLERANCE = 1
 const ASYMMETRY_LIMIT = 2
 const FILL_RATIO = 0.8
 const SIDES = ['top', 'right', 'bottom', 'left']
 const PAD_PROP = ['paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft']
-const TABULAR_ROLES = new Set(['cell', 'gridcell', 'columnheader', 'rowheader'])
-const DATA_FILL_ROLES = new Set(['progressbar', 'meter', 'slider'])
+export const TABULAR_ROLES = new Set(['cell', 'gridcell', 'columnheader', 'rowheader'])
+export const DATA_FILL_ROLES = new Set(['progressbar', 'meter', 'slider'])
 const REPLACED_TAGS = new Set(['img', 'canvas', 'video', 'svg'])
 
 const px = (n) => `${+n.toFixed(2)}px`
@@ -31,7 +31,7 @@ const textInk = ({ left, right: r, first, last }) => [
   last.inkBottom - first.inkTop,
 ]
 
-function index(nodes) {
+export function index(nodes) {
   const byId = new Map()
   const children = new Map()
   for (const n of nodes) {
@@ -45,7 +45,7 @@ function index(nodes) {
 // --- P1 stacked-inset -------------------------------------------------------------------------
 
 // Main axis of a container whose children stack, or null when gaps are not a single run.
-function stackAxis({ layout }) {
+export function stackAxis({ layout }) {
   if (layout.display === 'flex' || layout.display === 'inline-flex') {
     if (layout.flexWrap !== 'nowrap') return null
     return layout.flexDirection.startsWith('row') ? 'x' : 'y'
@@ -58,7 +58,7 @@ function stackAxis({ layout }) {
 // accent bar, a tick label), when the surface declares no padding on that axis (nothing positioned
 // the content), or when the surface is a data fill whose size is the value (a progress bar).
 // `axis` is 'x' or 'y'.
-function paddingPlaces(surface, node, axis, byId) {
+export function paddingPlaces(surface, node, axis, byId) {
   if (DATA_FILL_ROLES.has(surface.role)) return false
   const [before, after] = axis === 'x' ? [3, 1] : [0, 2]
   if (surface.pad[before] < PADDING_TOLERANCE && surface.pad[after] < PADDING_TOLERANCE)
@@ -67,7 +67,7 @@ function paddingPlaces(surface, node, axis, byId) {
   return true
 }
 
-const inFlow = (n) => n.layout.position !== 'absolute' && n.layout.position !== 'fixed'
+export const inFlow = (n) => n.layout.position !== 'absolute' && n.layout.position !== 'fixed'
 const span = (b, axis) => (axis === 'x' ? [b[0], right(b)] : [b[1], bottom(b)])
 
 // Invisible padding on the side of `node` that faces the gap, and the free space that padding does
@@ -94,7 +94,7 @@ function hiddenPadding(node, facing, axis, children) {
   return { found, free }
 }
 
-function gapOf(a, b, axis, children) {
+export function gapOf(a, b, axis, children) {
   const layoutGap = span(b.box, axis)[0] - span(a.box, axis)[1]
   const hiddenA = hiddenPadding(a, 'after', axis, children)
   const hiddenB = hiddenPadding(b, 'before', axis, children)
@@ -144,7 +144,7 @@ export function judgeStackedInset({ nodes }) {
 // --- P2 edge-clearance and inset-asymmetry ------------------------------------------------------
 
 // Nearest painted ancestor. An SVG is never a surface: its frame is its painted HTML parent.
-function surfaceFinder(byId) {
+export function surfaceFinder(byId) {
   const cache = new Map()
   const find = (id) => {
     if (id == null) return null
@@ -157,14 +157,14 @@ function surfaceFinder(byId) {
   return find
 }
 
-const innerBox = (s) => [
+export const innerBox = (s) => [
   s.box[0] + s.border[3],
   s.box[1] + s.border[0],
   s.box[2] - s.border[1] - s.border[3],
   s.box[3] - s.border[0] - s.border[2],
 ]
 
-function clearances(content, surface) {
+export function clearances(content, surface) {
   const inner = innerBox(surface)
   return [
     content[1] - inner[1],
@@ -242,7 +242,7 @@ function unionInk(boxes) {
 // Axis 0 is horizontal (left/right), axis 1 vertical (top/bottom). `content` is the union of the
 // children's layout boxes: glyph ink sits unevenly in its box (a ragged right edge, a line box), so
 // ink would flag every card around a paragraph.
-function asymmetryOn(surface, content, axis) {
+export function asymmetryOn(surface, content, axis) {
   const [before, after] = axis === 0 ? [3, 1] : [0, 2]
   if (surface.pad[before] !== surface.pad[after]) return null
   const inner = innerBox(surface)
@@ -279,12 +279,12 @@ export function judgeInsetAsymmetry({ nodes }) {
 
 // --- P3 alignment-near-miss -------------------------------------------------------------------
 
-const ALIGN_TOLERANCE = 1 // the Vercel optical-alignment rule
-const MAX_BAND = 6
+export const ALIGN_TOLERANCE = 1 // the Vercel optical-alignment rule
+export const MAX_BAND = 6
 const HEIGHT_LIMIT = 16
 const LINE_OVERLAP = 0.5
 const q = (v) => Math.round(v * 4) / 4 + 0
-const isFlexRow = ({ layout }) =>
+export const isFlexRow = ({ layout }) =>
   (layout.display === 'flex' || layout.display === 'inline-flex') &&
   layout.flexDirection.startsWith('row')
 
@@ -302,7 +302,7 @@ function firstText(node, children) {
 
 // Flex-wrap puts children on several rows: a child joins the first line whose vertical range its
 // box overlaps by half the smaller height, so only neighbours on one row are compared.
-function visualLines(kids) {
+export function visualLines(kids) {
   const lines = []
   for (const kid of [...kids].sort((a, b) => a.box[1] - b.box[1])) {
     const [top, h] = [kid.box[1], kid.box[3]]
@@ -413,7 +413,7 @@ const ratio = (g, m) => (m ? `${+(g / m).toFixed(1)}×` : '∞×')
 
 // Inked in-flow children of a stack, cut into runs at each divider, each run in main-axis order.
 // Inline children share a line, so a block's gaps are read between its block-level children only.
-function stackRuns(container, children) {
+export function stackRuns(container, children) {
   const axis = stackAxis(container)
   if (!axis) return { axis, runs: [] }
   const blockFlow = !container.layout.display.includes('flex')
@@ -429,7 +429,7 @@ function stackRuns(container, children) {
 }
 
 // Ink gaps between consecutive children of a run; an overlap is a deliberate layering, not a gap.
-const runGaps = (run, axis) =>
+export const runGaps = (run, axis) =>
   run.slice(1).flatMap((b, i) => {
     const a = run[i]
     const g = inkSpan(b, axis)[0] - inkSpan(a, axis)[1]
@@ -450,7 +450,7 @@ function declaredSpacing(container, { a, b }, axis) {
   return flexed ? [ma + mb + gap] : [ma + mb, Math.max(ma, mb)]
 }
 
-const isSectionBreak = (container, gap, axis, declared) => {
+export const isSectionBreak = (container, gap, axis, declared) => {
   const sections = Object.entries(declared)
     .filter(([name]) => name.startsWith(SECTION_PREFIX))
     .map(([, value]) => value)
@@ -462,7 +462,7 @@ const isSectionBreak = (container, gap, axis, declared) => {
 const SPREAD_JUSTIFY = new Set(['space-between', 'space-around', 'space-evenly'])
 // A row that spreads its children (justify-content, auto margins) sets its gaps from the free
 // space, so they say nothing about the author's spacing.
-function spreadsChildren(container, run, axis) {
+export function spreadsChildren(container, run, axis) {
   const [before, after] = axis === 'x' ? [3, 1] : [0, 2]
   return (
     SPREAD_JUSTIFY.has(container.layout.justifyContent) ||
@@ -496,7 +496,7 @@ export function judgeGapOutlier({ nodes, declared = {} }) {
 }
 
 // A child that is itself a stack of two or more inked children: its largest internal gap, or null.
-function innerGap(group, children) {
+export function innerGap(group, children) {
   const { axis, runs } = stackRuns(group, children)
   const members = runs.flat()
   if (members.length < 2) return null
@@ -507,14 +507,14 @@ function innerGap(group, children) {
 // inner must be this many times outer: a group whose items sit about as far apart as it sits from
 // its neighbour is ambiguous, not inverted. S6 inversions the owner raised read 3.5 to 4.25 times;
 // the near-ties (14px against 12px) are the ones this drops.
-const INVERSION_RATIO = 1.5
+export const INVERSION_RATIO = 1.5
 
 // A row of controls (arrows, a pager) is coupled to what it controls on purpose, so sitting clearly
 // nearer its neighbour than its own items are apart (the inversion ratio) is the intended layout.
 // Such a row is still flagged when it is no nearer than its items (a tie, or less than the ratio
 // nearer): the coupling the author wanted did not happen. A row farther from its neighbour than its
 // items are apart is never an inversion.
-function isControlRow(group, children) {
+export function isControlRow(group, children) {
   const kids = runsOf(group, children).flat()
   const controls = kids.filter((k) => k.interactive || hasInteractive(k, children))
   return controls.length >= 2 && controls.length * 2 >= kids.length
@@ -522,7 +522,7 @@ function isControlRow(group, children) {
 
 const runsOf = (group, children) => stackRuns(group, children).runs
 
-function hasInteractive(node, children) {
+export function hasInteractive(node, children) {
   return (children.get(node.id) ?? []).some((c) => c.interactive || hasInteractive(c, children))
 }
 
@@ -561,10 +561,10 @@ export function judgeProximityInversion({ nodes }) {
 
 // --- P5 font-size-near-miss ------------------------------------------------------------------------
 
-const FONT_SIZE_NEAR_MISS_MAX = 2 // a larger step reads as deliberate contrast (a hero and its unit)
+export const FONT_SIZE_NEAR_MISS_MAX = 2 // a larger step reads as deliberate contrast (a hero and its unit)
 
 // Text elements grouped by their nearest flex-row ancestor; text outside any flex row is skipped.
-function textByRow(nodes, byId) {
+export function textByRow(nodes, byId) {
   const rows = new Map()
   for (const n of nodes) {
     if (!n.text) continue
@@ -597,7 +597,7 @@ export function judgeFontSizeNearMiss({ nodes }) {
   })
 }
 
-const capPerKind = (findings, limit) => {
+export const capPerKind = (findings, limit) => {
   const seen = {}
   return findings.filter((f) => (seen[f.kind] = (seen[f.kind] ?? 0) + 1) <= limit)
 }

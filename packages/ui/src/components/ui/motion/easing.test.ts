@@ -9,6 +9,7 @@ import {
   poly,
   smootherstep,
   smoothstep,
+  thereAndBack,
 } from './easing'
 
 describe('linear', () => {
@@ -95,5 +96,23 @@ describe('easing combinators', () => {
     expect([curve(0), curve(0.5), curve(1)]).toEqual([0, 0.5, 1])
     expect(curve(0.25)).toBeCloseTo(atQuarter, 12)
     expect(curve(1e-4) / 1e-4).toBeLessThan(1e-3)
+  })
+})
+
+describe('thereAndBack', () => {
+  // Mutation caught: dropping the mirror (`2 * p` on both halves) never returns to 0.
+  it('starts and ends at rest and peaks at the midpoint', () => {
+    const pulse = thereAndBack()
+    expect(pulse(0)).toBe(0)
+    expect(pulse(0.5)).toBe(1)
+    expect(pulse(1)).toBe(0)
+  })
+
+  // Mutation caught: mirroring about 0.5 with `1 - 2 * p` makes the halves disagree.
+  it('is symmetric about the midpoint and eases each half with f', () => {
+    const pulse = thereAndBack(linear)
+    for (const p of [0.1, 0.2, 0.4]) expect(pulse(p)).toBeCloseTo(pulse(1 - p), 12)
+    expect(pulse(0.25)).toBeCloseTo(0.5, 12)
+    expect(thereAndBack()(0.25)).toBeCloseTo(smootherstep(0.5), 12)
   })
 })

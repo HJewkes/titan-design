@@ -11,6 +11,7 @@ export default defineConfig({
     pages: 'src/pages.ts',
     workout: 'src/workout.ts',
     motion: 'src/motion.ts',
+    diagram: 'src/diagram.ts',
     'theme/index': 'src/theme/index.ts',
     'theme/tokens': 'src/theme/tokens/index.ts',
     'theme/tokens-css': 'src/theme/tokens-css.ts',

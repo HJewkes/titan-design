@@ -82,3 +82,12 @@ export const smoothstep: Easing = (p) => p * p * (3 - 2 * p)
 
 /** Perlin's smootherstep: zero slope and zero curvature at both ends. */
 export const smootherstep: Easing = (p) => p ** 3 * (p * (6 * p - 15) + 10)
+
+/**
+ * Out and home again: 0 at both ends and 1 at the midpoint, each half eased by `f`. Manim's
+ * `there_and_back`, kept for emphasis cues only (a pulse on a mark), never for an entrance.
+ */
+export const thereAndBack =
+  (f: Easing = smootherstep): Easing =>
+  (p) =>
+    f(p < 0.5 ? 2 * p : 2 - 2 * p)

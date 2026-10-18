@@ -1,0 +1,245 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      /* Each data-testid block is one case; typography.spec.ts judges each as its own frame. */
+      body {
+        margin: 0;
+        font-family: 'Fixture Sans', sans-serif;
+        font-size: 14px;
+        color: #111827;
+        background: #ffffff;
+      }
+      #storybook-root {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        padding: 16px;
+      }
+      .caps {
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+      }
+      .overline {
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: #6b7280;
+      }
+      .micro {
+        font-size: 10px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: #9ca3af;
+      }
+      .mono {
+        font-family: 'Fixture Mono', monospace;
+      }
+      .row {
+        display: flex;
+        flex-direction: row;
+        align-items: baseline;
+        gap: 8px;
+      }
+      .badge {
+        padding: 2px 6px;
+        font-size: 12px;
+        color: #166534;
+        background: #dcfce7;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="storybook-root">
+      <!-- caps-tracking (DR-TY-01) -->
+      <div data-testid="ct-tight">
+        <div class="caps" style="letter-spacing: 0.2px">Section</div>
+      </div>
+      <div data-testid="ct-widest">
+        <div class="caps">Section</div>
+      </div>
+      <div data-testid="ct-mono">
+        <div class="caps mono" style="letter-spacing: 0">Section</div>
+      </div>
+      <div data-testid="ct-mixed">
+        <div style="font-size: 12px">Section</div>
+      </div>
+
+      <!-- caps-label-looks (DR-TY-03) -->
+      <div data-testid="cl-two-looks">
+        <div class="overline">Overview</div>
+        <div>Body copy under the label</div>
+        <div class="micro">Details</div>
+      </div>
+      <div data-testid="cl-one-look">
+        <div class="overline">Overview</div>
+        <div>Body copy under the label</div>
+        <div class="overline">Details</div>
+      </div>
+      <div data-testid="cl-tabs" class="row">
+        <div role="tab" tabindex="0" aria-selected="true">
+          <div class="overline" style="color: #2563eb">First</div>
+        </div>
+        <div role="tab" tabindex="-1" aria-selected="false">
+          <div class="overline">Second</div>
+        </div>
+      </div>
+      <div data-testid="cl-table-header" role="table">
+        <div role="row">
+          <div role="columnheader" class="caps" style="font-size: 14px; font-weight: 600">Name</div>
+        </div>
+        <div role="row">
+          <div role="cell" style="font-size: 12px">alpha</div>
+        </div>
+      </div>
+      <div data-testid="cl-table-sorted" role="table">
+        <div role="row" class="row">
+          <div role="columnheader" aria-sort="ascending">
+            <div role="button" tabindex="0" class="overline" style="color: #111827">Name</div>
+          </div>
+          <div role="columnheader" aria-sort="none">
+            <div role="button" tabindex="0" class="overline">Count</div>
+          </div>
+          <div role="columnheader">
+            <div role="button" tabindex="0" class="overline">Date</div>
+          </div>
+        </div>
+        <div role="row">
+          <div role="cell">alpha</div>
+        </div>
+      </div>
+      <div data-testid="cl-table-ok" role="table">
+        <div role="row">
+          <div role="columnheader" class="caps" style="font-weight: 600">Name</div>
+        </div>
+        <div role="row">
+          <div role="cell">alpha</div>
+        </div>
+      </div>
+
+      <!-- text-floor (DR-TY-06) -->
+      <div data-testid="tf-under">
+        <div style="font-size: 8.5px">Tiny note</div>
+      </div>
+      <div data-testid="tf-ten">
+        <div style="font-size: 10px">Small note</div>
+      </div>
+
+      <!-- sizes-per-component (DR-TY-10) -->
+      <div data-testid="sz-five">
+        <div style="font-size: 10px">Ten</div>
+        <div style="font-size: 12px">Twelve</div>
+        <div style="font-size: 14px">Fourteen</div>
+        <div style="font-size: 16px">Sixteen</div>
+        <div style="font-size: 20px">Twenty</div>
+      </div>
+      <div data-testid="sz-page">
+        <div style="font-size: 10px">Ten</div>
+        <div style="font-size: 12px">Twelve</div>
+        <div style="font-size: 14px">Fourteen</div>
+        <div style="font-size: 16px">Sixteen</div>
+        <div style="font-size: 20px">Twenty</div>
+        <div style="font-size: 24px">Twenty-four</div>
+        <div style="font-size: 32px">Thirty-two</div>
+      </div>
+      <div data-testid="sz-four">
+        <div style="font-size: 10px">Ten</div>
+        <div style="font-size: 12px">Twelve</div>
+        <div style="font-size: 14px">Fourteen</div>
+        <div style="font-size: 16px">Sixteen</div>
+      </div>
+      <div data-testid="sz-gallery">
+        <div>
+          <div style="font-size: 10px">Ten</div>
+          <div style="font-size: 11px">Eleven</div>
+          <div style="font-size: 12px">Twelve</div>
+        </div>
+        <div>
+          <div style="font-size: 13px">Thirteen</div>
+          <div style="font-size: 14px">Fourteen</div>
+          <div style="font-size: 15px">Fifteen</div>
+        </div>
+        <div>
+          <div style="font-size: 16px">Sixteen</div>
+          <div style="font-size: 18px">Eighteen</div>
+          <div style="font-size: 20px">Twenty</div>
+        </div>
+      </div>
+
+      <!-- weights-faces (DR-TY-11) -->
+      <div data-testid="wf-three">
+        <div style="font-weight: 700">Value</div>
+        <div style="font-weight: 600">Label</div>
+        <div>Body copy</div>
+      </div>
+      <div data-testid="wf-light">
+        <div>Body copy</div>
+        <div style="font-weight: 300">Caption</div>
+      </div>
+      <div data-testid="wf-families">
+        <div>Body copy</div>
+        <div style="font-family: 'Fixture Display', serif">Heading</div>
+        <div class="mono">Code</div>
+        <div style="font-family: 'Fixture Serif', serif">Quote</div>
+      </div>
+      <div data-testid="wf-two">
+        <div style="font-weight: 600">Label</div>
+        <div>Body copy</div>
+      </div>
+      <div data-testid="wf-three-faces">
+        <div style="font-family: 'Fixture Display', serif">Heading</div>
+        <div>Body copy</div>
+        <div class="mono">Code</div>
+      </div>
+
+      <!-- lowercase-tracking (DR-TY-12) -->
+      <div data-testid="lt-open">
+        <div style="letter-spacing: 0.05em">Sentence case</div>
+      </div>
+      <div data-testid="lt-tight">
+        <div style="font-size: 32px; letter-spacing: -0.05em">Display</div>
+      </div>
+      <div data-testid="lt-zero">
+        <div>Sentence case</div>
+      </div>
+      <div data-testid="lt-tracking-tight">
+        <div style="letter-spacing: -0.025em">Sentence case</div>
+      </div>
+      <div data-testid="lt-small-open">
+        <div style="font-size: 11px; letter-spacing: 0.05em">Sentence case</div>
+      </div>
+      <div data-testid="lt-uppercase">
+        <div class="caps">Sentence case</div>
+      </div>
+
+      <!-- line-style-budget (DR-CO-05) -->
+      <div data-testid="ls-sizes" class="row">
+        <div style="font-size: 16px">Large</div>
+        <div style="font-size: 13px">Middle</div>
+        <div style="font-size: 12px">Small</div>
+      </div>
+      <div data-testid="ls-colours" class="row">
+        <div>First</div>
+        <div style="color: #6b7280">Second</div>
+        <div style="color: #2563eb">Third</div>
+      </div>
+      <div data-testid="ls-hero" class="row">
+        <div style="font-size: 32px">128</div>
+        <div>units</div>
+      </div>
+      <div data-testid="ls-badge" class="row">
+        <div>Name</div>
+        <div style="color: #6b7280">detail</div>
+        <div class="badge">New</div>
+      </div>
+      <div data-testid="ls-near" class="row">
+        <div>Name</div>
+        <div style="font-size: 13px">detail</div>
+      </div>
+    </div>
+  </body>
+</html>

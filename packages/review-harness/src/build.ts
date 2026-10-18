@@ -8,6 +8,12 @@ import {
   type ContrastReport,
   type MeasuredFrame,
 } from './contrast-gate.ts'
+import {
+  imagePlaneProblems,
+  lightFrameProblems,
+  renderProblems,
+  servedPlaneProblems,
+} from './frame-checks.ts'
 import { FRAMES_DIR, FRAMES_FILE, type FramesIndex } from './frames.ts'
 import { MAIN_REF } from './harness-freshness.ts'
 import { prepareLockBuild, type FootprintReader, type LockBuild } from './locks-build.ts'
@@ -62,6 +68,10 @@ const REFUSAL =
   "(or the round's) contrast.knownDefects with a route: the task id that owns the primitive " +
   'or token, or "component".'
 
+const FRAME_REFUSAL =
+  `refused: ${ROUND_FILE} not written. Fix each frame a REFUSED line names; a frame check takes ` +
+  'no declaration (TD-962).'
+
 interface BoundHead {
   questionId: string
   pr: string
@@ -103,7 +113,7 @@ async function treeProvenance(
 }
 
 /** The bytes round.json gets: the draft with the builder rules applied, and the build's provenance. */
-function roundBytes(ruled: ManifestInput, build: BuildProvenance | undefined) {
+export function roundBytes(ruled: ManifestInput, build: BuildProvenance | undefined) {
   return Buffer.from(`${JSON.stringify(build ? { ...ruled, build } : ruled, null, 2)}\n`)
 }
 
@@ -167,10 +177,43 @@ async function loadDraft(draftPath: string, storybook: string | undefined) {
 }
 
 /** The static frames a passing round gets, rendered for the bytes round.json will carry. */
-async function writeFrames(io: BuildIo, round: LoadedRound, dir: string): Promise<void> {
-  if (!io.renderFrames) return
+async function writeFrames(io: BuildIo, round: LoadedRound, dir: string) {
+  if (!io.renderFrames) return null
   const index = await io.renderFrames(round, dir)
   io.stderr(`wrote ${join(dir, FRAMES_DIR, FRAMES_FILE)} (${index.frames.length} frames)`)
+  return index
+}
+
+/** The report refused for frame faults, which no contrast declaration excuses. */
+function withFrameProblems(report: ContrastReport, problems: string[]): ContrastReport {
+  if (!problems.length) return report
+  return { ...report, passed: false, problems: [...report.problems, ...problems] }
+}
+
+async function writeReport(io: BuildIo, dir: string, report: ContrastReport) {
+  await writeFile(join(dir, CONTRAST_FILE), `${JSON.stringify(report, null, 2)}\n`)
+  formatContrastReport(report).forEach((line) => io.stderr(line))
+  io.stderr(`wrote ${join(dir, CONTRAST_FILE)}`)
+}
+
+/** contrast.json for the measured round, refused for any frame fault the measurement shows. */
+async function measuredReport(io: BuildIo, round: LoadedRound, manifestSha256: string) {
+  const frames = await io.measure(round)
+  const faults = [
+    ...lightFrameProblems(round.manifest, frames),
+    ...renderProblems(round.manifest, frames),
+    ...(await imagePlaneProblems(round.manifest, round.images)),
+  ]
+  const report = contrastReport({ ...round, manifestSha256, frames })
+  return { report: withFrameProblems(report, faults), contrastPassed: report.passed, faults }
+}
+
+/** Renders the static frames, then refuses (rewriting contrast.json) if one served dark as light. */
+async function servedFaults(io: BuildIo, round: LoadedRound, dir: string, report: ContrastReport) {
+  const index = await writeFrames(io, round, dir)
+  const faults = index ? await servedPlaneProblems(round.manifest, dir, index) : []
+  if (faults.length) await writeReport(io, dir, withFrameProblems(report, faults))
+  return faults.length > 0
 }
 
 type Checked =
@@ -228,16 +271,18 @@ export async function buildRound(
   await assertStoriesExist(round)
   const bytes = roundBytes(ruled, checked.build)
   const manifestSha256 = createHash('sha256').update(bytes).digest('hex')
-  const report = contrastReport({ ...round, manifestSha256, frames: await io.measure(round) })
+  const { report, contrastPassed, faults } = await measuredReport(io, round, manifestSha256)
   const dir = dirname(draftPath)
-  await writeFile(join(dir, CONTRAST_FILE), `${JSON.stringify(report, null, 2)}\n`)
-  formatContrastReport(report).forEach((line) => io.stderr(line))
-  io.stderr(`wrote ${join(dir, CONTRAST_FILE)}`)
+  await writeReport(io, dir, report)
   if (!report.passed) {
-    io.stderr(REFUSAL)
+    if (!contrastPassed) io.stderr(REFUSAL)
+    if (faults.length) io.stderr(FRAME_REFUSAL)
     return EXIT_REFUSED
   }
-  await writeFrames(io, { ...round, manifestSha256 }, dir)
+  if (await servedFaults(io, { ...round, manifestSha256 }, dir, report)) {
+    io.stderr(FRAME_REFUSAL)
+    return EXIT_REFUSED
+  }
   await writeFile(join(dir, ROUND_FILE), bytes)
   io.stderr(`wrote ${join(dir, ROUND_FILE)}`)
   return 0
