@@ -8,7 +8,12 @@ import {
   type ContrastReport,
   type MeasuredFrame,
 } from './contrast-gate.ts'
-import { imagePlaneProblems, lightFrameProblems, servedPlaneProblems } from './frame-checks.ts'
+import {
+  imagePlaneProblems,
+  lightFrameProblems,
+  renderProblems,
+  servedPlaneProblems,
+} from './frame-checks.ts'
 import { FRAMES_DIR, FRAMES_FILE, type FramesIndex } from './frames.ts'
 import { MAIN_REF } from './harness-freshness.ts'
 import { prepareLockBuild, type FootprintReader, type LockBuild } from './locks-build.ts'
@@ -196,6 +201,7 @@ async function measuredReport(io: BuildIo, round: LoadedRound, manifestSha256: s
   const frames = await io.measure(round)
   const faults = [
     ...lightFrameProblems(round.manifest, frames),
+    ...renderProblems(round.manifest, frames),
     ...(await imagePlaneProblems(round.manifest, round.images)),
   ]
   const report = contrastReport({ ...round, manifestSha256, frames })

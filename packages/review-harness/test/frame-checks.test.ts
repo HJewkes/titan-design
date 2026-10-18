@@ -7,7 +7,7 @@ import { buildRound, type BuildIo } from '../src/build.ts'
 import type { Rgba } from '../src/contrast.ts'
 import type { MeasuredFrame } from '../src/contrast-gate.ts'
 import { labelledTheme } from '../src/frame-checks.ts'
-import { lstar, toneOf, type FrameProbe } from '../src/frame-probe.ts'
+import { lstar, toneOf, type FrameProbe, type MarkProbe } from '../src/frame-probe.ts'
 import { frameKey, type FramesIndex } from '../src/frames.ts'
 import {
   MANIFEST_SCHEMA_ID,
@@ -33,6 +33,20 @@ const storyFrame = (key: string, extra: Partial<Variant> = {}): Variant =>
   ({ key, storyId: STORY, label: key, ...extra }) as Variant
 
 const lightFrame = (key: string) => storyFrame(key, { globals: { theme: 'light' } })
+
+const TICKS = '[data-testid^="gauge-tick"]'
+const BARS = '[data-testid^="spark-bars-bar"]'
+
+/** A named mark as the probe reports it: `count` hits, of which the given ones fail. */
+const mark = (name: string, selector: string, extra: Partial<MarkProbe> = {}): MarkProbe => ({
+  name,
+  selector,
+  invalid: false,
+  count: 6,
+  zero: [],
+  faint: [],
+  ...extra,
+})
 
 /** One section over `variants`, one pick anchored on all of them. */
 function draft(variants: Variant[], extra: Partial<ManifestInput> = {}): ManifestInput {
@@ -94,7 +108,14 @@ function measured(
       ],
       indeterminate: [],
     },
-    probe: { box: { width: WIDTH, height: 200 }, plane, faces: [], ...probe },
+    probe: {
+      box: { width: WIDTH, height: 200 },
+      plane,
+      faces: [],
+      painted: 1,
+      marks: [],
+      ...probe,
+    },
   }
 }
 
@@ -217,6 +238,61 @@ describe('frame checks before a round is served (TD-962)', () => {
     expect(refusals(lines)).toEqual([
       '  REFUSED light frame shot-l: its plane reads dark (L* 5.5 #121212) in shot-l.png',
     ])
+  })
+
+  it('builds a clean round whose named marks all show', async () => {
+    const gauge = storyFrame('ce-head-l', { globals: { theme: 'light' }, marks: { ticks: TICKS } })
+    const clean = measured('ce-head-l', 'light', { marks: [mark('ticks', TICKS)] })
+    const { run, lines } = await build(draft([gauge]), { measure: measureClean([clean]) })
+    expect(await run).toBe(0)
+    expect(refusals(lines)).toEqual([])
+  })
+
+  it('refuses ticks painted under the TD-490 track floor (ce-head-l)', async () => {
+    const gauge = storyFrame('ce-head-l', { globals: { theme: 'light' }, marks: { ticks: TICKS } })
+    const faint = Array.from({ length: 6 }, (_, i) => ({
+      selector: `[data-testid="gauge-tick-${i}"]`,
+      deltaL: 3.4,
+    }))
+    const fault = measured('ce-head-l', 'light', { marks: [mark('ticks', TICKS, { faint })] })
+    const { run, lines } = await build(draft([gauge]), { measure: measureClean([fault]) })
+    expect(await run).toBe(3)
+    expect(refusals(lines)).toEqual([
+      `  REFUSED frame ce-head-l light @800: mark ticks (${TICKS}): all 6 paint under the TD-490 ` +
+        'track floor (ΔL* 3.4 < 12), first [[data-testid="gauge-tick-0"]]',
+    ])
+  })
+
+  it('refuses bars with a zero box (vl-over-main-d)', async () => {
+    const chart = storyFrame('vl-over-main-d', { marks: { bars: BARS } })
+    const zero = Array.from({ length: 6 }, (_, i) => `[data-testid="spark-bars-bar-${i}"]`)
+    const fault = measured('vl-over-main-d', 'dark', { marks: [mark('bars', BARS, { zero })] })
+    const { run, lines } = await build(draft([chart]), { measure: measureClean([fault]) })
+    expect(await run).toBe(3)
+    expect(refusals(lines)).toEqual([
+      `  REFUSED frame vl-over-main-d dark @800: mark bars (${BARS}): all 6 have a zero box`,
+    ])
+  })
+
+  it('refuses a named mark that matches nothing, and a frame that paints nothing', async () => {
+    const chart = storyFrame('vl-maint-d', { marks: { bars: BARS } })
+    const missing = measured('vl-maint-d', 'dark', { marks: [mark('bars', BARS, { count: 0 })] })
+    const blank = measured('vl-over-head-d', 'dark', { painted: 0 })
+    const input = draft([chart, storyFrame('vl-over-head-d')])
+    const { run, lines } = await build(input, { measure: measureClean([missing, blank]) })
+    expect(await run).toBe(3)
+    expect(refusals(lines)).toEqual([
+      `  REFUSED frame vl-maint-d dark @800: mark bars (${BARS}) matches nothing`,
+      '  REFUSED frame vl-over-head-d dark @800: renders blank (no text or mark is painted)',
+    ])
+  })
+
+  it('probes a frame only in the theme it is shown in', async () => {
+    const blankLight = measured('vl-over-main-d', 'light', { painted: 0 })
+    const { run } = await build(draft([storyFrame('vl-over-main-d')]), {
+      measure: measureClean([blankLight]),
+    })
+    expect(await run).toBe(0)
   })
 
   it('refuses a pick in a frameless section of a round with frames (d4-chart-text)', async () => {

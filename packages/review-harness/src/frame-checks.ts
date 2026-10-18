@@ -9,7 +9,7 @@ import {
   type Variant,
 } from '@titan-design/review-schema'
 import type { MeasuredFrame } from './contrast-gate.ts'
-import { toneOf, type Tone } from './frame-probe.ts'
+import { TRACK_FLOOR_DELTA_L, toneOf, type MarkProbe, type Tone } from './frame-probe.ts'
 import { declaredTheme, type FramesIndex } from './frames.ts'
 
 // The checks a round passes before it is served (TD-962). Each returns one line per fault,
@@ -58,6 +58,46 @@ export function lightFrameProblems(manifest: Manifest, frames: MeasuredFrame[]):
           .filter((face) => face.neutral && face.lstar < DARK_LSTAR)
           .map((face) => `${at}: control face [${face.selector}] reads dark ${dark(face)}`),
       ]
+    })
+}
+
+const count = (items: unknown[], of: number) =>
+  items.length === of ? `all ${of}` : `${items.length} of ${of}`
+
+/** Why a named mark does not show, one line per fault. */
+function markFaults(mark: MarkProbe): string[] {
+  const named = `mark ${mark.name} (${mark.selector})`
+  if (mark.invalid) return [`${named} is not a valid selector`]
+  if (mark.count === 0) return [`${named} matches nothing`]
+  const weakest = Math.min(...mark.faint.map((f) => f.deltaL))
+  return [
+    ...(mark.zero.length ? [`${named}: ${count(mark.zero, mark.count)} have a zero box`] : []),
+    ...(mark.faint.length
+      ? [
+          `${named}: ${count(mark.faint, mark.count)} paint under the TD-490 track floor ` +
+            `(ΔL* ${weakest} < ${TRACK_FLOOR_DELTA_L}), first [${mark.faint[0].selector}]`,
+        ]
+      : []),
+  ]
+}
+
+/** A frame in the theme it is shown in: unlabelled, it could be shown in either. */
+const shownIn = (variant: Variant | undefined, mode: ThemeMode) => {
+  const theme = variant && labelledTheme(variant)
+  return theme === undefined || theme === mode
+}
+
+/** A frame that renders blank, or whose named marks have no box or paint too faintly to see. */
+export function renderProblems(manifest: Manifest, frames: MeasuredFrame[]): string[] {
+  const byKey = new Map(manifest.variants.map((v) => [v.key, v]))
+  return frames
+    .filter((f) => f.probe && shownIn(byKey.get(f.variant), f.mode))
+    .flatMap((f) => {
+      const at = `frame ${f.variant} ${f.mode} @${f.width}`
+      const { box, painted, marks } = f.probe!
+      if (box.width === 0 || box.height === 0) return [`${at}: renders blank (its root has no box)`]
+      if (painted === 0) return [`${at}: renders blank (no text or mark is painted)`]
+      return marks.flatMap(markFaults).map((fault) => `${at}: ${fault}`)
     })
 }
 

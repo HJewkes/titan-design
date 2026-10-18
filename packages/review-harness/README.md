@@ -135,7 +135,7 @@ imports. Its `schema/round.schema.json` and `schema/feedback.schema.json` are ge
 - Manifest `titan-review/round@2`: `unit`, `round`, `storybookUrl`, `context?`, `widths[]`,
   `height` (a number of px or `"auto"`, default `"auto"`; at round level a number caps every
   frame), `maxHeight` (default 1200, the cap when the round's `height` is `"auto"`),
-  `variants[{key, storyId | image | clip | audio, label, transcript? (audio), durationMs? (audio), args?, globals?, height?, motion?, scale?, frameReference?, variantUnit?, alternate?, change?: changed|new|removed|unchanged, baseImage? (a PNG of the frame from the PR's base)}]`
+  `variants[{key, storyId | image | clip | audio, label, transcript? (audio), durationMs? (audio), args?, globals?, height?, motion?, scale?, frameReference?, variantUnit?, alternate?, change?: changed|new|removed|unchanged, baseImage? (a PNG of the frame from the PR's base), marks? (story only: named mark selectors for the render probe)}]`
   (`motion`, `clip`, `scale` and `frameReference`: see _Motion and scale_; `audio`: see _Audio and
   blind A/B_) (at most 12 in a round
   without `sections`, uncapped in one with them; empty for a round of questions only, which needs no placeholder
@@ -682,6 +682,14 @@ heads rewrites `build` only. A round without bindings needs no tree.
     other), reads dark. A light-labelled image whose PNG's outer pixel ring (median) reads dark.
     After the static frames render, each light-labelled story's served PNG whose ring reads dark,
     which catches a story with no declared theme served in Storybook's default dark theme.
+  - **Render probe.** A story frame, measured in the theme it is shown in (both when unlabelled),
+    that renders blank: its root has no box, or it paints no text or mark. A story names its
+    marks in `marks` (`{ "ticks": "[data-testid^=gauge-tick]", "bars": "rect.bar" }`); the build
+    refuses a mark whose selector matches nothing or does not parse, a hit with a zero box (no
+    width or height; for a `line`, `polyline` or `path`, neither), or a hit whose best paint (its
+    own and its subtree's text, fill, border or stroke, faded by opacity) sits under the TD-490
+    track floor: ΔL\* 12 against its plane. That is the floor `pairs.ts` in packages/ui holds
+    `hairline-default` to, the token TD-490 drew the light `Progress` track with.
 - **Ship gate.** `build` exits 3, writing no `round.json`, for a Ship question whose PR had a
   changes-requested (`revisionRequested`), declined (a pick outside `merge.ship`) or non-agreed
   (`agreed: false`, only on a question without `implemented`) answer in the latest earlier round that asked about it. It reads
