@@ -10,8 +10,8 @@ import {
   INSET_ASYMMETRY,
   PROXIMITY_INVERSION,
   STACKED_INSET,
-  judgeLayout,
 } from './layout-probes.mjs'
+import { PROBE_KINDS, judgeAll } from './probe-suite.mjs'
 import { buildScale, isOnScale } from './spacing-scale.mjs'
 
 const MAX_FINDINGS_PER_KIND = 25
@@ -45,6 +45,7 @@ export const WARNING_KINDS = Object.freeze([
   PROXIMITY_INVERSION,
   FONT_SIZE_NEAR_MISS,
   FONT_SIZE_DRIFT,
+  ...PROBE_KINDS,
 ])
 export const CONTRAST_TOKEN_KIND = CONTRAST_TOKEN
 
@@ -578,27 +579,29 @@ export function offScaleWarnings(spacing, scale) {
     .slice(0, MAX_FINDINGS_PER_KIND)
 }
 
+// The relation probes compare against the large stack step even where the config has no utility.
+const PROBE_SPACING_VARS = ['--space-stack-lg']
+
 // Installs the layout collector once per page, then judges what it measured.
-async function layoutWarnings(page, spacingVars) {
+async function layoutWarnings(page, spacingVars, ctx) {
   if (!(await page.evaluate(() => Boolean(window.collectLayout))))
     await page.addScriptTag({ content: layoutCollectorSource })
-  const layout = await page.evaluate(
-    (vars) => window.collectLayout({ spacingVars: vars }),
-    spacingVars
-  )
-  return judgeLayout(layout, { limit: MAX_FINDINGS_PER_KIND })
+  const vars = [...new Set([...spacingVars, ...PROBE_SPACING_VARS])]
+  const layout = await page.evaluate((v) => window.collectLayout({ spacingVars: v }), vars)
+  return judgeAll(layout, { ...ctx, declared: layout.declared })
 }
 
-export async function auditPage(page, { axeSource, spacingConfig, touch = false }) {
+export async function auditPage(page, { axeSource, spacingConfig, story, fonts, touch = false }) {
   const dom = await page.evaluate(domChecks, { touch, spacingVars: spacingConfig.vars })
   const violations = await runAxe(page, axeSource)
-  const contrast = splitContrast(violations, await page.evaluate(tokenColours))
+  const tokens = await page.evaluate(tokenColours)
+  const contrast = splitContrast(violations, tokens)
   const blockers = [...dom.blockers, ...contrast.blockers]
   const scale = buildScale(spacingConfig.px, dom.spacingVars)
   const warnings = [
     ...offScaleWarnings(dom.spacing, scale),
     ...dom.warnings,
-    ...(await layoutWarnings(page, spacingConfig.vars)),
+    ...(await layoutWarnings(page, spacingConfig.vars, { tokens, story, fonts })),
   ]
   return {
     blockers,

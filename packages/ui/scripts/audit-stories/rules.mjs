@@ -1,5 +1,7 @@
 // Maps each finding kind to the design rule it enforces (docs/design-rules.md). A kind with no
 // rule row stays unmapped and its findings carry no `rule` field.
+import { PROBE_RULES } from './probe-suite.mjs'
+
 export const RULE_BY_KIND = Object.freeze({
   'truncated-text': 'DR-DD-05',
   'hit-target': 'DR-IX-01',
@@ -16,6 +18,7 @@ export const RULE_BY_KIND = Object.freeze({
   'proximity-inversion': 'DR-LA-01',
   'font-size-near-miss': 'DR-TY-05',
   'font-size-drift': 'DR-TY-05',
+  ...PROBE_RULES,
 })
 
 const tag = (finding) => {

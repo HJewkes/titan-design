@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test'
+import { compositeOver } from '../../scripts/audit-stories/colour.mjs'
 import { collect, loadFixture, type Layout } from './load-fixture'
 
 const byTestId = (layout: Layout, id: string) => {
@@ -103,4 +104,105 @@ test('a 1px hairline divider is collected and paints', async ({ page }) => {
 test('children of an opacity:0 ancestor are not collected', async ({ page }) => {
   const layout = await collect(page)
   expect(layout.nodes.some((n) => n.selector.includes('faded'))).toBe(false)
+})
+
+test('text over a translucent layer reports the composite as its backdrop', async ({ page }) => {
+  const text = byTestId(await collect(page), 'over-rgba').text!
+  expect(text.backdrop).toBe(compositeOver('rgba(0, 0, 255, 0.4)', 'rgb(200, 40, 40)'))
+  expect(text.backdropImage).toBe(false)
+  expect(text.color).toBe('rgb(250, 250, 250)')
+})
+
+test('text over a background image has no backdrop colour and says why', async ({ page }) => {
+  const layout = await collect(page)
+  const text = byTestId(layout, 'over-image').text!
+  expect(text.backdrop).toBeNull()
+  expect(text.backdropImage).toBe(true)
+  expect(byTestId(layout, 'untracked').text!.backdrop).toBe('#ffffff')
+})
+
+test('nested opacity 0.5 inside 0.5 gives an effective opacity of 0.25', async ({ page }) => {
+  const { style } = byTestId(await collect(page), 'half-of-half')
+  expect(style.opacity).toBe(1)
+  expect(style.effectiveOpacity).toBe(0.25)
+})
+
+test('tracked caps text reports its computed text and box style', async ({ page }) => {
+  const layout = await collect(page)
+  const { text, style } = byTestId(layout, 'tracked')
+  expect(text).toMatchObject({
+    letterSpacing: 1.2,
+    textTransform: 'uppercase',
+    fontWeight: 600,
+    family: 'Sample Face',
+    ownText: 'Overline text that runs well past the fo',
+  })
+  expect(style).toMatchObject({
+    textAlign: 'right',
+    direction: 'rtl',
+    boxShadow: 'rgb(0, 0, 0) 0px 0px 0px 1px',
+    hasBackgroundImage: false,
+    backgroundColor: 'rgba(0, 0, 0, 0)',
+  })
+  expect(byTestId(layout, 'untracked').text!.letterSpacing).toBe(0)
+})
+
+test('two copies of one icon hash alike and a different icon does not', async ({ page }) => {
+  const layout = await collect(page)
+  const [a, b, c] = ['icon-a', 'icon-b', 'icon-c'].map((id) => byTestId(layout, id))
+  expect(a.glyph).toEqual(expect.any(String))
+  expect(a.glyph).toBe(b.glyph)
+  expect(c.glyph).not.toBe(a.glyph)
+  expect(byTestId(layout, 'icon-named').glyph).toBe('sample-icon')
+})
+
+test('an svg reports the stroke of its first shape, else its fill', async ({ page }) => {
+  const layout = await collect(page)
+  expect(byTestId(layout, 'icon-a').paint).toBe('rgb(10, 120, 60)')
+  expect(byTestId(layout, 'icon-c').paint).toBe('rgb(1, 2, 3)')
+  expect(byTestId(layout, 'wrapper')).not.toHaveProperty('glyph')
+})
+
+test('headings report their level from aria-level, the tag, or the ARIA default', async ({
+  page,
+}) => {
+  const layout = await collect(page)
+  expect(byTestId(layout, 'aria-heading').heading).toBe(3)
+  expect(byTestId(layout, 'tag-heading').heading).toBe(4)
+  expect(byTestId(layout, 'default-heading').heading).toBe(2)
+  expect(byTestId(layout, 'concept').heading).toBeNull()
+})
+
+test('a node reports its data-concept and its ARIA state', async ({ page }) => {
+  const layout = await collect(page)
+  expect(byTestId(layout, 'concept').concept).toBe('sample-concept')
+  expect(byTestId(layout, 'selected').state).toEqual({
+    selected: true,
+    current: 'page',
+    pressed: null,
+    checked: null,
+    disabled: false,
+  })
+  expect(byTestId(layout, 'disabled-child').state).toMatchObject({
+    pressed: 'true',
+    disabled: true,
+  })
+})
+
+test('a story audit parameter resolves its selectors to node ids', async ({ page }) => {
+  expect((await collect(page)).audit).toEqual({ concepts: {}, glyphRoles: {} })
+  await page.evaluate(() => {
+    const audit = {
+      concepts: { sample: ['[data-testid="concept"]', '[data-testid="faded"]'] },
+      glyphRoles: { '[data-testid="icon-a"]': 'status', 'not a selector((': 'ignored' },
+    }
+    Object.assign(window, {
+      __STORYBOOK_PREVIEW__: { currentRender: { story: { parameters: { audit } } } },
+    })
+  })
+  const layout = await collect(page)
+  expect(layout.audit).toEqual({
+    concepts: { sample: [byTestId(layout, 'concept').id] },
+    glyphRoles: { [byTestId(layout, 'icon-a').id]: 'status' },
+  })
 })

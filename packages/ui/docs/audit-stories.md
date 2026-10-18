@@ -44,6 +44,27 @@ A **blocker** fails the run (exit 1). A **warning** is reported and never fails 
 | `font-size-near-miss`  | Two text elements on one visual line (same nearest flex-row ancestor, overlapping vertically by half the smaller height) whose computed font sizes differ by more than 0 and at most 2px. A larger step, such as a hero number and its unit, reads as deliberate contrast and is not flagged. Detail: `<a> 14px vs <b> 13px on one line: Δ1 (limit 2px)`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
 | `font-size-drift`      | The same element (child-index path and own text) has a different computed font size at two widths of one story, compared on the first theme. Only the outermost drifting element is reported, once per story, on the frame of the first width that differs. Text whose path changes between widths is not compared. Detail: `"Total" is 14px at 360, 16px at 1280`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 
+### Colour, elevation and glyph warnings (TD-935)
+
+Kinds from `scripts/audit-stories/colour-probes.mjs` and `elevation-probes.mjs`. Each is a warning.
+
+| Kind | Rule | Meaning |
+| ---- | ---- | ------- |
+
+### Spacing-relation warnings (TD-937)
+
+Kinds from `scripts/audit-stories/relation-probes.mjs`. Each is a warning.
+
+| Kind | Rule | Meaning |
+| ---- | ---- | ------- |
+
+### Typography warnings (TD-938)
+
+Kinds from `scripts/audit-stories/type-probes.mjs`. Each is a warning.
+
+| Kind | Rule | Meaning |
+| ---- | ---- | ------- |
+
 ### Retunes from the catch report (TD-740)
 
 The 1.5 ratio comes from the numbers of a catch report over historic review rounds: the
@@ -97,6 +118,41 @@ printed lines. The PNGs show what geometry cannot measure; look at them too.
   `stacked-inset`); the map is `scripts/audit-stories/rules.mjs`.
 - `metrics`, `axe.violations`: raw page metrics and the axe contrast result.
 - `shot`: the PNG, relative to the output directory.
+
+The summary prints no per-kind counts. This prints, per warning kind, the findings over all frames,
+the distinct findings (story, selector and detail) and the stories that have one. The cap of 25 per
+kind per frame makes each a lower bound.
+
+```bash
+node -e 'const d=require(process.argv[1]);const n={},u={},s={};for(const e of d.stories)for(const w of e.warnings||[]){n[w.kind]=(n[w.kind]||0)+1;(u[w.kind]??=new Set).add([e.id,w.selector,w.detail].join("|"));(s[w.kind]??=new Set).add(e.id)}for(const k of Object.keys(n).sort())console.log(k.padEnd(24),"frames-findings",n[k],"distinct",u[k].size,"stories",s[k].size)' "$OUT/dom.json"
+```
+
+### Probe data (not in `dom.json`)
+
+The layout probes judge what `scripts/audit-stories/layout-collect.mjs` measures in the page. That
+data feeds the judges and is not written to `dom.json`. Each collected node carries, besides its
+box, padding, border, margin, flex layout, text metrics and ink:
+
+- `style`: computed `color` and `backgroundColor` (`rgb[a]()` strings), `hasBackgroundImage`,
+  `opacity`, `effectiveOpacity` (the product of `opacity` over the node and every ancestor out to
+  `<html>`), the raw computed `boxShadow`, `direction` and `textAlign`.
+- `text` (nodes with their own text): `textTransform`, `letterSpacing` in px (`normal` reads 0),
+  numeric `fontWeight`, `family` (the first family, unquoted), `color`, `ownText` (the first 40
+  characters), and `backdrop`: the opaque `#rrggbb` behind the text, compositing the node's and each
+  ancestor's background colour in sRGB until one is opaque (white behind `<html>`). A background
+  image stops the walk: `backdrop` is then `null` and `backdropImage` is `true`.
+- `glyph` and `paint` (`svg` nodes): a djb2 hash of the shapes' geometry attributes, or the
+  `data-icon` attribute when present, so two copies of one icon match; and the computed stroke,
+  else fill, of the first painted shape.
+- `concept`: the `data-concept` attribute. `state`: `selected` (`aria-selected`), `current`,
+  `pressed`, `checked` (the ARIA value, `null` when absent or `false`) and `disabled` (the node or
+  an ancestor has `disabled` or `aria-disabled="true"`). `heading`: the level of a
+  `role="heading"` node (`aria-level`, default 2) or of an `h1`-`h6`.
+
+The layout also carries `audit`, read from the story's `parameters.audit`: `concepts` maps a concept
+name to selectors and `glyphRoles` maps a selector to a role. Each selector is resolved to the ids
+of collected nodes (`{ concepts: { name: [id] }, glyphRoles: { id: role } }`). The parameters are
+read from Storybook's preview object, which is internal API; outside Storybook both maps are empty.
 
 ## Fixing findings
 

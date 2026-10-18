@@ -5,6 +5,7 @@ import { mkdirSync, readFileSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import { join } from 'node:path'
 import { auditPage, fontSizeDrift, themeGeometryShift } from './checks.mjs'
+import { loadFontConfig } from './font-config.mjs'
 import { withRules } from './rules.mjs'
 import { loadSpacingConfig } from './spacing-scale.mjs'
 
@@ -38,6 +39,17 @@ export function planJobs({ stories, widths, themes, touch = false, outDir }) {
   )
 }
 
+/** What every frame's audit shares, read from the tree once per run. */
+export function captureContext({ url, uiDir, scale }) {
+  return {
+    url,
+    scale,
+    axeSource: loadAxeSource(uiDir),
+    spacingConfig: loadSpacingConfig(uiDir),
+    fonts: loadFontConfig(uiDir),
+  }
+}
+
 /** Returns dom.json frame entries in job order. `launch` replaces the browser in tests. */
 export async function captureAll({
   url,
@@ -47,12 +59,7 @@ export async function captureAll({
   scale = 2,
   launch = () => loadChromium(uiDir).launch(),
 }) {
-  const ctx = {
-    url,
-    scale,
-    axeSource: loadAxeSource(uiDir),
-    spacingConfig: loadSpacingConfig(uiDir),
-  }
+  const ctx = captureContext({ url, uiDir, scale })
   const browser = await launch()
   const results = new Array(jobs.length)
   let next = 0
@@ -153,7 +160,8 @@ async function captureTheme(page, ctx, job, theme, errors) {
       entry.shot = await shoot(job, entry, (path) => page.screenshot({ path }))
       return entry
     }
-    const audit = await auditPage(page, { ...ctx, touch: Boolean(job.touch) })
+    const story = { id: job.story.id, title: job.story.title }
+    const audit = await auditPage(page, { ...ctx, story, touch: Boolean(job.touch) })
     const rendered = !errors.some((e) => e.startsWith('pageerror'))
     const blockers = [...renderErrorBlockers(errors), ...audit.blockers]
     const failure = rendered ? {} : { error: errors[0].slice(0, 500) }

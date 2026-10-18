@@ -6,6 +6,7 @@ import { USAGE, UsageError, parseOptions, resolveOutDir } from '../audit-stories
 import {
   MAX_SUMMARY_LINES,
   addFontSizeDrift,
+  captureContext,
   exitCodeFor,
   exitCodeForError,
   loadAxeSource,
@@ -322,6 +323,16 @@ describe('the output directory', () => {
 
   it('accepts an --out outside the repo, including a sibling that shares its prefix', () => {
     expect(resolveOutDir({ ...where, out: '/repo-shots' })).toBe('/repo-shots')
+  })
+})
+
+describe('the shared capture context', () => {
+  it('reads the spacing config and the mono family once for every frame', () => {
+    const ctx = captureContext({ url: 'http://127.0.0.1:6100', uiDir, scale: 2 })
+
+    expect(ctx).toMatchObject({ url: 'http://127.0.0.1:6100', scale: 2 })
+    expect(ctx.spacingConfig.vars.length).toBeGreaterThan(0)
+    expect(ctx.fonts.mono).toEqual(expect.any(String))
   })
 })
 
