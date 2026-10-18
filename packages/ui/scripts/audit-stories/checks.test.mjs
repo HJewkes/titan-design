@@ -30,9 +30,12 @@ const contrast = (...nodes) => [{ id: 'color-contrast', nodes }]
 
 const emptyLayout = { nodes: [], truncated: false, declared: { '--space-stack-lg': 16 } }
 // A page double: dispatches on the function the audit sends into the browser.
-const fakePage = ({ violations, tokenMap, dom, onCollect = () => {} }) => ({
+const fakePage = ({ violations, tokenMap, dom, onCollect = () => {}, onDom = () => {} }) => ({
   evaluate: async (fn, arg) => {
-    if (fn === domChecks) return dom
+    if (fn === domChecks) {
+      onDom(arg)
+      return dom
+    }
     if (fn === tokenColours) return tokenMap
     if (fn.toString().includes('collectLayout')) {
       if (arg) onCollect(arg)
@@ -122,6 +125,20 @@ describe('probe suite wiring', () => {
     expect(seen).toEqual([['--space-stack-sm', '--space-stack-lg']])
   })
 
+  it('hands the page checks the 10–11px small-text band, leaving under 10px to text-floor', async () => {
+    const seen = []
+    const page = fakePage({
+      violations: [],
+      tokenMap: {},
+      dom: emptyDom,
+      onDom: (arg) => seen.push(arg.smallText),
+    })
+
+    await auditPage(page, { axeSource: '', spacingConfig, story, fonts })
+
+    expect(seen).toEqual([[10, 11]])
+  })
+
   it('caps the layout judges and module findings together at 25 per kind', () => {
     const finding = (kind, i) => ({ kind, selector: `.n${i}`, detail: 'measured' })
     const many = (kind) => ({ judge: () => Array.from({ length: 20 }, (_, i) => finding(kind, i)) })
@@ -134,6 +151,21 @@ describe('probe suite wiring', () => {
 
     expect(out.filter((f) => f.kind === 'sample-a')).toHaveLength(25)
     expect(out.filter((f) => f.kind === 'sample-b')).toHaveLength(20)
+  })
+
+  it('keeps every ratcheted text-floor finding while still capping other kinds', () => {
+    const finding = (kind, i) => ({ kind, selector: `.n${i}`, detail: 'measured' })
+    const many = (kind) => ({ judge: () => Array.from({ length: 20 }, (_, i) => finding(kind, i)) })
+
+    const out = judgeAll({ nodes: [], declared: {} }, {}, [
+      many('text-floor'),
+      many('text-floor'),
+      many('sample-a'),
+      many('sample-a'),
+    ])
+
+    expect(out.filter((f) => f.kind === 'text-floor')).toHaveLength(40)
+    expect(out.filter((f) => f.kind === 'sample-a')).toHaveLength(25)
   })
 
   it('leaves judgeAll equal to judgeLayout on an unpadded, undeclared stack', () => {

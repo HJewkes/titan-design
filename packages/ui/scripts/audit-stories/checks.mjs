@@ -15,6 +15,8 @@ import { PROBE_KINDS, judgeAll } from './probe-suite.mjs'
 import { buildScale, isOnScale } from './spacing-scale.mjs'
 
 const MAX_FINDINGS_PER_KIND = 25
+/** DR-TY-06 warning tier, [from, below) in px. Under 10px is the probe suite's `text-floor`. */
+export const SMALL_TEXT_RANGE = Object.freeze([10, 11])
 
 const CONTRAST = 'contrast'
 const CONTRAST_TOKEN = 'contrast-token'
@@ -50,7 +52,7 @@ export const WARNING_KINDS = Object.freeze([
 export const CONTRAST_TOKEN_KIND = CONTRAST_TOKEN
 
 // Runs in the page. Every check is a named function so a finding can cite it.
-export function domChecks({ touch, spacingVars }) {
+export function domChecks({ touch, spacingVars, smallText }) {
   const root = document.querySelector('#storybook-root')
   const minTarget = touch ? 44 : 24
   const all = [...root.querySelectorAll('*')]
@@ -399,8 +401,12 @@ export function domChecks({ touch, spacingVars }) {
   }
 
   function checkSmallText() {
+    const [from, below] = smallText
     return textEls
-      .filter((el) => parseFloat(getComputedStyle(el).fontSize) < 11)
+      .filter((el) => {
+        const size = parseFloat(getComputedStyle(el).fontSize)
+        return size >= from && size < below
+      })
       .map((el) => finding('small-text', el, `"${textOf(el)}" at ${getComputedStyle(el).fontSize}`))
   }
 
@@ -592,7 +598,11 @@ async function layoutWarnings(page, spacingVars, ctx) {
 }
 
 export async function auditPage(page, { axeSource, spacingConfig, story, fonts, touch = false }) {
-  const dom = await page.evaluate(domChecks, { touch, spacingVars: spacingConfig.vars })
+  const dom = await page.evaluate(domChecks, {
+    touch,
+    spacingVars: spacingConfig.vars,
+    smallText: SMALL_TEXT_RANGE,
+  })
   const violations = await runAxe(page, axeSource)
   const tokens = await page.evaluate(tokenColours)
   const contrast = splitContrast(violations, tokens)
