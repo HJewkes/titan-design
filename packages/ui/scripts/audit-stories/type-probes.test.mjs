@@ -205,6 +205,22 @@ describe('caps-label-looks', () => {
     ])
   })
 
+  it('counts a sorted header colour beside unsorted ones as one look', () => {
+    const header = (id, sort, color) => [
+      box(id, '0.0', { role: 'columnheader', state: { disabled: false, sort } }),
+      box(`${id}.0`, id, { interactive: true, role: 'button' }),
+      caps(`${id}.0.0`, `${id}.0`, { color }),
+    ]
+    const nodes = [
+      box('0', null, { role: 'table' }),
+      box('0.0', '0', { role: 'row' }),
+      ...header('0.0.0', 'ascending', 'rgb(37, 99, 235)'),
+      ...header('0.0.1', null, 'rgb(107, 114, 128)'),
+      ...header('0.0.2', null, 'rgb(107, 114, 128)'),
+    ]
+    expect(judgeCapsLabelLooks(layoutOf(...nodes), { story: component })).toEqual([])
+  })
+
   it('reports two looks across one header row', () => {
     const nodes = [
       box('0', null, { role: 'table' }),

@@ -165,12 +165,18 @@ function scopedGroups(layout, story, members) {
 const lookOf = (t) =>
   `${px(t.fontSize)}/${t.fontWeight}/${px(quarter(t.letterSpacing ?? 0))}/${t.family}`
 
+// A sorted column's label sits under the columnheader that carries aria-sort, outside its sort button.
+function sortOf(n, byId) {
+  for (let a = n; a; a = byId.get(a.parent)) if (a.state?.sort) return a.state.sort
+  return null
+}
+
 // A label's state is its own or its nearest interactive ancestor's (a selected tab's label).
 function stateKey(n, byId) {
   let at = n
   while (at && !at.interactive) at = byId.get(at.parent)
-  const s = { ...(at ?? n).state, disabled: n.state?.disabled }
-  return [s.selected, s.current, s.pressed, s.checked, s.disabled].join('|')
+  const s = { ...(at ?? n).state, disabled: n.state?.disabled, sort: sortOf(n, byId) }
+  return [s.selected, s.current, s.pressed, s.checked, s.sort, s.disabled].join('|')
 }
 
 /**
