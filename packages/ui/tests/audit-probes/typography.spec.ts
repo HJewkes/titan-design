@@ -57,7 +57,7 @@ const positives: [string, string, RegExp, Story?][] = [
   [
     'tf-under',
     'text-floor',
-    /^8\.5px text under the 10px floor \(error tier; reported as a warning/,
+    /^8\.5px text under the 10px floor \(error tier\)$/,
   ],
   [
     'sz-five',

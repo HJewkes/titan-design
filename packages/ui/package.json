@@ -172,7 +172,8 @@
     "storybook:ports": "node scripts/storybook-launch.mjs --list",
     "storybook:reap": "node scripts/storybook-launch.mjs --reap --list",
     "storybook:reap:all": "node scripts/storybook-launch.mjs --reap=all --list",
-    "audit:stories": "node scripts/audit-stories.mjs"
+    "audit:stories": "node scripts/audit-stories.mjs",
+    "audit:stories:baseline": "node scripts/update-audit-stories-baseline.mjs"
   },
   "peerDependencies": {
     "nativewind": "^4.2.1",
