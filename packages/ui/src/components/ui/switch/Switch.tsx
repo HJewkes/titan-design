@@ -103,11 +103,11 @@ export const Switch = forwardRef<View, SwitchProps>(function Switch(
       {...props}
     >
       {!!label && labelPosition === 'left' && (
-        <Text className="text-text-primary font-medium">{label}</Text>
+        <Text className="font-heading text-text-primary font-medium">{label}</Text>
       )}
       {switchElement}
       {!!label && labelPosition === 'right' && (
-        <Text className="text-text-primary font-medium">{label}</Text>
+        <Text className="font-heading text-text-primary font-medium">{label}</Text>
       )}
     </Pressable>
   )
