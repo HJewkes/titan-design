@@ -2122,6 +2122,7 @@ export interface GaugeProps extends Omit<ViewProps, 'children'> {
     max?: number;
     // (undocumented)
     min?: number;
+    progress?: number;
     size?: number;
     thresholds?: GaugeThreshold[];
     unit?: string;
@@ -2959,6 +2960,14 @@ export function grainForTone(baseColor: string): string;
 export function grainOpacityForTone(baseColor: string): number;
 
 // @public
+export interface GraphBox {
+    height: number;
+    width: number;
+    x: number;
+    y: number;
+}
+
+// @public
 export interface GraphEdge {
     activityAt?: number;
     id?: string;
@@ -2983,13 +2992,14 @@ export interface GraphGroup {
 
 // @public
 export interface GraphGroupRegion {
+    box?: GraphBox;
     cx: number;
     cy: number;
     id: string;
     label: string;
     nodeIds: readonly string[];
     radius: number;
-    variant: 'region' | 'ring';
+    variant: 'region' | 'ring' | 'box';
 }
 
 // @public
@@ -3021,12 +3031,15 @@ export interface GraphLayoutInput {
 
 // @public
 export interface GraphLayoutResult {
-    edgeShape?: 'horizontal' | 'arc';
+    edgeShape?: 'horizontal' | 'arc' | 'routed';
     groups?: readonly GraphGroupRegion[];
     height: number;
     labelMode?: 'all' | 'declutter';
+    nodeBoxes?: Readonly<Record<string, GraphBox>>;
+    nodeShape?: 'dot' | 'box';
     order: readonly string[];
     positions: Readonly<Record<string, GraphPoint>>;
+    routes?: Readonly<Record<string, readonly GraphPoint[]>>;
     width: number;
 }
 
@@ -3034,15 +3047,18 @@ export interface GraphLayoutResult {
 export interface GraphModel {
     drawnEdges: readonly GraphEdge[];
     edges: readonly GraphEdge[];
-    edgeShape: 'horizontal' | 'arc';
+    edgeShape: 'horizontal' | 'arc' | 'routed';
     groups: readonly GraphGroupRegion[];
     height: number;
     index: GraphIndex;
     labelMode: 'all' | 'declutter';
+    nodeBoxes: Readonly<Record<string, GraphBox>>;
     nodes: readonly GraphNode[];
+    nodeShape: 'dot' | 'box';
     order: readonly string[];
     positions: Readonly<Record<string, GraphPoint>>;
     report: GraphCleanReport;
+    routes: Readonly<Record<string, readonly GraphPoint[]>>;
     unplacedEdges: number;
     unplacedNodes: number;
     width: number;
@@ -3934,6 +3950,7 @@ export interface MetricProps extends ViewProps {
     label: string;
     labelClassName?: string;
     labelPosition?: MetricLabelPosition;
+    progress?: number;
     // (undocumented)
     size?: 'sm' | 'md' | 'lg';
     tone?: MetricTone;
@@ -4067,6 +4084,58 @@ export const motion: {
         readonly context: {
             readonly opacity: 0.35;
             readonly saturation: 0;
+        };
+    };
+    readonly tiers: {
+        readonly video: {
+            readonly enter: 1000;
+            readonly emphasis: 500;
+            readonly hero: 1500;
+            readonly count: 1500;
+            readonly rise: 40;
+            readonly staggerEach: 60;
+            readonly staggerMax: 500;
+        };
+        readonly app: {
+            readonly enter: 250;
+            readonly emphasis: 150;
+            readonly hero: 400;
+            readonly count: 600;
+            readonly rise: 8;
+            readonly staggerEach: 40;
+            readonly staggerMax: 300;
+        };
+    };
+    readonly presets: {
+        readonly riseIn: {
+            readonly props: {
+                readonly opacity: readonly [0, 1];
+                readonly translateY: readonly ["rise", 0];
+            };
+            readonly duration: "emphasis";
+            readonly ease: "out";
+            readonly stagger: true;
+            readonly exit: {
+                readonly ratio: 0.85;
+                readonly ease: "in";
+            };
+            readonly reduced: "fade";
+        };
+        readonly countUp: {
+            readonly props: {
+                readonly value: readonly ["from", "to"];
+            };
+            readonly duration: "count";
+            readonly ease: "out";
+            readonly reduced: "jump";
+        };
+        readonly payoff: {
+            readonly props: {
+                readonly scale: readonly [0.6, 1];
+            };
+            readonly spring: "bouncy";
+            readonly allowOvershoot: true;
+            readonly reduced: "fade";
         };
     };
 };
@@ -6093,6 +6162,16 @@ export function StatCard(input: StatCardProps): react_jsx_runtime.JSX.Element;
 
 // @public (undocumented)
 export type StatCardCaptionPlacement = 'beside' | 'below';
+
+// @public
+export function StatCardFigure(input: StatCardFigureProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface StatCardFigureProps {
+    progress?: number;
+    testID?: string;
+    value: string;
+}
 
 // @public
 export function StatCardHeader(input: StatCardHeaderProps): react_jsx_runtime.JSX.Element;

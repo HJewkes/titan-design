@@ -6,15 +6,29 @@ import { clusteredLayout } from './layouts/clustered-layout-model'
 import { egoLayout, type EgoDirection } from './layouts/ego-layout-model'
 import { forceLayout } from './layouts/force-layout-model'
 import { layeredLayout } from './layouts/layered-layout-model'
+import { mapLayoutFixture, straightMapFixture } from './map/fixtures'
+import { MAP_EDGE_KINDS, mapGraph } from './map/map-graph'
 import { NetworkGraph } from './NetworkGraph'
 import type { GraphItemRef, GraphLayout, NetworkGraphProps } from './types'
 
 type FixtureName = keyof typeof networkGraphFixtures
 type Mode = 'force' | 'ego' | 'clustered'
 
+/** Precomputed maps painted with box nodes, compound boxes and routed edges; each replaces the fixture and layout. */
+const MAPS = {
+  'Level 0': mapGraph(mapLayoutFixture, 0),
+  'Level 1': mapGraph(mapLayoutFixture, 1),
+  'Level 2': mapGraph(mapLayoutFixture, 2),
+  'Level 3': mapGraph(mapLayoutFixture, 3),
+  'No routes': mapGraph(straightMapFixture, 1),
+}
+type MapView = 'off' | keyof typeof MAPS
+
 interface StoryArgs extends NetworkGraphProps {
   /** Replaces `nodes`, `edges` and the kinds with a named fixture. */
   fixture?: FixtureName
+  /** A precomputed map at one level; replaces the fixture and the layout. */
+  map?: MapView
   /** Each change bumps one edge's `activityAt`, which pulses it. */
   pulse?: boolean
   /** Force and clustered: the seeded start positions. */
@@ -74,6 +88,7 @@ const meta: Meta<StoryArgs> = {
   tags: ['autodocs', 'status:candidate', '!status:review'],
   args: {
     fixture: 'Small (5)',
+    map: 'off',
     nodes: smallFixture.nodes,
     edges: smallFixture.edges,
     nodeKinds: smallFixture.nodeKinds,
@@ -94,6 +109,7 @@ const meta: Meta<StoryArgs> = {
   },
   argTypes: {
     fixture: { control: 'select', options: Object.keys(networkGraphFixtures) },
+    map: { control: 'select', options: ['off', ...Object.keys(MAPS)] },
     layout: { control: 'select', options: Object.keys(LAYOUTS), mapping: LAYOUTS },
     width: { control: 'number' },
     height: { control: 'number' },
@@ -148,7 +164,11 @@ const meta: Meta<StoryArgs> = {
           'state.\n' +
           '- [clustered](?path=/story/components-organisms-networkgraph--default&args=layout:clustered): ' +
           'a labelled region per `group`, ungrouped nodes last; `Grouped (40)` passes its region ' +
-          'order and labels.',
+          'order and labels.\n\n' +
+          'The `map` control paints a precomputed map (the [box](?path=/story/components-organisms-networkgraph--default&args=map:Level+3) ' +
+          'painter): each node is its box, parents are compound boxes under their children, and ' +
+          'each edge follows its route through every bend. `No routes` shows the ' +
+          'fallback: border to border, with two edges between one pair 18px apart.',
       },
     },
   },
@@ -193,11 +213,15 @@ function useEgoFocus(data: StoryData, focusId: string | undefined) {
 
 export const Default: Story = {
   render: function Render(props) {
-    const { fixture, pulse, layout, seed, iterations, hops, focusId, direction, ...args } = props
+    const { fixture, map, pulse, layout, seed, iterations, hops, focusId, direction, ...args } =
+      props
     const { nodes, edges: ownEdges, nodeKinds, edgeKinds } = args
-    const data: StoryData = fixture
-      ? networkGraphFixtures[fixture]
-      : { nodes, edges: ownEdges, nodeKinds, edgeKinds }
+    const mapData = map && map !== 'off' ? MAPS[map] : null
+    const data: StoryData = mapData
+      ? { ...mapData, nodeKinds: [], edgeKinds: MAP_EDGE_KINDS }
+      : fixture
+        ? networkGraphFixtures[fixture]
+        : { nodes, edges: ownEdges, nodeKinds, edgeKinds }
     const edges = usePulsedEdges(data, pulse)
     const ego = useEgoFocus(data, focusId)
     const isEgo = modeOf(layout) === 'ego'
@@ -208,7 +232,10 @@ export const Default: Story = {
         edges={edges}
         nodeKinds={data.nodeKinds}
         edgeKinds={data.edgeKinds}
-        layout={buildLayout(layout, { seed, iterations, hops, direction }, data, ego.focus)}
+        layout={
+          mapData?.layout ??
+          buildLayout(layout, { seed, iterations, hops, direction }, data, ego.focus)
+        }
         onSelectionChange={(selection) => {
           args.onSelectionChange?.(selection)
           if (isEgo) ego.onPress(selection)

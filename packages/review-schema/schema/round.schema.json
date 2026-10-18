@@ -428,6 +428,18 @@
           "baseImage": {
             "type": "string",
             "pattern": "^(?![/\\\\]|[A-Za-z]:)(?!(.*[/\\\\])?\\.\\.([/\\\\]|$)).+\\.[Pp][Nn][Gg]$"
+          },
+          "marks": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{1,32}$"
+            },
+            "additionalProperties": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            }
           }
         },
         "required": [
@@ -466,6 +478,11 @@
                   "required": [
                     "scale"
                   ]
+                },
+                {
+                  "required": [
+                    "marks"
+                  ]
                 }
               ]
             }
@@ -491,6 +508,11 @@
                   "required": [
                     "scale"
                   ]
+                },
+                {
+                  "required": [
+                    "marks"
+                  ]
                 }
               ]
             }
@@ -515,6 +537,11 @@
                 {
                   "required": [
                     "scale"
+                  ]
+                },
+                {
+                  "required": [
+                    "marks"
                   ]
                 },
                 {

@@ -4,6 +4,42 @@
 
 ```ts
 
+import * as react_jsx_runtime from 'react/jsx-runtime';
+import { ReactNode } from 'react';
+import { ViewProps } from 'react-native';
+
+// @public
+export const FILE_CARD_METRIC_ORDER: readonly ["loc", "function_count", "cyclomatic_max", "cyclomatic_sum", "max_nesting_depth", "fan_in", "fan_out", "instability"];
+
+// @public
+export function FileCard(input: FileCardProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface FileCardMetric {
+    delta?: number | null;
+    key: string;
+    label?: string;
+    percentile?: number | null;
+    value: number | null;
+}
+
+// @public
+export interface FileCardProps extends Omit<ViewProps, 'children'> {
+    className?: string;
+    fanIn?: number;
+    fanOut?: number;
+    loc?: number;
+    metrics?: readonly FileCardMetric[];
+    path: string;
+    status?: FileCardStatus;
+}
+
+// @public
+export type FileCardStatus = 'added' | 'removed' | 'renamed';
+
+// @public
+export const MAP_CARD_KEEP_OUT = 0.83;
+
 // @public
 export const MAP_WEIGHT: {
     readonly full: 1;
@@ -23,6 +59,52 @@ export interface MapBox {
 }
 
 // @public
+export function MapCard(input: MapCardProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface MapCardPlacement {
+    box: {
+        x: number;
+        y: number;
+        width: number;
+        height: number;
+    };
+    keepOutY: number;
+    leader: {
+        from: Point;
+        to: Point;
+    };
+    side: MapCardSide;
+}
+
+// @public
+export function mapCardPlacement(input: MapCardPlacementInput): MapCardPlacement;
+
+// @public
+export interface MapCardPlacementInput {
+    anchor: Point;
+    keepOutFraction?: number;
+    side?: 'auto' | MapCardSide;
+    size: MapCardSize;
+    viewport: Viewport;
+}
+
+// @public
+export interface MapCardProps {
+    accessibilityLabel?: string;
+    anchor: Point;
+    children: ReactNode;
+    className?: string;
+    enter?: number;
+    exit?: number;
+    keepOutFraction?: number;
+    side?: 'auto' | 'left' | 'right';
+    size?: MapCardSize;
+    title?: ReactNode;
+    viewport: Viewport;
+}
+
+// @public
 export interface MapCardRef {
     // (undocumented)
     anchor: string;
@@ -30,6 +112,15 @@ export interface MapCardRef {
     id: string;
     // (undocumented)
     kind: string;
+}
+
+// @public
+export type MapCardSide = 'left' | 'right';
+
+// @public
+export interface MapCardSize {
+    height: number;
+    width: number;
 }
 
 // @public

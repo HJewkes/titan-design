@@ -5,6 +5,7 @@ export { forceLayout, type ForceLayoutOptions } from './layouts/force-layout-mod
 export { egoLayout, type EgoDirection, type EgoLayoutOptions } from './layouts/ego-layout-model'
 export { clusteredLayout, type ClusteredLayoutOptions } from './layouts/clustered-layout-model'
 export type {
+  GraphBox,
   GraphEdge,
   GraphEdgeKind,
   GraphGroup,
