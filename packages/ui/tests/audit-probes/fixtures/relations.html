@@ -193,6 +193,30 @@
         </div>
       </div>
 
+      <!-- A chart card: tick labels 40px apart, placed by the svg's coordinates. -->
+      <div class="case" data-testid="sg-svg">
+        <div class="card" style="padding: 24px; gap: 8px">
+          <svg width="192" height="132" style="display: block">
+            <text x="0" y="12" font-size="12">190</text>
+            <text x="0" y="64" font-size="12">180</text>
+            <text x="0" y="116" font-size="12">170</text>
+          </svg>
+          <div class="bar"></div>
+        </div>
+      </div>
+
+      <div class="case" data-testid="sg-svg-beside">
+        <div class="card" style="padding: 24px">
+          <svg width="192" height="132" style="display: block; margin-bottom: 8px">
+            <text x="0" y="12" font-size="12">190</text>
+            <text x="0" y="64" font-size="12">180</text>
+            <text x="0" y="116" font-size="12">170</text>
+          </svg>
+          <div class="bar" style="margin-bottom: 20px"></div>
+          <div class="bar"></div>
+        </div>
+      </div>
+
       <!-- dead-band (DR-LA-09) -->
       <div class="case" data-testid="db-tall">
         <div class="card" style="padding: 16px; gap: 8px; min-height: 120px">
