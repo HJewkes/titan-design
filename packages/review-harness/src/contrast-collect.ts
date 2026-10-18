@@ -29,6 +29,20 @@ export interface RawSample {
   indeterminate?: string
 }
 
+export interface RawBox {
+  width: number
+  height: number
+}
+
+/** What the frame checks read beside the samples (TD-962): the story root and its control faces. */
+export interface RawProbe {
+  /** The story root's node, null when the story rendered no root. */
+  root: number | null
+  box: RawBox
+  /** Visible controls that paint their own fill; each node's plane is its face. */
+  faces: { node: number; selector: string }[]
+}
+
 export interface FrameSamples {
   /** The canvas under <html>: white, or Chromium's dark canvas for `color-scheme: dark`. */
   base: Rgba
@@ -36,11 +50,15 @@ export interface FrameSamples {
   samples: RawSample[]
 }
 
+export interface CollectedFrame extends FrameSamples {
+  probe: RawProbe
+}
+
 /**
  * Runs inside the story's page (Playwright serialises it), so it must stay self-contained:
  * no imports, no outer references. It only reads; every ratio is computed in Node.
  */
-export function collectFrame(rootSelector: string): FrameSamples {
+export function collectFrame(rootSelector: string): CollectedFrame {
   const CONTROL =
     'button, input:not([type=hidden]), select, textarea, [role=button], [role=checkbox], ' +
     '[role=radio], [role=switch], [role=slider], [role=textbox], [role=combobox], ' +
@@ -236,9 +254,22 @@ export function collectFrame(rootSelector: string): FrameSamples {
     return [...subtree(root), ...portals.flatMap((p) => [p, ...subtree(p)])]
   }
 
+  function probeOf(elements: Element[]): RawProbe {
+    const root = document.querySelector(rootSelector)
+    if (!root) return { root: null, box: { width: 0, height: 0 }, faces: [] }
+    const { width, height } = root.getBoundingClientRect()
+    const faces = elements
+      .filter((el) => el.matches(CONTROL) && visible(el, getComputedStyle(el)))
+      .filter((el) => parse(getComputedStyle(el).backgroundColor)[3] > 0)
+      .map((el) => ({ node: nodeOf(el), selector: selectorOf(el) }))
+    return { root: nodeOf(root), box: { width, height }, faces }
+  }
+
   const html = document.documentElement
   const dark = getComputedStyle(html).colorScheme.split(' ').includes('dark')
   const light = getComputedStyle(html).colorScheme.split(' ').includes('light')
-  const samples = storyElements().flatMap(samplesOf)
-  return { base: dark && !light ? [18, 18, 18, 1] : [255, 255, 255, 1], nodes, samples }
+  const elements = storyElements()
+  const samples = elements.flatMap(samplesOf)
+  const probe = probeOf(elements)
+  return { base: dark && !light ? [18, 18, 18, 1] : [255, 255, 255, 1], nodes, samples, probe }
 }

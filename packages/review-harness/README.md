@@ -671,6 +671,17 @@ heads rewrites `build` only. A round without bindings needs no tree.
   an `iterate` or `decide` pick question without `implemented`, a question about a grouped PR
   outside that group's sections (it would not be asked in the PR's Review tab), or a `baseImage`
   on a frame whose `change` is `new`.
+- **Frame checks (TD-962).** `build` exits 3, writing no `round.json` and recording each fault as
+  a `REFUSED` line in `contrast.json`'s `problems` (so `passed` is false), when a frame would be
+  served wrong. No contrast declaration excuses one. A frame is _labelled_ light by its declared
+  `globals.theme`, else by its key (`-l`, `-light`) or the word "light" in its label, so image
+  variants and stories with no declared theme count. A frame reads dark below CIE L\* 50, the
+  perceptual midpoint between black and white.
+  - **Light frame.** A light-labelled story's light measurement whose story-root plane, or a grey
+    control face (a button, input or ARIA control with its own fill, channels within 10% of each
+    other), reads dark. A light-labelled image whose PNG's outer pixel ring (median) reads dark.
+    After the static frames render, each light-labelled story's served PNG whose ring reads dark,
+    which catches a story with no declared theme served in Storybook's default dark theme.
 - **Ship gate.** `build` exits 3, writing no `round.json`, for a Ship question whose PR had a
   changes-requested (`revisionRequested`), declined (a pick outside `merge.ship`) or non-agreed
   (`agreed: false`, only on a question without `implemented`) answer in the latest earlier round that asked about it. It reads

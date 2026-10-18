@@ -2,6 +2,7 @@ import { chromium, type Page } from '@playwright/test'
 import { evaluateFrame } from './contrast-check.ts'
 import { collectFrame } from './contrast-collect.ts'
 import type { MeasuredFrame } from './contrast-gate.ts'
+import { evaluateProbe } from './frame-probe.ts'
 import { captureViewportHeight } from './frames.ts'
 import { storyUrl } from './round.ts'
 import { STORY_ROOT, renderStory } from './shooter.ts'
@@ -31,7 +32,8 @@ async function assertTheme(page: Page, mode: ThemeMode): Promise<void> {
 async function measureFrame(page: Page, url: string, mode: ThemeMode) {
   await renderStory(page, url)
   await assertTheme(page, mode)
-  return evaluateFrame(await page.evaluate(collectFrame, STORY_ROOT))
+  const collected = await page.evaluate(collectFrame, STORY_ROOT)
+  return { result: evaluateFrame(collected), probe: evaluateProbe(collected) }
 }
 
 /** Every story variant at every width, light and dark, in one headless Chromium. */
@@ -50,10 +52,10 @@ export async function measureRound(
         for (const mode of THEME_MODES) {
           await page.setViewportSize({ width, height: captureViewportHeight(manifest, variant) })
           const url = storyUrl(storybookUrl, themedVariant(variant, mode))
-          const result = await measureFrame(page, url, mode).catch((err: Error) => {
+          const measured = await measureFrame(page, url, mode).catch((err: Error) => {
             throw new Error(`${variant.key} ${mode} @${width}: ${err.message}`)
           })
-          frames.push({ variant: variant.key, width, mode, result })
+          frames.push({ variant: variant.key, width, mode, ...measured })
         }
   } finally {
     await browser.close()

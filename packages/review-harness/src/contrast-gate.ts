@@ -1,5 +1,6 @@
 import { REQUIRED_RATIO, floorRatio } from './contrast.ts'
 import type { Check, FrameResult, Indeterminate } from './contrast-check.ts'
+import type { FrameProbe } from './frame-probe.ts'
 import {
   THEME_MODES,
   isClipVariant,
@@ -37,6 +38,8 @@ export interface MeasuredFrame {
   width: number
   mode: ThemeMode
   result: FrameResult
+  /** What the frame checks read (TD-962); absent from a measurement that took none. */
+  probe?: FrameProbe
 }
 
 type Where = { variant: string; mode: ThemeMode; width?: number }
