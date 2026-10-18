@@ -191,6 +191,55 @@ describe('lintRound', () => {
     expect(rules(draft)).toEqual(['unanchored-question'])
   })
 
+  describe('a pick in a section that shows no frames (TD-962)', () => {
+    /** Shaped like a chart-text round: a pick about tick labels, asked under no frame. */
+    const pick = {
+      kind: 'pick-one',
+      prompt: 'Which tick label style?',
+      options: ['Mono', 'Sans'],
+      signsOff: 'the tick labels',
+    }
+
+    function chartText(asked: Record<string, unknown> = pick) {
+      const draft = base()
+      draft.questions.push({ id: 'chart-text', ...asked })
+      draft.sections.push({
+        ...section('chart-text', ['chart-text'], []),
+        kind: undefined,
+      } as never)
+      return draft
+    }
+
+    it('refuses it when it declares no decision', () => {
+      expect(lint(chartText())).toEqual([
+        {
+          rule: 'frameless-decision',
+          message:
+            'question chart-text: it picks in section chart-text, which shows no frames; ' +
+            'show the frames it decides, or mark it decision: decide',
+        },
+      ])
+    })
+
+    it('accepts it as a decide, a choice no frame shows', () => {
+      expect(lint(chartText({ ...pick, decision: 'decide', implemented: 'Mono' }))).toEqual([])
+    })
+
+    it('leaves a decisions round, which shows no frames at all, alone', () => {
+      const draft = chartText()
+      draft.variants = []
+      draft.questions = draft.questions.filter((q) => q.id === 'policy' || q.id === 'chart-text')
+      draft.sections = draft.sections.filter((s) => s.id === 'chart-text')
+      draft.sections[0].questionIds = ['policy', 'chart-text']
+      const { prGroups: _groups, ...ungrouped } = draft
+      expect(lint(ungrouped as Draft)).toEqual([])
+    })
+
+    it('leaves a text question in a frameless section alone', () => {
+      expect(lint(chartText({ kind: 'text', prompt: 'Anything on the labels?' }))).toEqual([])
+    })
+  })
+
   it('refuses a frame from another section, which would not sit above the question', () => {
     const draft = base()
     question(draft, 'format').frames = [

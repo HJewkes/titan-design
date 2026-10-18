@@ -12,6 +12,71 @@ import { ViewProps } from 'react-native';
 export function all(...spans: Span[]): Span;
 
 // @public
+export function Annotate(input: AnnotateProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface AnnotateProps extends Omit<AnnotationMarkProps, 'box'> {
+    box?: AnnotationBox;
+    children: ReactNode;
+    className?: string;
+}
+
+// @public
+export const ANNOTATION_DEFAULTS: Record<AnnotationKind, {
+    padding: number;
+    iterations: number;
+}>;
+
+// @public
+export interface AnnotationBox {
+    h: number;
+    w: number;
+    x: number;
+    y: number;
+}
+
+// @public
+export type AnnotationColor = 'primary' | 'secondary' | 'success' | 'error' | 'warning' | 'info';
+
+// @public
+export interface AnnotationGeometryOptions {
+    iterations: number;
+    padding: number;
+    roughness: number;
+    seed: number | string;
+    strokeWidth: number;
+}
+
+// @public
+export type AnnotationKind = 'highlight' | 'underline' | 'box' | 'circle' | 'strike-through' | 'crossed-off';
+
+// @public
+export function AnnotationMark(input: AnnotationMarkProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface AnnotationMarkProps {
+    box: AnnotationBox;
+    color?: AnnotationColor;
+    iterations?: number;
+    kind: AnnotationKind;
+    padding?: number;
+    progress?: number;
+    roughness?: number;
+    seed?: number | string;
+    strokeWidth?: number;
+    testID?: string;
+}
+
+// @public
+export interface AnnotationStroke {
+    model: PathModel;
+    width: number;
+}
+
+// @public
+export function annotationStrokes(kind: AnnotationKind, box: AnnotationBox, options: AnnotationGeometryOptions): AnnotationStroke[];
+
+// @public
 export const back: (s?: number) => Easing;
 
 // @public
@@ -92,6 +157,9 @@ export function cubicBezier(x1: number, y1: number, x2: number, y2: number): Eas
 
 // @public
 export function cutPath(path: string | PathModel, length: number): string;
+
+// @public
+export const DEFAULT_MORPH_WINDOWS: MorphWindows;
 
 // @public
 export function delay(s: number, inner: Span): Span;
@@ -238,7 +306,73 @@ export interface LocalTime {
 export function localTime(raw: number, durationS: number): LocalTime;
 
 // @public
+export function matchParts(from: readonly MorphPart[], to: readonly MorphPart[], keyMap?: MorphKeyMap): PartMatching;
+
+// @public
 export function mediaClock(media: HTMLMediaElement): Clock;
+
+// @public
+export function Morph<P extends MorphPart>(input: MorphProps<P>): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface MorphBox {
+    height: number;
+    width: number;
+    x: number;
+    y: number;
+}
+
+// @public
+export type MorphKeyMap = Readonly<Record<string, string>>;
+
+// @public
+export interface MorphLayer<P extends MorphPart = MorphPart> {
+    box: MorphBox;
+    id: string;
+    opacity: number;
+    part: P;
+    role: MorphRole;
+    transform: MorphTransform;
+}
+
+// @public
+export interface MorphPart {
+    box: MorphBox;
+    id: string;
+    key?: string;
+}
+
+// @public
+export interface MorphProps<P extends MorphPart> extends PartsMorphOptions, Omit<ViewProps, 'children'> {
+    className?: string;
+    from: readonly P[];
+    height: number;
+    progress: number;
+    renderPart: (part: P, layer: MorphLayer<P>) => ReactNode;
+    to: readonly P[];
+    width: number;
+}
+
+// @public
+export type MorphRole = 'match' | 'mapped' | 'exit' | 'enter';
+
+// @public
+export interface MorphTransform {
+    scaleX: number;
+    scaleY: number;
+    translateX: number;
+    translateY: number;
+}
+
+// @public
+export type MorphWindow = readonly [start: number, end: number];
+
+// @public
+export interface MorphWindows {
+    enter: MorphWindow;
+    exit: MorphWindow;
+    move: MorphWindow;
+}
 
 // @public
 export const MOTION: {
@@ -316,6 +450,31 @@ export function noise2D(seed: number | string, x: number, y: number): number;
 
 // @public
 export function parsePath(d: string): PathCommand[];
+
+// @public
+export interface PartMatching {
+    enters: string[];
+    exits: string[];
+    pairs: PartPair[];
+}
+
+// @public
+export interface PartPair {
+    from: string;
+    to: string;
+    via: 'key' | 'keyMap';
+}
+
+// @public
+export function partsMorph<P extends MorphPart>(from: readonly P[], to: readonly P[], input?: PartsMorphOptions): (progress: number) => MorphLayer<P>[];
+
+// @public
+export interface PartsMorphOptions {
+    arc?: number;
+    ease?: Easing;
+    keyMap?: MorphKeyMap;
+    windows?: Partial<MorphWindows>;
+}
 
 // @public
 export type PathCommand = {
@@ -411,6 +570,18 @@ export function randomRange(seed: number | string, keys: readonly number[], inpu
 export const REDUCED_MOTION_END_S = 10000;
 
 // @public
+export function roughEllipse(seed: number | string, key: number, center: PathPoint, input: readonly [number, number], input2?: RoughOptions): PathModel;
+
+// @public
+export function roughLine(seed: number | string, key: number, from: PathPoint, to: PathPoint, input?: RoughOptions): PathModel;
+
+// @public
+export interface RoughOptions {
+    bowing?: number;
+    roughness?: number;
+}
+
+// @public
 export interface SeekClock extends Clock {
     readonly kind: 'seek';
     seek(t: number): void;
@@ -490,7 +661,13 @@ export interface StaggerOptions {
 }
 
 // @public
+export function strokeProgress(lengths: readonly number[], progress: number): number[];
+
+// @public
 export function tangentAtLength(path: string | PathModel, at: number): PathPoint;
+
+// @public
+export const thereAndBack: (f?: Easing) => Easing;
 
 // @public
 export interface TimeWindow {

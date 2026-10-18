@@ -1,0 +1,2304 @@
+{
+  "schema": 1,
+  "generated": {
+    "sha": "07b83130",
+    "widths": [
+      360,
+      768,
+      1280
+    ]
+  },
+  "ceiling": {
+    "text-floor": 1734
+  },
+  "kinds": {
+    "text-floor": {
+      "components-atoms-pill--all-sizes": [
+        "div > div:nth-of-type(1) > div:nth-of-type(1) > div"
+      ],
+      "custom-activework-cochangechip--default": [
+        "[data-testid=\"co-change-chip\"] > div > div:nth-of-type(4) > div"
+      ],
+      "custom-activework-cochangechip--weak-pair": [
+        "[data-testid=\"co-change-chip\"] > div > div:nth-of-type(4) > div"
+      ],
+      "custom-activework-fileactivitydetail--default": [
+        "div:nth-of-type(2) > div:nth-of-type(2) > div > div",
+        "div:nth-of-type(3) > div:nth-of-type(2) > div > div",
+        "div:nth-of-type(4) > div:nth-of-type(2) > div > div"
+      ],
+      "custom-activework-fileactivitydetail--net-shrink": [
+        "div:nth-of-type(2) > div:nth-of-type(2) > div > div"
+      ],
+      "custom-activework-filehistoryexplorer--default": [
+        "[data-testid=\"co-change-chip\"] > div:nth-of-type(4) > div",
+        "div:nth-of-type(2) > div:nth-of-type(2) > div > div",
+        "div:nth-of-type(3) > div:nth-of-type(2) > div > div",
+        "div:nth-of-type(4) > div:nth-of-type(2) > div > div"
+      ],
+      "custom-activework-filehistoryexplorer--net-shrink-selected": [
+        "[data-testid=\"co-change-chip\"] > div:nth-of-type(4) > div",
+        "div:nth-of-type(2) > div:nth-of-type(2) > div > div"
+      ],
+      "custom-activework-filehistoryexplorer--no-co-changes": [
+        "div:nth-of-type(2) > div:nth-of-type(2) > div > div",
+        "div:nth-of-type(3) > div:nth-of-type(2) > div > div",
+        "div:nth-of-type(4) > div:nth-of-type(2) > div > div"
+      ],
+      "custom-activework-initiativecard--backburner": [
+        "[data-testid=\"initiative-card\"] > div:nth-of-type(5) > div > div"
+      ],
+      "custom-activework-initiativecard--default": [
+        "[data-testid=\"initiative-card\"] > div:nth-of-type(1) > div:nth-of-type(2) > div",
+        "[data-testid=\"initiative-card\"] > div:nth-of-type(5) > div > div"
+      ],
+      "custom-activework-initiativecard--no-open-tasks": [
+        "[data-testid=\"initiative-card\"] > div:nth-of-type(4) > div > div"
+      ],
+      "custom-activework-initiativeheader--default": [
+        "div > div > div:nth-of-type(3) > div"
+      ],
+      "custom-activework-initiativereader--default": [
+        "[data-testid=\"open-loop\"] > div:nth-of-type(1) > div:nth-of-type(1) > div",
+        "div:nth-of-type(1) > div > div:nth-of-type(3) > div"
+      ],
+      "custom-activework-initiativereader--no-open-loops": [
+        "div:nth-of-type(1) > div > div:nth-of-type(3) > div"
+      ],
+      "custom-activework-openloops--default": [
+        "[data-testid=\"open-loop\"] > div:nth-of-type(1) > div:nth-of-type(1) > div"
+      ],
+      "custom-activework-portfoliooverview--default": [
+        "[data-testid=\"initiative-card\"] > div:nth-of-type(1) > div:nth-of-type(2) > div"
+      ],
+      "custom-activework-sessiondetail--ad-hoc": [
+        "[data-testid=\"session-tasks-touched\"] > button[role=\"button\"]:nth-of-type(1) > div"
+      ],
+      "custom-activework-sessiondetail--default": [
+        "[data-testid=\"session-tasks-touched\"] > button[role=\"button\"]:nth-of-type(1) > div",
+        "[data-testid=\"session-tasks-touched\"] > button[role=\"button\"]:nth-of-type(2) > div",
+        "[data-testid=\"session-tasks-touched\"] > button[role=\"button\"]:nth-of-type(3) > div",
+        "[data-testid=\"session-tasks-touched\"] > button[role=\"button\"]:nth-of-type(4) > div",
+        "[data-testid=\"session-tasks-touched\"] > button[role=\"button\"]:nth-of-type(5) > div",
+        "[data-testid=\"session-tasks-touched\"] > button[role=\"button\"]:nth-of-type(6) > div"
+      ],
+      "custom-activework-sessiondetail--inert": [
+        "[data-testid=\"session-tasks-touched\"] > div:nth-of-type(2) > div",
+        "[data-testid=\"session-tasks-touched\"] > div:nth-of-type(3) > div",
+        "[data-testid=\"session-tasks-touched\"] > div:nth-of-type(4) > div",
+        "[data-testid=\"session-tasks-touched\"] > div:nth-of-type(5) > div",
+        "[data-testid=\"session-tasks-touched\"] > div:nth-of-type(6) > div",
+        "[data-testid=\"session-tasks-touched\"] > div:nth-of-type(7) > div"
+      ],
+      "custom-activework-sessiondetail--short": [
+        "[data-testid=\"session-tasks-touched\"] > button[role=\"button\"]:nth-of-type(1) > div",
+        "[data-testid=\"session-tasks-touched\"] > button[role=\"button\"]:nth-of-type(2) > div"
+      ],
+      "custom-activework-sessiondetail--without-tasks": [
+        "[data-testid=\"session-tasks-touched\"] > button[role=\"button\"]:nth-of-type(1) > div",
+        "[data-testid=\"session-tasks-touched\"] > button[role=\"button\"]:nth-of-type(2) > div",
+        "[data-testid=\"session-tasks-touched\"] > button[role=\"button\"]:nth-of-type(3) > div",
+        "[data-testid=\"session-tasks-touched\"] > button[role=\"button\"]:nth-of-type(4) > div",
+        "[data-testid=\"session-tasks-touched\"] > button[role=\"button\"]:nth-of-type(5) > div",
+        "[data-testid=\"session-tasks-touched\"] > button[role=\"button\"]:nth-of-type(6) > div"
+      ],
+      "custom-activework-sessionreader--default": [
+        "[data-testid=\"session-tasks-touched\"] > button[role=\"button\"]:nth-of-type(1) > div",
+        "[data-testid=\"session-tasks-touched\"] > button[role=\"button\"]:nth-of-type(2) > div",
+        "[data-testid=\"session-tasks-touched\"] > button[role=\"button\"]:nth-of-type(3) > div",
+        "[data-testid=\"session-tasks-touched\"] > button[role=\"button\"]:nth-of-type(4) > div",
+        "[data-testid=\"session-tasks-touched\"] > button[role=\"button\"]:nth-of-type(5) > div",
+        "[data-testid=\"session-tasks-touched\"] > button[role=\"button\"]:nth-of-type(6) > div"
+      ],
+      "custom-activework-sessionreader--one-session": [
+        "[data-testid=\"session-tasks-touched\"] > button[role=\"button\"]:nth-of-type(1) > div",
+        "[data-testid=\"session-tasks-touched\"] > button[role=\"button\"]:nth-of-type(2) > div",
+        "[data-testid=\"session-tasks-touched\"] > button[role=\"button\"]:nth-of-type(3) > div",
+        "[data-testid=\"session-tasks-touched\"] > button[role=\"button\"]:nth-of-type(4) > div",
+        "[data-testid=\"session-tasks-touched\"] > button[role=\"button\"]:nth-of-type(5) > div",
+        "[data-testid=\"session-tasks-touched\"] > button[role=\"button\"]:nth-of-type(6) > div"
+      ],
+      "custom-activework-sessionreader--without-task-store": [
+        "[data-testid=\"session-tasks-touched\"] > button[role=\"button\"]:nth-of-type(1) > div",
+        "[data-testid=\"session-tasks-touched\"] > button[role=\"button\"]:nth-of-type(2) > div",
+        "[data-testid=\"session-tasks-touched\"] > button[role=\"button\"]:nth-of-type(3) > div",
+        "[data-testid=\"session-tasks-touched\"] > button[role=\"button\"]:nth-of-type(4) > div",
+        "[data-testid=\"session-tasks-touched\"] > button[role=\"button\"]:nth-of-type(5) > div",
+        "[data-testid=\"session-tasks-touched\"] > button[role=\"button\"]:nth-of-type(6) > div"
+      ],
+      "custom-activework-taskrow--critical-with-overflowing-tags": [
+        "div[role=\"cell\"]:nth-of-type(7) > div > div:nth-of-type(1) > div",
+        "div[role=\"cell\"]:nth-of-type(7) > div > div:nth-of-type(2) > div"
+      ],
+      "custom-activework-taskrow--default": [
+        "div[role=\"cell\"]:nth-of-type(7) > div > div:nth-of-type(1) > div",
+        "div[role=\"cell\"]:nth-of-type(7) > div > div:nth-of-type(2) > div"
+      ],
+      "custom-activework-taskrow--long-title": [
+        "div[role=\"cell\"]:nth-of-type(7) > div > div:nth-of-type(1) > div",
+        "div[role=\"cell\"]:nth-of-type(7) > div > div:nth-of-type(2) > div"
+      ],
+      "custom-activework-taskrow--missing-severity-and-estimate": [
+        "div[role=\"cell\"]:nth-of-type(7) > div > div > div"
+      ],
+      "custom-activework-tasktable--default": [
+        "div[role=\"cell\"]:nth-of-type(6) > div > div > div",
+        "div[role=\"cell\"]:nth-of-type(6) > div > div:nth-of-type(1) > div",
+        "div[role=\"cell\"]:nth-of-type(6) > div > div:nth-of-type(2) > div",
+        "div[role=\"cell\"]:nth-of-type(7) > div > div > div",
+        "div[role=\"cell\"]:nth-of-type(7) > div > div:nth-of-type(1) > div",
+        "div[role=\"cell\"]:nth-of-type(7) > div > div:nth-of-type(2) > div"
+      ],
+      "custom-activework-tasktable--narrow": [
+        "div[role=\"cell\"]:nth-of-type(6) > div > div > div",
+        "div[role=\"cell\"]:nth-of-type(6) > div > div:nth-of-type(1) > div",
+        "div[role=\"cell\"]:nth-of-type(6) > div > div:nth-of-type(2) > div",
+        "div[role=\"cell\"]:nth-of-type(7) > div > div > div",
+        "div[role=\"cell\"]:nth-of-type(7) > div > div:nth-of-type(1) > div",
+        "div[role=\"cell\"]:nth-of-type(7) > div > div:nth-of-type(2) > div"
+      ],
+      "custom-activework-tasktable--no-legend": [
+        "div[role=\"cell\"]:nth-of-type(6) > div > div > div",
+        "div[role=\"cell\"]:nth-of-type(6) > div > div:nth-of-type(1) > div",
+        "div[role=\"cell\"]:nth-of-type(6) > div > div:nth-of-type(2) > div",
+        "div[role=\"cell\"]:nth-of-type(7) > div > div > div",
+        "div[role=\"cell\"]:nth-of-type(7) > div > div:nth-of-type(1) > div",
+        "div[role=\"cell\"]:nth-of-type(7) > div > div:nth-of-type(2) > div"
+      ],
+      "custom-activework-tasktable--sorted-by-age": [
+        "div[role=\"cell\"]:nth-of-type(6) > div > div > div",
+        "div[role=\"cell\"]:nth-of-type(6) > div > div:nth-of-type(1) > div",
+        "div[role=\"cell\"]:nth-of-type(6) > div > div:nth-of-type(2) > div",
+        "div[role=\"cell\"]:nth-of-type(7) > div > div > div",
+        "div[role=\"cell\"]:nth-of-type(7) > div > div:nth-of-type(1) > div",
+        "div[role=\"cell\"]:nth-of-type(7) > div > div:nth-of-type(2) > div"
+      ],
+      "custom-activework-tasktable--sorted-by-estimate": [
+        "div[role=\"cell\"]:nth-of-type(6) > div > div > div",
+        "div[role=\"cell\"]:nth-of-type(6) > div > div:nth-of-type(1) > div",
+        "div[role=\"cell\"]:nth-of-type(6) > div > div:nth-of-type(2) > div",
+        "div[role=\"cell\"]:nth-of-type(7) > div > div > div",
+        "div[role=\"cell\"]:nth-of-type(7) > div > div:nth-of-type(1) > div",
+        "div[role=\"cell\"]:nth-of-type(7) > div > div:nth-of-type(2) > div"
+      ],
+      "custom-activework-tasktable--sorted-by-severity": [
+        "div[role=\"cell\"]:nth-of-type(6) > div > div > div",
+        "div[role=\"cell\"]:nth-of-type(6) > div > div:nth-of-type(1) > div",
+        "div[role=\"cell\"]:nth-of-type(6) > div > div:nth-of-type(2) > div",
+        "div[role=\"cell\"]:nth-of-type(7) > div > div > div",
+        "div[role=\"cell\"]:nth-of-type(7) > div > div:nth-of-type(1) > div",
+        "div[role=\"cell\"]:nth-of-type(7) > div > div:nth-of-type(2) > div"
+      ],
+      "custom-agents-agentcard--default": [
+        "[data-testid=\"agent-card\"] > div:nth-of-type(2) > div:nth-of-type(1) > div",
+        "div:nth-of-type(3) > div:nth-of-type(3) > div:nth-of-type(1) > div",
+        "div:nth-of-type(3) > div:nth-of-type(3) > div:nth-of-type(2) > div"
+      ],
+      "custom-agents-agentroster--default": [
+        "[data-testid=\"agent-state-dnd\"] > div"
+      ],
+      "custom-agents-agentsview--default": [
+        "[data-testid=\"agent-card\"] > div:nth-of-type(2) > div:nth-of-type(1) > div",
+        "[data-testid=\"agent-state-dnd\"] > div",
+        "div:nth-of-type(1) > div:nth-of-type(3) > div:nth-of-type(2) > div",
+        "div:nth-of-type(3) > div:nth-of-type(3) > div:nth-of-type(1) > div",
+        "div:nth-of-type(3) > div:nth-of-type(3) > div:nth-of-type(2) > div"
+      ],
+      "custom-agents-interactions--hover-card-opens-on-focus-and-closes-on-escape": [
+        "[data-testid=\"agent-state-dnd\"] > div"
+      ],
+      "custom-agents-interactions--roster-arrows-move-focus-and-enter-selects": [
+        "[data-testid=\"agent-state-dnd\"] > div"
+      ],
+      "custom-fatigue-dual-ghost-spark--asymmetric-controlled": [
+        "[data-testid=\"dual-ghost-spark\"] > svg > text:nth-of-type(1)",
+        "[data-testid=\"dual-ghost-spark\"] > svg > text:nth-of-type(2)",
+        "div > div > div > div:nth-of-type(1)",
+        "svg > g:nth-of-type(3) > g > text:nth-of-type(1)",
+        "svg > g:nth-of-type(3) > g > text:nth-of-type(2)"
+      ],
+      "custom-fatigue-dual-ghost-spark--asymmetric-left-right": [
+        "[data-testid=\"dual-ghost-spark\"] > svg > text:nth-of-type(1)",
+        "[data-testid=\"dual-ghost-spark\"] > svg > text:nth-of-type(2)",
+        "div > div > div > div:nth-of-type(1)",
+        "svg > g:nth-of-type(3) > g > text:nth-of-type(1)",
+        "svg > g:nth-of-type(3) > g > text:nth-of-type(2)"
+      ],
+      "custom-fatigue-dual-ghost-spark--empty": [
+        "[data-testid=\"dual-ghost-spark\"] > svg > text:nth-of-type(1)",
+        "[data-testid=\"dual-ghost-spark\"] > svg > text:nth-of-type(2)",
+        "div > div > div:nth-of-type(1) > div:nth-of-type(1)",
+        "div > div > div:nth-of-type(2) > div:nth-of-type(1)",
+        "svg > g:nth-of-type(2) > g > text:nth-of-type(1)",
+        "svg > g:nth-of-type(2) > g > text:nth-of-type(2)"
+      ],
+      "custom-fatigue-dual-ghost-spark--one-side-lagging": [
+        "[data-testid=\"dual-ghost-spark\"] > svg > text:nth-of-type(1)",
+        "[data-testid=\"dual-ghost-spark\"] > svg > text:nth-of-type(2)",
+        "div > div > div > div:nth-of-type(1)",
+        "svg > g:nth-of-type(3) > g > text:nth-of-type(1)",
+        "svg > g:nth-of-type(3) > g > text:nth-of-type(2)"
+      ],
+      "custom-fatigue-dual-ghost-spark--symmetric": [
+        "[data-testid=\"dual-ghost-spark\"] > svg > text:nth-of-type(1)",
+        "[data-testid=\"dual-ghost-spark\"] > svg > text:nth-of-type(2)",
+        "div > div > div > div:nth-of-type(1)",
+        "svg > g:nth-of-type(3) > g > text:nth-of-type(1)",
+        "svg > g:nth-of-type(3) > g > text:nth-of-type(2)"
+      ],
+      "custom-fatigue-dual-ghost-spark--tint-range": [
+        "[data-testid=\"dual-ghost-spark\"] > svg > text:nth-of-type(1)",
+        "[data-testid=\"dual-ghost-spark\"] > svg > text:nth-of-type(2)",
+        "div > div:nth-of-type(1) > div > div:nth-of-type(1)",
+        "div > div:nth-of-type(2) > div > div:nth-of-type(1)",
+        "div > div:nth-of-type(3) > div > div:nth-of-type(1)",
+        "div > div:nth-of-type(4) > div > div:nth-of-type(1)",
+        "div > div:nth-of-type(5) > div > div:nth-of-type(1)",
+        "div > div:nth-of-type(6) > div > div:nth-of-type(1)",
+        "svg > g:nth-of-type(3) > g > text:nth-of-type(1)",
+        "svg > g:nth-of-type(3) > g > text:nth-of-type(2)"
+      ],
+      "custom-fatigue-fatigue-lights--across-states": [
+        "div > div > div:nth-of-type(1) > div:nth-of-type(1)",
+        "div > div > div:nth-of-type(2) > div:nth-of-type(1)",
+        "div > div > div:nth-of-type(3) > div:nth-of-type(1)",
+        "div > div > div:nth-of-type(4) > div:nth-of-type(1)",
+        "div > div > div:nth-of-type(5) > div:nth-of-type(1)",
+        "div:nth-of-type(1) > div > div[role=\"img\"][aria-label=\"Velocity loss, alarm\"] > div:nth-of-type(2)",
+        "div:nth-of-type(1) > div > div[role=\"img\"][aria-label=\"Velocity loss, ok\"] > div:nth-of-type(2)",
+        "div:nth-of-type(1) > div > div[role=\"img\"][aria-label=\"Velocity loss, warming up\"] > div:nth-of-type(2)",
+        "div:nth-of-type(1) > div > div[role=\"img\"][aria-label=\"Velocity loss, watch\"] > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div > div[role=\"img\"][aria-label=\"ROM depth, alarm\"] > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div > div[role=\"img\"][aria-label=\"ROM depth, ok\"] > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div > div[role=\"img\"][aria-label=\"ROM depth, warming up\"] > div:nth-of-type(2)",
+        "div:nth-of-type(3) > div > div[role=\"img\"][aria-label=\"Tempo, alarm\"] > div:nth-of-type(2)",
+        "div:nth-of-type(3) > div > div[role=\"img\"][aria-label=\"Tempo, ok\"] > div:nth-of-type(2)",
+        "div:nth-of-type(3) > div > div[role=\"img\"][aria-label=\"Tempo, warming up\"] > div:nth-of-type(2)"
+      ],
+      "custom-fatigue-fatigue-lights--spread": [
+        "div:nth-of-type(1) > div > div[role=\"img\"][aria-label=\"Velocity loss, alarm\"] > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div > div[role=\"img\"][aria-label=\"ROM depth, alarm\"] > div:nth-of-type(2)",
+        "div:nth-of-type(3) > div > div[role=\"img\"][aria-label=\"Tempo, alarm\"] > div:nth-of-type(2)"
+      ],
+      "custom-fatigue-ghost-spark--control-aware-tint": [
+        "div > div > div:nth-of-type(1) > div:nth-of-type(1)",
+        "div > div > div:nth-of-type(2) > div:nth-of-type(1)",
+        "div > div > div:nth-of-type(3) > div:nth-of-type(1)",
+        "div > div > div:nth-of-type(4) > div:nth-of-type(1)",
+        "svg > g > g > text:nth-of-type(1)",
+        "svg > g > g > text:nth-of-type(2)"
+      ],
+      "custom-fatigue-ghost-spark--default": [
+        "div > div > div:nth-of-type(1)",
+        "svg > g > g > text:nth-of-type(1)",
+        "svg > g > g > text:nth-of-type(2)"
+      ],
+      "custom-fatigue-ghost-spark--empty-before-first-rep": [
+        "div > div > div:nth-of-type(1) > div:nth-of-type(1)",
+        "div > div > div:nth-of-type(2) > div:nth-of-type(1)",
+        "svg > g > g > text:nth-of-type(1)",
+        "svg > g > g > text:nth-of-type(2)"
+      ],
+      "custom-fatigue-ghost-spark--paused-rep-band": [
+        "div > div > div:nth-of-type(1)",
+        "div > div > div:nth-of-type(3)",
+        "div > div > div:nth-of-type(5)",
+        "div > div > div:nth-of-type(7)",
+        "svg > g > g > text:nth-of-type(1)",
+        "svg > g > g > text:nth-of-type(2)"
+      ],
+      "custom-fatigue-live-fatigue-card--default": [
+        "[data-testid=\"verdict-hero\"] > div:nth-of-type(1)",
+        "div:nth-of-type(1) > div > div[role=\"img\"][aria-label=\"Velocity loss, alarm\"] > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div > div[role=\"img\"][aria-label=\"ROM depth, alarm\"] > div:nth-of-type(2)",
+        "div:nth-of-type(3) > div > div[role=\"img\"][aria-label=\"Tempo, alarm\"] > div:nth-of-type(2)",
+        "svg > g > g > text:nth-of-type(1)",
+        "svg > g > g > text:nth-of-type(2)"
+      ],
+      "custom-fatigue-live-fatigue-card--states": [
+        "[data-testid=\"verdict-hero\"] > div:nth-of-type(1)",
+        "div > div > div:nth-of-type(1) > div:nth-of-type(1)",
+        "div > div > div:nth-of-type(2) > div:nth-of-type(1)",
+        "div > div > div:nth-of-type(3) > div:nth-of-type(1)",
+        "div > div > div:nth-of-type(4) > div:nth-of-type(1)",
+        "div:nth-of-type(1) > div > div[role=\"img\"][aria-label=\"Velocity loss, alarm\"] > div:nth-of-type(2)",
+        "div:nth-of-type(1) > div > div[role=\"img\"][aria-label=\"Velocity loss, ok\"] > div:nth-of-type(2)",
+        "div:nth-of-type(1) > div > div[role=\"img\"][aria-label=\"Velocity loss, watch\"] > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div > div[role=\"img\"][aria-label=\"ROM depth, alarm\"] > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div > div[role=\"img\"][aria-label=\"ROM depth, ok\"] > div:nth-of-type(2)",
+        "div:nth-of-type(3) > div > div[role=\"img\"][aria-label=\"Tempo, alarm\"] > div:nth-of-type(2)",
+        "div:nth-of-type(3) > div > div[role=\"img\"][aria-label=\"Tempo, ok\"] > div:nth-of-type(2)",
+        "svg > g > g > text:nth-of-type(1)",
+        "svg > g > g > text:nth-of-type(2)"
+      ],
+      "custom-fatigue-live-fatigue-card--wall-height": [
+        "[data-testid=\"verdict-hero\"] > div:nth-of-type(1)",
+        "div:nth-of-type(1) > div > div[role=\"img\"][aria-label=\"Velocity loss, alarm\"] > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div > div[role=\"img\"][aria-label=\"ROM depth, alarm\"] > div:nth-of-type(2)",
+        "div:nth-of-type(3) > div > div[role=\"img\"][aria-label=\"Tempo, alarm\"] > div:nth-of-type(2)",
+        "svg > g > g > text:nth-of-type(1)",
+        "svg > g > g > text:nth-of-type(2)"
+      ],
+      "custom-fatigue-live-fatigue-card--warming-up": [
+        "[data-testid=\"verdict-hero\"] > div:nth-of-type(1)",
+        "div:nth-of-type(1) > div > div[role=\"img\"][aria-label=\"Velocity loss, warming up\"] > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div > div[role=\"img\"][aria-label=\"ROM depth, warming up\"] > div:nth-of-type(2)",
+        "div:nth-of-type(3) > div > div[role=\"img\"][aria-label=\"Tempo, warming up\"] > div:nth-of-type(2)",
+        "svg > g > g > text:nth-of-type(1)",
+        "svg > g > g > text:nth-of-type(2)"
+      ],
+      "custom-fatigue-live-fatigue-card--with-planned-reps": [
+        "[data-testid=\"verdict-hero\"] > div:nth-of-type(1)",
+        "div:nth-of-type(1) > div > div[role=\"img\"][aria-label=\"Velocity loss, watch\"] > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div > div[role=\"img\"][aria-label=\"ROM depth, ok\"] > div:nth-of-type(2)",
+        "div:nth-of-type(3) > div > div[role=\"img\"][aria-label=\"Tempo, ok\"] > div:nth-of-type(2)",
+        "svg > g > g > text:nth-of-type(1)",
+        "svg > g > g > text:nth-of-type(2)"
+      ],
+      "custom-fatigue-live-fatigue-card--without-planned-reps": [
+        "[data-testid=\"verdict-hero\"] > div:nth-of-type(1)",
+        "div:nth-of-type(1) > div > div[role=\"img\"][aria-label=\"Velocity loss, watch\"] > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div > div[role=\"img\"][aria-label=\"ROM depth, ok\"] > div:nth-of-type(2)",
+        "div:nth-of-type(3) > div > div[role=\"img\"][aria-label=\"Tempo, ok\"] > div:nth-of-type(2)",
+        "svg > g > g > text:nth-of-type(1)",
+        "svg > g > g > text:nth-of-type(2)"
+      ],
+      "custom-fatigue-live-fatigue-panel--live-panel-v-2": [
+        "[data-testid=\"live-fatigue-eyebrow\"]",
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(3) > div:nth-of-type(2)",
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(4) > div:nth-of-type(2)",
+        "[data-testid=\"verdict-hero\"] > div:nth-of-type(1)",
+        "div:nth-of-type(1) > div > div[role=\"img\"][aria-label=\"Velocity loss, alarm\"] > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div > div[role=\"img\"][aria-label=\"ROM depth, alarm\"] > div:nth-of-type(2)",
+        "div:nth-of-type(3) > div > div[role=\"img\"][aria-label=\"Tempo, alarm\"] > div:nth-of-type(2)",
+        "svg > g > g > text:nth-of-type(1)",
+        "svg > g > g > text:nth-of-type(2)"
+      ],
+      "custom-fatigue-live-fatigue-panel--live-states": [
+        "[data-testid=\"live-fatigue-eyebrow\"]",
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(3) > div:nth-of-type(2)",
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(4) > div:nth-of-type(2)",
+        "[data-testid=\"verdict-hero\"] > div:nth-of-type(1)",
+        "div > div > div:nth-of-type(2) > div:nth-of-type(1)",
+        "div > div > div:nth-of-type(3) > div:nth-of-type(1)",
+        "div > div > div:nth-of-type(4) > div:nth-of-type(1)",
+        "div > div > div:nth-of-type(5) > div:nth-of-type(1)",
+        "div:nth-of-type(1) > div > div[role=\"img\"][aria-label=\"Velocity loss, alarm\"] > div:nth-of-type(2)",
+        "div:nth-of-type(1) > div > div[role=\"img\"][aria-label=\"Velocity loss, ok\"] > div:nth-of-type(2)",
+        "div:nth-of-type(1) > div > div[role=\"img\"][aria-label=\"Velocity loss, watch\"] > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div > div[role=\"img\"][aria-label=\"ROM depth, alarm\"] > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div > div[role=\"img\"][aria-label=\"ROM depth, ok\"] > div:nth-of-type(2)",
+        "div:nth-of-type(3) > div > div[role=\"img\"][aria-label=\"Tempo, alarm\"] > div:nth-of-type(2)",
+        "div:nth-of-type(3) > div > div[role=\"img\"][aria-label=\"Tempo, ok\"] > div:nth-of-type(2)",
+        "svg > g > g > text",
+        "svg > g > g > text:nth-of-type(1)",
+        "svg > g > g > text:nth-of-type(2)"
+      ],
+      "custom-fatigue-live-fatigue-panel--on-light-surface": [
+        "[data-testid=\"live-fatigue-eyebrow\"]",
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(3) > div:nth-of-type(2)",
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(4) > div:nth-of-type(2)",
+        "[data-testid=\"verdict-hero\"] > div:nth-of-type(1)",
+        "div:nth-of-type(1) > div > div[role=\"img\"][aria-label=\"Velocity loss, ok\"] > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div > div[role=\"img\"][aria-label=\"ROM depth, ok\"] > div:nth-of-type(2)",
+        "div:nth-of-type(3) > div > div[role=\"img\"][aria-label=\"Tempo, ok\"] > div:nth-of-type(2)",
+        "svg > g > g > text",
+        "svg > g > g > text:nth-of-type(1)",
+        "svg > g > g > text:nth-of-type(2)"
+      ],
+      "custom-fatigue-live-fatigue-panel--wall-width": [
+        "[data-testid=\"live-fatigue-eyebrow\"]",
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(3) > div:nth-of-type(2)",
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(4) > div:nth-of-type(2)",
+        "[data-testid=\"verdict-hero\"] > div:nth-of-type(1)",
+        "div:nth-of-type(1) > div > div[role=\"img\"][aria-label=\"Velocity loss, alarm\"] > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div > div[role=\"img\"][aria-label=\"ROM depth, ok\"] > div:nth-of-type(2)",
+        "div:nth-of-type(3) > div > div[role=\"img\"][aria-label=\"Tempo, ok\"] > div:nth-of-type(2)",
+        "svg > g > g > text:nth-of-type(1)",
+        "svg > g > g > text:nth-of-type(2)"
+      ],
+      "custom-fatigue-live-fatigue-panel--widths": [
+        "[data-testid=\"live-fatigue-eyebrow\"]",
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(3) > div:nth-of-type(2)",
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(4) > div:nth-of-type(2)",
+        "[data-testid=\"verdict-hero\"] > div:nth-of-type(1)",
+        "div:nth-of-type(1) > div > div[role=\"img\"][aria-label=\"Velocity loss, watch\"] > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div > div[role=\"img\"][aria-label=\"ROM depth, ok\"] > div:nth-of-type(2)",
+        "div:nth-of-type(3) > div > div[role=\"img\"][aria-label=\"Tempo, ok\"] > div:nth-of-type(2)",
+        "svg > g > g > text",
+        "svg > g > g > text:nth-of-type(1)",
+        "svg > g > g > text:nth-of-type(2)"
+      ],
+      "custom-fatigue-rom-progression--across-states": [
+        "div > div > div:nth-of-type(1) > div:nth-of-type(1)",
+        "div > div > div:nth-of-type(2) > div:nth-of-type(1)",
+        "div > div > div:nth-of-type(3) > div:nth-of-type(1)",
+        "div > div > div:nth-of-type(4) > div:nth-of-type(1)",
+        "div > div > div:nth-of-type(5) > div:nth-of-type(1)"
+      ],
+      "custom-fatigue-rom-progression--planned-to-do": [
+        "div > div > div:nth-of-type(1) > div:nth-of-type(1)",
+        "div > div > div:nth-of-type(2) > div:nth-of-type(1)",
+        "div > div > div:nth-of-type(3) > div:nth-of-type(1)"
+      ],
+      "custom-fatigue-velocity-hero--default": [
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(3) > div:nth-of-type(2)",
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(4) > div:nth-of-type(2)",
+        "div > div > div > div:nth-of-type(1)"
+      ],
+      "custom-fatigue-velocity-hero--mid-set": [
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(3) > div:nth-of-type(2)",
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(4) > div:nth-of-type(2)"
+      ],
+      "custom-fatigue-verdict-hero--across-states": [
+        "[data-testid=\"verdict-hero\"] > div:nth-of-type(1)",
+        "div > div > div:nth-of-type(1) > div:nth-of-type(1)",
+        "div > div > div:nth-of-type(2) > div:nth-of-type(1)",
+        "div > div > div:nth-of-type(3) > div:nth-of-type(1)",
+        "div > div > div:nth-of-type(4) > div:nth-of-type(1)",
+        "div > div > div:nth-of-type(5) > div:nth-of-type(1)"
+      ],
+      "custom-session-toolcallrow--default": [
+        "[data-testid=\"tool-badge\"] > div"
+      ],
+      "custom-workout-dataviz-bodymapdetailpanel--sections-bilateral-at-wall": [
+        "[data-testid=\"strength-trend-chart-gridline\"] > div"
+      ],
+      "custom-workout-dataviz-bodymapdetailpanel--sections-bilateral-right-at-wall": [
+        "[data-testid=\"strength-trend-chart-gridline\"] > div"
+      ],
+      "custom-workout-dataviz-bodymapdetailpanel--sections-single-exercise-at-wall": [
+        "[data-testid=\"strength-trend-chart-gridline\"] > div"
+      ],
+      "custom-workout-dataviz-bodymapdetailpanel--sections-single-exercise-right-at-wall": [
+        "[data-testid=\"strength-trend-chart-gridline\"] > div"
+      ],
+      "custom-workout-dataviz-capacitybandchart--compact": [
+        "[data-testid=\"capacity-band-chart-projection-rest-label\"]",
+        "[data-testid=\"capacity-band-chart-projection-training-label\"]",
+        "[data-testid=\"capacity-band-chart-y-axis-label\"]"
+      ],
+      "custom-workout-dataviz-capacitybandchart--default": [
+        "[data-testid=\"capacity-band-chart-projection-rest-label\"]",
+        "[data-testid=\"capacity-band-chart-projection-training-label\"]",
+        "[data-testid=\"capacity-band-chart-y-axis-label\"]"
+      ],
+      "custom-workout-dataviz-capacitybandchart--interactive": [
+        "[data-testid=\"capacity-band-chart-projection-rest-label\"]",
+        "[data-testid=\"capacity-band-chart-projection-training-label\"]",
+        "[data-testid=\"capacity-band-chart-y-axis-label\"]"
+      ],
+      "custom-workout-dataviz-capacitybandchart--sparse-data": [
+        "[data-testid=\"capacity-band-chart-y-axis-label\"]"
+      ],
+      "custom-workout-dataviz-capacitybandchart--without-projection": [
+        "[data-testid=\"capacity-band-chart-y-axis-label\"]"
+      ],
+      "custom-workout-dataviz-dualvelocitystrip--crowded-right-edge-label": [
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(3) > div:nth-of-type(2)",
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(4) > div:nth-of-type(2)"
+      ],
+      "custom-workout-dataviz-dualvelocitystrip--hero": [
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(3) > div:nth-of-type(2)",
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(4) > div:nth-of-type(2)"
+      ],
+      "custom-workout-dataviz-dualvelocitystrip--range-set": [
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(3) > div:nth-of-type(2)",
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(4) > div:nth-of-type(2)"
+      ],
+      "custom-workout-dataviz-fatiguemeter--custom-scale": [
+        "[data-testid=\"zone-track-tick-label\"]"
+      ],
+      "custom-workout-dataviz-fatiguemeter--fresh": [
+        "[data-testid=\"zone-track-tick-label\"]"
+      ],
+      "custom-workout-dataviz-fatiguemeter--stop-zone": [
+        "[data-testid=\"zone-track-tick-label\"]"
+      ],
+      "custom-workout-dataviz-fatiguemeter--vl-20": [
+        "[data-testid=\"zone-track-tick-label\"]"
+      ],
+      "custom-workout-dataviz-intensitybar--all-zones": [
+        "[data-testid=\"intensity-label\"]",
+        "[data-testid=\"intensity-threshold-label\"]"
+      ],
+      "custom-workout-dataviz-intensitybar--high": [
+        "[data-testid=\"intensity-label\"]",
+        "[data-testid=\"intensity-threshold-label\"]"
+      ],
+      "custom-workout-dataviz-intensitybar--horizontal": [
+        "[data-testid=\"intensity-label\"]"
+      ],
+      "custom-workout-dataviz-intensitybar--low": [
+        "[data-testid=\"intensity-label\"]",
+        "[data-testid=\"intensity-threshold-label\"]"
+      ],
+      "custom-workout-dataviz-intensitybar--moderate": [
+        "[data-testid=\"intensity-label\"]",
+        "[data-testid=\"intensity-threshold-label\"]"
+      ],
+      "custom-workout-dataviz-strengthtrendchart--compact": [
+        "[data-testid=\"strength-trend-chart-gridline\"] > div"
+      ],
+      "custom-workout-dataviz-strengthtrendchart--declining": [
+        "[data-testid=\"strength-trend-chart-gridline\"] > div"
+      ],
+      "custom-workout-dataviz-strengthtrendchart--default": [
+        "[data-testid=\"strength-trend-chart-gridline\"] > div"
+      ],
+      "custom-workout-dataviz-strengthtrendchart--interactive": [
+        "[data-testid=\"strength-trend-chart-gridline\"] > div"
+      ],
+      "custom-workout-dataviz-strengthtrendchart--single-point": [
+        "[data-testid=\"strength-trend-chart-gridline\"] > div"
+      ],
+      "custom-workout-dataviz-strengthtrendchart--without-projection": [
+        "[data-testid=\"strength-trend-chart-gridline\"] > div"
+      ],
+      "custom-workout-dataviz-velocitystrip--all-views": [
+        "[data-testid=\"dual-velocity-side-label-L\"]",
+        "[data-testid=\"dual-velocity-side-label-R\"]",
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(3) > div:nth-of-type(2)",
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(4) > div:nth-of-type(2)"
+      ],
+      "custom-workout-dataviz-velocitystrip--in-context": [
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(1)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(2)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(3)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(4)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(5)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(6)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(7)"
+      ],
+      "custom-workout-dataviz-velocitystrip--playground": [
+        "[data-testid=\"velocity-label-0\"]",
+        "[data-testid=\"velocity-label-1\"]",
+        "[data-testid=\"velocity-label-2\"]",
+        "[data-testid=\"velocity-label-3\"]",
+        "[data-testid=\"velocity-label-4\"]"
+      ],
+      "custom-workout-dataviz-velocitystrip-dual--default": [
+        "[data-testid=\"dual-velocity-side-label-L\"]",
+        "[data-testid=\"dual-velocity-side-label-R\"]",
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(4) > div:nth-of-type(2)"
+      ],
+      "custom-workout-dataviz-velocitystrip-dual--in-progress": [
+        "[data-testid=\"dual-velocity-side-label-L\"]",
+        "[data-testid=\"dual-velocity-side-label-R\"]",
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(4) > div:nth-of-type(2)"
+      ],
+      "custom-workout-dataviz-velocitystrip-dual--playground": [
+        "[data-testid=\"dual-velocity-side-label-L\"]",
+        "[data-testid=\"dual-velocity-side-label-R\"]",
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(3) > div:nth-of-type(2)",
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(4) > div:nth-of-type(2)"
+      ],
+      "custom-workout-dataviz-velocitystrip-dual--small-height-labels": [
+        "[data-testid=\"dual-velocity-side-label-L\"]",
+        "[data-testid=\"dual-velocity-side-label-R\"]",
+        "[data-testid=\"velocity-label-0\"]",
+        "[data-testid=\"velocity-label-1\"]",
+        "[data-testid=\"velocity-label-2\"]",
+        "[data-testid=\"velocity-label-3\"]"
+      ],
+      "custom-workout-dataviz-velocitystrip-dual--symmetric-empties": [
+        "[data-testid=\"dual-velocity-side-label-L\"]",
+        "[data-testid=\"dual-velocity-side-label-R\"]",
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(4) > div:nth-of-type(2)"
+      ],
+      "custom-workout-dataviz-velocitystrip-dual--tiny-height": [
+        "[data-testid=\"dual-velocity-side-label-L\"]",
+        "[data-testid=\"dual-velocity-side-label-R\"]",
+        "[data-testid=\"velocity-label-0\"]",
+        "[data-testid=\"velocity-label-1\"]",
+        "[data-testid=\"velocity-label-2\"]",
+        "[data-testid=\"velocity-label-3\"]"
+      ],
+      "custom-workout-dataviz-velocitystrip-expanded--framed-chrome": [
+        "[data-testid=\"velocity-label-0\"]",
+        "[data-testid=\"velocity-label-1\"]",
+        "[data-testid=\"velocity-label-2\"]",
+        "[data-testid=\"velocity-label-3\"]",
+        "[data-testid=\"velocity-label-4\"]"
+      ],
+      "custom-workout-dataviz-velocitystrip-hero--default": [
+        "[data-testid=\"dual-velocity-side-label-L\"]",
+        "[data-testid=\"dual-velocity-side-label-R\"]",
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(3) > div:nth-of-type(2)",
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(4) > div:nth-of-type(2)"
+      ],
+      "custom-workout-dataviz-velocitystrip-hero--dual-lagging-side": [
+        "[data-testid=\"dual-velocity-side-label-L\"]",
+        "[data-testid=\"dual-velocity-side-label-R\"]",
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(3) > div:nth-of-type(2)",
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(4) > div:nth-of-type(2)"
+      ],
+      "custom-workout-dataviz-velocitystrip-hero--edge-cases": [
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(3) > div:nth-of-type(2)",
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(4) > div:nth-of-type(2)"
+      ],
+      "custom-workout-dataviz-velocitystrip-hero--empty-cold-boot": [
+        "[data-testid=\"dual-velocity-side-label-L\"]",
+        "[data-testid=\"dual-velocity-side-label-R\"]"
+      ],
+      "custom-workout-dataviz-velocitystrip-hero--fatigue-decline": [
+        "[data-testid=\"dual-velocity-side-label-L\"]",
+        "[data-testid=\"dual-velocity-side-label-R\"]",
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(3) > div:nth-of-type(2)",
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(4) > div:nth-of-type(2)"
+      ],
+      "custom-workout-dataviz-velocitystrip-hero--fixed-scale-headroom": [
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(3) > div:nth-of-type(2)",
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(4) > div:nth-of-type(2)",
+        "[data-testid=\"velocity-side-label\"]"
+      ],
+      "custom-workout-dataviz-velocitystrip-hero--in-progress": [
+        "[data-testid=\"dual-velocity-side-label-L\"]",
+        "[data-testid=\"dual-velocity-side-label-R\"]",
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(3) > div:nth-of-type(2)",
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(4) > div:nth-of-type(2)"
+      ],
+      "custom-workout-dataviz-velocitystrip-hero--rep-types": [
+        "[data-testid=\"dual-velocity-side-label-L\"]",
+        "[data-testid=\"dual-velocity-side-label-R\"]",
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(3) > div:nth-of-type(2)",
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(4) > div:nth-of-type(2)"
+      ],
+      "custom-workout-dataviz-velocitystrip-hero--responsive": [
+        "[data-testid=\"dual-velocity-side-label-L\"]",
+        "[data-testid=\"dual-velocity-side-label-R\"]",
+        "[data-testid=\"velocity-label-0\"]",
+        "[data-testid=\"velocity-label-1\"]",
+        "[data-testid=\"velocity-label-2\"]",
+        "[data-testid=\"velocity-label-3\"]",
+        "[data-testid=\"velocity-label-4\"]",
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(3) > div:nth-of-type(2)",
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(4) > div:nth-of-type(2)"
+      ],
+      "custom-workout-dataviz-velocitystrip-hero--set-types": [
+        "[data-testid=\"dual-velocity-side-label-L\"]",
+        "[data-testid=\"dual-velocity-side-label-R\"]",
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(3) > div:nth-of-type(2)",
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(4) > div:nth-of-type(2)"
+      ],
+      "custom-workout-dataviz-volumelandmarkbar--all-zones": [
+        "[data-testid=\"zone-track-tick-label\"]"
+      ],
+      "custom-workout-dataviz-volumelandmarkbar--approaching-mrv": [
+        "[data-testid=\"zone-track-tick-label\"]"
+      ],
+      "custom-workout-dataviz-volumelandmarkbar--maintenance": [
+        "[data-testid=\"zone-track-tick-label\"]"
+      ],
+      "custom-workout-dataviz-volumelandmarkbar--optimal": [
+        "[data-testid=\"zone-track-tick-label\"]"
+      ],
+      "custom-workout-dataviz-volumelandmarkbar--over-mrv": [
+        "[data-testid=\"zone-track-tick-label\"]"
+      ],
+      "custom-workout-dataviz-volumelandmarkbar--under-mev": [
+        "[data-testid=\"zone-track-tick-label\"]"
+      ],
+      "custom-workout-dataviz-zonetrack--band-with-marker": [
+        "[data-testid=\"zone-track-tick-label\"]"
+      ],
+      "custom-workout-dataviz-zonetrack--colored-tooltip-ticks": [
+        "[data-testid=\"zone-track-tick-label\"]"
+      ],
+      "custom-workout-dataviz-zonetrack--gradient-fill": [
+        "[data-testid=\"zone-track-tick-label\"]"
+      ],
+      "custom-workout-dataviz-zonetrack--needle": [
+        "[data-testid=\"zone-track-tick-label\"]"
+      ],
+      "custom-workout-exercisecard--expanded-with-tempo": [
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(1)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(2)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(3)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(4)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(5)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(6)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(7)"
+      ],
+      "custom-workout-exercisecardheading--default": [
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(1)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(2)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(3)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(4)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(5)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(6)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(7)"
+      ],
+      "custom-workout-exercisecardheading--dimmed": [
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(1)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(2)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(3)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(4)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(5)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(6)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(7)"
+      ],
+      "custom-workout-exercisecardheading--live": [
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(1)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(2)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(3)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(4)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(5)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(6)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(7)"
+      ],
+      "custom-workout-exercisecardheading--selected": [
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(1)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(2)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(3)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(4)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(5)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(6)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(7)"
+      ],
+      "custom-workout-exercisecardheading--without-strip": [
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(1)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(2)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(3)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(4)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(5)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(6)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(7)"
+      ],
+      "custom-workout-exerciseheading--default": [
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(1)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(2)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(3)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(4)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(5)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(6)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(7)"
+      ],
+      "custom-workout-exerciseheading--dimmed": [
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(1)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(2)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(3)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(4)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(5)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(6)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(7)"
+      ],
+      "custom-workout-exerciseheading--rep-range": [
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(1)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(2)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(3)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(4)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(5)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(6)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(7)"
+      ],
+      "custom-workout-goalmusclecard--default": [
+        "[data-testid=\"goal-muscle-card-lift\"] > div:nth-of-type(3)"
+      ],
+      "custom-workout-goalmusclecard--no-week-variance": [
+        "[data-testid=\"goal-muscle-card-lift\"] > div:nth-of-type(3)"
+      ],
+      "custom-workout-goalmusclecard--single-lift": [
+        "[data-testid=\"goal-muscle-card-lift\"] > div:nth-of-type(3)"
+      ],
+      "custom-workout-liveauraframe--all-states": [
+        "div:nth-of-type(3) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(2)",
+        "div:nth-of-type(3) > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(2)",
+        "div:nth-of-type(3) > div:nth-of-type(1) > div:nth-of-type(3) > div:nth-of-type(2)"
+      ],
+      "custom-workout-liveauraframe--productive": [
+        "div:nth-of-type(3) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(2)",
+        "div:nth-of-type(3) > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(2)",
+        "div:nth-of-type(3) > div:nth-of-type(1) > div:nth-of-type(3) > div:nth-of-type(2)"
+      ],
+      "custom-workout-liveauraframe--stop": [
+        "div:nth-of-type(3) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(2)",
+        "div:nth-of-type(3) > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(2)",
+        "div:nth-of-type(3) > div:nth-of-type(1) > div:nth-of-type(3) > div:nth-of-type(2)"
+      ],
+      "custom-workout-liveauraframe--threshold": [
+        "div:nth-of-type(3) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(2)",
+        "div:nth-of-type(3) > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(2)",
+        "div:nth-of-type(3) > div:nth-of-type(1) > div:nth-of-type(3) > div:nth-of-type(2)"
+      ],
+      "custom-workout-mesocard--expanded": [
+        "[data-testid=\"intensity-label\"]"
+      ],
+      "custom-workout-mesocard--highlighted": [
+        "[data-testid=\"intensity-label\"]"
+      ],
+      "custom-workout-mesocard--strength-block": [
+        "[data-testid=\"intensity-label\"]"
+      ],
+      "custom-workout-setstrip--expected-range-long-label": [
+        "[data-testid=\"set-strip-expected-label\"]"
+      ],
+      "custom-workout-setstrip--expected-range-only": [
+        "[data-testid=\"set-strip-expected-label\"]"
+      ],
+      "custom-workout-setstrip--prescribed-and-expected": [
+        "[data-testid=\"set-strip-expected-label\"]"
+      ],
+      "custom-workout-tempodisplay--prescription": [
+        "[data-testid=\"tempo-display\"] > div > div:nth-of-type(1)"
+      ],
+      "custom-workout-tempodisplay--static-vs-live": [
+        "[data-testid=\"tempo-display\"] > div > div:nth-of-type(1)"
+      ],
+      "custom-workout-weekrow--current-week": [
+        "[data-testid=\"intensity-label\"]"
+      ],
+      "custom-workout-weekrow--default": [
+        "[data-testid=\"intensity-label\"]"
+      ],
+      "custom-workout-weekrow--deload-week": [
+        "[data-testid=\"intensity-label\"]"
+      ],
+      "custom-workout-weekrow--mesocycle-progression": [
+        "[data-testid=\"intensity-label\"]"
+      ],
+      "custom-workout-weightbadge--all-variants": [
+        "[data-testid=\"weight-badge\"] > div",
+        "[data-testid=\"weight-badge\"] > div:nth-of-type(2)"
+      ],
+      "docs-architecture--overview": [
+        "div:nth-of-type(2) > svg > g:nth-of-type(1) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(10) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(100) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(101) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(102) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(103) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(104) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(105) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(106) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(107) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(108) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(109) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(11) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(110) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(111) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(112) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(113) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(114) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(115) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(116) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(117) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(118) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(119) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(12) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(120) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(121) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(122) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(123) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(124) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(125) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(126) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(127) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(128) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(129) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(13) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(130) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(131) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(132) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(133) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(134) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(135) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(136) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(137) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(138) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(139) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(14) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(140) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(141) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(142) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(143) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(144) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(145) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(146) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(147) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(148) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(149) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(15) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(150) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(151) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(152) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(153) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(154) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(155) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(156) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(157) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(158) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(159) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(16) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(160) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(161) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(162) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(163) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(164) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(165) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(166) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(167) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(168) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(169) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(17) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(170) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(171) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(172) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(173) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(174) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(175) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(176) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(177) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(178) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(18) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(19) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(2) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(20) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(21) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(22) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(23) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(24) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(25) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(26) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(27) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(28) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(29) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(3) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(30) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(31) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(32) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(33) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(34) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(35) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(36) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(37) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(38) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(39) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(4) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(40) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(41) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(42) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(43) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(44) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(45) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(46) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(47) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(48) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(49) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(5) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(50) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(51) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(52) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(53) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(54) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(55) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(56) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(57) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(58) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(59) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(6) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(60) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(61) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(62) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(63) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(64) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(65) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(66) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(67) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(68) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(69) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(7) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(70) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(71) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(72) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(73) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(74) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(75) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(76) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(77) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(78) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(79) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(8) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(80) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(81) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(82) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(83) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(84) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(85) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(86) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(87) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(88) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(89) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(9) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(90) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(91) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(92) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(93) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(94) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(95) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(96) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(97) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(98) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(99) > text:nth-of-type(2)"
+      ],
+      "foundations-color-alpha--default": [
+        "div > div:nth-of-type(6) > div:nth-of-type(1) > div:nth-of-type(3)",
+        "div > div:nth-of-type(6) > div:nth-of-type(2) > div:nth-of-type(3)",
+        "div > div:nth-of-type(6) > div:nth-of-type(3) > div:nth-of-type(3)",
+        "div > div:nth-of-type(6) > div:nth-of-type(4) > div:nth-of-type(3)",
+        "div > div:nth-of-type(6) > div:nth-of-type(5) > div:nth-of-type(3)"
+      ],
+      "foundations-color-palettes--categorical-palette": [
+        "div:nth-of-type(3) > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(3)",
+        "div:nth-of-type(3) > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(3)",
+        "div:nth-of-type(3) > div:nth-of-type(2) > div:nth-of-type(3) > div:nth-of-type(3)",
+        "div:nth-of-type(3) > div:nth-of-type(2) > div:nth-of-type(4) > div:nth-of-type(3)",
+        "div:nth-of-type(3) > div:nth-of-type(2) > div:nth-of-type(5) > div:nth-of-type(3)",
+        "div:nth-of-type(3) > div:nth-of-type(2) > div:nth-of-type(6) > div:nth-of-type(3)",
+        "div:nth-of-type(3) > div:nth-of-type(2) > div:nth-of-type(7) > div:nth-of-type(3)",
+        "div:nth-of-type(4) > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(3)",
+        "div:nth-of-type(4) > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(3)",
+        "div:nth-of-type(4) > div:nth-of-type(2) > div:nth-of-type(3) > div:nth-of-type(3)",
+        "div:nth-of-type(4) > div:nth-of-type(2) > div:nth-of-type(4) > div:nth-of-type(3)",
+        "div:nth-of-type(4) > div:nth-of-type(2) > div:nth-of-type(5) > div:nth-of-type(3)",
+        "div:nth-of-type(4) > div:nth-of-type(2) > div:nth-of-type(6) > div:nth-of-type(3)",
+        "div:nth-of-type(4) > div:nth-of-type(2) > div:nth-of-type(7) > div:nth-of-type(3)",
+        "div:nth-of-type(6) > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(2)",
+        "div:nth-of-type(6) > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(2)",
+        "div:nth-of-type(6) > div:nth-of-type(2) > div:nth-of-type(3) > div:nth-of-type(2)",
+        "div:nth-of-type(6) > div:nth-of-type(2) > div:nth-of-type(4) > div:nth-of-type(2)",
+        "div:nth-of-type(6) > div:nth-of-type(2) > div:nth-of-type(5) > div:nth-of-type(2)",
+        "div:nth-of-type(6) > div:nth-of-type(2) > div:nth-of-type(6) > div:nth-of-type(2)",
+        "div:nth-of-type(6) > div:nth-of-type(2) > div:nth-of-type(7) > div:nth-of-type(2)"
+      ],
+      "foundations-color-palettes--diverging-scale": [
+        "div > div:nth-of-type(3) > div:nth-of-type(1) > div:nth-of-type(2)",
+        "div > div:nth-of-type(3) > div:nth-of-type(2) > div:nth-of-type(2)",
+        "div > div:nth-of-type(3) > div:nth-of-type(3) > div:nth-of-type(2)",
+        "div > div:nth-of-type(3) > div:nth-of-type(4) > div:nth-of-type(2)",
+        "div > div:nth-of-type(3) > div:nth-of-type(5) > div:nth-of-type(2)",
+        "div:nth-of-type(4) > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(2)",
+        "div:nth-of-type(4) > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(2)",
+        "div:nth-of-type(4) > div:nth-of-type(2) > div:nth-of-type(3) > div:nth-of-type(2)",
+        "div:nth-of-type(4) > div:nth-of-type(2) > div:nth-of-type(4) > div:nth-of-type(2)",
+        "div:nth-of-type(4) > div:nth-of-type(2) > div:nth-of-type(5) > div:nth-of-type(2)"
+      ],
+      "foundations-color-palettes--fatigue-rom-palette": [
+        "div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(2)",
+        "div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(2)",
+        "div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(3) > div:nth-of-type(2)",
+        "div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(4) > div:nth-of-type(2)",
+        "div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(5) > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(3) > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(4) > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(5) > div:nth-of-type(2)"
+      ],
+      "foundations-color-palettes--roles-in-use": [
+        "div > div:nth-of-type(3) > div:nth-of-type(1) > div:nth-of-type(1)",
+        "div > div:nth-of-type(3) > div:nth-of-type(2) > div:nth-of-type(1)",
+        "div > div:nth-of-type(3) > div:nth-of-type(3) > div:nth-of-type(1)",
+        "div > div:nth-of-type(3) > div:nth-of-type(4) > div:nth-of-type(1)",
+        "div > div:nth-of-type(3) > div:nth-of-type(5) > div:nth-of-type(1)",
+        "div > div:nth-of-type(3) > div:nth-of-type(6) > div:nth-of-type(1)",
+        "div > div:nth-of-type(3) > div:nth-of-type(7) > div:nth-of-type(1)",
+        "div > div:nth-of-type(3) > div:nth-of-type(8) > div:nth-of-type(1)",
+        "div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > div",
+        "div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(2) > div",
+        "div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(3) > div",
+        "div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(4) > div",
+        "div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(5) > div",
+        "div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(6) > div"
+      ],
+      "foundations-color-palettes--sequential-effort-scale": [
+        "div > div:nth-of-type(3) > div:nth-of-type(1) > div:nth-of-type(2)",
+        "div > div:nth-of-type(3) > div:nth-of-type(2) > div:nth-of-type(2)",
+        "div > div:nth-of-type(3) > div:nth-of-type(3) > div:nth-of-type(2)",
+        "div > div:nth-of-type(3) > div:nth-of-type(4) > div:nth-of-type(2)",
+        "div > div:nth-of-type(3) > div:nth-of-type(5) > div:nth-of-type(2)",
+        "div > div:nth-of-type(3) > div:nth-of-type(6) > div:nth-of-type(2)",
+        "div:nth-of-type(6) > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(2)",
+        "div:nth-of-type(6) > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(2)",
+        "div:nth-of-type(6) > div:nth-of-type(2) > div:nth-of-type(3) > div:nth-of-type(2)",
+        "div:nth-of-type(6) > div:nth-of-type(2) > div:nth-of-type(4) > div:nth-of-type(2)",
+        "div:nth-of-type(6) > div:nth-of-type(2) > div:nth-of-type(5) > div:nth-of-type(2)",
+        "div:nth-of-type(6) > div:nth-of-type(2) > div:nth-of-type(6) > div:nth-of-type(2)"
+      ],
+      "foundations-color-primitives--accessibility": [
+        "div > div > div:nth-of-type(6) > div:nth-of-type(1)",
+        "div > div > div:nth-of-type(7) > div:nth-of-type(1)",
+        "div > div:nth-of-type(11) > div:nth-of-type(3) > div:nth-of-type(1)",
+        "div > div:nth-of-type(11) > div:nth-of-type(4) > div:nth-of-type(1)",
+        "div > div:nth-of-type(12) > div:nth-of-type(3) > div:nth-of-type(1)",
+        "div > div:nth-of-type(12) > div:nth-of-type(4) > div:nth-of-type(1)",
+        "div > div:nth-of-type(5) > div:nth-of-type(1) > div:nth-of-type(2)",
+        "div > div:nth-of-type(5) > div:nth-of-type(2) > div:nth-of-type(2)",
+        "div > div:nth-of-type(5) > div:nth-of-type(3) > div:nth-of-type(2)",
+        "div > div:nth-of-type(5) > div:nth-of-type(4) > div:nth-of-type(2)",
+        "div > div:nth-of-type(5) > div:nth-of-type(5) > div:nth-of-type(2)",
+        "div > div:nth-of-type(5) > div:nth-of-type(6) > div:nth-of-type(2)",
+        "div > div:nth-of-type(5) > div:nth-of-type(7) > div:nth-of-type(2)",
+        "div:nth-of-type(11) > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(2)",
+        "div:nth-of-type(11) > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(2)",
+        "div:nth-of-type(11) > div:nth-of-type(2) > div:nth-of-type(3) > div:nth-of-type(2)",
+        "div:nth-of-type(11) > div:nth-of-type(2) > div:nth-of-type(4) > div:nth-of-type(2)",
+        "div:nth-of-type(11) > div:nth-of-type(2) > div:nth-of-type(5) > div:nth-of-type(2)",
+        "div:nth-of-type(11) > div:nth-of-type(2) > div:nth-of-type(6) > div:nth-of-type(2)",
+        "div:nth-of-type(11) > div:nth-of-type(2) > div:nth-of-type(7) > div:nth-of-type(2)",
+        "div:nth-of-type(12) > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(2)",
+        "div:nth-of-type(12) > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(2)",
+        "div:nth-of-type(12) > div:nth-of-type(2) > div:nth-of-type(3) > div:nth-of-type(2)",
+        "div:nth-of-type(12) > div:nth-of-type(2) > div:nth-of-type(4) > div:nth-of-type(2)",
+        "div:nth-of-type(12) > div:nth-of-type(2) > div:nth-of-type(5) > div:nth-of-type(2)",
+        "div:nth-of-type(12) > div:nth-of-type(2) > div:nth-of-type(6) > div:nth-of-type(2)",
+        "div:nth-of-type(12) > div:nth-of-type(2) > div:nth-of-type(7) > div:nth-of-type(2)"
+      ],
+      "foundations-color-primitives--ramps": [
+        "div > div:nth-of-type(16) > div:nth-of-type(1) > div:nth-of-type(3)",
+        "div > div:nth-of-type(16) > div:nth-of-type(10) > div:nth-of-type(3)",
+        "div > div:nth-of-type(16) > div:nth-of-type(10) > div:nth-of-type(4)",
+        "div > div:nth-of-type(16) > div:nth-of-type(11) > div:nth-of-type(3)",
+        "div > div:nth-of-type(16) > div:nth-of-type(11) > div:nth-of-type(4)",
+        "div > div:nth-of-type(16) > div:nth-of-type(12) > div:nth-of-type(3)",
+        "div > div:nth-of-type(16) > div:nth-of-type(12) > div:nth-of-type(4)",
+        "div > div:nth-of-type(16) > div:nth-of-type(13) > div:nth-of-type(3)",
+        "div > div:nth-of-type(16) > div:nth-of-type(13) > div:nth-of-type(4)",
+        "div > div:nth-of-type(16) > div:nth-of-type(14) > div:nth-of-type(3)",
+        "div > div:nth-of-type(16) > div:nth-of-type(14) > div:nth-of-type(4)",
+        "div > div:nth-of-type(16) > div:nth-of-type(15) > div:nth-of-type(3)",
+        "div > div:nth-of-type(16) > div:nth-of-type(15) > div:nth-of-type(4)",
+        "div > div:nth-of-type(16) > div:nth-of-type(2) > div:nth-of-type(3)",
+        "div > div:nth-of-type(16) > div:nth-of-type(3) > div:nth-of-type(3)",
+        "div > div:nth-of-type(16) > div:nth-of-type(4) > div:nth-of-type(3)",
+        "div > div:nth-of-type(16) > div:nth-of-type(5) > div:nth-of-type(3)",
+        "div > div:nth-of-type(16) > div:nth-of-type(6) > div:nth-of-type(3)",
+        "div > div:nth-of-type(16) > div:nth-of-type(7) > div:nth-of-type(3)",
+        "div > div:nth-of-type(16) > div:nth-of-type(8) > div:nth-of-type(3)",
+        "div > div:nth-of-type(16) > div:nth-of-type(9) > div:nth-of-type(3)",
+        "div > div:nth-of-type(20) > div:nth-of-type(1) > div:nth-of-type(3)",
+        "div > div:nth-of-type(20) > div:nth-of-type(2) > div:nth-of-type(3)",
+        "div:nth-of-type(10) > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(2)",
+        "div:nth-of-type(10) > div:nth-of-type(2) > div:nth-of-type(10) > div:nth-of-type(2)",
+        "div:nth-of-type(10) > div:nth-of-type(2) > div:nth-of-type(11) > div:nth-of-type(2)",
+        "div:nth-of-type(10) > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(2)",
+        "div:nth-of-type(10) > div:nth-of-type(2) > div:nth-of-type(3) > div:nth-of-type(2)",
+        "div:nth-of-type(10) > div:nth-of-type(2) > div:nth-of-type(4) > div:nth-of-type(2)",
+        "div:nth-of-type(10) > div:nth-of-type(2) > div:nth-of-type(5) > div:nth-of-type(2)",
+        "div:nth-of-type(10) > div:nth-of-type(2) > div:nth-of-type(6) > div:nth-of-type(2)",
+        "div:nth-of-type(10) > div:nth-of-type(2) > div:nth-of-type(7) > div:nth-of-type(2)",
+        "div:nth-of-type(10) > div:nth-of-type(2) > div:nth-of-type(8) > div:nth-of-type(2)",
+        "div:nth-of-type(10) > div:nth-of-type(2) > div:nth-of-type(9) > div:nth-of-type(2)",
+        "div:nth-of-type(11) > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(2)",
+        "div:nth-of-type(11) > div:nth-of-type(2) > div:nth-of-type(10) > div:nth-of-type(2)",
+        "div:nth-of-type(11) > div:nth-of-type(2) > div:nth-of-type(11) > div:nth-of-type(2)",
+        "div:nth-of-type(11) > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(2)",
+        "div:nth-of-type(11) > div:nth-of-type(2) > div:nth-of-type(3) > div:nth-of-type(2)",
+        "div:nth-of-type(11) > div:nth-of-type(2) > div:nth-of-type(4) > div:nth-of-type(2)",
+        "div:nth-of-type(11) > div:nth-of-type(2) > div:nth-of-type(5) > div:nth-of-type(2)",
+        "div:nth-of-type(11) > div:nth-of-type(2) > div:nth-of-type(6) > div:nth-of-type(2)",
+        "div:nth-of-type(11) > div:nth-of-type(2) > div:nth-of-type(7) > div:nth-of-type(2)",
+        "div:nth-of-type(11) > div:nth-of-type(2) > div:nth-of-type(8) > div:nth-of-type(2)",
+        "div:nth-of-type(11) > div:nth-of-type(2) > div:nth-of-type(9) > div:nth-of-type(2)",
+        "div:nth-of-type(12) > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(2)",
+        "div:nth-of-type(12) > div:nth-of-type(2) > div:nth-of-type(10) > div:nth-of-type(2)",
+        "div:nth-of-type(12) > div:nth-of-type(2) > div:nth-of-type(11) > div:nth-of-type(2)",
+        "div:nth-of-type(12) > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(2)",
+        "div:nth-of-type(12) > div:nth-of-type(2) > div:nth-of-type(3) > div:nth-of-type(2)",
+        "div:nth-of-type(12) > div:nth-of-type(2) > div:nth-of-type(4) > div:nth-of-type(2)",
+        "div:nth-of-type(12) > div:nth-of-type(2) > div:nth-of-type(5) > div:nth-of-type(2)",
+        "div:nth-of-type(12) > div:nth-of-type(2) > div:nth-of-type(6) > div:nth-of-type(2)",
+        "div:nth-of-type(12) > div:nth-of-type(2) > div:nth-of-type(7) > div:nth-of-type(2)",
+        "div:nth-of-type(12) > div:nth-of-type(2) > div:nth-of-type(8) > div:nth-of-type(2)",
+        "div:nth-of-type(12) > div:nth-of-type(2) > div:nth-of-type(9) > div:nth-of-type(2)",
+        "div:nth-of-type(6) > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(2)",
+        "div:nth-of-type(6) > div:nth-of-type(2) > div:nth-of-type(10) > div:nth-of-type(2)",
+        "div:nth-of-type(6) > div:nth-of-type(2) > div:nth-of-type(11) > div:nth-of-type(2)",
+        "div:nth-of-type(6) > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(2)",
+        "div:nth-of-type(6) > div:nth-of-type(2) > div:nth-of-type(3) > div:nth-of-type(2)",
+        "div:nth-of-type(6) > div:nth-of-type(2) > div:nth-of-type(4) > div:nth-of-type(2)",
+        "div:nth-of-type(6) > div:nth-of-type(2) > div:nth-of-type(5) > div:nth-of-type(2)",
+        "div:nth-of-type(6) > div:nth-of-type(2) > div:nth-of-type(6) > div:nth-of-type(2)",
+        "div:nth-of-type(6) > div:nth-of-type(2) > div:nth-of-type(7) > div:nth-of-type(2)",
+        "div:nth-of-type(6) > div:nth-of-type(2) > div:nth-of-type(8) > div:nth-of-type(2)",
+        "div:nth-of-type(6) > div:nth-of-type(2) > div:nth-of-type(9) > div:nth-of-type(2)",
+        "div:nth-of-type(7) > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(2)",
+        "div:nth-of-type(7) > div:nth-of-type(2) > div:nth-of-type(10) > div:nth-of-type(2)",
+        "div:nth-of-type(7) > div:nth-of-type(2) > div:nth-of-type(11) > div:nth-of-type(2)",
+        "div:nth-of-type(7) > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(2)",
+        "div:nth-of-type(7) > div:nth-of-type(2) > div:nth-of-type(3) > div:nth-of-type(2)",
+        "div:nth-of-type(7) > div:nth-of-type(2) > div:nth-of-type(4) > div:nth-of-type(2)",
+        "div:nth-of-type(7) > div:nth-of-type(2) > div:nth-of-type(5) > div:nth-of-type(2)",
+        "div:nth-of-type(7) > div:nth-of-type(2) > div:nth-of-type(6) > div:nth-of-type(2)",
+        "div:nth-of-type(7) > div:nth-of-type(2) > div:nth-of-type(7) > div:nth-of-type(2)",
+        "div:nth-of-type(7) > div:nth-of-type(2) > div:nth-of-type(8) > div:nth-of-type(2)",
+        "div:nth-of-type(7) > div:nth-of-type(2) > div:nth-of-type(9) > div:nth-of-type(2)",
+        "div:nth-of-type(8) > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(2)",
+        "div:nth-of-type(8) > div:nth-of-type(2) > div:nth-of-type(10) > div:nth-of-type(2)",
+        "div:nth-of-type(8) > div:nth-of-type(2) > div:nth-of-type(11) > div:nth-of-type(2)",
+        "div:nth-of-type(8) > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(2)",
+        "div:nth-of-type(8) > div:nth-of-type(2) > div:nth-of-type(3) > div:nth-of-type(2)",
+        "div:nth-of-type(8) > div:nth-of-type(2) > div:nth-of-type(4) > div:nth-of-type(2)",
+        "div:nth-of-type(8) > div:nth-of-type(2) > div:nth-of-type(5) > div:nth-of-type(2)",
+        "div:nth-of-type(8) > div:nth-of-type(2) > div:nth-of-type(6) > div:nth-of-type(2)",
+        "div:nth-of-type(8) > div:nth-of-type(2) > div:nth-of-type(7) > div:nth-of-type(2)",
+        "div:nth-of-type(8) > div:nth-of-type(2) > div:nth-of-type(8) > div:nth-of-type(2)",
+        "div:nth-of-type(8) > div:nth-of-type(2) > div:nth-of-type(9) > div:nth-of-type(2)",
+        "div:nth-of-type(9) > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(2)",
+        "div:nth-of-type(9) > div:nth-of-type(2) > div:nth-of-type(10) > div:nth-of-type(2)",
+        "div:nth-of-type(9) > div:nth-of-type(2) > div:nth-of-type(11) > div:nth-of-type(2)",
+        "div:nth-of-type(9) > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(2)",
+        "div:nth-of-type(9) > div:nth-of-type(2) > div:nth-of-type(3) > div:nth-of-type(2)",
+        "div:nth-of-type(9) > div:nth-of-type(2) > div:nth-of-type(4) > div:nth-of-type(2)",
+        "div:nth-of-type(9) > div:nth-of-type(2) > div:nth-of-type(5) > div:nth-of-type(2)",
+        "div:nth-of-type(9) > div:nth-of-type(2) > div:nth-of-type(6) > div:nth-of-type(2)",
+        "div:nth-of-type(9) > div:nth-of-type(2) > div:nth-of-type(7) > div:nth-of-type(2)",
+        "div:nth-of-type(9) > div:nth-of-type(2) > div:nth-of-type(8) > div:nth-of-type(2)",
+        "div:nth-of-type(9) > div:nth-of-type(2) > div:nth-of-type(9) > div:nth-of-type(2)"
+      ],
+      "foundations-color-proposed-vw-82-tokens--default": [
+        "div:nth-of-type(8) > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(3)",
+        "div:nth-of-type(8) > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(3)",
+        "div:nth-of-type(8) > div:nth-of-type(2) > div:nth-of-type(3) > div:nth-of-type(3)",
+        "div:nth-of-type(8) > div:nth-of-type(2) > div:nth-of-type(4) > div:nth-of-type(3)",
+        "div:nth-of-type(8) > div:nth-of-type(2) > div:nth-of-type(5) > div:nth-of-type(3)",
+        "div:nth-of-type(8) > div:nth-of-type(2) > div:nth-of-type(6) > div:nth-of-type(3)"
+      ],
+      "foundations-color-silver-red-scheme--palette": [
+        "div > div > div:nth-of-type(1) > div:nth-of-type(1)",
+        "div > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1)",
+        "div > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(1)",
+        "div > div:nth-of-type(2) > div:nth-of-type(3) > div:nth-of-type(1)"
+      ],
+      "foundations-depth--elevation": [
+        "div > div:nth-of-type(10) > div:nth-of-type(1) > div:nth-of-type(2)",
+        "div > div:nth-of-type(10) > div:nth-of-type(2) > div:nth-of-type(2)",
+        "div > div:nth-of-type(5) > div:nth-of-type(1) > div:nth-of-type(2)",
+        "div > div:nth-of-type(5) > div:nth-of-type(2) > div:nth-of-type(2)",
+        "div > div:nth-of-type(5) > div:nth-of-type(3) > div:nth-of-type(2)",
+        "div > div:nth-of-type(5) > div:nth-of-type(4) > div:nth-of-type(2)",
+        "div > div:nth-of-type(7) > div:nth-of-type(1) > div:nth-of-type(2)",
+        "div > div:nth-of-type(7) > div:nth-of-type(2) > div:nth-of-type(2)"
+      ],
+      "foundations-depth--mechanisms": [
+        "div > div:nth-of-type(11) > div:nth-of-type(1) > div:nth-of-type(2)",
+        "div > div:nth-of-type(11) > div:nth-of-type(2) > div:nth-of-type(2)",
+        "div > div:nth-of-type(11) > div:nth-of-type(3) > div:nth-of-type(2)",
+        "div > div:nth-of-type(14) > div:nth-of-type(1) > div:nth-of-type(2)",
+        "div > div:nth-of-type(14) > div:nth-of-type(2) > div:nth-of-type(2)",
+        "div > div:nth-of-type(14) > div:nth-of-type(3) > div:nth-of-type(2)",
+        "div > div:nth-of-type(8) > div:nth-of-type(1) > div:nth-of-type(2)",
+        "div > div:nth-of-type(8) > div:nth-of-type(2) > div:nth-of-type(2)",
+        "div > div:nth-of-type(8) > div:nth-of-type(3) > div:nth-of-type(2)"
+      ],
+      "foundations-spacing--pill-ramps": [
+        "div:nth-of-type(3) > div:nth-of-type(2) > div:nth-of-type(1) > div",
+        "div:nth-of-type(7) > div:nth-of-type(1) > div:nth-of-type(2) > div"
+      ],
+      "foundations-spacing--semantic-keys": [
+        "div:nth-of-type(2) > div > div:nth-of-type(1) > div"
+      ],
+      "lab-activework-file-biography--default": [
+        "div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > div",
+        "div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(2) > div",
+        "div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(1) > div",
+        "div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(2) > div",
+        "div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(3) > div",
+        "div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(4) > div",
+        "div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(5) > div",
+        "div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(6) > div",
+        "div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(7) > div",
+        "div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(8) > div",
+        "div:nth-of-type(4) > div:nth-of-type(2) > div:nth-of-type(2) > div",
+        "div:nth-of-type(4) > div:nth-of-type(3) > div:nth-of-type(2) > div"
+      ],
+      "lab-archive-curves-per-rep--ecc-conc-split": [
+        "div > div > div:nth-of-type(2) > div:nth-of-type(1)",
+        "div:nth-of-type(2) > div:nth-of-type(1) > svg > text:nth-of-type(1)",
+        "div:nth-of-type(2) > div:nth-of-type(1) > svg > text:nth-of-type(2)",
+        "div:nth-of-type(2) > div:nth-of-type(1) > svg > text:nth-of-type(4)",
+        "div:nth-of-type(2) > div:nth-of-type(2) > svg > text:nth-of-type(1)",
+        "div:nth-of-type(2) > div:nth-of-type(2) > svg > text:nth-of-type(2)",
+        "div:nth-of-type(2) > div:nth-of-type(2) > svg > text:nth-of-type(4)"
+      ],
+      "lab-archive-curves-per-rep--ghost-trail-set": [
+        "div > div > div:nth-of-type(2) > div:nth-of-type(1)"
+      ],
+      "lab-archive-curves-per-rep--overview": [
+        "div > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1)",
+        "div > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(1)",
+        "div > div:nth-of-type(2) > div:nth-of-type(3) > div:nth-of-type(1)",
+        "div > div:nth-of-type(2) > div:nth-of-type(4) > div:nth-of-type(1)",
+        "div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(2)",
+        "div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(2)",
+        "div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(3) > div:nth-of-type(2)",
+        "div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(4) > div:nth-of-type(2)",
+        "div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(5) > div:nth-of-type(2)",
+        "div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(6) > div:nth-of-type(2)",
+        "div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(7) > div:nth-of-type(2)",
+        "div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(8) > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1) > span",
+        "div:nth-of-type(2) > div:nth-of-type(1) > svg > text:nth-of-type(1)",
+        "div:nth-of-type(2) > div:nth-of-type(1) > svg > text:nth-of-type(2)",
+        "div:nth-of-type(2) > div:nth-of-type(1) > svg > text:nth-of-type(4)",
+        "div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(1) > span",
+        "div:nth-of-type(2) > div:nth-of-type(2) > svg > text:nth-of-type(1)",
+        "div:nth-of-type(2) > div:nth-of-type(2) > svg > text:nth-of-type(2)",
+        "div:nth-of-type(2) > div:nth-of-type(2) > svg > text:nth-of-type(4)",
+        "div:nth-of-type(2) > div:nth-of-type(3) > div:nth-of-type(1) > span",
+        "div:nth-of-type(2) > div:nth-of-type(4) > div:nth-of-type(1) > span",
+        "div:nth-of-type(2) > div:nth-of-type(5) > div:nth-of-type(1) > span",
+        "div:nth-of-type(2) > div:nth-of-type(6) > div:nth-of-type(1) > span",
+        "div:nth-of-type(2) > div:nth-of-type(7) > div:nth-of-type(1) > span",
+        "div:nth-of-type(2) > div:nth-of-type(8) > div:nth-of-type(1) > span",
+        "div:nth-of-type(2) > svg > g:nth-of-type(1) > text",
+        "div:nth-of-type(2) > svg > g:nth-of-type(2) > text",
+        "div:nth-of-type(2) > svg > g:nth-of-type(3) > text",
+        "div:nth-of-type(2) > svg > g:nth-of-type(4) > text",
+        "div:nth-of-type(3) > div:nth-of-type(2) > svg > text:nth-of-type(2)",
+        "div:nth-of-type(3) > div:nth-of-type(2) > svg > text:nth-of-type(3)"
+      ],
+      "lab-archive-curves-per-rep--phase-annotated-curve": [
+        "div > div > div:nth-of-type(2) > div:nth-of-type(1)",
+        "div:nth-of-type(2) > div:nth-of-type(2) > svg > text:nth-of-type(2)",
+        "div:nth-of-type(2) > div:nth-of-type(2) > svg > text:nth-of-type(3)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(1) > text",
+        "div:nth-of-type(2) > svg > g:nth-of-type(2) > text",
+        "div:nth-of-type(2) > svg > g:nth-of-type(3) > text",
+        "div:nth-of-type(2) > svg > g:nth-of-type(4) > text"
+      ],
+      "lab-archive-curves-per-rep--velocity-time-curve": [
+        "div > div > div:nth-of-type(2) > div:nth-of-type(1)",
+        "div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1) > span",
+        "div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(1) > span",
+        "div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(3) > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(4) > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(5) > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(6) > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(7) > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(8) > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div:nth-of-type(3) > div:nth-of-type(1) > span",
+        "div:nth-of-type(2) > div:nth-of-type(4) > div:nth-of-type(1) > span",
+        "div:nth-of-type(2) > div:nth-of-type(5) > div:nth-of-type(1) > span",
+        "div:nth-of-type(2) > div:nth-of-type(6) > div:nth-of-type(1) > span",
+        "div:nth-of-type(2) > div:nth-of-type(7) > div:nth-of-type(1) > span",
+        "div:nth-of-type(2) > div:nth-of-type(8) > div:nth-of-type(1) > span"
+      ],
+      "lab-archive-curves-set-level--analysis-layout": [
+        "div > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1)",
+        "div > div:nth-of-type(3) > div:nth-of-type(1) > div:nth-of-type(1)",
+        "div > div:nth-of-type(3) > div:nth-of-type(2) > div:nth-of-type(1)",
+        "div > div:nth-of-type(4) > div:nth-of-type(1) > div:nth-of-type(1)",
+        "div > div:nth-of-type(4) > div:nth-of-type(2) > div:nth-of-type(5)",
+        "div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(4) > div",
+        "div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(4) > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(5) > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(6) > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div:nth-of-type(2) > svg > text:nth-of-type(1)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(1) > text",
+        "div:nth-of-type(2) > svg > g:nth-of-type(10) > text",
+        "div:nth-of-type(2) > svg > g:nth-of-type(2) > text",
+        "div:nth-of-type(2) > svg > g:nth-of-type(3) > text",
+        "div:nth-of-type(2) > svg > g:nth-of-type(4) > text",
+        "div:nth-of-type(2) > svg > g:nth-of-type(5) > text",
+        "div:nth-of-type(2) > svg > g:nth-of-type(6) > text",
+        "div:nth-of-type(2) > svg > g:nth-of-type(6) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(7) > text",
+        "div:nth-of-type(2) > svg > g:nth-of-type(8) > text",
+        "div:nth-of-type(2) > svg > g:nth-of-type(9) > text"
+      ],
+      "lab-archive-curves-set-level--force-velocity-scatter": [
+        "div > div > div:nth-of-type(2) > div:nth-of-type(1)",
+        "div:nth-of-type(1) > svg > g:nth-of-type(1) > text",
+        "div:nth-of-type(1) > svg > g:nth-of-type(10) > text",
+        "div:nth-of-type(1) > svg > g:nth-of-type(2) > text",
+        "div:nth-of-type(1) > svg > g:nth-of-type(3) > text",
+        "div:nth-of-type(1) > svg > g:nth-of-type(4) > text",
+        "div:nth-of-type(1) > svg > g:nth-of-type(5) > text",
+        "div:nth-of-type(1) > svg > g:nth-of-type(6) > text",
+        "div:nth-of-type(1) > svg > g:nth-of-type(7) > text",
+        "div:nth-of-type(1) > svg > g:nth-of-type(8) > text",
+        "div:nth-of-type(1) > svg > g:nth-of-type(9) > text"
+      ],
+      "lab-archive-curves-set-level--load-velocity-profile": [
+        "div > div > div:nth-of-type(2) > div:nth-of-type(1)",
+        "div:nth-of-type(1) > svg > g:nth-of-type(1) > text",
+        "div:nth-of-type(1) > svg > g:nth-of-type(2) > text",
+        "div:nth-of-type(1) > svg > g:nth-of-type(3) > text",
+        "div:nth-of-type(1) > svg > g:nth-of-type(4) > text",
+        "div:nth-of-type(1) > svg > g:nth-of-type(5) > text",
+        "div:nth-of-type(1) > svg > g:nth-of-type(6) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > div:nth-of-type(1) > svg > text:nth-of-type(1)",
+        "div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(5)"
+      ],
+      "lab-archive-curves-set-level--overview": [
+        "div > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1)",
+        "div > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(1)",
+        "div > div:nth-of-type(2) > div:nth-of-type(3) > div:nth-of-type(1)",
+        "div:nth-of-type(1) > div:nth-of-type(3) > div:nth-of-type(4) > div",
+        "div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(4) > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(5) > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(6) > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div:nth-of-type(3) > div:nth-of-type(3) > div:nth-of-type(5)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(1) > text",
+        "div:nth-of-type(2) > svg > g:nth-of-type(10) > text",
+        "div:nth-of-type(2) > svg > g:nth-of-type(2) > text",
+        "div:nth-of-type(2) > svg > g:nth-of-type(3) > text",
+        "div:nth-of-type(2) > svg > g:nth-of-type(4) > text",
+        "div:nth-of-type(2) > svg > g:nth-of-type(5) > text",
+        "div:nth-of-type(2) > svg > g:nth-of-type(6) > text",
+        "div:nth-of-type(2) > svg > g:nth-of-type(6) > text:nth-of-type(2)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(7) > text",
+        "div:nth-of-type(2) > svg > g:nth-of-type(8) > text",
+        "div:nth-of-type(2) > svg > g:nth-of-type(9) > text",
+        "div:nth-of-type(3) > div:nth-of-type(2) > svg > text:nth-of-type(1)"
+      ],
+      "lab-archive-curves-set-level--velocity-loss-in-set": [
+        "div > div > div:nth-of-type(2) > div:nth-of-type(1)",
+        "div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(4) > div:nth-of-type(2)",
+        "div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(5) > div:nth-of-type(2)",
+        "div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(6) > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(4) > div"
+      ],
+      "lab-archive-fatigue--combined-chart": [
+        "div > div > div:nth-of-type(2) > div:nth-of-type(1)",
+        "div > div > div:nth-of-type(3) > div:nth-of-type(1)",
+        "div:nth-of-type(1) > svg > g:nth-of-type(1) > text",
+        "div:nth-of-type(1) > svg > g:nth-of-type(2) > text",
+        "div:nth-of-type(1) > svg > g:nth-of-type(3) > text",
+        "div:nth-of-type(1) > svg > g:nth-of-type(4) > text",
+        "div:nth-of-type(2) > div:nth-of-type(1) > svg > text:nth-of-type(1)",
+        "div:nth-of-type(2) > div:nth-of-type(1) > svg > text:nth-of-type(2)",
+        "div:nth-of-type(2) > div:nth-of-type(1) > svg > text:nth-of-type(4)",
+        "div:nth-of-type(2) > div:nth-of-type(1) > svg > text:nth-of-type(5)",
+        "div:nth-of-type(2) > div:nth-of-type(2) > svg > text:nth-of-type(1)",
+        "div:nth-of-type(2) > div:nth-of-type(2) > svg > text:nth-of-type(2)",
+        "div:nth-of-type(2) > div:nth-of-type(2) > svg > text:nth-of-type(4)",
+        "div:nth-of-type(2) > div:nth-of-type(2) > svg > text:nth-of-type(5)",
+        "div:nth-of-type(2) > svg > g:nth-of-type(1) > text",
+        "div:nth-of-type(2) > svg > g:nth-of-type(2) > text",
+        "div:nth-of-type(2) > svg > g:nth-of-type(3) > text",
+        "div:nth-of-type(2) > svg > g:nth-of-type(4) > text"
+      ],
+      "lab-archive-fatigue--fatigue-card": [
+        "div > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1)",
+        "div > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(1)",
+        "div:nth-of-type(1) > div > div[aria-label=\"Velocity loss 16%, ok\"] > div:nth-of-type(2)",
+        "div:nth-of-type(1) > div > div[aria-label=\"Velocity loss 72%, alarm\"] > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div > div[aria-label=\"ROM depth 67%, alarm\"] > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div > div[aria-label=\"ROM depth 98%, ok\"] > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1)",
+        "div:nth-of-type(2) > div:nth-of-type(3) > div:nth-of-type(2) > div:nth-of-type(1)",
+        "div:nth-of-type(2) > div:nth-of-type(3) > div:nth-of-type(2) > div:nth-of-type(2)",
+        "div:nth-of-type(3) > div > div[aria-label=\"Tempo ecc rushed, alarm\"] > div:nth-of-type(2)",
+        "div:nth-of-type(3) > div > div[aria-label=\"Tempo on tempo, ok\"] > div:nth-of-type(2)"
+      ],
+      "lab-archive-fatigue--overview": [
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(3) > div:nth-of-type(2)",
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(4) > div:nth-of-type(2)",
+        "div > div:nth-of-type(1) > div:nth-of-type(3) > div:nth-of-type(2)",
+        "div > div:nth-of-type(1) > div:nth-of-type(4) > div:nth-of-type(2)",
+        "div > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1)",
+        "div > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(1)",
+        "div:nth-of-type(1) > div > div[aria-label=\"Velocity loss 72%, alarm\"] > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div > div[aria-label=\"ROM depth 67%, alarm\"] > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1)",
+        "div:nth-of-type(2) > div:nth-of-type(3) > div:nth-of-type(2) > div:nth-of-type(1)",
+        "div:nth-of-type(2) > div:nth-of-type(3) > div:nth-of-type(2) > div:nth-of-type(2)",
+        "div:nth-of-type(3) > div > div[aria-label=\"Tempo ecc rushed, alarm\"] > div:nth-of-type(2)"
+      ],
+      "lab-archive-grinding-line--deviation-vs-control-aware": [
+        "div > div > div:nth-of-type(1) > div:nth-of-type(1)",
+        "div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(2)",
+        "div:nth-of-type(1) > div:nth-of-type(3) > div:nth-of-type(1) > div:nth-of-type(2)",
+        "div:nth-of-type(1) > div:nth-of-type(4) > div:nth-of-type(1) > div:nth-of-type(2)",
+        "div:nth-of-type(1) > div:nth-of-type(5) > div:nth-of-type(1) > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1)",
+        "div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1)",
+        "div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(1)",
+        "div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(3)",
+        "div:nth-of-type(2) > div:nth-of-type(3) > div:nth-of-type(1) > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div:nth-of-type(4) > div:nth-of-type(1) > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div:nth-of-type(5) > div:nth-of-type(1) > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div:nth-of-type(6) > div:nth-of-type(1) > div:nth-of-type(2)",
+        "div:nth-of-type(3) > svg > g:nth-of-type(1) > text",
+        "div:nth-of-type(3) > svg > g:nth-of-type(3) > text"
+      ],
+      "lab-archive-hero-tempo--ambient-clock": [
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(3) > div:nth-of-type(2)",
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(4) > div:nth-of-type(2)",
+        "div > div > div:nth-of-type(2) > div:nth-of-type(1)"
+      ],
+      "lab-archive-hero-tempo--ambient-clock-smaller-story": [
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(3) > div:nth-of-type(2)",
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(4) > div:nth-of-type(2)",
+        "div > div > div:nth-of-type(2) > div:nth-of-type(1)"
+      ],
+      "lab-archive-hero-tempo--cadence-bar": [
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(3) > div:nth-of-type(2)",
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(4) > div:nth-of-type(2)",
+        "div > div > div:nth-of-type(2) > div:nth-of-type(1)"
+      ],
+      "lab-archive-hero-tempo--cadence-bar-refined-story": [
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(3) > div:nth-of-type(2)",
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(4) > div:nth-of-type(2)",
+        "div > div > div:nth-of-type(2) > div:nth-of-type(1)"
+      ],
+      "lab-archive-hero-tempo--hero-numerals": [
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(3) > div:nth-of-type(2)",
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(4) > div:nth-of-type(2)",
+        "div > div > div:nth-of-type(2) > div:nth-of-type(1)"
+      ],
+      "lab-archive-hero-tempo--hero-numerals-refined-story": [
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(3) > div:nth-of-type(2)",
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(4) > div:nth-of-type(2)",
+        "div > div > div:nth-of-type(2) > div:nth-of-type(1)"
+      ],
+      "lab-archive-hero-tempo--overview": [
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(3) > div:nth-of-type(2)",
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(4) > div:nth-of-type(2)",
+        "div > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1)",
+        "div > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(1)",
+        "div > div:nth-of-type(2) > div:nth-of-type(3) > div:nth-of-type(1)"
+      ],
+      "lab-archive-hero-tempo--refined-overview": [
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(3) > div:nth-of-type(2)",
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(4) > div:nth-of-type(2)",
+        "div > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1)",
+        "div > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(1)",
+        "div > div:nth-of-type(2) > div:nth-of-type(3) > div:nth-of-type(1)"
+      ],
+      "lab-archive-rep-breakdown--composite-columns": [
+        "div > div > div:nth-of-type(2) > div:nth-of-type(1)",
+        "div:nth-of-type(2) > div:nth-of-type(4) > div:nth-of-type(1) > div:nth-of-type(1)",
+        "div:nth-of-type(2) > div:nth-of-type(4) > div:nth-of-type(1) > div:nth-of-type(2)",
+        "div:nth-of-type(4) > div:nth-of-type(1) > div > div:nth-of-type(1)",
+        "div:nth-of-type(4) > div:nth-of-type(1) > div > div:nth-of-type(2)",
+        "div:nth-of-type(6) > div:nth-of-type(1) > div > div:nth-of-type(1)",
+        "div:nth-of-type(6) > div:nth-of-type(1) > div > div:nth-of-type(2)",
+        "div:nth-of-type(7) > div:nth-of-type(1) > div > div:nth-of-type(1)",
+        "div:nth-of-type(7) > div:nth-of-type(1) > div > div:nth-of-type(2)",
+        "div:nth-of-type(8) > div:nth-of-type(1) > div > div:nth-of-type(1)",
+        "div:nth-of-type(8) > div:nth-of-type(1) > div > div:nth-of-type(2)"
+      ],
+      "lab-archive-rep-breakdown--filled-reps": [
+        "div > div > div:nth-of-type(2) > div:nth-of-type(1)",
+        "div:nth-of-type(2) > div:nth-of-type(4) > div:nth-of-type(1) > div:nth-of-type(1)",
+        "div:nth-of-type(2) > div:nth-of-type(4) > div:nth-of-type(1) > div:nth-of-type(2)",
+        "div:nth-of-type(4) > div:nth-of-type(1) > div > div:nth-of-type(1)",
+        "div:nth-of-type(4) > div:nth-of-type(1) > div > div:nth-of-type(2)",
+        "div:nth-of-type(6) > div:nth-of-type(1) > div > div:nth-of-type(1)",
+        "div:nth-of-type(6) > div:nth-of-type(1) > div > div:nth-of-type(2)",
+        "div:nth-of-type(7) > div:nth-of-type(1) > div > div:nth-of-type(1)",
+        "div:nth-of-type(7) > div:nth-of-type(1) > div > div:nth-of-type(2)",
+        "div:nth-of-type(8) > div:nth-of-type(1) > div > div:nth-of-type(1)",
+        "div:nth-of-type(8) > div:nth-of-type(1) > div > div:nth-of-type(2)"
+      ],
+      "lab-archive-rep-breakdown--overview": [
+        "div > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1)",
+        "div > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(1)",
+        "div > div:nth-of-type(2) > div:nth-of-type(3) > div:nth-of-type(1)",
+        "div > div:nth-of-type(2) > div:nth-of-type(4) > div:nth-of-type(1)",
+        "div:nth-of-type(3) > div:nth-of-type(4) > div:nth-of-type(1) > div:nth-of-type(1)",
+        "div:nth-of-type(3) > div:nth-of-type(4) > div:nth-of-type(1) > div:nth-of-type(2)",
+        "div:nth-of-type(4) > div:nth-of-type(1) > div > div:nth-of-type(1)",
+        "div:nth-of-type(4) > div:nth-of-type(1) > div > div:nth-of-type(2)",
+        "div:nth-of-type(6) > div:nth-of-type(1) > div > div:nth-of-type(1)",
+        "div:nth-of-type(6) > div:nth-of-type(1) > div > div:nth-of-type(2)",
+        "div:nth-of-type(7) > div:nth-of-type(1) > div > div:nth-of-type(1)",
+        "div:nth-of-type(7) > div:nth-of-type(1) > div > div:nth-of-type(2)",
+        "div:nth-of-type(8) > div:nth-of-type(1) > div > div:nth-of-type(1)",
+        "div:nth-of-type(8) > div:nth-of-type(1) > div > div:nth-of-type(2)"
+      ],
+      "lab-archive-rep-breakdown--overview-r-2": [
+        "div > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1)",
+        "div > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(1)",
+        "div > div:nth-of-type(2) > div:nth-of-type(3) > div:nth-of-type(1)",
+        "div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(4)",
+        "div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(4)",
+        "div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(3) > div:nth-of-type(4)",
+        "div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(4) > div:nth-of-type(4)",
+        "div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(5) > div:nth-of-type(4)",
+        "div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(6) > div:nth-of-type(4)",
+        "div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(7) > div:nth-of-type(4)",
+        "div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(8) > div:nth-of-type(4)",
+        "div:nth-of-type(2) > div:nth-of-type(4) > div:nth-of-type(1) > div:nth-of-type(1)",
+        "div:nth-of-type(2) > div:nth-of-type(4) > div:nth-of-type(1) > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div:nth-of-type(4) > div:nth-of-type(2) > div:nth-of-type(1)",
+        "div:nth-of-type(2) > div:nth-of-type(4) > div:nth-of-type(2) > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div:nth-of-type(5) > div > div:nth-of-type(1)",
+        "div:nth-of-type(2) > div:nth-of-type(5) > div > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div:nth-of-type(6) > div:nth-of-type(1) > div:nth-of-type(1)",
+        "div:nth-of-type(2) > div:nth-of-type(6) > div:nth-of-type(1) > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div:nth-of-type(6) > div:nth-of-type(2) > div:nth-of-type(1)",
+        "div:nth-of-type(2) > div:nth-of-type(6) > div:nth-of-type(2) > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div:nth-of-type(6) > div:nth-of-type(3) > div:nth-of-type(1)",
+        "div:nth-of-type(2) > div:nth-of-type(6) > div:nth-of-type(3) > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div:nth-of-type(7) > div:nth-of-type(1) > div:nth-of-type(1)",
+        "div:nth-of-type(2) > div:nth-of-type(7) > div:nth-of-type(1) > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div:nth-of-type(7) > div:nth-of-type(2) > div:nth-of-type(1)",
+        "div:nth-of-type(2) > div:nth-of-type(7) > div:nth-of-type(2) > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div:nth-of-type(7) > div:nth-of-type(3) > div:nth-of-type(1)",
+        "div:nth-of-type(2) > div:nth-of-type(7) > div:nth-of-type(3) > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div:nth-of-type(8) > div:nth-of-type(1) > div:nth-of-type(1)",
+        "div:nth-of-type(2) > div:nth-of-type(8) > div:nth-of-type(1) > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div:nth-of-type(8) > div:nth-of-type(2) > div:nth-of-type(1)",
+        "div:nth-of-type(2) > div:nth-of-type(8) > div:nth-of-type(2) > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div:nth-of-type(8) > div:nth-of-type(3) > div:nth-of-type(1)",
+        "div:nth-of-type(2) > div:nth-of-type(8) > div:nth-of-type(3) > div:nth-of-type(2)",
+        "div:nth-of-type(3) > div:nth-of-type(1) > div:nth-of-type(1) > div",
+        "div:nth-of-type(3) > div:nth-of-type(2) > div:nth-of-type(1) > div",
+        "div:nth-of-type(3) > div:nth-of-type(3) > div:nth-of-type(1) > div"
+      ],
+      "lab-archive-rep-breakdown--refined-composite": [
+        "div > div > div:nth-of-type(2) > div:nth-of-type(1)",
+        "div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(4)",
+        "div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(4)",
+        "div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(3) > div:nth-of-type(4)",
+        "div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(4) > div:nth-of-type(4)",
+        "div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(5) > div:nth-of-type(4)",
+        "div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(6) > div:nth-of-type(4)",
+        "div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(7) > div:nth-of-type(4)",
+        "div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(8) > div:nth-of-type(4)",
+        "div:nth-of-type(3) > div:nth-of-type(1) > div:nth-of-type(1) > div",
+        "div:nth-of-type(3) > div:nth-of-type(2) > div:nth-of-type(1) > div",
+        "div:nth-of-type(3) > div:nth-of-type(3) > div:nth-of-type(1) > div"
+      ],
+      "lab-archive-rep-breakdown--rep-dials": [
+        "div > div > div:nth-of-type(2) > div:nth-of-type(1)",
+        "div:nth-of-type(1) > div:nth-of-type(1) > div > div:nth-of-type(1)",
+        "div:nth-of-type(1) > div:nth-of-type(1) > div > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div:nth-of-type(4) > div:nth-of-type(1) > div:nth-of-type(1)",
+        "div:nth-of-type(2) > div:nth-of-type(4) > div:nth-of-type(1) > div:nth-of-type(2)"
+      ],
+      "lab-archive-rep-breakdown--three-track-strip": [
+        "div > div > div:nth-of-type(2) > div:nth-of-type(1)",
+        "div:nth-of-type(2) > div:nth-of-type(4) > div:nth-of-type(1) > div:nth-of-type(1)",
+        "div:nth-of-type(2) > div:nth-of-type(4) > div:nth-of-type(1) > div:nth-of-type(2)"
+      ],
+      "lab-archive-rep-breakdown--velocity-curves": [
+        "div > div > div:nth-of-type(2) > div:nth-of-type(1)",
+        "div:nth-of-type(3) > div:nth-of-type(1) > div:nth-of-type(1) > div",
+        "div:nth-of-type(3) > div:nth-of-type(2) > div:nth-of-type(1) > div",
+        "div:nth-of-type(3) > div:nth-of-type(3) > div:nth-of-type(1) > div"
+      ],
+      "lab-archive-rep-breakdown--warnings-depth-hybrid": [
+        "div > div > div:nth-of-type(2) > div:nth-of-type(1)",
+        "div:nth-of-type(1) > div:nth-of-type(3) > div:nth-of-type(2) > div:nth-of-type(1)",
+        "div:nth-of-type(2) > div:nth-of-type(3) > div:nth-of-type(2) > div:nth-of-type(1)",
+        "div:nth-of-type(3) > div:nth-of-type(3) > div:nth-of-type(2) > div:nth-of-type(1)",
+        "div:nth-of-type(4) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(2)",
+        "div:nth-of-type(4) > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(2)",
+        "div:nth-of-type(4) > div:nth-of-type(3) > div:nth-of-type(2) > div:nth-of-type(1)",
+        "div:nth-of-type(5) > div:nth-of-type(1) > div > div:nth-of-type(2)",
+        "div:nth-of-type(5) > div:nth-of-type(3) > div:nth-of-type(2) > div:nth-of-type(1)",
+        "div:nth-of-type(6) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(2)",
+        "div:nth-of-type(6) > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(2)",
+        "div:nth-of-type(6) > div:nth-of-type(1) > div:nth-of-type(3) > div:nth-of-type(2)",
+        "div:nth-of-type(6) > div:nth-of-type(3) > div:nth-of-type(2) > div:nth-of-type(1)",
+        "div:nth-of-type(7) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(2)",
+        "div:nth-of-type(7) > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(2)",
+        "div:nth-of-type(7) > div:nth-of-type(1) > div:nth-of-type(3) > div:nth-of-type(2)",
+        "div:nth-of-type(7) > div:nth-of-type(3) > div:nth-of-type(2) > div:nth-of-type(1)",
+        "div:nth-of-type(8) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(2)",
+        "div:nth-of-type(8) > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(2)",
+        "div:nth-of-type(8) > div:nth-of-type(1) > div:nth-of-type(3) > div:nth-of-type(2)",
+        "div:nth-of-type(8) > div:nth-of-type(3) > div:nth-of-type(2) > div:nth-of-type(1)"
+      ],
+      "lab-archive-rep-breakdown--warnings-model": [
+        "div > div > div:nth-of-type(2) > div:nth-of-type(1)",
+        "div:nth-of-type(2) > div:nth-of-type(4) > div:nth-of-type(1) > div:nth-of-type(1)",
+        "div:nth-of-type(2) > div:nth-of-type(4) > div:nth-of-type(1) > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div:nth-of-type(4) > div:nth-of-type(2) > div:nth-of-type(1)",
+        "div:nth-of-type(2) > div:nth-of-type(4) > div:nth-of-type(2) > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div:nth-of-type(5) > div > div:nth-of-type(1)",
+        "div:nth-of-type(2) > div:nth-of-type(5) > div > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div:nth-of-type(6) > div:nth-of-type(1) > div:nth-of-type(1)",
+        "div:nth-of-type(2) > div:nth-of-type(6) > div:nth-of-type(1) > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div:nth-of-type(6) > div:nth-of-type(2) > div:nth-of-type(1)",
+        "div:nth-of-type(2) > div:nth-of-type(6) > div:nth-of-type(2) > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div:nth-of-type(6) > div:nth-of-type(3) > div:nth-of-type(1)",
+        "div:nth-of-type(2) > div:nth-of-type(6) > div:nth-of-type(3) > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div:nth-of-type(7) > div:nth-of-type(1) > div:nth-of-type(1)",
+        "div:nth-of-type(2) > div:nth-of-type(7) > div:nth-of-type(1) > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div:nth-of-type(7) > div:nth-of-type(2) > div:nth-of-type(1)",
+        "div:nth-of-type(2) > div:nth-of-type(7) > div:nth-of-type(2) > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div:nth-of-type(7) > div:nth-of-type(3) > div:nth-of-type(1)",
+        "div:nth-of-type(2) > div:nth-of-type(7) > div:nth-of-type(3) > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div:nth-of-type(8) > div:nth-of-type(1) > div:nth-of-type(1)",
+        "div:nth-of-type(2) > div:nth-of-type(8) > div:nth-of-type(1) > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div:nth-of-type(8) > div:nth-of-type(2) > div:nth-of-type(1)",
+        "div:nth-of-type(2) > div:nth-of-type(8) > div:nth-of-type(2) > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div:nth-of-type(8) > div:nth-of-type(3) > div:nth-of-type(1)",
+        "div:nth-of-type(2) > div:nth-of-type(8) > div:nth-of-type(3) > div:nth-of-type(2)",
+        "div:nth-of-type(3) > div:nth-of-type(1) > div:nth-of-type(1) > div",
+        "div:nth-of-type(3) > div:nth-of-type(2) > div:nth-of-type(1) > div",
+        "div:nth-of-type(3) > div:nth-of-type(3) > div:nth-of-type(1) > div"
+      ],
+      "lab-audits-row-inventory--all-rows": [
+        "[data-testid=\"intensity-label\"]",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(1)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(2)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(3)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(4)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(5)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(6)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(7)"
+      ],
+      "lab-decisions-categorical-light-vs-dark--default": [
+        "div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1) > div",
+        "div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(1) > div",
+        "div:nth-of-type(2) > div:nth-of-type(3) > div:nth-of-type(1) > div",
+        "div:nth-of-type(2) > div:nth-of-type(4) > div:nth-of-type(1) > div",
+        "div:nth-of-type(2) > div:nth-of-type(5) > div:nth-of-type(1) > div",
+        "div:nth-of-type(2) > div:nth-of-type(6) > div:nth-of-type(1) > div",
+        "div:nth-of-type(2) > div:nth-of-type(7) > div:nth-of-type(1) > div"
+      ],
+      "lab-decisions-dual-pinned-live-strip--chosen-pair": [
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Body\"]:nth-of-type(4) > div > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Live, live\"]:nth-of-type(1) > div > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Plan\"]:nth-of-type(3) > div:nth-of-type(2) > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Review\"]:nth-of-type(2) > div > div"
+      ],
+      "lab-decisions-dual-pinned-live-strip--stress-pair": [
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Body\"]:nth-of-type(4) > div > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Live, live\"]:nth-of-type(1) > div > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Plan\"]:nth-of-type(3) > div:nth-of-type(2) > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Review\"]:nth-of-type(2) > div > div"
+      ],
+      "lab-decisions-focus-ring--options": [
+        "div:nth-of-type(1) > button[role=\"button\"][aria-label=\"Train\"] > div:nth-of-type(2) > div"
+      ],
+      "lab-decisions-live-bar-colour--v-2-intent-threshold": [
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(3) > div:nth-of-type(2)",
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(4) > div:nth-of-type(2)"
+      ],
+      "lab-decisions-pinned-live-strip--fatigue": [
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Body\"]:nth-of-type(4) > div > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Live, live\"]:nth-of-type(1) > div > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Plan\"]:nth-of-type(3) > div:nth-of-type(2) > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Review\"]:nth-of-type(2) > div > div"
+      ],
+      "lab-decisions-pinned-live-strip--idle": [
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Body\"]:nth-of-type(4) > div > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Live\"]:nth-of-type(1) > div > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Plan\"]:nth-of-type(3) > div:nth-of-type(2) > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Review\"]:nth-of-type(2) > div > div"
+      ],
+      "lab-decisions-pinned-live-strip--long-name": [
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Body\"]:nth-of-type(4) > div > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Live, live\"]:nth-of-type(1) > div > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Plan\"]:nth-of-type(3) > div:nth-of-type(2) > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Review\"]:nth-of-type(2) > div > div"
+      ],
+      "lab-decisions-pinned-live-strip--no-link": [
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Body\"]:nth-of-type(4) > div > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Live, live\"]:nth-of-type(1) > div > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Plan\"]:nth-of-type(3) > div:nth-of-type(2) > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Review\"]:nth-of-type(2) > div > div"
+      ],
+      "lab-decisions-pinned-live-strip--rest": [
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Body\"]:nth-of-type(4) > div > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Live, live\"]:nth-of-type(1) > div > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Plan\"]:nth-of-type(3) > div:nth-of-type(2) > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Review\"]:nth-of-type(2) > div > div"
+      ],
+      "lab-decisions-pinned-live-strip--rest-pair-100": [
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Body\"]:nth-of-type(4) > div > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Live, live\"]:nth-of-type(1) > div > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Plan\"]:nth-of-type(3) > div:nth-of-type(2) > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Review\"]:nth-of-type(2) > div > div"
+      ],
+      "lab-decisions-pinned-live-strip--rest-pair-150": [
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Body\"]:nth-of-type(4) > div > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Live, live\"]:nth-of-type(1) > div > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Plan\"]:nth-of-type(3) > div:nth-of-type(2) > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Review\"]:nth-of-type(2) > div > div"
+      ],
+      "lab-decisions-pinned-live-strip--rest-pair-47": [
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Body\"]:nth-of-type(4) > div > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Live, live\"]:nth-of-type(1) > div > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Plan\"]:nth-of-type(3) > div:nth-of-type(2) > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Review\"]:nth-of-type(2) > div > div"
+      ],
+      "lab-decisions-pinned-live-strip--rest-pair-99": [
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Body\"]:nth-of-type(4) > div > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Live, live\"]:nth-of-type(1) > div > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Plan\"]:nth-of-type(3) > div:nth-of-type(2) > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Review\"]:nth-of-type(2) > div > div"
+      ],
+      "lab-decisions-pinned-live-strip--rest-pair-999": [
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Body\"]:nth-of-type(4) > div > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Live, live\"]:nth-of-type(1) > div > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Plan\"]:nth-of-type(3) > div:nth-of-type(2) > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Review\"]:nth-of-type(2) > div > div"
+      ],
+      "lab-decisions-pinned-live-strip--rest-pair-two-digit-target": [
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Body\"]:nth-of-type(4) > div > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Live, live\"]:nth-of-type(1) > div > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Plan\"]:nth-of-type(3) > div:nth-of-type(2) > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Review\"]:nth-of-type(2) > div > div"
+      ],
+      "lab-decisions-pinned-live-strip--set": [
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Body\"]:nth-of-type(4) > div > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Live, live\"]:nth-of-type(1) > div > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Plan\"]:nth-of-type(3) > div:nth-of-type(2) > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Review\"]:nth-of-type(2) > div > div"
+      ],
+      "lab-explorations-full-rail--next-to-nav": [
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(1)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(2)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(3)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(4)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(5)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(6)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(7)",
+        "div > div:nth-of-type(2) > div:nth-of-type(1) > span:nth-of-type(1)",
+        "div > div:nth-of-type(2) > div:nth-of-type(1) > span:nth-of-type(2)",
+        "div > div:nth-of-type(2) > div:nth-of-type(1) > span:nth-of-type(3)",
+        "div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1)"
+      ],
+      "lab-explorations-session-pace--states": [
+        "div > div:nth-of-type(4) > div:nth-of-type(1) > div:nth-of-type(1)",
+        "div > div:nth-of-type(4) > div:nth-of-type(2) > div:nth-of-type(1)",
+        "div > div:nth-of-type(4) > div:nth-of-type(3) > div:nth-of-type(1)",
+        "div:nth-of-type(1) > div > div:nth-of-type(1) > span:nth-of-type(2)",
+        "div:nth-of-type(2) > div > div:nth-of-type(1) > span:nth-of-type(2)"
+      ],
+      "lab-explorations-session-rail-heading--states": [
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(1)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(2)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(3)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(4)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(5)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(6)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(7)"
+      ],
+      "lab-explorations-set-types--encodings": [
+        "div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1) > span",
+        "div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(2) > span",
+        "div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(3) > span",
+        "div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(4) > span"
+      ],
+      "lab-explorations-unified-exercise-card--unified": [
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(1)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(2)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(3)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(4)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(5)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(6)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(7)"
+      ],
+      "lab-explorations-workout-expansion--direction-study": [
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(1)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(2)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(3)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(4)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(5)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(6)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(7)",
+        "[data-testid=\"velocity-label-0\"]",
+        "[data-testid=\"velocity-label-1\"]",
+        "[data-testid=\"velocity-label-2\"]",
+        "[data-testid=\"velocity-label-3\"]",
+        "[data-testid=\"velocity-label-4\"]",
+        "[data-testid=\"velocity-label-5\"]",
+        "[data-testid=\"velocity-label-6\"]",
+        "[data-testid=\"velocity-label-7\"]",
+        "[data-testid=\"velocity-label-8\"]",
+        "[data-testid=\"velocity-label-9\"]"
+      ],
+      "lab-north-star-1-surface-system--layered-paper": [
+        "div > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1)",
+        "div > div:nth-of-type(1) > div:nth-of-type(3) > div:nth-of-type(1)"
+      ],
+      "lab-north-star-1-surface-system--paper-with-brand": [
+        "div > div:nth-of-type(3) > div:nth-of-type(2) > div:nth-of-type(1)",
+        "div > div:nth-of-type(3) > div:nth-of-type(3) > div:nth-of-type(1)"
+      ],
+      "lab-north-star-3-diverging-bars--comparison": [
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(3) > div:nth-of-type(2)",
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(4) > div:nth-of-type(2)",
+        "div > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1)",
+        "div > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(1)"
+      ],
+      "lab-north-star-3-diverging-bars--hero-dual": [
+        "div > div > div:nth-of-type(2) > div:nth-of-type(1)"
+      ],
+      "lab-north-star-3-diverging-bars--overview": [
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(3) > div:nth-of-type(2)",
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(4) > div:nth-of-type(2)",
+        "div > div > div:nth-of-type(3) > div:nth-of-type(1)",
+        "div > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1)",
+        "div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(2) > div",
+        "div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1)",
+        "div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1)",
+        "div:nth-of-type(2) > div:nth-of-type(2) > div > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div:nth-of-type(2) > div > div:nth-of-type(3)",
+        "div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1)",
+        "div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(1)"
+      ],
+      "lab-north-star-3-diverging-bars--rail-collapsed-stacked": [
+        "div > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1)",
+        "div > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(1)",
+        "div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(2) > div"
+      ],
+      "lab-north-star-3-diverging-bars--rail-expanded-dual": [
+        "div > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1)",
+        "div > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(1)",
+        "div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(2) > div",
+        "div:nth-of-type(2) > div:nth-of-type(2) > div > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div:nth-of-type(2) > div > div:nth-of-type(3)",
+        "div:nth-of-type(2) > div:nth-of-type(4) > div > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div:nth-of-type(4) > div > div:nth-of-type(3)"
+      ],
+      "lab-north-star-4-fatigue-system--live-panel-v-2": [
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(3) > div:nth-of-type(2)",
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(4) > div:nth-of-type(2)",
+        "div:nth-of-type(1) > div > div[aria-label=\"Velocity loss 72%, alarm\"] > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div > div[aria-label=\"ROM depth 67%, alarm\"] > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1)",
+        "div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(3) > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(4) > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1)",
+        "div:nth-of-type(2) > div:nth-of-type(3) > div:nth-of-type(2) > div:nth-of-type(1)",
+        "div:nth-of-type(2) > div:nth-of-type(3) > div:nth-of-type(2) > div:nth-of-type(2)",
+        "div:nth-of-type(3) > div > div[aria-label=\"Tempo ecc rushed, alarm\"] > div:nth-of-type(2)"
+      ],
+      "lab-north-star-4-fatigue-system--live-states": [
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(3) > div:nth-of-type(2)",
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(4) > div:nth-of-type(2)",
+        "div > div > div:nth-of-type(2) > div:nth-of-type(1)",
+        "div > div > div:nth-of-type(3) > div:nth-of-type(1)",
+        "div > div > div:nth-of-type(4) > div:nth-of-type(1)",
+        "div > div > div:nth-of-type(5) > div:nth-of-type(1)",
+        "div > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1)",
+        "div:nth-of-type(1) > div > div[aria-label=\"Velocity loss 24%, watch\"] > div:nth-of-type(2)",
+        "div:nth-of-type(1) > div > div[aria-label=\"Velocity loss 38%, alarm\"] > div:nth-of-type(2)",
+        "div:nth-of-type(1) > div > div[aria-label=\"Velocity loss 5%, ok\"] > div:nth-of-type(2)",
+        "div:nth-of-type(1) > div > div[aria-label=\"Velocity loss 72%, alarm\"] > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div > div[aria-label=\"ROM depth 67%, alarm\"] > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div > div[aria-label=\"ROM depth 89%, ok\"] > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div > div[aria-label=\"ROM depth 98%, ok\"] > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div > div[aria-label=\"ROM depth 99%, ok\"] > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1)",
+        "div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(3) > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(4) > div:nth-of-type(2)",
+        "div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1)",
+        "div:nth-of-type(2) > div:nth-of-type(3) > div:nth-of-type(2) > div:nth-of-type(1)",
+        "div:nth-of-type(2) > div:nth-of-type(3) > div:nth-of-type(2) > div:nth-of-type(2)",
+        "div:nth-of-type(3) > div > div[aria-label=\"Tempo controlled, ok\"] > div:nth-of-type(2)",
+        "div:nth-of-type(3) > div > div[aria-label=\"Tempo ecc rushed, alarm\"] > div:nth-of-type(2)",
+        "div:nth-of-type(3) > div > div[aria-label=\"Tempo on tempo, ok\"] > div:nth-of-type(2)"
+      ],
+      "lab-north-star-dual-ghost-line--mirrored-dual": [
+        "div > div > div:nth-of-type(1) > div:nth-of-type(1)",
+        "div > div:nth-of-type(2) > div > div:nth-of-type(1)",
+        "div > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(2)",
+        "div > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(2)",
+        "div > div:nth-of-type(3) > svg > text:nth-of-type(1)",
+        "div > div:nth-of-type(3) > svg > text:nth-of-type(2)",
+        "svg > g > g > text:nth-of-type(1)",
+        "svg > g > g > text:nth-of-type(2)"
+      ],
+      "lab-north-star-live-wall-dashboard--live": [
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(1)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(2)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(3)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(4)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(5)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(6)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(7)",
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(3) > div:nth-of-type(2)",
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(4) > div:nth-of-type(2)",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Body\"]:nth-of-type(4) > div > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Live\"]:nth-of-type(1) > div:nth-of-type(2) > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Plan\"]:nth-of-type(3) > div > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Review\"]:nth-of-type(2) > div > div"
+      ],
+      "lab-north-star-live-wall-dashboard--live-dual": [
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(1)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(2)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(3)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(4)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(5)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(6)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(7)",
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(3) > div:nth-of-type(2)",
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(4) > div:nth-of-type(2)",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Body\"]:nth-of-type(4) > div > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Live\"]:nth-of-type(1) > div:nth-of-type(2) > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Plan\"]:nth-of-type(3) > div > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Review\"]:nth-of-type(2) > div > div"
+      ],
+      "lab-north-star-live-wall-dashboard--live-no-tempo": [
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(1)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(2)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(3)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(4)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(5)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(6)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(7)",
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(3) > div:nth-of-type(2)",
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(4) > div:nth-of-type(2)",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Body\"]:nth-of-type(4) > div > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Live\"]:nth-of-type(1) > div:nth-of-type(2) > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Plan\"]:nth-of-type(3) > div > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Review\"]:nth-of-type(2) > div > div"
+      ],
+      "lab-north-star-live-wall-dashboard--no-device": [
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Body\"]:nth-of-type(4) > div > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Live\"]:nth-of-type(1) > div:nth-of-type(2) > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Plan\"]:nth-of-type(3) > div > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Review\"]:nth-of-type(2) > div > div"
+      ],
+      "lab-north-star-live-wall-dashboard--no-session": [
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Body\"]:nth-of-type(4) > div > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Live\"]:nth-of-type(1) > div:nth-of-type(2) > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Plan\"]:nth-of-type(3) > div > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Review\"]:nth-of-type(2) > div > div"
+      ],
+      "lab-north-star-live-wall-dashboard--rest": [
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(1)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(2)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(3)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(4)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(5)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(6)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(7)",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Body\"]:nth-of-type(4) > div > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Live\"]:nth-of-type(1) > div:nth-of-type(2) > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Plan\"]:nth-of-type(3) > div > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Review\"]:nth-of-type(2) > div > div"
+      ],
+      "lab-north-star-live-wall-dashboard--session-ready": [
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Body\"]:nth-of-type(4) > div > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Live\"]:nth-of-type(1) > div:nth-of-type(2) > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Plan\"]:nth-of-type(3) > div > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Review\"]:nth-of-type(2) > div > div"
+      ],
+      "lab-north-star-live-wall-dashboard--session-ready-unnamed": [
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Body\"]:nth-of-type(4) > div > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Live\"]:nth-of-type(1) > div:nth-of-type(2) > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Plan\"]:nth-of-type(3) > div > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Review\"]:nth-of-type(2) > div > div"
+      ],
+      "lab-north-star-session-rail-lockup--dual-exercise": [
+        "div > div > div > div:nth-of-type(2)",
+        "div > div > div > div:nth-of-type(4)",
+        "div > div > div > div:nth-of-type(6)"
+      ],
+      "lab-north-star-session-rail-lockup--lockup": [
+        "div > div > div:nth-of-type(3) > div:nth-of-type(2)",
+        "div > div > div:nth-of-type(3) > div:nth-of-type(4)",
+        "div > div > div:nth-of-type(3) > div:nth-of-type(6)",
+        "div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1)",
+        "div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(1)",
+        "div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(3) > div:nth-of-type(1)",
+        "div:nth-of-type(3) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(2)",
+        "div:nth-of-type(3) > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(2)",
+        "div:nth-of-type(3) > div:nth-of-type(3) > div:nth-of-type(1) > div:nth-of-type(2)"
+      ],
+      "lab-north-star-session-rail-lockup--session-rail": [
+        "div > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1)",
+        "div > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(1)",
+        "div > div:nth-of-type(2) > div:nth-of-type(3) > div:nth-of-type(1)",
+        "div:nth-of-type(3) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(2)",
+        "div:nth-of-type(3) > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(2)",
+        "div:nth-of-type(3) > div:nth-of-type(3) > div:nth-of-type(1) > div:nth-of-type(2)"
+      ],
+      "lab-specimens-session-rail--context-swap": [
+        "div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > span:nth-of-type(3)",
+        "div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1)",
+        "div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > span",
+        "div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(2) > span",
+        "div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(3) > span",
+        "div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(4) > span",
+        "div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(5) > span",
+        "div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1)",
+        "div:nth-of-type(2) > div:nth-of-type(3) > div:nth-of-type(1) > span:nth-of-type(2)",
+        "div:nth-of-type(3) > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1)",
+        "div:nth-of-type(3) > div:nth-of-type(4) > div:nth-of-type(1) > div:nth-of-type(1)",
+        "div:nth-of-type(3) > div:nth-of-type(4) > div:nth-of-type(2) > div:nth-of-type(1)",
+        "div:nth-of-type(3) > div:nth-of-type(4) > div:nth-of-type(3) > div:nth-of-type(1)"
+      ],
+      "lab-specimens-session-rail--directions": [
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(1)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(2)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(3)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(4)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(5)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(6)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(7)",
+        "div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > span:nth-of-type(3)",
+        "div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1)",
+        "div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > span",
+        "div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(2) > span",
+        "div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(3) > span",
+        "div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(4) > span",
+        "div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1)"
+      ],
+      "lab-specimens-session-rail--r-2-baseline": [
+        "div > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1)",
+        "div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > span:nth-of-type(3)",
+        "div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > span",
+        "div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(2) > span",
+        "div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(3) > span",
+        "div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(4) > span",
+        "div:nth-of-type(1) > div:nth-of-type(3) > div:nth-of-type(1) > span:nth-of-type(2)",
+        "div:nth-of-type(3) > div:nth-of-type(4) > div:nth-of-type(1) > div:nth-of-type(1)",
+        "div:nth-of-type(3) > div:nth-of-type(4) > div:nth-of-type(2) > div:nth-of-type(1)",
+        "div:nth-of-type(3) > div:nth-of-type(4) > div:nth-of-type(3) > div:nth-of-type(1)"
+      ],
+      "lab-specimens-session-rail--session-pace-piece": [
+        "div > div:nth-of-type(4) > div:nth-of-type(1) > div:nth-of-type(1)",
+        "div > div:nth-of-type(4) > div:nth-of-type(2) > div:nth-of-type(1)",
+        "div > div:nth-of-type(4) > div:nth-of-type(3) > div:nth-of-type(1)",
+        "div:nth-of-type(2) > div > div:nth-of-type(1) > span:nth-of-type(2)"
+      ],
+      "lab-specimens-session-rail--session-plan-piece": [
+        "div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > span:nth-of-type(3)",
+        "div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1)",
+        "div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > span",
+        "div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(2) > span",
+        "div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(3) > span",
+        "div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(4) > span",
+        "div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(5) > span",
+        "div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1)",
+        "div:nth-of-type(3) > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1)"
+      ],
+      "lab-typography-rules--default": [
+        "div:nth-of-type(11) > div:nth-of-type(2) > div:nth-of-type(2) > div"
+      ],
+      "pages-active-workout--default": [
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(1)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(2)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(3)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(4)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(5)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(6)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(7)"
+      ],
+      "pages-active-workout--resting": [
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(1)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(2)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(3)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(4)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(5)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(6)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(7)"
+      ],
+      "pages-appshell--audiobook-app": [
+        "header[role=\"banner\"] > div:nth-of-type(2) > div > div:nth-of-type(2)",
+        "header[role=\"banner\"] > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(2)",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Library\"]:nth-of-type(1) > div:nth-of-type(2) > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Saved, live\"]:nth-of-type(2) > div > div"
+      ],
+      "pages-appshell--brain-app": [
+        "header[role=\"banner\"] > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(2)",
+        "header[role=\"banner\"] > div:nth-of-type(2) > div:nth-of-type(3) > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Agents\"]:nth-of-type(3) > div > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Graph\"]:nth-of-type(2) > div:nth-of-type(2) > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Notes\"]:nth-of-type(1) > div > div"
+      ],
+      "pages-appshell--default": [
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Agents\"]:nth-of-type(3) > div > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Graph\"]:nth-of-type(2) > div > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Notes\"]:nth-of-type(1) > div:nth-of-type(2) > div"
+      ],
+      "pages-exercise-detail--default": [
+        "[data-testid=\"exercise-detail-page-e1rm\"] > div:nth-of-type(1)",
+        "[data-testid=\"strength-trend-chart-gridline\"] > div"
+      ],
+      "pages-exercise-detail--no-vbt-data": [
+        "[data-testid=\"exercise-detail-page-e1rm\"] > div:nth-of-type(1)",
+        "[data-testid=\"strength-trend-chart-gridline\"] > div"
+      ],
+      "pages-goals-carousel--default": [
+        "[data-testid=\"goal-muscle-card-lift\"] > div:nth-of-type(3)"
+      ],
+      "pages-program-planning--default": [
+        "[data-testid=\"intensity-label\"]"
+      ],
+      "pages-program-planning--single-meso": [
+        "[data-testid=\"intensity-label\"]"
+      ],
+      "pages-workoutshell--default": [
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Body\"]:nth-of-type(4) > div > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Live\"]:nth-of-type(1) > div:nth-of-type(2) > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Plan\"]:nth-of-type(3) > div > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Review\"]:nth-of-type(2) > div > div"
+      ],
+      "pages-workoutshell--with-content": [
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Body\"]:nth-of-type(4) > div > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Live, live\"]:nth-of-type(1) > div > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Plan\"]:nth-of-type(3) > div > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Review\"]:nth-of-type(2) > div:nth-of-type(2) > div"
+      ],
+      "shell-navitem--active": [
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Live\"] > div:nth-of-type(2) > div"
+      ],
+      "shell-navitem--default": [
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Live\"] > div > div"
+      ],
+      "shell-navitem--live-elsewhere": [
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Live, live\"] > div > div"
+      ],
+      "shell-sessionrail--default": [
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(1)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(2)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(3)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(4)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(5)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(6)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(7)"
+      ],
+      "shell-sessionrail--no-time-target": [
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(1)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(2)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(3)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(4)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(5)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(6)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(7)"
+      ],
+      "shell-sessionrail--upcoming": [
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(1)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(2)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(3)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(4)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(5)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(6)",
+        "[data-testid=\"tempo-value\"] > div:nth-of-type(7)"
+      ],
+      "shell-sidenav--another-app": [
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Agents\"]:nth-of-type(3) > div > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Graph\"]:nth-of-type(2) > div:nth-of-type(2) > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Notes\"]:nth-of-type(1) > div > div"
+      ],
+      "shell-sidenav--default": [
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Body\"]:nth-of-type(4) > div > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Live\"]:nth-of-type(1) > div:nth-of-type(2) > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Plan\"]:nth-of-type(3) > div > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Review\"]:nth-of-type(2) > div > div"
+      ],
+      "shell-sidenav--live-elsewhere": [
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Body\"]:nth-of-type(4) > div > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Live, live\"]:nth-of-type(1) > div > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Plan\"]:nth-of-type(3) > div:nth-of-type(2) > div",
+        "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Review\"]:nth-of-type(2) > div > div"
+      ],
+      "shell-topbar--single-trailing-item": [
+        "header[role=\"banner\"] > div:nth-of-type(2) > div > div",
+        "header[role=\"banner\"] > div:nth-of-type(2) > div:nth-of-type(1) > div"
+      ],
+      "shell-topbar--with-app-chrome": [
+        "header[role=\"banner\"] > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(2)",
+        "header[role=\"banner\"] > div:nth-of-type(2) > div:nth-of-type(3) > div"
+      ]
+    }
+  }
+}

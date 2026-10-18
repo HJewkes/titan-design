@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { readFileSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -13,20 +13,34 @@ import {
   themeGeometryShift,
   tokenColours,
 } from './checks.mjs'
+import { judgeLayout } from './layout-probes.mjs'
+import { PROBE_KINDS, PROBE_MODULES, judgeAll } from './probe-suite.mjs'
 import { buildScale, isOnScale, loadSpacingConfig, parseSpacingConfig } from './spacing-scale.mjs'
+import * as typeProbes from './type-probes.mjs'
+
+vi.mock('./type-probes.mjs', async (original) => ({
+  ...(await original()),
+  judge: vi.fn(() => []),
+}))
 
 const uiDir = resolve(dirname(fileURLToPath(import.meta.url)), '../..')
 const tokens = { '#111111': ['--color-surface-base'], '#eeeeee': ['--color-text-primary'] }
 const node = (target, fg, bg) => ({ target, summary: 'ratio 2:1', fg, bg })
 const contrast = (...nodes) => [{ id: 'color-contrast', nodes }]
 
+const emptyLayout = { nodes: [], truncated: false, declared: { '--space-stack-lg': 16 } }
 // A page double: dispatches on the function the audit sends into the browser.
-const fakePage = ({ violations, tokenMap, dom }) => ({
-  evaluate: async (fn) => {
-    if (fn === domChecks) return dom
+const fakePage = ({ violations, tokenMap, dom, onCollect = () => {}, onDom = () => {} }) => ({
+  evaluate: async (fn, arg) => {
+    if (fn === domChecks) {
+      onDom(arg)
+      return dom
+    }
     if (fn === tokenColours) return tokenMap
-    if (fn.toString().includes('collectLayout'))
-      return { nodes: [], truncated: false, declared: {} }
+    if (fn.toString().includes('collectLayout')) {
+      if (arg) onCollect(arg)
+      return emptyLayout
+    }
     return fn.toString().includes('window.axe.run') ? violations : true
   },
 })
@@ -39,6 +53,8 @@ const emptyDom = {
   geometry: [],
 }
 const spacingConfig = { px: [4, 8], vars: [] }
+const story = { id: 'components-atoms-sample--default', title: 'Components/Atoms/Sample' }
+const fonts = { mono: 'Sample Mono' }
 
 describe('contrast split', () => {
   it('reports a token-on-token pair as contrast-token, not a blocker', () => {
@@ -63,9 +79,126 @@ describe('contrast split', () => {
   it('lands each kind in its own audit field', async () => {
     const violations = contrast(node('.a', '#eeeeee', '#111111'), node('.b', '#eeeeee', '#123456'))
     const page = fakePage({ violations, tokenMap: tokens, dom: emptyDom })
-    const res = await auditPage(page, { axeSource: '', spacingConfig })
+    const res = await auditPage(page, { axeSource: '', spacingConfig, story, fonts })
     expect(res.contrast_token.map((f) => f.selector)).toEqual(['.a'])
     expect(res.blockers.map((f) => f.selector)).toEqual(['.b'])
+  })
+})
+
+describe('probe suite wiring', () => {
+  it('lists every probe module kind as a warning', () => {
+    const kinds = PROBE_MODULES.flatMap((m) => m.KINDS)
+
+    expect(WARNING_KINDS).toEqual(expect.arrayContaining([...PROBE_KINDS, ...kinds]))
+  })
+
+  it('hands each probe module the tokens, story, fonts and declared spacing', async () => {
+    const page = fakePage({ violations: [], tokenMap: tokens, dom: emptyDom })
+    vi.mocked(typeProbes.judge).mockClear()
+
+    await auditPage(page, { axeSource: '', spacingConfig, story, fonts })
+
+    expect(typeProbes.judge).toHaveBeenCalledWith(emptyLayout, {
+      tokens,
+      story,
+      fonts,
+      declared: emptyLayout.declared,
+    })
+  })
+
+  it('declares the large stack step to the collector beside the config vars', async () => {
+    const seen = []
+    const page = fakePage({
+      violations: [],
+      tokenMap: {},
+      dom: emptyDom,
+      onCollect: (v) => seen.push(v),
+    })
+
+    await auditPage(page, {
+      axeSource: '',
+      spacingConfig: { px: [4], vars: ['--space-stack-sm', '--space-stack-lg'] },
+      story,
+      fonts,
+    })
+
+    expect(seen).toEqual([['--space-stack-sm', '--space-stack-lg']])
+  })
+
+  it('hands the page checks the 10–11px small-text band, leaving under 10px to text-floor', async () => {
+    const seen = []
+    const page = fakePage({
+      violations: [],
+      tokenMap: {},
+      dom: emptyDom,
+      onDom: (arg) => seen.push(arg.smallText),
+    })
+
+    await auditPage(page, { axeSource: '', spacingConfig, story, fonts })
+
+    expect(seen).toEqual([[10, 11]])
+  })
+
+  it('caps the layout judges and module findings together at 25 per kind', () => {
+    const finding = (kind, i) => ({ kind, selector: `.n${i}`, detail: 'measured' })
+    const many = (kind) => ({ judge: () => Array.from({ length: 20 }, (_, i) => finding(kind, i)) })
+
+    const out = judgeAll({ nodes: [], declared: {} }, {}, [
+      many('sample-a'),
+      many('sample-a'),
+      many('sample-b'),
+    ])
+
+    expect(out.filter((f) => f.kind === 'sample-a')).toHaveLength(25)
+    expect(out.filter((f) => f.kind === 'sample-b')).toHaveLength(20)
+  })
+
+  it('keeps every ratcheted text-floor finding while still capping other kinds', () => {
+    const finding = (kind, i) => ({ kind, selector: `.n${i}`, detail: 'measured' })
+    const many = (kind) => ({ judge: () => Array.from({ length: 20 }, (_, i) => finding(kind, i)) })
+
+    const out = judgeAll({ nodes: [], declared: {} }, {}, [
+      many('text-floor'),
+      many('text-floor'),
+      many('sample-a'),
+      many('sample-a'),
+    ])
+
+    expect(out.filter((f) => f.kind === 'text-floor')).toHaveLength(40)
+    expect(out.filter((f) => f.kind === 'sample-a')).toHaveLength(25)
+  })
+
+  it('leaves judgeAll equal to judgeLayout on an unpadded, undeclared stack', () => {
+    // Padless surfaces are outside every module's scope, so no real module may add a finding here.
+    const row = (id, parent, box) => ({
+      id,
+      parent,
+      selector: `#n${id}`,
+      tag: 'div',
+      role: null,
+      interactive: false,
+      box,
+      pad: [0, 0, 0, 0],
+      border: [0, 0, 0, 0],
+      margin: [0, 0, 0, 0],
+      marginAuto: [false, false, false, false],
+      layout: { display: 'block', flexDirection: 'row', flexWrap: 'nowrap', position: 'static' },
+      paints: true,
+      text: null,
+      ink: box,
+    })
+    const layout = {
+      nodes: [
+        row('0', null, [0, 0, 100, 100]),
+        row('0.0', '0', [0, 0, 100, 10]),
+        row('0.1', '0', [0, 14, 100, 10]),
+        row('0.2', '0', [0, 48, 100, 10]),
+      ],
+      declared: {},
+    }
+
+    expect(judgeLayout(layout).length).toBeGreaterThan(0)
+    expect(judgeAll(layout, {})).toEqual(judgeLayout(layout))
   })
 })
 

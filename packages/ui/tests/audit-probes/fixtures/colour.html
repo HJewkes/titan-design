@@ -1,0 +1,141 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      /* Literal colours that mimic token values; the spec reads them back with tokenColours. */
+      :root {
+        --color-status-success: #22c55e;
+        --color-status-success-subtle: #dcfce7;
+        --color-status-success-rgb: 34, 197, 94;
+        --color-status-error: #dc2626;
+        --color-status-info: #2563eb;
+        --color-on-status-info: #ffffff;
+        --color-text-secondary: #9ca3af;
+      }
+      body {
+        margin: 0;
+        font-family: sans-serif;
+        background: #ffffff;
+      }
+      #storybook-root {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        padding: 16px;
+      }
+      .label {
+        font-size: 12px;
+      }
+      .faded {
+        opacity: 0.6;
+      }
+      .dot {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        border-radius: 5px;
+      }
+      .fill {
+        padding: 12px;
+        font-size: 14px;
+      }
+      .row {
+        display: flex;
+        gap: 8px;
+      }
+    </style>
+    <script>
+      // What a story's `parameters.audit` looks like to the collector inside Storybook.
+      window.__STORYBOOK_PREVIEW__ = {
+        currentRender: {
+          story: {
+            parameters: {
+              audit: {
+                concepts: {
+                  declared: ['[data-testid="ct-declared"] .mark'],
+                  single: ['[data-testid="ct-declared-one"] .mark'],
+                },
+              },
+            },
+          },
+        },
+      }
+    </script>
+  </head>
+  <body>
+    <div id="storybook-root">
+      <!-- full-chroma: planted -->
+      <div data-testid="fc-faded-label" class="faded">
+        <span class="label" style="color: #22c55e">Label</span>
+      </div>
+      <div data-testid="fc-alpha-dot">
+        <span class="dot" style="background: rgba(220, 38, 38, 0.4)"></span>
+      </div>
+      <!-- full-chroma: controls -->
+      <div data-testid="fc-solid-label">
+        <span class="label" style="color: #22c55e">Label</span>
+      </div>
+      <div data-testid="fc-subtle-wash">
+        <span class="dot" style="background: #dcfce7"></span>
+      </div>
+      <div data-testid="fc-neutral-faded" class="faded">
+        <span class="label" style="color: #6b7280">Label</span>
+      </div>
+      <div data-testid="fc-disabled">
+        <button disabled style="opacity: 0.5; background: #ffffff; border: 1px solid #6b7280">
+          <span class="label" style="color: #22c55e">Label</span>
+        </button>
+      </div>
+      <div data-testid="fc-black-faded" class="faded">
+        <span class="label" style="color: #000000">Label</span>
+      </div>
+
+      <!-- grey-on-colour: planted -->
+      <div data-testid="gc-grey-on-blue" class="fill" style="background: #2563eb">
+        <span style="color: #9ca3af">Value</span>
+      </div>
+      <!-- grey-on-colour: controls -->
+      <div data-testid="gc-on-blue" class="fill" style="background: #2563eb">
+        <span style="color: #ffffff">Value</span>
+      </div>
+      <div data-testid="gc-grey-on-dark" class="fill" style="background: #1f2937">
+        <span style="color: #9ca3af">Value</span>
+      </div>
+      <div data-testid="gc-grey-on-wash" class="fill" style="background: #dbeafe">
+        <span style="color: #6b7280">Value</span>
+      </div>
+      <div
+        data-testid="gc-gradient"
+        class="fill"
+        style="background: linear-gradient(90deg, #2563eb, #7c3aed)"
+      >
+        <span style="color: #9ca3af">Value</span>
+      </div>
+
+      <!-- concept-token-drift: planted -->
+      <div data-testid="ct-drift" class="row">
+        <span class="dot" data-concept="alpha" style="background: #22c55e"></span>
+        <span class="dot" data-concept="alpha" style="background: #22c55e"></span>
+        <span class="dot" data-concept="alpha" style="background: #16a34a"></span>
+      </div>
+      <div data-testid="ct-declared" class="row">
+        <span class="dot mark" style="background: #22c55e"></span>
+        <span class="mark"><span class="label" style="color: #16a34a">Label</span></span>
+      </div>
+      <!-- concept-token-drift: controls -->
+      <div data-testid="ct-same" class="row">
+        <span class="dot" data-concept="beta" style="background: #22c55e"></span>
+        <span class="dot" data-concept="beta" style="background: #22c55e"></span>
+        <span class="dot" data-concept="beta" style="background: #22c55e"></span>
+      </div>
+      <div data-testid="ct-two-concepts" class="row">
+        <span class="dot" data-concept="gamma" style="background: #22c55e"></span>
+        <span class="dot" data-concept="delta" style="background: #dc2626"></span>
+      </div>
+      <div data-testid="ct-declared-one" class="row">
+        <span class="dot mark" style="background: #16a34a"></span>
+      </div>
+    </div>
+  </body>
+</html>
