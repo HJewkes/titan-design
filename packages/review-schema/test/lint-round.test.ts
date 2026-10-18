@@ -203,7 +203,10 @@ describe('lintRound', () => {
     function chartText(asked: Record<string, unknown> = pick) {
       const draft = base()
       draft.questions.push({ id: 'chart-text', ...asked })
-      draft.sections.push({ ...section('chart-text', ['chart-text'], []), kind: undefined } as never)
+      draft.sections.push({
+        ...section('chart-text', ['chart-text'], []),
+        kind: undefined,
+      } as never)
       return draft
     }
 
