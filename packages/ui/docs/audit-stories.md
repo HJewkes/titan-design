@@ -153,7 +153,9 @@ the committed, shrink-only `scripts/audit-stories/ratchet-baseline.json`. The ra
 - **No growth path.** The script refuses a new key unless `--allow-increase` is passed, and
   `ratchet-baseline.test.mjs` fails when the key count or ceiling is above the merge base's copy.
   Locally it skips that check when `origin/main` is missing; under `CI=true` it fails instead, so
-  every workflow that runs it checks out with `fetch-depth: 0`.
+  every workflow that runs it checks out with `fetch-depth: 0`. Under CI it also fails when the
+  merge base has no readable copy at the test's `REPO_PATH`. Only `CI=true` (GitHub's value) and
+  `CI=1` count as CI.
   A story id rename moves keys at equal count: regenerate with `--allow-increase` and the test
   passes. Growing the count means editing that test in a reviewed diff.
 - **Seeding** a new kind's section needs one uncapped `--all` run, because only rendering finds
