@@ -664,7 +664,8 @@ heads rewrites `build` only. A round without bindings needs no tree.
   question last in that section. The page shows each such group as one page and never splits one.
 - **Layout lint.** The ruled round must pass `lintRound` from `@titan-design/review-schema`, or
   `build` throws with one `<rule>: <message>` line per problem: a deciding question without
-  `frames`, a frame outside its question's section or under two questions, a variant unit split
+  `frames`, a pick with no `decision` in a frameless section of a round that shows frames
+  elsewhere (`frameless-decision`; declare `decision: 'decide'` or show its frames), a frame outside its question's section or under two questions, a variant unit split
   across blocks or alternates, alternates shown over different modes, a split PR group, a Ship
   that is not last in its group, a Ship whose head or PR is not its group's one PR at one head, or
   an `iterate` or `decide` pick question without `implemented`, a question about a grouped PR
