@@ -214,10 +214,6 @@ module.exports = tseslint.config(
       // trips this rule sits inside prose `notes` strings, not styling. Same
       // false positive as no-device-internals above, and lab never ships.
       'src/lab/**',
-      // Promoted fixtures carry real session/brief/loop prose: a PR ref like
-      // `#102` reads as a 3-digit hex, and a brief naming the brand orange
-      // carries `#FF7900` — both inside data strings, not styling.
-      'src/**/*-fixture.ts',
     ],
     rules: {
       'titan/no-raw-color': 'error',

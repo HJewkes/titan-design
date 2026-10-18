@@ -26,7 +26,11 @@ jobs:
     name: unit tests (React 19, react-native-web 0.21)
     runs-on: ubuntu-latest
     steps:
+      # Full history so ratchet-baseline.test.mjs can read origin/main's copy; under CI it fails
+      # rather than skips without one.
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - uses: pnpm/action-setup@v4
 

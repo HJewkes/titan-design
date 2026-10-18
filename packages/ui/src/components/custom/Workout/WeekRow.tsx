@@ -1,6 +1,7 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { View, type ViewProps } from 'react-native'
 import { IntensityBar } from './IntensityBar'
+import { CheckMark } from '../../icons'
 import { Pill, type PillTone, type PillVariant } from '../../ui/pill'
 import { Typography } from '../../ui/typography'
 import { resolveColor } from '../../../theme/resolve-color'
@@ -29,23 +30,25 @@ const pillPaint: Record<
   missed: { tone: 'error', variant: 'subtle' },
 }
 
-const statusGlyph: Partial<Record<WeekRowWorkoutStatus, { glyph: string; testID: string }>> = {
-  completed: { glyph: '\u2713', testID: 'workout-pill-check' },
-  missed: { glyph: '\u2014', testID: 'workout-pill-dash' },
-}
-
+/** Completed draws `CheckMark` (TD-840) and missed a dash, both in the pill's text colour. */
 function StatusGlyph({ status }: { status: WeekRowWorkoutStatus }) {
-  const mark = statusGlyph[status]
-  if (!mark) return null
+  if (status === 'completed') {
+    return (
+      <View className="text-inherit" accessibilityElementsHidden testID="workout-pill-check">
+        <CheckMark size={12} strokeWidth={3} />
+      </View>
+    )
+  }
+  if (status !== 'missed') return null
   return (
     <Typography
       variant="caption"
       color="inherit"
       className="font-semibold leading-[normal] text-inherit"
       accessibilityElementsHidden
-      testID={mark.testID}
+      testID="workout-pill-dash"
     >
-      {mark.glyph}
+      {'\u2014'}
     </Typography>
   )
 }

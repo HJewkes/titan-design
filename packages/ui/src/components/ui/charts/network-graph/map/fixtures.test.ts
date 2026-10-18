@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { mapLayoutFixture, mapTimelineFixture } from './fixtures'
+import { mapLayoutFixture, mapTimelineFixture, straightMapFixture } from './fixtures'
 import type { MapLayout, MapNode } from './types'
 import { validateMapLayout, validateMapTimeline } from './validate'
 
@@ -11,6 +11,11 @@ const withNode = (id: string, change: (node: MapNode) => MapNode): MapLayout => 
 describe('map fixtures', () => {
   it('the layout fixture is valid', () => {
     expect(validateMapLayout(mapLayoutFixture)).toEqual([])
+  })
+
+  it('the straight fixture is valid and has no routes', () => {
+    expect(validateMapLayout(straightMapFixture)).toEqual([])
+    expect(straightMapFixture.edges.some((edge) => edge.route)).toBe(false)
   })
 
   it('the timeline fixture is valid against the layout', () => {

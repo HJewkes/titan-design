@@ -26,7 +26,13 @@ export function isBlanketSignOff(text: string): boolean {
 }
 
 const sourceOf = (variant: Variant) =>
-  variant.image !== undefined ? 'image' : variant.clip !== undefined ? 'clip' : 'live story'
+  variant.image !== undefined
+    ? 'image'
+    : variant.clip !== undefined
+      ? 'clip'
+      : variant.audio !== undefined
+        ? 'audio'
+        : 'live story'
 
 function frameSettings(variant: Variant): Record<string, string> {
   const { frame } = variant.scale ?? {}

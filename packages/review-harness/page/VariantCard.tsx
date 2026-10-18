@@ -2,12 +2,14 @@ import type { Dispatch } from 'react'
 import type { VariantDraft } from '../src/feedback.ts'
 import { frameSizing } from '../src/sections.ts'
 import {
+  isAudioVariant,
   isClipVariant,
   isImageVariant,
   isStoryVariant,
   type Manifest,
   type Variant,
 } from '@titan-design/review-schema'
+import { AudioFrame } from './AudioFrame.tsx'
 import { ClipFrame } from './ClipFrame.tsx'
 import { Frame, type PinInput } from './Frame.tsx'
 import { ImageFrame } from './ImageFrame.tsx'
@@ -68,13 +70,19 @@ function frameWidths(manifest: Manifest, variant: Variant): number[] {
 }
 
 /**
- * A scale reference is one full-size frame, and so is a true-size image or clip; every other
- * variant is drawn at each manifest width.
+ * A scale reference is one full-size frame, and so is a true-size image or clip; a sound has one
+ * player; every other variant is drawn at each manifest width.
  */
 function CardFrames(props: CardFramesProps) {
   const { manifest, variant, draft, onPin, liveArgs } = props
   const sizing = frameSizing(manifest, variant)
   const pins = draft.annotations
+  if (isAudioVariant(variant))
+    return (
+      <div className="frames">
+        <AudioFrame variant={variant} />
+      </div>
+    )
   if (isStoryVariant(variant) && variant.scale)
     return (
       <div className="frames">
@@ -142,7 +150,7 @@ export function VariantCard(props: VariantCardProps) {
         <h3>
           <span className="key">{variant.key}</span> {variant.label}
         </h3>
-        <code>{variant.storyId ?? variant.image ?? variant.clip}</code>
+        <code>{variant.storyId ?? variant.image ?? variant.clip ?? variant.audio}</code>
       </header>
       {argMotion && <MotionControls variantKey={variant.key} motion={argMotion} player={player} />}
       <CardFrames {...props} onPin={onPin} liveArgs={player.args} />

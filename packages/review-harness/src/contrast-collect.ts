@@ -29,6 +29,46 @@ export interface RawSample {
   indeterminate?: string
 }
 
+export interface RawBox {
+  width: number
+  height: number
+}
+
+/** One element a named mark's selector matched, with every colour it and its subtree paint. */
+export interface RawMarkHit {
+  node: number
+  plane: number
+  selector: string
+  /** No area: a zero width or height, or both for a stroked line, which has no area of its own. */
+  zero: boolean
+  /** Each paint with the node it is painted from, so its subtree opacity can fade it. */
+  paints: { node: number; color: Rgba }[]
+}
+
+export interface RawMark {
+  name: string
+  selector: string
+  /** The selector does not parse. */
+  invalid: boolean
+  hits: RawMarkHit[]
+}
+
+/** What the frame checks read beside the samples (TD-962): the story root, faces and marks. */
+export interface RawProbe {
+  /** The story root's node, null when the story rendered no root. */
+  root: number | null
+  box: RawBox
+  /** Visible controls that paint their own fill; each node's plane is its face. */
+  faces: { node: number; selector: string }[]
+  marks: RawMark[]
+}
+
+/** What collectFrame is asked for: the story root, and the variant's named marks. */
+export interface CollectRequest {
+  root: string
+  marks: Record<string, string>
+}
+
 export interface FrameSamples {
   /** The canvas under <html>: white, or Chromium's dark canvas for `color-scheme: dark`. */
   base: Rgba
@@ -36,11 +76,15 @@ export interface FrameSamples {
   samples: RawSample[]
 }
 
+export interface CollectedFrame extends FrameSamples {
+  probe: RawProbe
+}
+
 /**
  * Runs inside the story's page (Playwright serialises it), so it must stay self-contained:
  * no imports, no outer references. It only reads; every ratio is computed in Node.
  */
-export function collectFrame(rootSelector: string): FrameSamples {
+export function collectFrame({ root: rootSelector, marks }: CollectRequest): CollectedFrame {
   const CONTROL =
     'button, input:not([type=hidden]), select, textarea, [role=button], [role=checkbox], ' +
     '[role=radio], [role=switch], [role=slider], [role=textbox], [role=combobox], ' +
@@ -236,9 +280,68 @@ export function collectFrame(rootSelector: string): FrameSamples {
     return [...subtree(root), ...portals.flatMap((p) => [p, ...subtree(p)])]
   }
 
+  function ownPaints(el: Element): Rgba[] {
+    const style = getComputedStyle(el)
+    if (style.visibility !== 'visible') return []
+    const text = ownText(el) ? [parse(el instanceof SVGElement ? style.fill : style.color)] : []
+    const tag = el.tagName.toLowerCase()
+    if (el instanceof SVGElement && SHAPES.has(tag)) {
+      const stroked = parseFloat(style.strokeWidth) > 0
+      // A line has no area, so its computed fill (black by default) never paints.
+      const filled = tag !== 'line' && tag !== 'polyline'
+      const shape = [
+        filled ? svgPaint(style.fill, style.fillOpacity) : null,
+        stroked ? svgPaint(style.stroke, style.strokeOpacity) : null,
+      ]
+      return [...text, ...shape.filter((p): p is Rgba => p !== null && p !== 'pattern')]
+    }
+    const fill = parse(style.backgroundColor)
+    return [...text, ...borderColors(style).colors, ...(fill[3] > 0 ? [fill] : [])]
+  }
+
+  function markHit(el: Element): RawMarkHit {
+    const box = el.getBoundingClientRect()
+    const tag = el.tagName.toLowerCase()
+    const line = tag === 'line' || tag === 'polyline' || tag === 'path'
+    const zero = line ? box.width === 0 && box.height === 0 : box.width === 0 || box.height === 0
+    const plane =
+      (el instanceof SVGElement ? el.closest('svg')?.parentElement : el.parentElement) ?? el
+    const painted = [el, ...el.querySelectorAll('*')].slice(0, 50)
+    return {
+      node: nodeOf(el),
+      plane: nodeOf(plane),
+      selector: selectorOf(el),
+      zero,
+      paints: painted.flatMap((p) => ownPaints(p).map((color) => ({ node: nodeOf(p), color }))),
+    }
+  }
+
+  function markOf(elements: Element[], name: string, selector: string): RawMark {
+    try {
+      const hits = elements.filter((el) => el.matches(selector)).map(markHit)
+      return { name, selector, invalid: false, hits }
+    } catch {
+      return { name, selector, invalid: true, hits: [] }
+    }
+  }
+
+  function probeOf(elements: Element[]): RawProbe {
+    const root = document.querySelector(rootSelector)
+    const named = Object.entries(marks).map(([name, sel]) => markOf(elements, name, sel))
+    if (!root) return { root: null, box: { width: 0, height: 0 }, faces: [], marks: named }
+    const { width, height } = root.getBoundingClientRect()
+    const faces = elements
+      .filter((el) => el.matches(CONTROL) && visible(el, getComputedStyle(el)))
+      .filter((el) => parse(getComputedStyle(el).backgroundColor)[3] > 0)
+      .map((el) => ({ node: nodeOf(el), selector: selectorOf(el) }))
+    return { root: nodeOf(root), box: { width, height }, faces, marks: named }
+  }
+
   const html = document.documentElement
   const dark = getComputedStyle(html).colorScheme.split(' ').includes('dark')
   const light = getComputedStyle(html).colorScheme.split(' ').includes('light')
-  const samples = storyElements().flatMap(samplesOf)
-  return { base: dark && !light ? [18, 18, 18, 1] : [255, 255, 255, 1], nodes, samples }
+  const elements = storyElements()
+  const samples = elements.flatMap(samplesOf)
+  const probe = probeOf(elements)
+  return { base: dark && !light ? [18, 18, 18, 1] : [255, 255, 255, 1], nodes, samples, probe }
 }

@@ -10,6 +10,7 @@ import {
   type AnimatedNumberFormat,
   type ReelCell,
 } from './animated-number-model'
+import { TABULAR_STYLE } from './useCountedText'
 
 /** `count` rewrites the text; `reel` rolls one clipped column per digit. */
 export type AnimatedNumberMode = 'count' | 'reel'
@@ -43,14 +44,12 @@ const sizeStyles: Record<AnimatedNumberSize, { text: string; line: number }> = {
   lg: { text: 'text-5xl leading-[56px]', line: 56 },
 }
 
-const TABULAR = { fontVariant: ['tabular-nums' as const] }
-
 function Glyph({ size, children }: { size: AnimatedNumberSize; children: React.ReactNode }) {
   return (
     <Typography
       variant="body1"
       className={cn('font-heading font-bold tabular-nums', sizeStyles[size].text)}
-      style={TABULAR}
+      style={TABULAR_STYLE}
     >
       {children}
     </Typography>

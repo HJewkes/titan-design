@@ -1,13 +1,15 @@
 import { useState, type Dispatch } from 'react'
 import { agrees, draftAnswer, type AnswerDraft } from '../src/feedback.ts'
 import { isAnswered, offersBuiltInRevision } from '../src/round.ts'
-import type {
-  Manifest,
-  OptionDetail,
-  PrGroupShipStatus,
-  Question,
-  Recommendation,
+import {
+  takesRecommendation,
+  type Manifest,
+  type OptionDetail,
+  type PrGroupShipStatus,
+  type Question,
+  type Recommendation,
 } from '@titan-design/review-schema'
+import { BlindAbPairs } from './BlindAb.tsx'
 import { Markdown } from './Markdown.tsx'
 import { recommendationVisible, revealLocked, type Action } from './state.ts'
 import { Stop } from './Stop.tsx'
@@ -38,7 +40,7 @@ function scaleValues(question: Extract<Question, { kind: 'scale' }>): number[] {
 }
 
 type ChoiceProps = Omit<QuestionBlockProps, 'index' | 'active' | 'follow'>
-type ChoiceQuestion = Exclude<Question, { kind: 'text' }>
+type ChoiceQuestion = Exclude<Question, { kind: 'text' | 'blind-ab' }>
 type PickQuestion = Extract<Question, { kind: 'pick-one' | 'pick-many' }>
 
 interface ChoiceItem {
@@ -120,6 +122,8 @@ function ChoiceButton({
 function Choices(props: ChoiceProps) {
   const { question, dispatch } = props
   if (question.kind === 'text') return null
+  if (question.kind === 'blind-ab')
+    return <BlindAbPairs question={question} draft={props.draft} dispatch={dispatch} />
   if (question.kind !== 'scale' && question.optionDetails)
     return <OptionCards {...props} question={question} />
   const many = question.kind === 'pick-many'
@@ -253,7 +257,7 @@ function OptionCards(props: ChoiceProps & { question: PickQuestion }) {
 
 /** Off by default so the owner can answer blind; an answer given while it shows is tagged seen. */
 function RevealToggle({ manifest, question, draft, dispatch }: ChoiceProps) {
-  if (question.kind === 'text' || !question.recommendation) return null
+  if (!takesRecommendation(question) || !question.recommendation) return null
   const visible = recommendationVisible(manifest, question, draft)
   const locked = revealLocked(manifest, question, draft)
   const help = locked
@@ -311,7 +315,7 @@ function RecommendationExtras({ manifest, rec }: { manifest: Manifest; rec: Reco
 }
 
 function RecommendationNote({ manifest, question, draft }: QuestionBlockProps) {
-  if (question.kind === 'text' || !question.recommendation) return null
+  if (!takesRecommendation(question) || !question.recommendation) return null
   if (!recommendationVisible(manifest, question, draft)) return null
   const rec = question.recommendation
   const verdict = verdictText(question, draft, rec)

@@ -353,6 +353,79 @@
       "standard": false
     },
     {
+      "name": "Annotate",
+      "file": "packages/ui/src/components/ui/motion/annotate/Annotate.tsx",
+      "dir": "ui",
+      "family": "ui/motion",
+      "exports": [
+        "Annotate",
+        "AnnotateProps",
+        "useLayoutBox"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "AnnotationMark"
+      ],
+      "leak": {
+        "rawView": 2,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 49,
+        "score": 2
+      },
+      "tier": "molecule",
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "AnnotationMark",
+      "file": "packages/ui/src/components/ui/motion/annotate/AnnotationMark.tsx",
+      "dir": "ui",
+      "family": "ui/motion",
+      "exports": [
+        "AnnotationMark",
+        "AnnotationColor",
+        "AnnotationMarkProps",
+        "defaultColor",
+        "layerStyle",
+        "useMarkStrokes"
+      ],
+      "libDependents": 1,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [],
+      "leak": {
+        "rawView": 0,
+        "rawText": 0,
+        "inlineStyle": 1,
+        "rawHex": 0,
+        "loc": 153,
+        "score": 2
+      },
+      "tier": "atom",
+      "verdict": "keep-internal",
+      "deadByAssociation": true,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
       "name": "AppShell",
       "file": "packages/ui/src/components/shell/AppShell.tsx",
       "dir": "shell",
@@ -1234,6 +1307,44 @@
       "standard": false
     },
     {
+      "name": "ChapterCard",
+      "file": "packages/ui/src/components/ui/chapter-card/ChapterCard.tsx",
+      "dir": "ui",
+      "family": "ui/chapter-card",
+      "exports": [
+        "ChapterCard",
+        "ChapterCardProps",
+        "padIndex"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "Eyebrow",
+        "Surface",
+        "Typography"
+      ],
+      "leak": {
+        "rawView": 2,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 68,
+        "score": 2
+      },
+      "tier": "organism",
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
       "name": "ChatCard",
       "file": "packages/ui/src/components/custom/Chat/ChatCard.tsx",
       "dir": "custom",
@@ -1347,6 +1458,46 @@
       "deadByAssociation": false,
       "audited": "unaudited",
       "standard": true
+    },
+    {
+      "name": "ChipBand",
+      "file": "packages/ui/src/components/ui/chip/ChipBand.tsx",
+      "dir": "ui",
+      "family": "ui/chip",
+      "exports": [
+        "ChipBand",
+        "ChipBandProps",
+        "isDev",
+        "droppedLabel",
+        "citationLabel",
+        "bandItems"
+      ],
+      "libDependents": 0,
+      "storyRefs": 2,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "EvidenceChip",
+        "ScaledPill"
+      ],
+      "leak": {
+        "rawView": 2,
+        "rawText": 0,
+        "inlineStyle": 1,
+        "rawHex": 0,
+        "loc": 137,
+        "score": 4
+      },
+      "tier": "organism",
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
     },
     {
       "name": "CircularTimer",
@@ -2588,7 +2739,8 @@
       "exports": [
         "FatigueLights",
         "FatigueLightsProps",
-        "Light"
+        "Chip",
+        "Dot"
       ],
       "libDependents": 1,
       "storyRefs": 1,
@@ -2596,20 +2748,22 @@
         "mobile": 0,
         "mcp": 1,
         "dash": 0,
-        "audiobook": 0,
-        "total": 1
+        "audiobook": 1,
+        "total": 2
       },
       "dependsOn": [
+        "Pill",
         "StatusDot",
+        "StatusGlyph",
         "Tooltip"
       ],
       "leak": {
-        "rawView": 2,
+        "rawView": 3,
         "rawText": 1,
         "inlineStyle": 1,
         "rawHex": 0,
-        "loc": 80,
-        "score": 5
+        "loc": 109,
+        "score": 6
       },
       "tier": "organism",
       "verdict": "keep-core",
@@ -2776,6 +2930,46 @@
       },
       "tier": "organism",
       "verdict": "keep-internal",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "FileCard",
+      "file": "packages/ui/src/components/custom/Code/FileCard.tsx",
+      "dir": "custom",
+      "family": "custom/Code",
+      "exports": [
+        "FileCard",
+        "FileCardStatus",
+        "FileCardProps",
+        "RowValue"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "DataRow",
+        "FilePathLabel",
+        "Pill",
+        "Typography"
+      ],
+      "leak": {
+        "rawView": 4,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 112,
+        "score": 4
+      },
+      "tier": "organism",
+      "verdict": "dead",
       "deadByAssociation": false,
       "audited": "unaudited",
       "standard": false
@@ -4626,6 +4820,45 @@
       "standard": false
     },
     {
+      "name": "MapCard",
+      "file": "packages/ui/src/components/ui/map-card/MapCard.tsx",
+      "dir": "ui",
+      "family": "ui/map-card",
+      "exports": [
+        "MapCard",
+        "MapCardProps",
+        "Leader",
+        "CardTitle",
+        "useCardFrame"
+      ],
+      "libDependents": 0,
+      "storyRefs": 2,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 1,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 1
+      },
+      "dependsOn": [
+        "Surface",
+        "Typography"
+      ],
+      "leak": {
+        "rawView": 5,
+        "rawText": 0,
+        "inlineStyle": 5,
+        "rawHex": 0,
+        "loc": 153,
+        "score": 15
+      },
+      "tier": "molecule",
+      "verdict": "keep-app",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
       "name": "MarkdownProse",
       "file": "packages/ui/src/components/custom/Prose/MarkdownProse.tsx",
       "dir": "custom",
@@ -5072,6 +5305,40 @@
       "deadByAssociation": false,
       "audited": "unaudited",
       "standard": true
+    },
+    {
+      "name": "Morph",
+      "file": "packages/ui/src/components/ui/motion/morph/Morph.tsx",
+      "dir": "ui",
+      "family": "ui/motion",
+      "exports": [
+        "Morph",
+        "MorphProps",
+        "MorphLayerView"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [],
+      "leak": {
+        "rawView": 2,
+        "rawText": 0,
+        "inlineStyle": 1,
+        "rawHex": 0,
+        "loc": 101,
+        "score": 4
+      },
+      "tier": "atom",
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
     },
     {
       "name": "MotionProvider",
@@ -6973,6 +7240,46 @@
       "standard": false
     },
     {
+      "name": "SetLossStrip",
+      "file": "packages/ui/src/components/custom/Workout/SetLossStrip.tsx",
+      "dir": "workout",
+      "family": "custom/Workout",
+      "exports": [
+        "SetLossStrip",
+        "SetLossStripProps",
+        "SetLossStrip.toneFor",
+        "SetLossStrip.row",
+        "StripRow",
+        "PadCells"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "SetLossStripParts",
+        "Typography"
+      ],
+      "leak": {
+        "rawView": 8,
+        "rawText": 0,
+        "inlineStyle": 2,
+        "rawHex": 0,
+        "loc": 173,
+        "score": 12
+      },
+      "tier": "organism",
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
       "name": "SetRow",
       "file": "packages/ui/src/components/custom/Workout/SetRow.tsx",
       "dir": "workout",
@@ -7584,6 +7891,46 @@
         "score": 6
       },
       "tier": "molecule",
+      "verdict": "keep-internal",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "StatusGlyph",
+      "file": "packages/ui/src/components/ui/status-glyph/StatusGlyph.tsx",
+      "dir": "ui",
+      "family": "ui/status-glyph",
+      "exports": [
+        "StatusGlyph",
+        "StatusGlyphTone",
+        "StatusGlyphSize",
+        "StatusGlyphProps",
+        "STATUS_GLYPH_FILL"
+      ],
+      "libDependents": 5,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "SvgIcon",
+        "icons",
+        "statusIcons"
+      ],
+      "leak": {
+        "rawView": 1,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 73,
+        "score": 1
+      },
+      "tier": "organism",
       "verdict": "keep-internal",
       "deadByAssociation": false,
       "audited": "unaudited",
@@ -8345,6 +8692,49 @@
       },
       "tier": "atom",
       "verdict": "keep-internal",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "Timeline",
+      "file": "packages/ui/src/components/ui/charts/timeline/Timeline.tsx",
+      "dir": "ui",
+      "family": "ui/charts",
+      "exports": [
+        "Timeline",
+        "TimelineOrientation",
+        "TimelineProps",
+        "percent",
+        "along",
+        "Track",
+        "Mark",
+        "Playhead"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "EmptyState",
+        "Skeleton",
+        "Typography"
+      ],
+      "leak": {
+        "rawView": 9,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 194,
+        "score": 9
+      },
+      "tier": "molecule",
+      "verdict": "dead",
       "deadByAssociation": false,
       "audited": "unaudited",
       "standard": false
@@ -9254,7 +9644,11 @@
       "family": "custom/Fatigue",
       "exports": [
         "VerdictHero",
-        "VerdictHeroProps"
+        "VerdictHeroRpeProps",
+        "VerdictHeroWordProps",
+        "VerdictHeroProps",
+        "WordLead",
+        "RpeLead"
       ],
       "libDependents": 1,
       "storyRefs": 1,
@@ -9265,16 +9659,21 @@
         "audiobook": 0,
         "total": 1
       },
-      "dependsOn": [],
+      "dependsOn": [
+        "Eyebrow",
+        "StatusGlyph",
+        "Tooltip",
+        "Typography"
+      ],
       "leak": {
-        "rawView": 3,
+        "rawView": 6,
         "rawText": 4,
-        "inlineStyle": 5,
+        "inlineStyle": 6,
         "rawHex": 0,
-        "loc": 84,
-        "score": 17
+        "loc": 164,
+        "score": 22
       },
-      "tier": "atom",
+      "tier": "organism",
       "verdict": "keep-core",
       "deadByAssociation": false,
       "audited": "unaudited",
