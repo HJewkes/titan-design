@@ -66,6 +66,25 @@ const gatedStories = readStories().filter((entry) => !entry.tags?.includes(PLAY_
 const tagsById = new Map(gatedStories.map((entry) => [entry.id, entry.tags]))
 const storyIds = interleaveForShards(gatedStories.map((entry) => entry.id))
 
+// On a PR, CI names the story files the diff reaches and the stories whose baseline entries it
+// edits (scripts/contrast-stories.mjs, TD-869); only those render. The index checks and the
+// sensitivity proof still run in full.
+const SELECTION_ENV = 'TITAN_CONTRAST_STORY_FILES'
+const selection = process.env[SELECTION_ENV]
+  ? (JSON.parse(fs.readFileSync(process.env[SELECTION_ENV], 'utf8')) as {
+      files: string[]
+      ids: string[]
+    })
+  : null
+const storyFileById = new Map(
+  gatedStories.map((entry) => [entry.id, path.posix.join('packages/ui', entry.importPath ?? '')])
+)
+const checkedIds = selection
+  ? storyIds.filter(
+      (id) => selection.ids.includes(id) || selection.files.includes(storyFileById.get(id) ?? '')
+    )
+  : storyIds
+
 // axe-core is jest-axe's dependency, so it resolves from there (as scripts/audit-stories does).
 const fromUi = createRequire(path.join(__dirname, '..', '..', 'package.json'))
 const axeSource = fs.readFileSync(
@@ -203,7 +222,7 @@ test('every listed blank story is still in the index', () => {
 })
 
 test.describe('axe color-contrast on every story', () => {
-  for (const id of storyIds) {
+  for (const id of checkedIds) {
     for (const theme of CONTRAST_THEMES) {
       const key = baselineKey(id, theme)
       test(key, async ({ page }, testInfo) => {
