@@ -136,7 +136,8 @@ describe('probe suite wiring', () => {
     expect(out.filter((f) => f.kind === 'sample-b')).toHaveLength(20)
   })
 
-  it('adds nothing to the layout judges while every module is a stub', () => {
+  it('leaves judgeAll equal to judgeLayout on an unpadded, undeclared stack', () => {
+    // Padless surfaces are outside every module's scope, so no real module may add a finding here.
     const row = (id, parent, box) => ({
       id,
       parent,
