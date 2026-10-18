@@ -148,7 +148,7 @@ function budgetScopes(layout, story) {
 }
 
 function scopeSelector(byId, rootId, members) {
-  return rootId === null ? members[0].selector : byId.get(rootId)?.selector ?? members[0].selector
+  return rootId === null ? members[0].selector : (byId.get(rootId)?.selector ?? members[0].selector)
 }
 
 // Each instance's members, keyed by root id, then the frame when page budgets apply.
@@ -300,7 +300,11 @@ export function judgeWeightsFaces(layout, ctx = {}) {
       selector: n.selector,
       detail: `weight ${n.text.fontWeight} is under ${MIN_WEIGHT}`,
     }))
-  return [...weightFindings(layout, ctx.story, byId), ...light, ...familyFindings(layout, ctx.story)]
+  return [
+    ...weightFindings(layout, ctx.story, byId),
+    ...light,
+    ...familyFindings(layout, ctx.story),
+  ]
 }
 
 // --- DR-CO-05 line-style-budget

@@ -61,7 +61,8 @@ const text = (id, parent, t = {}, extra = {}) =>
   })
 const caps = (id, parent, t = {}, extra = {}) =>
   text(id, parent, { textTransform: 'uppercase', letterSpacing: 1.2, fontSize: 12, ...t }, extra)
-const row = (id, parent, extra = {}) => box(id, parent, { layout: { display: 'flex', flexDirection: 'row' }, ...extra })
+const row = (id, parent, extra = {}) =>
+  box(id, parent, { layout: { display: 'flex', flexDirection: 'row' }, ...extra })
 const layoutOf = (...nodes) => ({ nodes, audit: { concepts: {}, glyphRoles: {} } })
 // A card root (0) holding the given children (0.0, 0.1, ...).
 const card = (...make) => layoutOf(box('0', null), ...make.map((f, i) => f(`0.${i}`, '0')))
@@ -102,7 +103,10 @@ describe('isCaps', () => {
 
 describe('caps-tracking', () => {
   it('reports caps tracked under 5% of the size', () => {
-    const found = judgeCapsTracking(card((id, p) => caps(id, p, { letterSpacing: 0.2 })), { fonts })
+    const found = judgeCapsTracking(
+      card((id, p) => caps(id, p, { letterSpacing: 0.2 })),
+      { fonts }
+    )
     expect(found).toHaveLength(1)
     expect(found[0].detail).toBe('caps "Body text" 12px tracked 0.2px = 1.7% (range 5%–12%)')
   })
@@ -112,17 +116,32 @@ describe('caps-tracking', () => {
     ['mono at 0', { letterSpacing: 0, family: 'Fixture Mono' }],
     ['the 5% edge', { letterSpacing: 0.6 }],
   ])('leaves %s alone', (_, t) => {
-    expect(judgeCapsTracking(card((id, p) => caps(id, p, t)), { fonts })).toEqual([])
+    expect(
+      judgeCapsTracking(
+        card((id, p) => caps(id, p, t)),
+        { fonts }
+      )
+    ).toEqual([])
   })
 
   it('leaves mixed-case text alone', () => {
-    expect(judgeCapsTracking(card((id, p) => text(id, p)), { fonts })).toEqual([])
+    expect(
+      judgeCapsTracking(
+        card((id, p) => text(id, p)),
+        { fonts }
+      )
+    ).toEqual([])
   })
 })
 
 describe('text-floor', () => {
   it('reports text under 10px and keeps 10px', () => {
-    const found = judgeTextFloor(card((id, p) => text(id, p, { fontSize: 8.5 }), (id, p) => text(id, p, { fontSize: 10 })))
+    const found = judgeTextFloor(
+      card(
+        (id, p) => text(id, p, { fontSize: 8.5 }),
+        (id, p) => text(id, p, { fontSize: 10 })
+      )
+    )
     expect(found.map((f) => f.selector)).toEqual(['.n0-0'])
     expect(found[0].detail).toMatch(/^8\.5px text under the 10px floor \(error tier/)
   })
@@ -150,7 +169,9 @@ describe('caps-label-looks', () => {
 
   it('reports three looks on a page', () => {
     const big = (id, p) => caps(id, p, { fontSize: 14, letterSpacing: 1.4 })
-    expect(kinds(judgeCapsLabelLooks(card(overline, micro, big), { story: page }))).toEqual([CAPS_LABEL_LOOKS])
+    expect(kinds(judgeCapsLabelLooks(card(overline, micro, big), { story: page }))).toEqual([
+      CAPS_LABEL_LOOKS,
+    ])
   })
 
   it('counts a colour change between tab states as one look', () => {
@@ -179,7 +200,9 @@ describe('caps-label-looks', () => {
       text('0.1.0.0', '0.1.0', { fontSize: 12 }),
     ]
     const found = judgeCapsLabelLooks(layoutOf(...nodes), { story: component })
-    expect(found.map((f) => f.detail)).toEqual(['column header 14px is larger than body cell text 12px'])
+    expect(found.map((f) => f.detail)).toEqual([
+      'column header 14px is larger than body cell text 12px',
+    ])
   })
 
   it('reports two looks across one header row', () => {
@@ -203,7 +226,9 @@ describe('sizes-per-component', () => {
 
   it('reports a fifth size in one component', () => {
     const found = judgeSizesPerComponent(sized(10, 12, 14, 16, 20), { story: component })
-    expect(found.map((f) => f.detail)).toEqual(['component uses 5 text sizes (limit 4): 10, 12, 14, 16, 20px'])
+    expect(found.map((f) => f.detail)).toEqual([
+      'component uses 5 text sizes (limit 4): 10, 12, 14, 16, 20px',
+    ])
   })
 
   it('allows four sizes, and five on a page', () => {
@@ -213,9 +238,9 @@ describe('sizes-per-component', () => {
   })
 
   it('reports a seventh size on a page', () => {
-    expect(kinds(judgeSizesPerComponent(sized(10, 12, 14, 16, 20, 24, 32), { story: page }))).toEqual([
-      SIZES_PER_COMPONENT,
-    ])
+    expect(
+      kinds(judgeSizesPerComponent(sized(10, 12, 14, 16, 20, 24, 32), { story: page }))
+    ).toEqual([SIZES_PER_COMPONENT])
   })
 
   it('judges each instance of a variant grid on its own', () => {
@@ -241,9 +266,9 @@ describe('weights-faces', () => {
     card(...weights.map((fontWeight) => (id, p) => text(id, p, { fontWeight })))
 
   it('reports a third weight in one component', () => {
-    expect(judgeWeightsFaces(weighted(400, 600, 700), { story: component }).map((f) => f.detail)).toEqual([
-      'component uses 3 weights (limit 2): 400, 600, 700',
-    ])
+    expect(
+      judgeWeightsFaces(weighted(400, 600, 700), { story: component }).map((f) => f.detail)
+    ).toEqual(['component uses 3 weights (limit 2): 400, 600, 700'])
   })
 
   it('allows two weights, and leaves page weights alone', () => {
@@ -260,9 +285,9 @@ describe('weights-faces', () => {
     const faced = (...families) =>
       card(...families.map((family) => (id, p) => text(id, p, { family })))
     expect(judgeWeightsFaces(faced('A', 'B', 'C'), { story: page })).toEqual([])
-    expect(judgeWeightsFaces(faced('A', 'B', 'C', 'D'), { story: page }).map((f) => f.detail)).toEqual([
-      'frame uses 4 font families (limit 3): A, B, C, D',
-    ])
+    expect(
+      judgeWeightsFaces(faced('A', 'B', 'C', 'D'), { story: page }).map((f) => f.detail)
+    ).toEqual(['frame uses 4 font families (limit 3): A, B, C, D'])
   })
 })
 
