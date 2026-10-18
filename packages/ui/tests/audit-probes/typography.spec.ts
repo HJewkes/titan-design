@@ -28,6 +28,7 @@ const negatives: [string, Story?][] = [
   ['cl-one-look'],
   ['cl-tabs'],
   ['cl-table-ok'],
+  ['cl-table-sorted'],
   ['tf-ten'],
   ['sz-four'],
   ['sz-gallery', GALLERY],
