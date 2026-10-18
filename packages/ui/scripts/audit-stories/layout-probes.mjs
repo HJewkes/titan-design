@@ -561,7 +561,7 @@ export function judgeProximityInversion({ nodes }) {
 
 // --- P5 font-size-near-miss ------------------------------------------------------------------------
 
-const FONT_SIZE_NEAR_MISS_MAX = 2 // a larger step reads as deliberate contrast (a hero and its unit)
+export const FONT_SIZE_NEAR_MISS_MAX = 2 // a larger step reads as deliberate contrast (a hero and its unit)
 
 // Text elements grouped by their nearest flex-row ancestor; text outside any flex row is skipped.
 export function textByRow(nodes, byId) {

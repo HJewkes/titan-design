@@ -348,6 +348,7 @@ export function collectLayout({ spacingVars = [] } = {}) {
     current: ariaValue(el, 'aria-current'),
     pressed: ariaValue(el, 'aria-pressed'),
     checked: ariaValue(el, 'aria-checked'),
+    sort: el.getAttribute('aria-sort') === 'none' ? null : ariaValue(el, 'aria-sort'),
     disabled: Boolean(el.closest('[disabled], [aria-disabled="true"]')),
   })
   // RN-web renders accessibilityRole="header" as role="heading"; ARIA's default level is 2.
