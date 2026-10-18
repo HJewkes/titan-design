@@ -227,6 +227,9 @@
   "components/ui/charts/bar-list/BarList.tsx#BarList": {
     "props": 14
   },
+  "components/ui/charts/line-chart/LineChart.tsx#LineChart": {
+    "props": 23
+  },
   "components/ui/charts/network-graph/NetworkGraph.tsx#NetworkGraph": {
     "props": 21
   },
