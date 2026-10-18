@@ -1,0 +1,255 @@
+<!doctype html>
+<html style="--space-stack-lg: 16px; --space-section-sm: 24px">
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      body {
+        margin: 0;
+      }
+      /* Each case is a top-level child of the root, so no probe relates one case to another. */
+      .case {
+        display: flex;
+        flex-direction: column;
+        width: 240px;
+        margin-bottom: 64px;
+      }
+      .bar {
+        height: 20px;
+        background: #dde;
+      }
+      .tall {
+        height: 40px;
+      }
+      .stack {
+        display: flex;
+        flex-direction: column;
+      }
+      .row {
+        display: flex;
+        flex-direction: row;
+      }
+      .card {
+        display: flex;
+        flex-direction: column;
+        box-sizing: border-box;
+        background: #eef;
+      }
+      .chip {
+        width: 20px;
+        height: 20px;
+        background: #dde;
+      }
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="storybook-root">
+      <!-- heading-detached (DR-LA-02) -->
+      <div class="case" data-testid="hd-far-from-list">
+        <div class="bar" role="heading" aria-level="2" style="margin-bottom: 24px"></div>
+        <div class="stack" style="gap: 8px">
+          <div class="bar"></div>
+          <div class="bar"></div>
+          <div class="bar"></div>
+        </div>
+      </div>
+
+      <div class="case" data-testid="hd-tight-section" style="gap: 12px">
+        <div class="bar"></div>
+        <div class="stack" style="gap: 12px">
+          <div class="bar" role="heading" aria-level="3"></div>
+          <div class="bar tall"></div>
+        </div>
+      </div>
+
+      <div class="case" data-testid="hd-ok" style="gap: 32px">
+        <div class="bar"></div>
+        <div class="stack" style="gap: 8px">
+          <div class="bar" role="heading" aria-level="3"></div>
+          <div class="stack" style="gap: 8px">
+            <div class="bar"></div>
+            <div class="bar"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="case" data-testid="hd-card-first" style="gap: 12px">
+        <div class="bar"></div>
+        <div class="card" style="padding: 16px; gap: 8px">
+          <div class="bar" role="heading" aria-level="3"></div>
+          <div class="stack" style="gap: 8px">
+            <div class="bar"></div>
+            <div class="bar"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="case" data-testid="hd-hidden">
+        <h2 class="sr-only">Hidden title</h2>
+        <div class="stack" style="gap: 8px">
+          <div class="bar"></div>
+          <div class="bar"></div>
+        </div>
+      </div>
+
+      <!-- nesting-order (DR-LA-03) -->
+      <div class="case" data-testid="no-inner-loose">
+        <div class="card" style="padding: 12px; gap: 16px">
+          <div class="bar"></div>
+          <div class="bar"></div>
+        </div>
+      </div>
+
+      <div class="case" data-testid="no-outer-tight" style="gap: 8px">
+        <div class="card" style="padding: 16px; gap: 8px">
+          <div class="bar"></div>
+          <div class="bar"></div>
+        </div>
+        <div class="card" style="padding: 16px; gap: 8px">
+          <div class="bar"></div>
+          <div class="bar"></div>
+        </div>
+      </div>
+
+      <div class="case" data-testid="no-ok" style="gap: 24px">
+        <div class="card" style="padding: 16px; gap: 8px">
+          <div class="bar"></div>
+          <div class="bar"></div>
+        </div>
+        <div class="card" style="padding: 16px; gap: 8px">
+          <div class="bar"></div>
+          <div class="bar"></div>
+        </div>
+      </div>
+
+      <div class="case" data-testid="no-pill">
+        <div
+          class="row"
+          style="align-self: flex-start; padding: 4px 12px; gap: 4px; background: #eef"
+        >
+          <div class="chip"></div>
+          <div class="chip"></div>
+        </div>
+      </div>
+
+      <div
+        class="case"
+        data-testid="no-grid"
+        style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px"
+      >
+        <div class="card" style="padding: 16px; gap: 8px">
+          <div class="bar"></div>
+          <div class="bar"></div>
+        </div>
+        <div class="card" style="padding: 16px; gap: 8px">
+          <div class="bar"></div>
+          <div class="bar"></div>
+        </div>
+      </div>
+
+      <!-- in-surface-section-gap (DR-LA-08) -->
+      <div class="case" data-testid="sg-literal">
+        <div class="card" style="padding: 24px">
+          <div class="bar" style="margin-bottom: 8px"></div>
+          <div class="bar" style="margin-bottom: 8px"></div>
+          <div class="bar" style="margin-bottom: 20px"></div>
+          <div class="bar"></div>
+        </div>
+      </div>
+
+      <div class="case" data-testid="sg-token">
+        <div class="card" style="padding: 24px">
+          <div class="bar" style="margin-bottom: 8px"></div>
+          <div class="bar" style="margin-bottom: 8px"></div>
+          <div class="bar" style="margin-bottom: var(--space-section-sm)"></div>
+          <div class="bar"></div>
+        </div>
+      </div>
+
+      <div class="case" data-testid="sg-outside">
+        <div class="bar" style="margin-bottom: 8px"></div>
+        <div class="bar" style="margin-bottom: 20px"></div>
+        <div class="bar"></div>
+      </div>
+
+      <div class="case" data-testid="sg-spread">
+        <div class="card" style="padding: 24px; height: 240px; justify-content: space-between">
+          <div class="bar"></div>
+          <div class="bar"></div>
+          <div class="bar"></div>
+        </div>
+      </div>
+
+      <!-- dead-band (DR-LA-09) -->
+      <div class="case" data-testid="db-tall">
+        <div class="card" style="padding: 16px; gap: 8px; min-height: 120px">
+          <div class="bar"></div>
+          <div class="bar"></div>
+        </div>
+      </div>
+
+      <div class="case" data-testid="db-stretched">
+        <div class="row" style="gap: 24px">
+          <div class="card" style="flex: 1; padding: 16px; gap: 8px">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+          </div>
+          <div class="card" style="flex: 1; padding: 16px">
+            <div class="bar"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="case" data-testid="db-ok">
+        <div class="card" style="padding: 16px; gap: 8px">
+          <div class="bar"></div>
+          <div class="bar"></div>
+        </div>
+      </div>
+
+      <div class="case" data-testid="db-centred">
+        <div
+          class="card"
+          style="padding: 16px; gap: 8px; min-height: 120px; justify-content: center"
+        >
+          <div class="bar"></div>
+          <div class="bar"></div>
+        </div>
+      </div>
+
+      <!-- column-edge-near-miss (DR-LA-11) -->
+      <div class="case" data-testid="ce-near" style="gap: 8px">
+        <div class="bar" style="width: 100px"></div>
+        <div class="bar" style="width: 100px; margin-left: 3px"></div>
+      </div>
+
+      <div class="case" data-testid="ce-same" style="gap: 8px">
+        <div class="bar" style="width: 100px"></div>
+        <div class="bar" style="width: 80px"></div>
+      </div>
+
+      <div class="case" data-testid="ce-indent" style="gap: 8px">
+        <div class="bar" style="width: 100px"></div>
+        <div class="bar" style="width: 100px; margin-left: 12px"></div>
+      </div>
+
+      <div class="case" data-testid="ce-centred" style="gap: 8px; align-items: center">
+        <div class="bar" style="width: 100px"></div>
+        <div class="bar" style="width: 94px"></div>
+      </div>
+
+      <div class="case" data-testid="ce-rtl" dir="rtl" style="gap: 8px">
+        <div class="bar" style="width: 100px"></div>
+        <div class="bar" style="width: 96px"></div>
+      </div>
+    </div>
+  </body>
+</html>
