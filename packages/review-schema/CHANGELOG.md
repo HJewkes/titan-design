@@ -46,6 +46,13 @@ choice)` maps an answer back to its engine. A feedback answer gains
   or scale drives may not also sit in `args`. A CHOICE strip also compares `motion` and the scale
   frame. Feedback echoes `clip`. Exports `MotionSchema`, `isClipVariant`, `mediaProblems` and
   `motionSetting`.
+- Optional `marks` on a story variant (TD-962): `{ [name]: selector }`, the named marks (ticks,
+  bars, tick labels) review-harness's render probe holds to a nonzero box and a visible paint. An
+  image, clip or audio variant may not carry one.
+- `lintRound` rule `frameless-decision` (TD-962): in a round that shows frames, a pick-one or
+  pick-many with no `decision` and no `frames` may not sit in a section that shows no frames; it
+  shows the frames it decides, or declares `decision: 'decide'`. A round with no variants (a
+  decisions round) is exempt.
 - `lintRound` rule `sampled-animation`: a STATES strip may not show static frames of one story
   that differ only in a time arg (`progress`, `t`, `time`, `frame`, `playhead`, `elapsed`, or any
   numeric arg whose samples sit in 0..1); it shows one motion variant instead.

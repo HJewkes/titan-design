@@ -1,8 +1,8 @@
 # NetworkGraph map: Round 0 contract (TD-874, slice D0 of the architecture diagram suite)
 
 Status: **draft**. Contract only: types, synthetic fixtures and a pure validator. No component, story or barrel export
-exists yet. The model (D1, TD-875) is pure `.ts` beside these files. The painter (D2) extends NetworkGraph after #798
-lands.
+exists yet. The model (D1, TD-875) is pure `.ts` beside these files. The painter (D2, TD-877) extends NetworkGraph;
+see _Painter_.
 
 ## Owner decisions (2026-10-13)
 
@@ -14,6 +14,11 @@ lands.
    the map's clock stops; on re-entry the state resumes from where it stopped (see _Map clock_).
 4. **Every level is routed.** L2 and L3 edges are routed by the compound ELK layout. L0 and L1 edges come from a second
    ELK pass over the collapsed graph with the boxes fixed. Every fixture edge carries a `route`.
+
+**Implementation note (needs owner confirmation).** The pipeline's routing work found the fixed-box second pass not
+workable in elkjs 0.10.2. It instead routes the L0 and L1 aggregate edges in the same compound pass that places the
+boxes, as edges between group boxes. That differs from decision 4. The painter (D2) does not depend on either choice:
+it draws the `route` each edge carries, and an edge without one runs straight from border to border.
 
 ## Purpose
 
@@ -36,6 +41,7 @@ out or randomised at render.
 | `validate.ts`        | `validateMapLayout`, `validateMapTimeline`: pure invariant checks.                                 |
 | `fixtures.test.ts`   | The fixtures are valid, and each invariant has a failing case.                                     |
 | `map-state-model.ts` | `resolveMapState`, `mapTime`, `MAP_WEIGHT`: the pure state model (D1).                             |
+| `map-graph.ts`       | `mapGraph(layout, level)`, `MAP_EDGE_KINDS`: one level of a map as NetworkGraph props (D2).        |
 
 ## Layout invariants (`validateMapLayout`)
 
@@ -84,8 +90,24 @@ another starts from the value at that moment.
 `MAP_WEIGHT.context` is local until the motion core gains a context weight token; it moves there with the `/diagram`
 subpath.
 
+## Painter (D2)
+
+NetworkGraph paints a map through three additive layout-result fields; a layout that sets none of them paints as
+before, byte for byte (`NetworkGraph.paint.test.tsx`).
+
+| Field                           | Paints                                                                                              |
+| ------------------------------- | --------------------------------------------------------------------------------------------------- |
+| `nodeShape: 'box'`, `nodeBoxes` | Each node as its rectangle, label centred inside, press target and tooltip over the whole box.      |
+| group `variant: 'box'`, `box`   | A compound box under its members, outermost first, label inside the top-left corner.                |
+| `edgeShape: 'routed'`, `routes` | Each edge through every point of its route. An edge without one runs straight border to border, and |
+|                                 | straight edges between one pair sit `ROUTED_PARALLEL_GAP` (18 px) apart, so each shows.             |
+
+`boxLayout({ boxes, groups, routes })` takes all three precomputed; nothing is laid out at render. `mapGraph` picks
+one level: that level's nodes and every childless shallower node are boxes, shallower parents are compound boxes,
+and the level's edges between boxes keep their routes. Nothing here is exported yet (decision 2).
+
 ## Not in this slice
 
-The painter (D2), the camera (`motion/camera.ts`, D4), semantic zoom, the flow
+The camera (`motion/camera.ts`, D4), semantic zoom, the flow
 token, cards and the minimap. The `map_state` beat schema and its lints live with the pipeline, which compiles them
 into a `MapTimeline`.

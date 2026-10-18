@@ -31,6 +31,10 @@ const meta: Meta<typeof Gauge> = {
     },
     emptyState: { control: false },
     size: { control: { type: 'range', min: 100, max: 320, step: 10 } },
+    progress: {
+      control: { type: 'range', min: 0, max: 1, step: 0.01 },
+      description: 'Counts the number and the arc up from `min`; unset renders `value` as given',
+    },
   },
 }
 export default meta

@@ -65,6 +65,7 @@ function NodeLayer({ model, items, state, emphasis, labels, tip, onPress }: Node
         key={id}
         node={node}
         point={point}
+        box={model.nodeBoxes[id]}
         domId={items.nodeDomIds.get(id)}
         name={items.nodeNames.get(id)}
         isSelected={isItem(state.selection, 'node', id)}
@@ -93,7 +94,7 @@ function ActiveReadout({ graph, model, tipNode, tipId, activeEdge }: ActiveReado
   return (
     <>
       {tipNode && point ? (
-        <NodeTip key={tipNode.id} id={tipId} point={point}>
+        <NodeTip key={tipNode.id} id={tipId} point={point} box={model.nodeBoxes[tipNode.id]}>
           {graph.nodeTooltip?.(tipNode) ?? (
             <DefaultNodeTip
               node={tipNode}

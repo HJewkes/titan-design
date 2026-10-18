@@ -6,6 +6,7 @@ import { cn } from '../../../utils/cn'
 import { qaAttrs } from '../../../utils/qa-attrs'
 import { Card, type CardProps } from '../card'
 import { Typography } from '../typography'
+import { TABULAR_STYLE, useCountedText } from '../animated-number/useCountedText'
 
 export type StatCardCaptionPlacement = 'beside' | 'below'
 export type StatCardInset = 'md' | 'lg'
@@ -13,7 +14,10 @@ export type StatCardInset = 'md' | 'lg'
 export interface StatCardProps extends Omit<CardProps, 'children'> {
   /** The top row. Usually a `<StatCardHeader>`. */
   header: ReactNode
-  /** The lead figure. Omitted, the body follows the header at the figure-to-body gap. */
+  /**
+   * The lead figure. Usually a `<StatCardFigure>`. Omitted, the body follows the header at the
+   * figure-to-body gap.
+   */
   figure?: ReactNode
   /** One line about the figure. `beside` sits right on the figure's row and wraps under it. */
   caption?: ReactNode
@@ -163,5 +167,35 @@ export function StatCardHeader({ title, trailing, testID }: StatCardHeaderProps)
         <View className="flex-row items-center gap-inline-sm">{trailing}</View>
       )}
     </View>
+  )
+}
+
+/** Props for {@link StatCardFigure}. */
+export interface StatCardFigureProps {
+  /** The figure as it reads when settled, e.g. `12,480 kg`. */
+  value: string
+  /**
+   * 0..1 from the caller's clock: the first number in `value` counts up from 0 in tabular digits
+   * and lands on `value` exactly at 1. Omitted, or under reduced motion, `value` shows as given.
+   */
+  progress?: number
+  /** Test id on the figure text. */
+  testID?: string
+}
+
+/** A stat card's lead figure in the template's type, trimmed to its glyphs (`leading-none`). */
+export function StatCardFigure({ value, progress, testID }: StatCardFigureProps) {
+  const shown = useCountedText(value, progress)
+  const counts = progress !== undefined
+  return (
+    <Typography
+      variant="h3"
+      className={cn('leading-none', counts && 'tabular-nums')}
+      style={counts ? TABULAR_STYLE : undefined}
+      accessibilityLabel={counts ? value : undefined}
+      testID={testID}
+    >
+      {shown}
+    </Typography>
   )
 }

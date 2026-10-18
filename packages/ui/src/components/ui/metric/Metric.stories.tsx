@@ -27,6 +27,10 @@ const meta: Meta<typeof Metric> = {
       options: [undefined, 'neutral', 'brand', 'success', 'warning', 'error', 'info'],
       description: 'Semantic colour of the value',
     },
+    progress: {
+      control: { type: 'range', min: 0, max: 1, step: 0.01 },
+      description: 'Counts the number in `value` up from 0; unset renders it as given',
+    },
   },
   decorators: [
     (Story) => (
@@ -40,7 +44,7 @@ const meta: Meta<typeof Metric> = {
       description: {
         component:
           '**Molecule**. Composes RN primitives only. `MetricGroup` arranges several with a ' +
-          'divider rule between them. Use the `align`, `tone`, `size` and `trend` controls to switch.',
+          'divider rule between them. Use the `align`, `tone`, `size` and `trend` controls to switch; `progress` counts the value up for a video beat.',
       },
     },
   },

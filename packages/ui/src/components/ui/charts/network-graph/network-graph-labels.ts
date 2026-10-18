@@ -16,11 +16,16 @@ export interface LabelBox {
 const overlaps = (a: LabelBox, b: LabelBox) =>
   a.x < b.x + b.width && b.x < a.x + a.width && a.y < b.y + b.height && b.y < a.y + a.height
 
-/** Right of the mark, centred on it. Width is estimated from the truncated character count, generously. */
+/**
+ * Right of the mark, centred on it, with a width estimated from the truncated character count,
+ * generously. A box node's label sits inside its box.
+ */
 export function labelBox(model: GraphModel, id: string): LabelBox | null {
   const at = model.positions[id]
   const node = model.index.nodesById.get(id)
   if (!at || !node) return null
+  const box = model.nodeBoxes[id]
+  if (box) return { ...box }
   const chars = Math.min(displayLabel(node).length, LABEL_MAX_CHARS)
   return {
     x: at.x + GRAPH_NODE_RADIUS + LABEL_GAP,
@@ -69,7 +74,10 @@ export function placeLabels(
     (a, b) =>
       Number(pinned.has(b)) - Number(pinned.has(a)) || degree(b) - degree(a) || compareText(a, b)
   )
-  const marks = ids.map((id) => ({ id, box: markBox(model.positions[id] as GraphPoint) }))
+  const marks = ids.map((id) => ({
+    id,
+    box: model.nodeBoxes[id] ?? markBox(model.positions[id] as GraphPoint),
+  }))
   const kept = new Map<string, LabelBox>()
   for (const id of ranked) {
     const box = labelBox(model, id) as LabelBox
