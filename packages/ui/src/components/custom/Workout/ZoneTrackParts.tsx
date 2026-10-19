@@ -113,7 +113,7 @@ function ZoneTrackFill({
           }}
         />
       )}
-      {marker?.type === 'fill' && marker.color != null && (
+      {marker?.type === 'fill' && (
         <View
           testID="zone-track-fill"
           style={{

@@ -54,12 +54,17 @@ export const ZONE_SIZES: Record<ZoneTrackSize, ZoneTrackSizing> = {
   },
 }
 
-/** A single colour band of the zone gradient, spanning `[prev.upTo, upTo]` of the domain. */
+/** A single colour band of the zone track, spanning `[prev.upTo, upTo]` of the domain. */
 export interface ZoneTrackZone {
   /** Upper bound of this band in domain units. The last band's `upTo` should reach `max`. */
   upTo: number
   /** Band fill colour — a literal hex (RNW-safe), sourced from a ramp/effort-scale token. */
   color: string
+  /**
+   * The colour this band takes while the marker sits in another band — the zone highlight:
+   * only the zone the reading lands in keeps `color`. Omit to keep `color` throughout.
+   */
+  faded?: string
 }
 
 /**
@@ -83,12 +88,11 @@ export interface ZoneTrackTick {
 /**
  * The value marker sitting on the track.
  * - `needle`: a vertical line at `value`, overhanging the track (FatigueMeter / TrainingLoadGauge).
- * - `fill`: a left-anchored fill from `min` to `value`. Omit `color` to clip-reveal the zone
- *   gradient up to `value`; supply `color` for a solid trend-coloured fill (FatigueGauge-style).
+ * - `fill`: a solid trend-coloured fill from `min` to `value` (FatigueGauge-style).
  */
 export type ZoneTrackMarker =
   | { type: 'needle'; value: number; color?: string; glow?: boolean }
-  | { type: 'fill'; value: number; color?: string; glow?: boolean }
+  | { type: 'fill'; value: number; color: string; glow?: boolean }
 
 /** An optional translucent range highlight (e.g. RpeCalibration's predicted CI band). */
 export interface ZoneTrackBand {
@@ -122,16 +126,25 @@ export function pct(frac: number): DimensionValue {
 }
 
 /** Each zone's colour and its clamped domain span, used as the band's flex weight. */
+/** The band the reading lands in: the first whose `upTo` reaches it, else the last. */
+export function litZoneIndex(zones: ZoneTrackZone[], value: number): number {
+  const index = zones.findIndex((zone) => value <= zone.upTo)
+  return index === -1 ? zones.length - 1 : index
+}
+
 export function zoneBands(
   zones: ZoneTrackZone[],
   min: number,
-  max: number
+  max: number,
+  value?: number
 ): Array<{ color: string; weight: number }> {
+  const lit = value == null ? -1 : litZoneIndex(zones, value)
   return zones.map((zone, i) => {
     const prev = i === 0 ? min : zones[i - 1].upTo
     const start = Math.max(min, Math.min(max, prev))
     const end = Math.max(min, Math.min(max, zone.upTo))
-    return { color: zone.color, weight: Math.max(0, end - start) }
+    const color = lit === -1 || i === lit ? zone.color : (zone.faded ?? zone.color)
+    return { color, weight: Math.max(0, end - start) }
   })
 }
 
