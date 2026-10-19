@@ -1095,9 +1095,6 @@
   "custom-workout-dataviz-zonetrack--colored-tooltip-ticks light": {
     "#ff7900|#edeae7": 1
   },
-  "custom-workout-dataviz-zonetrack--gradient-fill dark": {
-    "#888684|#252321": 5
-  },
   "custom-workout-dataviz-zonetrack--needle dark": {
     "#888684|#252321": 5
   },

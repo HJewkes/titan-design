@@ -9,7 +9,7 @@
     ]
   },
   "ceiling": {
-    "text-floor": 1734
+    "text-floor": 1733
   },
   "kinds": {
     "text-floor": {
@@ -703,9 +703,6 @@
         "[data-testid=\"zone-track-tick-label\"]"
       ],
       "custom-workout-dataviz-zonetrack--colored-tooltip-ticks": [
-        "[data-testid=\"zone-track-tick-label\"]"
-      ],
-      "custom-workout-dataviz-zonetrack--gradient-fill": [
         "[data-testid=\"zone-track-tick-label\"]"
       ],
       "custom-workout-dataviz-zonetrack--needle": [
