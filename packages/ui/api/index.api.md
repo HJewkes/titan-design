@@ -1560,6 +1560,8 @@ export const darkThemeCSSVars: {
     readonly '--color-scrim-press-strong': "rgba(0, 0, 0, 0.20)";
     readonly '--color-scrim-subtle': "rgba(0, 0, 0, 0.30)";
     readonly '--color-scrim-default': "rgba(0, 0, 0, 0.50)";
+    readonly '--color-scrim-strong': "rgba(0, 0, 0, 0.78)";
+    readonly '--color-on-scrim': "#FFFFFF";
     readonly '--color-control-face-disabled': "rgba(255, 255, 255, 0.12)";
     readonly '--color-on-control-idle': "#D1D1D1";
     readonly '--color-on-control-active': "#FFFFFF";
@@ -2330,6 +2332,8 @@ export function getSemanticColors(mode: ThemeMode): {
     readonly 'scrim-press-strong': "rgba(0, 0, 0, 0.20)";
     readonly 'scrim-subtle': "rgba(0, 0, 0, 0.30)";
     readonly 'scrim-default': "rgba(0, 0, 0, 0.50)";
+    readonly 'scrim-strong': "rgba(0, 0, 0, 0.78)";
+    readonly 'on-scrim': "#FFFFFF";
     readonly 'control-face-disabled': "rgba(0, 0, 0, 0.06)";
     readonly 'on-control-idle': "#5A5958";
     readonly 'on-control-active': "#1C1916";
@@ -2487,6 +2491,8 @@ export function getSemanticColors(mode: ThemeMode): {
     readonly 'scrim-press-strong': "rgba(0, 0, 0, 0.20)";
     readonly 'scrim-subtle': "rgba(0, 0, 0, 0.30)";
     readonly 'scrim-default': "rgba(0, 0, 0, 0.50)";
+    readonly 'scrim-strong': "rgba(0, 0, 0, 0.78)";
+    readonly 'on-scrim': "#FFFFFF";
     readonly 'control-face-disabled': "rgba(255, 255, 255, 0.12)";
     readonly 'on-control-idle': "#D1D1D1";
     readonly 'on-control-active': "#FFFFFF";
@@ -2673,6 +2679,8 @@ export function getThemeCSSVars(mode: ThemeMode): {
     readonly '--color-scrim-press-strong': "rgba(0, 0, 0, 0.20)";
     readonly '--color-scrim-subtle': "rgba(0, 0, 0, 0.30)";
     readonly '--color-scrim-default': "rgba(0, 0, 0, 0.50)";
+    readonly '--color-scrim-strong': "rgba(0, 0, 0, 0.78)";
+    readonly '--color-on-scrim': "#FFFFFF";
     readonly '--color-control-face-disabled': "rgba(0, 0, 0, 0.06)";
     readonly '--color-on-control-idle': "#5A5958";
     readonly '--color-on-control-active': "#1C1916";
@@ -2849,6 +2857,8 @@ export function getThemeCSSVars(mode: ThemeMode): {
     readonly '--color-scrim-press-strong': "rgba(0, 0, 0, 0.20)";
     readonly '--color-scrim-subtle': "rgba(0, 0, 0, 0.30)";
     readonly '--color-scrim-default': "rgba(0, 0, 0, 0.50)";
+    readonly '--color-scrim-strong': "rgba(0, 0, 0, 0.78)";
+    readonly '--color-on-scrim': "#FFFFFF";
     readonly '--color-control-face-disabled': "rgba(255, 255, 255, 0.12)";
     readonly '--color-on-control-idle': "#D1D1D1";
     readonly '--color-on-control-active': "#FFFFFF";
@@ -3643,6 +3653,8 @@ export const lightThemeCSSVars: {
     readonly '--color-scrim-press-strong': "rgba(0, 0, 0, 0.20)";
     readonly '--color-scrim-subtle': "rgba(0, 0, 0, 0.30)";
     readonly '--color-scrim-default': "rgba(0, 0, 0, 0.50)";
+    readonly '--color-scrim-strong': "rgba(0, 0, 0, 0.78)";
+    readonly '--color-on-scrim': "#FFFFFF";
     readonly '--color-control-face-disabled': "rgba(0, 0, 0, 0.06)";
     readonly '--color-on-control-idle': "#5A5958";
     readonly '--color-on-control-active': "#1C1916";
@@ -5368,6 +5380,8 @@ export const semanticColorsDark: {
     readonly 'scrim-press-strong': "rgba(0, 0, 0, 0.20)";
     readonly 'scrim-subtle': "rgba(0, 0, 0, 0.30)";
     readonly 'scrim-default': "rgba(0, 0, 0, 0.50)";
+    readonly 'scrim-strong': "rgba(0, 0, 0, 0.78)";
+    readonly 'on-scrim': "#FFFFFF";
     readonly 'control-face-disabled': "rgba(255, 255, 255, 0.12)";
     readonly 'on-control-idle': "#D1D1D1";
     readonly 'on-control-active': "#FFFFFF";
@@ -5528,6 +5542,8 @@ export const semanticColorsLight: {
     readonly 'scrim-press-strong': "rgba(0, 0, 0, 0.20)";
     readonly 'scrim-subtle': "rgba(0, 0, 0, 0.30)";
     readonly 'scrim-default': "rgba(0, 0, 0, 0.50)";
+    readonly 'scrim-strong': "rgba(0, 0, 0, 0.78)";
+    readonly 'on-scrim': "#FFFFFF";
     readonly 'control-face-disabled': "rgba(0, 0, 0, 0.06)";
     readonly 'on-control-idle': "#5A5958";
     readonly 'on-control-active': "#1C1916";
