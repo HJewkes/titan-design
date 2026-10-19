@@ -5,8 +5,8 @@
  * each width in dark and light, writes dom.json and one PNG per frame under TMPDIR, prints at
  * most 30 lines, and stops the server it started by process group.
  *
- * Exit codes: 0 clean, 1 blockers remain (or no story is touched), 2 a story failed to render,
- * 70 an unexpected error,
+ * Exit codes: 0 clean, 1 blockers remain (including a text-floor finding outside the ratchet
+ * baseline) or no story is touched, 2 a story failed to render, 70 an unexpected error,
  * 64 usage, targeting refusal or start failure, 130 interrupted.
  */
 import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs'
@@ -20,6 +20,7 @@ import {
   planJobs,
   summarise,
 } from './audit-stories/capture.mjs'
+import { applyRatchet, loadBaseline } from './audit-stories/ratchet.mjs'
 import { attachStorybook, startStorybook, stopOnSignals } from './audit-stories/storybook.mjs'
 import {
   REPO_ROOT,
@@ -43,7 +44,8 @@ export const USAGE = `Usage: pnpm audit:stories [--base <ref>] [--stories <id,..
 
 Audits the stories touched by the diff against --base (default origin/main).
 --touch adds the 320 width and checks 44px hit targets. Output goes under TMPDIR.
-Exit: 0 clean, 1 blockers or no story touched, 2 render error, 64 usage or start failure,
+Exit: 0 clean, 1 blockers (including a text-floor finding outside the ratchet baseline)
+      or no story touched, 2 render error, 64 usage or start failure,
       70 unexpected error, 130 interrupted (SIGINT, SIGTERM or SIGHUP).`
 
 /** A bad flag or output location; the command exits 64. */
@@ -191,15 +193,17 @@ function writeDom(outDir, entries) {
 }
 
 async function audit(options, { outDir, changed, started }) {
+  const baseline = loadBaseline()
   const server = await openServer(options, changed)
   try {
     const stories = targetStories(options, changed, server.index)
     const jobs = planJobs({ ...options, stories, outDir })
-    const entries = await captureAll({ url: server.url, uiDir: UI_DIR, jobs })
+    const captured = await captureAll({ url: server.url, uiDir: UI_DIR, jobs })
+    const { entries, report } = applyRatchet(captured, baseline)
     const domFile = writeDom(outDir, entries)
     const seconds = ((Date.now() - started) / 1000).toFixed(0)
     const owner = server.pid ? `storybook pid ${server.pid}` : `storybook at ${server.url}`
-    console.log(summarise(entries, MAX_SUMMARY_LINES - 1))
+    console.log(summarise(entries, MAX_SUMMARY_LINES - 1, report))
     console.log(`${stories.length} stories in ${seconds}s, ${owner}; dom.json at ${domFile}`)
     return exitCodeFor(entries)
   } finally {

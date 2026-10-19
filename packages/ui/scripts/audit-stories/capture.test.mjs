@@ -6,6 +6,7 @@ import { USAGE, UsageError, parseOptions, resolveOutDir } from '../audit-stories
 import {
   MAX_SUMMARY_LINES,
   addFontSizeDrift,
+  captureContext,
   exitCodeFor,
   exitCodeForError,
   loadAxeSource,
@@ -112,6 +113,27 @@ describe('summarise line cap', () => {
 
   it('leaves the command one line for the dom.json path', () => {
     expect(summarise(many(100), MAX_SUMMARY_LINES - 1).split('\n')).toHaveLength(29)
+  })
+
+  it('keeps a ratchet failure and the ratchet line inside 30 lines among 100 blockers', () => {
+    const ratcheted = { ...blocker('text-floor', 'span.tiny', '8px text'), ratchet: 'new' }
+    const entries = [...many(100), frame({ id: 'other--default', blockers: [ratcheted] })]
+    const report = [
+      {
+        kind: 'text-floor',
+        added: ['other--default span.tiny'],
+        baselined: 0,
+        stale: [],
+        unbaselinedFrames: 0,
+      },
+    ]
+
+    const lines = summarise(entries, MAX_SUMMARY_LINES, report).split('\n')
+
+    expect(lines).toHaveLength(30)
+    expect(lines[0]).toMatch(/^BLOCKER text-floor other--default /)
+    expect(lines[28]).toMatch(/^ratchet text-floor: 1 new \(fail\)/)
+    expect(lines[29]).toMatch(/^2 frames audited/)
   })
 })
 
@@ -322,6 +344,16 @@ describe('the output directory', () => {
 
   it('accepts an --out outside the repo, including a sibling that shares its prefix', () => {
     expect(resolveOutDir({ ...where, out: '/repo-shots' })).toBe('/repo-shots')
+  })
+})
+
+describe('the shared capture context', () => {
+  it('reads the spacing config and the mono family once for every frame', () => {
+    const ctx = captureContext({ url: 'http://127.0.0.1:6100', uiDir, scale: 2 })
+
+    expect(ctx).toMatchObject({ url: 'http://127.0.0.1:6100', scale: 2 })
+    expect(ctx.spacingConfig.vars.length).toBeGreaterThan(0)
+    expect(ctx.fonts.mono).toEqual(expect.any(String))
   })
 })
 

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { reelCells, valueAt } from './animated-number-model'
+import { countText, reelCells, valueAt } from './animated-number-model'
 
 const digits = (text: string, current: number, settled: boolean) =>
   reelCells(text, current, settled).map((cell) => (cell.kind === 'digit' ? cell.digit : cell.glyph))
@@ -48,5 +48,27 @@ describe('reelCells', () => {
   it('wraps 9 to 0 on the wheel', () => {
     const ones = reelCells('10', 9.5, false)[1]
     expect(ones).toMatchObject({ digit: 9, next: 0 })
+  })
+})
+
+describe('countText', () => {
+  it('returns the final text itself at progress 1', () => {
+    expect(countText('$2,400.50 saved', 1)).toBe('$2,400.50 saved')
+  })
+
+  it('counts the first number and keeps its grouping, decimals and the text around it', () => {
+    expect(countText('$2,400.50 saved', 0.5)).toBe('$1,800.38 saved')
+  })
+
+  it('does not add grouping the final text lacks', () => {
+    expect(countText('2400', 0.5)).toBe('1800')
+  })
+
+  it('starts from `from` at progress 0', () => {
+    expect(countText('80.0', 0, 20)).toBe('20.0')
+  })
+
+  it('leaves text with no number unchanged', () => {
+    expect(countText('n/a', 0.3)).toBe('n/a')
   })
 })

@@ -15,7 +15,14 @@ import {
 } from './network-graph-plot-model'
 import { displayLabel } from './network-graph-text'
 import { DIM_OPACITY } from './NetworkGraphPlot'
-import type { GraphEdgeKind, GraphItemRef, GraphKind, GraphNode, GraphPoint } from './types'
+import type {
+  GraphBox,
+  GraphEdgeKind,
+  GraphItemRef,
+  GraphKind,
+  GraphNode,
+  GraphPoint,
+} from './types'
 
 /** Height of a node's press target; rows of the layered layout are 30 px apart. */
 const NODE_TARGET_HEIGHT = 24
@@ -24,6 +31,8 @@ const NODE_TARGET_INSET = 2
 interface NodeButtonProps {
   node: GraphNode
   point: GraphPoint
+  /** A box node's rectangle: the press target covers it and the label is centred in it. */
+  box?: GraphBox
   domId: string | undefined
   name: string | undefined
   isSelected: boolean
@@ -36,9 +45,19 @@ interface NodeButtonProps {
   onHoverOut: () => void
 }
 
+/** Where a node's press target sits: beside a dot, or over the whole of a box. */
+function targetStyle(point: GraphPoint, box: GraphBox | undefined) {
+  if (box) return { left: box.x, top: box.y, width: box.width, height: box.height }
+  return {
+    left: point.x - NODE_RADIUS - NODE_TARGET_INSET,
+    top: point.y - NODE_TARGET_HEIGHT / 2,
+    height: NODE_TARGET_HEIGHT,
+  }
+}
+
 /** A node's press target and visible label, over the mark the plot paints. */
 export const NodeButton = memo(function NodeButton(props: NodeButtonProps) {
-  const { node, point, domId, name, isSelected, isDimmed, isLabelHidden, describedBy } = props
+  const { node, point, box, domId, name, isSelected, isDimmed, isLabelHidden, describedBy } = props
   const { onPress, onHoverIn, onHoverOut } = props
   const item: GraphItemRef = { type: 'node', id: node.id }
   const webProps = {
@@ -54,13 +73,12 @@ export const NodeButton = memo(function NodeButton(props: NodeButtonProps) {
       aria-label={name}
       tabIndex={-1}
       onPress={() => onPress(item)}
-      className="absolute flex-row items-center pl-5"
-      style={{
-        left: point.x - NODE_RADIUS - NODE_TARGET_INSET,
-        top: point.y - NODE_TARGET_HEIGHT / 2,
-        height: NODE_TARGET_HEIGHT,
-        opacity: isDimmed ? DIM_OPACITY : 1,
-      }}
+      className={
+        box
+          ? 'absolute items-center justify-center px-inset-sm'
+          : 'absolute flex-row items-center pl-5'
+      }
+      style={{ ...targetStyle(point, box), opacity: isDimmed ? DIM_OPACITY : 1 }}
       testID={`network-graph-node-${node.id}`}
       {...qaAttrs({ context: isDimmed })}
       {...webProps}
@@ -103,21 +121,26 @@ export function DefaultNodeTip({ node, kind, groupLabels = [] }: DefaultNodeTipP
   )
 }
 
-/** One Tooltip for the whole graph, anchored on the active node's mark. */
+/** One Tooltip for the whole graph, anchored on the active node's mark: its dot, or its whole box. */
 export function NodeTip({
   id,
   point,
+  box,
   children,
 }: {
   id: string
   point: GraphPoint
+  box?: GraphBox
   children: ReactNode
 }) {
+  const anchor = box ?? {
+    x: point.x - NODE_RADIUS,
+    y: point.y - NODE_RADIUS,
+    width: NODE_RADIUS * 2,
+    height: NODE_RADIUS * 2,
+  }
   return (
-    <View
-      className="pointer-events-none absolute"
-      style={{ left: point.x - NODE_RADIUS, top: point.y - NODE_RADIUS }}
-    >
+    <View className="pointer-events-none absolute" style={{ left: anchor.x, top: anchor.y }}>
       <Tooltip
         isOpen
         usePortal
@@ -128,7 +151,7 @@ export function NodeTip({
           </View>
         }
       >
-        <View style={{ width: NODE_RADIUS * 2, height: NODE_RADIUS * 2 }} />
+        <View style={{ width: anchor.width, height: anchor.height }} />
       </Tooltip>
     </View>
   )

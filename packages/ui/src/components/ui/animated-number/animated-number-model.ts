@@ -13,6 +13,27 @@ export function valueAt(progress: number, from: number, value: number): number {
   return interpolate(progress, [0, 1], [from, value], { ease: countEase })
 }
 
+// The first number in a display string: an optional sign, digits with `,` grouping, an optional fraction.
+const NUMBER_RUN = /-?\d[\d,]*(?:\.\d+)?/
+
+/**
+ * `finalText` with its first number counted from `from` at `progress`, keeping that number's
+ * decimals and grouping and the text around it. At 1 or beyond it is `finalText` itself.
+ */
+export function countText(finalText: string, progress: number, from = 0): string {
+  const match = progress >= 1 ? null : NUMBER_RUN.exec(finalText)
+  if (!match) return finalText
+  const run = match[0]
+  const decimals = run.split('.')[1]?.length ?? 0
+  const current = valueAt(progress, from, Number(run.replace(/,/g, '')))
+  const counted = current.toLocaleString('en-US', {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
+    useGrouping: run.includes(','),
+  })
+  return finalText.slice(0, match.index) + counted + finalText.slice(match.index + run.length)
+}
+
 /** One cell of the reel: a digit column keyed by place value, or a fixed glyph such as `,` or `.`. */
 export type ReelCell =
   | { kind: 'digit'; key: string; digit: number; next: number; offset: number }

@@ -6,16 +6,18 @@ root `package.json`, `turbo.json`, `packages/ui/package.json`, `packages/ui/vite
 
 ## CI jobs
 
-`ci.yml` runs on every pull request and on pushes to `main`.
+`ci.yml` runs on every pull request, on pushes to `main` and nightly on `main`. Runs share one
+concurrency group per ref: a PR run cancels its predecessor; on `main` a running run finishes, and a
+newer push replaces a run still queued, so a burst of merges tests the tip once.
 
-| Job        | Runs on                                                                            | What it runs                                                                                                                                              |
-| ---------- | ---------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `build`    | Node 22 (single-entry matrix)                                                      | Install, then the steps below                                                                                                                             |
-| `visual`   | Playwright container, Node 22                                                      | Layer 3 parity, offline fonts, Layer 1 and 2 baselines, interaction                                                                                       |
-| `contrast` | Playwright container, Node 22; a three-shard matrix (`contrast 1/3` to `3/3`)      | axe `color-contrast` on every story in both themes (`test:visual:contrast --shard=i/3`), path-gated; each shard uploads `contrast-report-<i>` (see below) |
-| `check`    | Playwright container, Node 22; always runs; needs `build`, `visual` and `contrast` | all-green over `needs`, then audit, stories axe and play functions (see below)                                                                            |
+| Job        | Runs on                                                                            | What it runs                                                                                                                                               |
+| ---------- | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `build`    | Node 22 (single-entry matrix)                                                      | Install, then the steps below                                                                                                                              |
+| `visual`   | Playwright container, Node 22                                                      | Layer 3 parity, offline fonts, Layer 1 and 2 baselines, interaction                                                                                        |
+| `contrast` | Playwright container, Node 22; a three-shard matrix (`contrast 1/3` to `3/3`)      | axe `color-contrast` in both themes: on a PR the stories its diff reaches, on `main` every story (`--shard=i/3`); each shard uploads `contrast-report-<i>` |
+| `check`    | Playwright container, Node 22; always runs; needs `build`, `visual` and `contrast` | all-green over `needs`, then audit, stories axe and play functions (see below)                                                                             |
 
-`react-next.yml` is a separate, advisory workflow on the same triggers. It is not in `check.needs` and
+`react-next.yml` is a separate, advisory workflow on pushes to `main`, nightly and manual dispatch, never on a PR. It is not in `check.needs` and
 is never a required check, so it never blocks a merge. Advisory: green check, result in the summary and a warning annotation (the test step is `continue-on-error`, then a summary table of passed/failed tests and files plus the step outcome. The `::warning::` fires whenever the unit step failed, keyed on its outcome rather than the JSON counts, so type-check errors and files that fail to load are never silent).
 
 | Job                | Runs on | What it runs                                                                                                                                                                                          |
@@ -69,12 +71,23 @@ Each story renders under the paused clock, the clock runs forward 5 s so animati
 switch settle, and axe samples at that frozen instant. Stories tagged `play` are left out (their play
 function drives the render in real time); a blank render is recorded and skipped. The baseline may
 only shrink: a pair or count above it fails, and a pair or count that no longer occurs fails as stale.
-It is path-gated like `visual`, and `check` needs it (all-green requires every job in the workflow to
-be in `check.needs`), so it gates merges through `check`.
+`check` needs it (all-green requires every job in the workflow to be in `check.needs`), so it gates
+merges through `check`.
+
+On a pull request each shard first runs `packages/ui/scripts/contrast-stories.mjs`, which picks the
+story files the diff reaches: changed story files and story files importing a changed module, through
+any number of imports. It also picks the stories whose entries in the baseline or blank list the PR
+edits, read against the PR base through the contents API. A subset runs whole on shard 1, and
+shards 2 and 3 end green without running. With nothing selected every shard ends green. These select
+the full three-shard run instead: a change under `src/theme/` (other than tests and stories), to
+`.storybook/`, the Tailwind, PostCSS, Vite or Playwright config, the contrast harness, the selector,
+the manifests or lockfile, or `ci.yml`; a module the Storybook preview imports; more than a third of
+the story files; and any API error. Pushes to `main` and the nightly run always check every story,
+so a regression in a story the diff cannot reach shows there.
 
 Each shard uploads its report (`contrast-report-<i>`, one JSON line per story-theme) whether it
 passed or failed. Local Chromium can disagree with the container's, so regenerate the committed
-baseline from those artifacts: download the three files and run
+baseline from those artifacts: download the files (three on `main`, one on a PR subset) and run
 `node packages/ui/scripts/update-contrast-stories-baseline.mjs <files> --allow-increase`.
 `pnpm contrast:baseline` with no files runs the suite locally first. Without `--allow-increase` the
 script refuses to add an entry or raise a count.
@@ -94,9 +107,9 @@ failed, was cancelled or is missing from `needs`, and every later step then skip
 
 ### Path gate
 
-On a pull request, `visual`, `contrast` and `check` each run `packages/ui/scripts/visual-paths.mjs`.
-When none of the PR's changed paths matches `RENDERED_UI_PATTERNS`, `visual` skips its layers, the
-`contrast` shards skip the suite and `check` skips stories axe and play; all still report green. If the changed paths cannot be listed, everything runs.
+On a pull request, `visual` and `check` each run `packages/ui/scripts/visual-paths.mjs` (`contrast`
+has its own selector, above). When none of the PR's changed paths matches `RENDERED_UI_PATTERNS`,
+`visual` skips its layers and `check` skips stories axe and play; both still report green. If the changed paths cannot be listed, everything runs.
 A push to `main` always runs everything. A new input to any gated step needs a pattern there.
 
 ## Argument passthrough
