@@ -4036,6 +4036,7 @@
         "custom-workout-dataviz-bodymap--front",
         "custom-workout-dataviz-bodymap--highlighted",
         "custom-workout-dataviz-bodymap--interactive",
+        "custom-workout-dataviz-bodymap--no-verdict",
         "custom-workout-dataviz-bodymap--simple",
         "custom-workout-dataviz-bodymap--wall"
       ],
@@ -4154,7 +4155,7 @@
           "description": "Weekly-volume status relative to the landmarks.",
           "name": "volumeStatus",
           "required": true,
-          "type": "VolumeStatus"
+          "type": "\"untrained\" | \"noverdict\" | \"behind\" | \"ontrack\" | \"target\" | \"approaching\" | \"over\""
         },
         {
           "default": null,
@@ -7133,7 +7134,7 @@
           "description": "",
           "name": "volumeStatus",
           "required": false,
-          "type": "VolumeStatus"
+          "type": "\"untrained\" | \"noverdict\" | \"behind\" | \"ontrack\" | \"target\" | \"approaching\" | \"over\""
         }
       ],
       "purpose": "MuscleGroupChip — a `Pill` preset that labels a muscle group with a volume-status dot.",
@@ -7148,6 +7149,7 @@
         "custom-workout-musclegroupchip--behind",
         "custom-workout-musclegroupchip--default",
         "custom-workout-musclegroupchip--muscle-groups",
+        "custom-workout-musclegroupchip--no-verdict",
         "custom-workout-musclegroupchip--on-track",
         "custom-workout-musclegroupchip--over",
         "custom-workout-musclegroupchip--tappable",
@@ -7196,6 +7198,7 @@
       "storyIds": [
         "custom-workout-musclestrip--default",
         "custom-workout-musclestrip--empty-untrained",
+        "custom-workout-musclestrip--no-verdict",
         "custom-workout-musclestrip--one-of-each-status",
         "custom-workout-musclestrip--phone",
         "custom-workout-musclestrip--wall"
