@@ -1506,19 +1506,12 @@
       "family": "ui/chip-group",
       "exports": [
         "ChipGroup",
-        "ChipGroupItem",
-        "ChipGroupOverflow",
-        "ChipGroupProps",
-        "accessibleName",
         "ChipGroup.select",
         "ChipGroup.handleKeyDown",
         "GroupFrame",
-        "ScrollRow",
-        "GroupChip",
-        "ChipGroupSkeleton",
         "withoutGroupProps"
       ],
-      "libDependents": 1,
+      "libDependents": 0,
       "storyRefs": 1,
       "xproj": {
         "mobile": 0,
@@ -1528,19 +1521,18 @@
         "total": 0
       },
       "dependsOn": [
-        "Chip",
-        "Skeleton"
+        "ChipGroupParts"
       ],
       "leak": {
-        "rawView": 4,
-        "rawText": 1,
+        "rawView": 1,
+        "rawText": 0,
         "inlineStyle": 0,
         "rawHex": 0,
-        "loc": 270,
-        "score": 5
+        "loc": 137,
+        "score": 1
       },
       "tier": "organism",
-      "verdict": "keep-internal",
+      "verdict": "dead",
       "deadByAssociation": false,
       "audited": "unaudited",
       "standard": false

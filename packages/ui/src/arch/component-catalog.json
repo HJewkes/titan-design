@@ -13435,8 +13435,7 @@
     },
     {
       "composes": [
-        "Chip",
-        "Skeleton"
+        "ChipGroupParts"
       ],
       "family": "ui/chip-group",
       "file": "packages/ui/src/components/ui/chip-group/ChipGroup.tsx",
@@ -13444,7 +13443,7 @@
       "props": [
         {
           "default": null,
-          "description": "",
+          "description": "Additional className on the group.",
           "name": "className",
           "required": false,
           "type": "string"
@@ -13465,14 +13464,14 @@
         },
         {
           "default": null,
-          "description": "",
+          "description": "Formats a count for display.",
           "name": "formatCount",
           "required": false,
           "type": "((count: number) => string)"
         },
         {
           "default": null,
-          "description": "",
+          "description": "Disables every chip.",
           "name": "isDisabled",
           "required": false,
           "type": "boolean"
@@ -13486,7 +13485,7 @@
         },
         {
           "default": null,
-          "description": "",
+          "description": "The choices, in order.",
           "name": "items",
           "required": true,
           "type": "readonly ChipGroupItem<T>[]"
@@ -13500,7 +13499,7 @@
         },
         {
           "default": null,
-          "description": "",
+          "description": "Called with the newly selected value; never called for the chip already selected.",
           "name": "onValueChange",
           "required": false,
           "type": "((value: T) => void)"
@@ -13514,14 +13513,14 @@
         },
         {
           "default": null,
-          "description": "",
+          "description": "Chip size.",
           "name": "size",
           "required": false,
           "type": "ChipSize"
         },
         {
           "default": null,
-          "description": "",
+          "description": "Controlled selected value.",
           "name": "value",
           "required": false,
           "type": "string"
