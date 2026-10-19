@@ -2,6 +2,7 @@ import type { Preview } from '@storybook/react-vite'
 import { withThemeByClassName } from '@storybook/addon-themes'
 import React from 'react'
 import '../src/theme/global.css'
+import { withStoryCanvas } from './withStoryCanvas'
 import { withSurfaceTheme } from './withSurfaceTheme'
 import { withWidthMatrix } from './withWidthMatrix'
 
@@ -76,6 +77,8 @@ const preview: Preview = {
       defaultTheme: 'dark',
       parentSelector: 'html', // Apply class to html element
     }),
+    // Later decorators wrap earlier ones: the canvas must sit inside withSurfaceTheme's provider.
+    withStoryCanvas,
     withSurfaceTheme,
     withWidthMatrix,
     (Story) => (
