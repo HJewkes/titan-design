@@ -24,9 +24,12 @@ import {
   type ShelfItemWidth,
 } from './shelfMath'
 
+/** When the nudge arrows show: on wide overflowing columns, on any overflowing column, or never. */
 export type ShelfNudge = 'auto' | 'always' | 'never'
+/** How far the row runs into the page gutter, by `gutter` token. */
 export type ShelfBleed = 'none' | 'sm' | 'md'
 
+/** Props for {@link Shelf}. */
 export interface ShelfProps extends ViewProps {
   /** Accessible name of the row, usually the heading above it ("Yesterday"). */
   label: string
@@ -48,6 +51,7 @@ export interface ShelfProps extends ViewProps {
   nudge?: ShelfNudge
   /** The narrowest column `nudge="auto"` shows the arrows on. */
   nudgeFrom?: ShelfBreakpoint
+  /** Tailwind classes for the row's outer view. */
   className?: string
   /** One element per item. Nothing renders when there are none. */
   children?: React.ReactNode

@@ -1,5 +1,6 @@
 import { primitiveBreakpoints } from '../../../theme/tokens/primitives'
 
+/** A key of `primitiveBreakpoints`, the scale `itemWidth` maps and `nudgeFrom` read. */
 export type ShelfBreakpoint = keyof typeof primitiveBreakpoints
 
 /** One width for every column, or a width per breakpoint of the shelf's own column. */
