@@ -18,13 +18,13 @@
     "complexity": 19
   },
   "components/custom/Workout/BodyMap.tsx": {
-    "file-lines": 306
+    "file-lines": 308
   },
   "components/custom/Workout/BodyMap.tsx#BodyMap": {
     "function-lines": 104
   },
   "components/custom/Workout/BodyMapDetailPanel.tsx": {
-    "file-lines": 521
+    "file-lines": 522
   },
   "components/custom/Workout/BodyMapDetailPanel.tsx#BodyMapDetailPanel": {
     "complexity": 21,
@@ -115,7 +115,7 @@
     "function-lines": 361
   },
   "components/custom/Workout/TrainingStatusPage.tsx": {
-    "file-lines": 268
+    "file-lines": 272
   },
   "components/custom/Workout/VelocityBandOverlay.tsx": {
     "file-lines": 252

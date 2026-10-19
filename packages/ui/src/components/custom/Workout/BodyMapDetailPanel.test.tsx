@@ -9,7 +9,7 @@ import {
   type ContributingExercise,
   type UpcomingExercise,
 } from './BodyMapDetailPanel'
-import { MuscleGroup } from './muscleTaxonomy'
+import { MuscleGroup, VOLUME_STATUSES } from './muscleTaxonomy'
 import {
   bilateralStrength,
   emptyPlan,
@@ -220,7 +220,7 @@ describe('BodyMapDetailPanel', () => {
       expect(await axe(container)).toHaveNoViolations()
     })
 
-    it.each(['untrained', 'behind', 'ontrack', 'target', 'approaching', 'over'] as const)(
+    it.each(VOLUME_STATUSES)(
       'has no accessibility violations with volume status %s',
       async (volumeStatus) => {
         const { container } = render(

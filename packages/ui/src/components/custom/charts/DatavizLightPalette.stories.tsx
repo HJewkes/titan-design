@@ -316,7 +316,7 @@ function Measurements({
   )
 }
 
-const STATUS_ORDER: Exclude<VolumeStatus, 'untrained'>[] = [
+const STATUS_ORDER: Exclude<VolumeStatus, 'untrained' | 'noverdict'>[] = [
   'behind',
   'ontrack',
   'target',
