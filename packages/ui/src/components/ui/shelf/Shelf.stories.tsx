@@ -106,7 +106,7 @@ const meta: Meta<StoryArgs> = {
     ),
   ],
   render: ({ count, columnWidth, isLoading, ...props }) => (
-    <View className="px-gutter-sm" style={{ width: columnWidth }}>
+    <View className="px-gutter-sm" style={{ width: '100%', maxWidth: columnWidth }}>
       {count === 0 ? (
         <EmptyState title="Nothing from yesterday" description="New videos land here." />
       ) : (
