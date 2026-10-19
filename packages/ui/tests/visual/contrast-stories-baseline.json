@@ -143,6 +143,9 @@
   "components-molecules-button--primary light": {
     "#ffffff|#da5f00": 1
   },
+  "components-molecules-chipgroup--default light": {
+    "#ffffff|#da5f00": 1
+  },
   "components-molecules-datarow--with-value-class-name light": {
     "#ff7900|#edeae7": 1
   },
