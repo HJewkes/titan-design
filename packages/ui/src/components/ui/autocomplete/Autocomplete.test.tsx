@@ -28,6 +28,14 @@ describe('Autocomplete', () => {
     expect(screen.getByPlaceholderText('Search fruits...')).toBeInTheDocument()
   })
 
+  it('colours the placeholder text-secondary, as Input and Select do', () => {
+    render(<Autocomplete options={defaultOptions} placeholder="Search fruits..." />)
+    const classes = (capturedByNode.get(screen.getByPlaceholderText('Search fruits...')) ?? '')
+      .split(/\s+/)
+    expect(classes).toContain('placeholder:text-text-secondary')
+    expect(classes).not.toContain('placeholder:text-text-tertiary')
+  })
+
   it('renders default placeholder', () => {
     render(<Autocomplete options={defaultOptions} />)
     expect(screen.getByPlaceholderText('Search...')).toBeInTheDocument()

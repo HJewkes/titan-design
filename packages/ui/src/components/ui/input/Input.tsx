@@ -1,8 +1,12 @@
 import React, { forwardRef, useState } from 'react'
 import { TextInput, View, Text, Pressable, type TextInputProps } from 'react-native'
 import { cn } from '../../../utils/cn'
-import { useSurface, type SurfaceContextValue } from '../surface'
-import { insetFieldStyle } from '../surface/insetField'
+import {
+  FIELD_DISABLED_CLASS,
+  insetFieldClassName,
+  useInsetFieldStyle,
+  type FieldState,
+} from '../surface/insetField'
 
 export type InputSize = 'sm' | 'md' | 'lg'
 export type InputVariant = 'outline' | 'filled' | 'underline'
@@ -54,22 +58,15 @@ const multilineSizeStyles: Record<InputSize, string> = {
   lg: 'min-h-[120px] px-4 py-3 text-lg',
 }
 
+// The filled variant is the inset well, shared with Select (`insetFieldClassName`).
 const variantStyles: Record<
-  InputVariant,
+  Exclude<InputVariant, 'filled'>,
   { base: string; focus: string; hover: string; error: string }
 > = {
   outline: {
     base: 'border border-border-input rounded-md bg-transparent',
     hover: 'web:hover:border-border-input-hover',
     focus: 'border-border-input-focus',
-    error: 'border-border-input-error',
-  },
-  // The fill is the inset well (`insetFieldFill` of the enclosing plane, see `fieldWell`);
-  // the focus ring replaces the well while the field is focused.
-  filled: {
-    base: 'border border-transparent rounded-md',
-    hover: 'web:hover:border-border-input-hover',
-    focus: 'border-border-input-focus bg-transparent',
     error: 'border-border-input-error',
   },
   underline: {
@@ -80,13 +77,18 @@ const variantStyles: Record<
   },
 }
 
-/**
- * The inset well of the filled field (`insetFieldFill` of the enclosing plane), with the
- * inset-well recess. Dropped while focused so the focus border reads alone.
- */
-function fieldWell(variant: InputVariant, isFocused: boolean, surface: SurfaceContextValue) {
-  if (variant !== 'filled' || isFocused) return undefined
-  return insetFieldStyle(surface.level, surface.mode)
+function fieldClassName(variant: InputVariant, state: FieldState) {
+  if (variant === 'filled') return insetFieldClassName(state)
+  const styles = variantStyles[variant]
+  const { isFocused, isInvalid, isDisabled } = state
+  return cn(
+    styles.base,
+    !isDisabled && !isInvalid && styles.hover,
+    // The ring goes on the field box, not the bare text element inside it (TD-765).
+    isFocused && [styles.focus, 'focus-ring'],
+    isInvalid && styles.error,
+    isDisabled && FIELD_DISABLED_CLASS
+  )
 }
 
 /**
@@ -130,7 +132,8 @@ export const Input = forwardRef<TextInput, InputProps>(function Input(
   ref
 ) {
   const [isFocused, setIsFocused] = useState(false)
-  const well = fieldWell(variant, isFocused, useSurface())
+  // The well drops while focused so the focus border reads alone.
+  const well = useInsetFieldStyle(variant === 'filled' && !isFocused)
 
   const handleFocus = (e: TextInputFocusEvent) => {
     setIsFocused(true)
@@ -159,12 +162,7 @@ export const Input = forwardRef<TextInput, InputProps>(function Input(
         className={cn(
           'flex-row transition-colors duration-150',
           multiline ? 'items-start' : 'items-center',
-          variantStyles[variant].base,
-          !isDisabled && !isInvalid && variantStyles[variant].hover,
-          // The ring goes on the field box, not the bare text element inside it (TD-765).
-          isFocused && [variantStyles[variant].focus, 'focus-ring'],
-          isInvalid && variantStyles[variant].error,
-          isDisabled && 'opacity-40 cursor-not-allowed'
+          fieldClassName(variant, { isFocused, isInvalid, isDisabled })
         )}
       >
         {leftElement && <View className={cn('pl-3 pr-1', multiline && 'pt-3')}>{leftElement}</View>}
@@ -179,7 +177,7 @@ export const Input = forwardRef<TextInput, InputProps>(function Input(
           multiline={multiline}
           numberOfLines={multiline ? numberOfLines : 1}
           textAlignVertical={multiline ? 'top' : 'center'}
-          placeholderTextColor="var(--color-text-tertiary)"
+          placeholderTextColor="var(--color-text-secondary)"
           onFocus={handleFocus}
           onBlur={handleBlur}
           className={cn(

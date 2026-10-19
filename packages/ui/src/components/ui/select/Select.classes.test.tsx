@@ -58,9 +58,9 @@ describe('Select classes', () => {
   })
 
   it.each([
-    ['sm', 'h-8'],
-    ['md', 'h-10'],
-    ['lg', 'h-12'],
+    ['sm', 'h-control-sm'],
+    ['md', 'h-control-md'],
+    ['lg', 'h-control-lg'],
   ] as const)('gives size %s the Input control height %s', (size, height) => {
     render(<Select size={size} options={options} />)
     expect(classOf(screen.getByRole('combobox'))).toContain(height)
@@ -70,6 +70,6 @@ describe('Select classes', () => {
     render(<Select options={options} />)
     const classes = classOf(screen.getByRole('combobox'))
     expect(classes).toContain('py-2.5')
-    expect(classes).not.toContain('h-10')
+    expect(classes).not.toContain('h-control-md')
   })
 })

@@ -64,6 +64,15 @@ describe('Input', () => {
     expect(input).toHaveAttribute('readonly')
   })
 
+  it('colours the placeholder text-secondary, as Select does', () => {
+    render(<Input placeholder="Pick a name" />)
+    const input = screen.getByPlaceholderText('Pick a name')
+    // react-native-web carries `placeholderTextColor` as this inline custom property.
+    expect(input.style.getPropertyValue('--placeholderTextColor')).toBe(
+      'var(--color-text-secondary)'
+    )
+  })
+
   describe('filled variant', () => {
     it.each([
       ['dark', 'base'],

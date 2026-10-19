@@ -2,7 +2,12 @@ import { useState, createContext, useContext } from 'react'
 import { View, Text, Pressable, ScrollView, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { CheckMark } from '../../icons'
-import { useInsetFieldStyle } from '../surface/insetField'
+import {
+  FIELD_DISABLED_CLASS,
+  insetFieldClassName,
+  useInsetFieldStyle,
+  type FieldState,
+} from '../surface/insetField'
 import { SelectPopover } from './SelectPopover'
 import { hasSelection, isValueSelected, selectDisplayLabel, toggleValue } from './selectModel'
 
@@ -41,11 +46,11 @@ function useSelectContext<T>() {
 /** Control height of the Select trigger; the same steps as Input's size. */
 export type SelectSize = 'sm' | 'md' | 'lg'
 
-// Same control heights as Input's `sm | md | lg`, so a Select sits level with an Input in a row.
+// Input's control height tokens and padding, so a Select sits level with an Input in a row.
 const sizeStyles: Record<SelectSize, { trigger: string; text: string }> = {
-  sm: { trigger: 'h-8 px-3', text: 'text-sm' },
-  md: { trigger: 'h-10 px-4', text: 'text-base' },
-  lg: { trigger: 'h-12 px-4', text: 'text-lg' },
+  sm: { trigger: 'h-control-sm px-3', text: 'text-sm' },
+  md: { trigger: 'h-control-md px-4', text: 'text-base' },
+  lg: { trigger: 'h-control-lg px-4', text: 'text-lg' },
 }
 
 export interface SelectProps<T = string> extends ViewProps {
@@ -75,29 +80,27 @@ export interface SelectProps<T = string> extends ViewProps {
   className?: string
 }
 
-interface TriggerStyleState {
+interface TriggerStyleState extends FieldState {
   variant: NonNullable<SelectProps['variant']>
   size?: SelectSize
-  isInvalid: boolean
-  isDisabled: boolean
-  isOpen: boolean
 }
 
-function triggerBorderClass({ variant, isInvalid }: TriggerStyleState) {
-  if (isInvalid) return 'border-border-input-error'
-  return variant === 'filled' ? 'border-hairline-subtle' : 'border-border-input'
-}
-
-function triggerClassName(state: TriggerStyleState) {
-  const { variant, size, isInvalid, isDisabled, isOpen } = state
+function defaultTriggerClassName({ isFocused, isInvalid, isDisabled }: FieldState) {
   return cn(
-    'flex-row items-center justify-between rounded-md border',
-    size ? sizeStyles[size].trigger : 'px-4 py-2.5',
-    variant === 'filled' ? undefined : 'bg-surface-base',
-    triggerBorderClass(state),
+    'rounded-md border bg-surface-base',
+    isInvalid ? 'border-border-input-error' : 'border-border-input',
     !isDisabled && !isInvalid && 'web:hover:border-border-input-hover',
-    isOpen && 'border-border-input-focus',
-    isDisabled && 'opacity-50 cursor-not-allowed'
+    isFocused && 'border-border-input-focus',
+    isDisabled && FIELD_DISABLED_CLASS
+  )
+}
+
+// Filled drops its well for the focus border while focused, as Input does.
+function triggerClassName({ variant, size, ...field }: TriggerStyleState) {
+  return cn(
+    'flex-row items-center justify-between',
+    size ? sizeStyles[size].trigger : 'px-4 py-2.5',
+    variant === 'filled' ? insetFieldClassName(field) : defaultTriggerClassName(field)
   )
 }
 
@@ -148,7 +151,10 @@ export function Select<T extends string = string>({
   ...props
 }: SelectProps<T>) {
   const [isOpen, setIsOpen] = useState(false)
-  const well = useInsetFieldStyle(variant === 'filled')
+  const [hasFocus, setHasFocus] = useState(false)
+  // Focused or open, the trigger is the focused field, as an Input is while it holds focus.
+  const isFocused = isOpen || hasFocus
+  const well = useInsetFieldStyle(variant === 'filled' && !isFocused)
 
   const selection = { isMulti, value, values }
 
@@ -180,13 +186,21 @@ export function Select<T extends string = string>({
         {/* Trigger */}
         <Pressable
           onPress={() => !isDisabled && setIsOpen(!isOpen)}
+          onFocus={() => setHasFocus(true)}
+          onBlur={() => setHasFocus(false)}
           disabled={isDisabled}
           accessibilityRole="combobox"
           accessibilityLabel={accessibilityLabel}
           aria-expanded={isOpen}
           accessibilityState={{ expanded: isOpen, disabled: isDisabled }}
           style={well}
-          className={triggerClassName({ variant, size, isInvalid, isDisabled, isOpen })}
+          className={triggerClassName({
+            variant,
+            size,
+            isFocused,
+            isInvalid,
+            isDisabled,
+          })}
         >
           <Text className={labelClassName(size, hasValue)}>{displayValue}</Text>
           <View className="flex-row items-center gap-2">
