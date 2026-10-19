@@ -233,6 +233,9 @@
   "components/ui/charts/dependency-matrix/DependencyMatrix.tsx#MatrixGrid": {
     "props": 18
   },
+  "components/ui/charts/line-chart/LineChart.tsx#LineChart": {
+    "props": 23
+  },
   "components/ui/charts/network-graph/NetworkGraph.tsx#NetworkGraph": {
     "props": 21
   },

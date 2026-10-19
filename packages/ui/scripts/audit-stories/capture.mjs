@@ -5,6 +5,9 @@ import { mkdirSync, readFileSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import { join } from 'node:path'
 import { auditPage, fontSizeDrift, themeGeometryShift } from './checks.mjs'
+import { loadFontConfig } from './font-config.mjs'
+import { ratchetLines } from './ratchet.mjs'
+import { withRules } from './rules.mjs'
 import { loadSpacingConfig } from './spacing-scale.mjs'
 
 export const EXIT_CLEAN = 0
@@ -37,6 +40,17 @@ export function planJobs({ stories, widths, themes, touch = false, outDir }) {
   )
 }
 
+/** What every frame's audit shares, read from the tree once per run. */
+export function captureContext({ url, uiDir, scale }) {
+  return {
+    url,
+    scale,
+    axeSource: loadAxeSource(uiDir),
+    spacingConfig: loadSpacingConfig(uiDir),
+    fonts: loadFontConfig(uiDir),
+  }
+}
+
 /** Returns dom.json frame entries in job order. `launch` replaces the browser in tests. */
 export async function captureAll({
   url,
@@ -46,12 +60,7 @@ export async function captureAll({
   scale = 2,
   launch = () => loadChromium(uiDir).launch(),
 }) {
-  const ctx = {
-    url,
-    scale,
-    axeSource: loadAxeSource(uiDir),
-    spacingConfig: loadSpacingConfig(uiDir),
-  }
+  const ctx = captureContext({ url, uiDir, scale })
   const browser = await launch()
   const results = new Array(jobs.length)
   let next = 0
@@ -68,7 +77,7 @@ export async function captureAll({
   }
   const entries = results.flat()
   addFontSizeDrift(entries)
-  return entries.map(withoutProbeData)
+  return entries.map((e) => withRules(withoutProbeData(e)))
 }
 
 async function captureJob(browser, ctx, job) {
@@ -152,7 +161,8 @@ async function captureTheme(page, ctx, job, theme, errors) {
       entry.shot = await shoot(job, entry, (path) => page.screenshot({ path }))
       return entry
     }
-    const audit = await auditPage(page, { ...ctx, touch: Boolean(job.touch) })
+    const story = { id: job.story.id, title: job.story.title }
+    const audit = await auditPage(page, { ...ctx, story, touch: Boolean(job.touch) })
     const rendered = !errors.some((e) => e.startsWith('pageerror'))
     const blockers = [...renderErrorBlockers(errors), ...audit.blockers]
     const failure = rendered ? {} : { error: errors[0].slice(0, 500) }
@@ -250,9 +260,9 @@ function groupBlockers(entries) {
       groups.get(key).at.add(`${e.width}-${e.theme}`)
     }
   }
-  const renderFirst = (g) => (g.kind === 'render-error' ? 0 : 1)
+  const rank = (g) => (g.kind === 'render-error' ? 0 : g.ratchet === 'new' ? 1 : 2)
   return [...groups.values()]
-    .sort((a, b) => renderFirst(a) - renderFirst(b))
+    .sort((a, b) => rank(a) - rank(b))
     .map((g) => {
       const detail = g.detail.replace(/\s+/g, ' ').slice(0, 160)
       return `BLOCKER ${g.kind} ${g.id} [${[...g.at].join(' ')}] ${g.selector} :: ${detail}`
@@ -273,15 +283,19 @@ function countsLine(entries, distinct) {
   )
 }
 
-/** At most `maxLines` lines: grouped blockers, an overflow pointer if any, then the counts. */
-export function summarise(entries, maxLines = MAX_SUMMARY_LINES) {
+/**
+ * At most `maxLines` lines: grouped blockers (render errors, then ratchet failures), an overflow
+ * pointer if any, the ratchet line per ratcheted kind when `ratchet` is given, then the counts.
+ */
+export function summarise(entries, maxLines = MAX_SUMMARY_LINES, ratchet = []) {
   const blockerLines = groupBlockers(entries)
-  const room = maxLines - 2
+  const tail = [...ratchetLines(ratchet), countsLine(entries, blockerLines.length)]
+  const room = maxLines - 1 - tail.length
   const lines = blockerLines.slice(0, room)
   if (blockerLines.length > room) {
     lines.push(`... ${blockerLines.length - room} more blockers in dom.json`)
   }
-  lines.push(countsLine(entries, blockerLines.length))
+  lines.push(...tail)
   return lines.join('\n')
 }
 

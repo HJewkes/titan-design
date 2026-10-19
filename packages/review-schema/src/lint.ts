@@ -17,6 +17,7 @@ export const LINT_RULES = [
   'question-outside-review',
   'base-on-new-frame',
   'sampled-animation',
+  'frameless-decision',
 ] as const
 export type LintRule = (typeof LINT_RULES)[number]
 
@@ -64,6 +65,29 @@ function anchoringProblems(m: Manifest): LintProblem[] {
     ...outside.map(lint('frame-outside-section')),
     ...sharedFrames(m).map(lint('shared-frame-set')),
   ]
+}
+
+/**
+ * A pick with no declared decision in a section that shows no frames, in a round that shows frames
+ * elsewhere: isDeciding reads it as deciding nothing, so it would be asked with nothing to judge
+ * (TD-962). It shows its frames, or says it is a `decide` (a choice no frame shows). A round with
+ * no frames at all is a decisions round, and every pick in it is frameless by design.
+ */
+function framelessProblems(m: Manifest): LintProblem[] {
+  if (m.variants.length === 0) return []
+  return m.questions
+    .filter((q) => (q.kind === 'pick-one' || q.kind === 'pick-many') && !isMergeBound(q))
+    .filter((q) => q.decision === undefined && !q.frames)
+    .flatMap((q) => {
+      const own = sectionOf(m, q.id)
+      if (!own || own.variantKeys.length > 0) return []
+      return [
+        lint('frameless-decision')(
+          `question ${q.id}: it picks in section ${own.id}, which shows no frames; ` +
+            'show the frames it decides, or mark it decision: decide'
+        ),
+      ]
+    })
 }
 
 /** One decision per frame set: a frame sits above one question only. */
@@ -320,6 +344,7 @@ export function lintRound(round: Manifest): LintProblem[] {
   const prs = sectionPrs(round)
   return [
     ...anchoringProblems(round),
+    ...framelessProblems(round),
     ...unitProblems(round),
     ...alternateProblems(round),
     ...groupProblems(round, prs),

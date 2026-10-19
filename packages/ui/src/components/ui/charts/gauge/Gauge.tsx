@@ -5,6 +5,8 @@ import { getSemanticColors, type ThemeMode } from '../../../../theme/tokens/sema
 import { EmptyState } from '../../empty-state'
 import { useSurfaceMode } from '../../surface'
 import { formatTrimmedDecimal } from '../../../../utils/number-format'
+import { countText, valueAt } from '../../animated-number/animated-number-model'
+import { TABULAR_STYLE, useMotionProgress } from '../../animated-number/useCountedText'
 
 export interface GaugeThreshold {
   /** Band start, in the gauge's value units. */
@@ -35,6 +37,12 @@ export interface GaugeProps extends Omit<ViewProps, 'children'> {
   thresholds?: GaugeThreshold[]
   /** Single-color override for filled segments (ignores `thresholds`). */
   color?: string
+  /**
+   * 0..1 from the caller's clock: the number counts up from `min` in tabular digits, the arc fills
+   * with it, and both land on `value` exactly at 1. Omitted, or under reduced motion, the gauge
+   * shows `value` as given.
+   */
+  progress?: number
   /** Replaces the "No data" placeholder in the centre when `value` is `null` or not finite. */
   emptyState?: ReactNode
   className?: string
@@ -123,17 +131,25 @@ interface ReadoutProps {
   color: string
   unit?: string
   emptyState?: ReactNode
+  /** The count: where it starts and how far it has run. Omitted, the readout is settled. */
+  count?: { from: number; progress?: number }
 }
 
 /** The big number and unit, or the no-value placeholder (the consumer's `emptyState`, else "No data"). */
-function GaugeReadout({ value, color, unit, emptyState }: ReadoutProps) {
+function GaugeReadout({ value, color, unit, emptyState, count }: ReadoutProps) {
   if (value === null) {
     return emptyState ?? <EmptyState title="No data" className="py-4" testID="gauge-empty" />
   }
+  const finalText = formatTrimmedDecimal(value, 1)
+  const progress = count?.progress
   return (
     <View className="flex-row items-baseline gap-0.5">
-      <Text testID="gauge-value" className="text-3xl font-bold" style={{ color }}>
-        {formatTrimmedDecimal(value, 1)}
+      <Text
+        testID="gauge-value"
+        className={cn('text-3xl font-bold', count && 'tabular-nums')}
+        style={count ? [TABULAR_STYLE, { color }] : { color }}
+      >
+        {progress === undefined ? finalText : countText(finalText, progress, count?.from)}
       </Text>
       {unit && <Text className="text-sm text-text-tertiary">{unit}</Text>}
     </View>
@@ -157,16 +173,19 @@ export function Gauge({
   thresholds,
   color,
   emptyState,
+  progress,
   className,
   ...props
 }: GaugeProps) {
+  const motion = useMotionProgress(progress)
   const mode = useSurfaceMode()
   const sem = getSemanticColors(mode)
   const bands = thresholds ?? defaultThresholds(mode)
   const range = { min, max, fallback: sem['status-success'] }
   const span = max - min || 1
   const reading = value !== null && Number.isFinite(value) ? value : null
-  const fill = reading === null ? 0 : clamp01((reading - min) / span)
+  const shown = reading === null || motion === undefined ? reading : valueAt(motion, min, reading)
+  const fill = shown === null ? 0 : clamp01((shown - min) / span)
   const activeColor = (f: number) => color ?? bandColor(f, bands, range)
   const ticks = buildTicks(fill, size, { active: activeColor, track: sem[TRACK_TOKEN[mode]] })
   const displayColor = activeColor(fill)
@@ -206,7 +225,13 @@ export function Gauge({
         style={{ position: 'absolute', top: 0, left: 0, width: size, height: size }}
         className="items-center justify-center"
       >
-        <GaugeReadout value={reading} color={displayColor} unit={unit} emptyState={emptyState} />
+        <GaugeReadout
+          value={reading}
+          color={displayColor}
+          unit={unit}
+          emptyState={emptyState}
+          count={progress === undefined ? undefined : { from: min, progress: motion }}
+        />
         {label && (
           <Text testID="gauge-label" className="text-xs text-text-secondary mt-1">
             {label}

@@ -106,7 +106,9 @@ export function FormField({
           className={cn('flex-row items-center', isHorizontal && 'pt-2')}
           style={isHorizontal && labelWidth ? { width: labelWidth as number } : undefined}
         >
-          <Text className={cn('font-medium text-text-primary', labelSizeStyles[labelSize])}>
+          <Text
+            className={cn('font-heading font-medium text-text-primary', labelSizeStyles[labelSize])}
+          >
             {label}
             {isRequired && <Text className="text-text-error ml-0.5">*</Text>}
           </Text>

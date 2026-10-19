@@ -1,9 +1,9 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
+import { capturedByNode } from '../../../test/classname-capture'
 import { FormField, FormSection, FormActions, FormRow } from './FormField'
 import { resolveAll, spacingClassesAt } from '../../../test/spacing-resolver'
-import { capturedByNode } from '../../../test/classname-capture'
 
 describe('FormField', () => {
   it('renders label and children', () => {
@@ -348,4 +348,16 @@ describe('FormField geometry resolves to the spacing tokens', () => {
       expect(resolveAll(['gap-stack-md'])).toEqual(['8px'])
     }
   )
+})
+
+describe('FormField label face', () => {
+  it('sets the label in the heading face', () => {
+    render(
+      <FormField label="Email">
+        <input type="email" />
+      </FormField>
+    )
+
+    expect(capturedByNode.get(screen.getByText('Email'))).toContain('font-heading')
+  })
 })
