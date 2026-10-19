@@ -180,12 +180,6 @@
   "components-molecules-formfield--with-error dark": {
     "#e05254|#252321": 1
   },
-  "components-molecules-input--disabled dark": {
-    "#7a7775|#252321": 1
-  },
-  "components-molecules-input--disabled light": {
-    "#95969b|#edeae7": 1
-  },
   "components-molecules-input--password-with-error dark": {
     "#e05254|#252321": 1
   },

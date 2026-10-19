@@ -174,6 +174,9 @@ export const Input = forwardRef<TextInput, InputProps>(function Input(
           accessibilityState={{
             disabled: isDisabled,
           }}
+          // react-native-web renders a disabled field `readonly` and drops accessibilityState, so
+          // without this the field is announced, and contrast-checked, as an active one.
+          aria-disabled={isDisabled}
           multiline={multiline}
           numberOfLines={multiline ? numberOfLines : 1}
           textAlignVertical={multiline ? 'top' : 'center'}

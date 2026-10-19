@@ -148,6 +148,15 @@ describe('Input', () => {
       const input = screen.getByPlaceholderText('Disabled input')
       // react-native-web renders isDisabled as readonly
       expect(input).toHaveAttribute('readonly')
+      expect(input).toHaveAttribute('aria-disabled', 'true')
+    })
+
+    it('leaves an enabled read-only field not disabled', () => {
+      render(<Input isReadOnly placeholder="Read only input" />)
+      expect(screen.getByPlaceholderText('Read only input')).not.toHaveAttribute(
+        'aria-disabled',
+        'true'
+      )
     })
   })
 })
