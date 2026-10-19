@@ -5793,6 +5793,32 @@ export function severityRank(severity?: TaskSeverity): number;
 export type ShadowIntensity = 'subtle' | 'medium' | 'strong';
 
 // @public
+export function Shelf(input: ShelfProps): react_jsx_runtime.JSX.Element | null;
+
+// @public
+export type ShelfBleed = 'none' | 'sm' | 'md';
+
+// @public
+export type ShelfBreakpoint = keyof typeof primitiveBreakpoints;
+
+// @public
+export type ShelfItemWidth = number | Partial<Record<ShelfBreakpoint, number>>;
+
+// @public
+export type ShelfNudge = 'auto' | 'always' | 'never';
+
+// @public
+export interface ShelfProps extends ViewProps {
+    bleed?: ShelfBleed;
+    children?: React__default.ReactNode;
+    className?: string;
+    itemWidth: ShelfItemWidth;
+    label: string;
+    nudge?: ShelfNudge;
+    nudgeFrom?: ShelfBreakpoint;
+}
+
+// @public
 export function Sidebar(input: SidebarProps): react_jsx_runtime.JSX.Element;
 
 // @public
