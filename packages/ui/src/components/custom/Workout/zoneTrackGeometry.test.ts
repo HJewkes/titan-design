@@ -48,6 +48,23 @@ describe('zoneBands', () => {
     )
     expect(bands.map((b) => b.weight)).toEqual([30, 0])
   })
+
+  it('fades every zone but the one the value lands in', () => {
+    const zones = [
+      { upTo: 10, color: 'a', faded: 'a-' },
+      { upTo: 20, color: 'b', faded: 'b-' },
+      { upTo: 30, color: 'c' },
+    ]
+    expect(zoneBands(zones, 0, 30, 15).map((b) => b.color)).toEqual(['a-', 'b', 'c'])
+  })
+
+  it('lights the zone whose upper bound the value sits on', () => {
+    const zones = [
+      { upTo: 10, color: 'a', faded: 'a-' },
+      { upTo: 20, color: 'b', faded: 'b-' },
+    ]
+    expect(zoneBands(zones, 0, 20, 10).map((b) => b.color)).toEqual(['a', 'b-'])
+  })
 })
 
 describe('tickLabelStep', () => {
@@ -110,7 +127,7 @@ describe('zoneTrackLayout', () => {
     const layout = zoneTrackLayout({
       min: 0,
       max: 40,
-      marker: { type: 'fill', value: 50 },
+      marker: { type: 'fill', value: 50, color: 'a' },
       size: 'default',
     })
     expect(layout.isNeedle).toBe(false)
