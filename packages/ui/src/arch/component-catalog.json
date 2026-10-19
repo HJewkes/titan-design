@@ -16328,6 +16328,75 @@
       "tier": "molecule"
     },
     {
+      "composes": [
+        "ShelfNudges"
+      ],
+      "family": "ui/shelf",
+      "file": "packages/ui/src/components/ui/shelf/Shelf.tsx",
+      "name": "Shelf",
+      "props": [
+        {
+          "default": "none",
+          "description": "How far the row runs past its column into the page gutter on each side, so a card scrolls out at the screen edge rather than the column edge.",
+          "name": "bleed",
+          "required": false,
+          "type": "ShelfBleed"
+        },
+        {
+          "default": null,
+          "description": "One element per item.",
+          "name": "children",
+          "required": false,
+          "type": "ReactNode"
+        },
+        {
+          "default": null,
+          "description": "Tailwind classes for the row's outer view.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Width of every item in px: one number, or a map from breakpoint to width read against the shelf's own column (not the window), widest reached entry first.",
+          "name": "itemWidth",
+          "required": true,
+          "type": "ShelfItemWidth"
+        },
+        {
+          "default": null,
+          "description": "Accessible name of the row, usually the heading above it (\"Yesterday\").",
+          "name": "label",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": "auto",
+          "description": "The round arrow over the row's ends.",
+          "name": "nudge",
+          "required": false,
+          "type": "ShelfNudge"
+        },
+        {
+          "default": "md",
+          "description": "The narrowest column `nudge=\"auto\"` shows the arrows on.",
+          "name": "nudgeFrom",
+          "required": false,
+          "type": "\"sm\" | \"md\" | \"lg\" | \"xs\" | \"xl\""
+        }
+      ],
+      "purpose": "A horizontal row of same-width items that snaps item by item, with the next item peeking at the trailing edge so the reader can see there is more.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/shelf/Shelf.tsx",
+        "status": "packages/ui/src/components/ui/shelf/Shelf.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-molecules-shelf--default"
+      ],
+      "tier": "organism"
+    },
+    {
       "composes": [],
       "family": "ui/skeleton",
       "file": "packages/ui/src/components/ui/skeleton/Skeleton.tsx",
