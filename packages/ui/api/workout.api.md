@@ -2807,7 +2807,7 @@ export type ZoneTrackMarker = {
 } | {
     type: 'fill';
     value: number;
-    color?: string;
+    color: string;
     glow?: boolean;
 };
 
@@ -2839,6 +2839,7 @@ export interface ZoneTrackTick {
 // @public
 export interface ZoneTrackZone {
     color: string;
+    faded?: string;
     upTo: number;
 }
 
