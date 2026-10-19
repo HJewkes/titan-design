@@ -536,17 +536,22 @@ describe('BodyMapDetailPanel', () => {
       expect(screen.queryByTestId('body-map-detail-panel-plan')).not.toBeInTheDocument()
     })
 
-    it('has no accessibility violations with every section populated', async () => {
-      const { container } = render(
-        <BodyMapDetailPanel
-          {...baseProps}
-          placement="right"
-          strength={bilateralStrength}
-          plan={singleExercisePlan}
-        />
-      )
-      expect(await axe(container)).toHaveNoViolations()
-    })
+    // axe takes ~0.25 s alone but hit the 5 s default once on a loaded CI runner (TD-927).
+    it(
+      'has no accessibility violations with every section populated',
+      { timeout: 30_000 },
+      async () => {
+        const { container } = render(
+          <BodyMapDetailPanel
+            {...baseProps}
+            placement="right"
+            strength={bilateralStrength}
+            plan={singleExercisePlan}
+          />
+        )
+        expect(await axe(container)).toHaveNoViolations()
+      }
+    )
   })
 
   /**

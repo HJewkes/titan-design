@@ -2,7 +2,17 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { act, renderHook } from '@testing-library/react'
 import { Platform } from 'react-native'
 
-import { CHART_ENTRANCE, drawStyle, fadeStyle, popStyle, useChartEntrance } from './chartEntrance'
+import { MOTION } from '../../motion/tokens'
+import {
+  CHART_ENTRANCE,
+  drawStyle,
+  entranceAt,
+  fadeStyle,
+  markGrowthAt,
+  popStyle,
+  useChartEntrance,
+  type EntranceState,
+} from './chartEntrance'
 
 let frames: FrameRequestCallback[] = []
 
@@ -118,5 +128,104 @@ describe.each(['ios', 'android'] as const)('entrance styles on %s', (os) => {
     expect(drawStyle(before)).toEqual({})
     expect(fadeStyle(before)).toEqual({})
     expect(popStyle(before)).toEqual({})
+  })
+})
+
+describe('entranceAt', () => {
+  afterEach(() => {
+    vi.useRealTimers()
+  })
+
+  it('shows nothing at 0 and the whole entrance once every window has ended', () => {
+    expect(entranceAt(0, { marks: 2 })).toEqual({
+      progress: 0,
+      draw: 0,
+      fade: 0,
+      points: 0,
+      marks: [0, 0],
+    })
+    expect(entranceAt(10, { marks: 2 })).toEqual({
+      progress: 1,
+      draw: 1,
+      fade: 1,
+      points: 1,
+      marks: [1, 1],
+    })
+  })
+
+  it('places each layer and each staggered mark at 0.5 s', () => {
+    const stagger = MOTION.staggerEachS(3)
+    const frame = entranceAt(0.5, { marks: 3 })
+    expect(frame.progress).toBeCloseTo(0.5 / 1.5)
+    expect(frame.draw).toBeCloseTo(0.5)
+    expect(frame.fade).toBe(0)
+    expect(frame.points).toBe(0)
+    expect(frame.marks[0]).toBeCloseTo(0.5)
+    expect(frame.marks[2]).toBeCloseTo(0.5 - 2 * stagger)
+  })
+
+  it('reads time from t alone, so the wall clock moving changes no frame', () => {
+    vi.useFakeTimers()
+    vi.setSystemTime(0)
+    const first = entranceAt(0.5, { marks: 3 })
+    vi.setSystemTime(60_000)
+    expect(entranceAt(0.5, { marks: 3 })).toEqual(first)
+    expect(first.draw).toBeCloseTo(0.5)
+  })
+
+  it('eases each mark with the house ease-out and paints a missing mark in full', () => {
+    const frame = entranceAt(0.5, { marks: 1 })
+    expect(markGrowthAt(frame, 0)).toBeCloseTo(MOTION.ease.out(0.5))
+    expect(markGrowthAt(frame, 5)).toBe(1)
+  })
+})
+
+describe('seeked entrance', () => {
+  const stylesOf = (entrance: EntranceState) => ({
+    draw: drawStyle(entrance),
+    fade: fadeStyle(entrance),
+    pop: popStyle(entrance),
+  })
+
+  it('takes its frame from t, with no animation frame requested', () => {
+    const { result } = renderHook(() => useChartEntrance(true, 0.5))
+    expect(result.current).toEqual({ enabled: true, played: true, t: 0.5 })
+    expect(frames).toHaveLength(0)
+  })
+
+  it('paints the frame at t with no CSS transition', () => {
+    const at = { enabled: true, played: true, t: 0.5 }
+    expect(drawStyle(at)).toEqual({
+      strokeDasharray: 1,
+      strokeDashoffset: 1 - MOTION.ease.out(0.5),
+    })
+    expect(fadeStyle(at)).toEqual({ opacity: 0 })
+    expect(popStyle(at, { duration: 250, delay: 375 })).toMatchObject({
+      transform: `scale(${String(0.6 + 0.4 * MOTION.ease.out(0.5))})`,
+    })
+    expect(popStyle(at)).not.toHaveProperty('transition')
+  })
+
+  it('renders the same frame at 0.5 s whether played up to it or seeked cold', () => {
+    const played = renderHook(({ t }) => useChartEntrance(true, t), { initialProps: { t: 0 } })
+    played.rerender({ t: 0.25 })
+    played.rerender({ t: 0.5 })
+    const cold = renderHook(() => useChartEntrance(true, 0.5))
+    expect(stylesOf(played.result.current)).toEqual(stylesOf(cold.result.current))
+    expect(stylesOf(cold.result.current).draw.strokeDashoffset).toBeCloseTo(
+      1 - MOTION.ease.out(0.5)
+    )
+  })
+
+  it('still runs under reduced motion, since a seeked render is a video frame', () => {
+    stubReducedMotion(true)
+    const { result } = renderHook(() => useChartEntrance(true, 0.5))
+    expect(result.current.enabled).toBe(true)
+  })
+
+  it('renders the final state with animate false', () => {
+    const { result } = renderHook(() => useChartEntrance(false, 0.5))
+    expect(result.current).toEqual({ enabled: false, played: true })
+    expect(drawStyle(result.current)).toEqual({})
   })
 })

@@ -124,6 +124,11 @@ export interface LineChartProps extends ViewProps {
   showLegend?: boolean
   facetColumns?: number
   animate?: boolean
+  /**
+   * Seconds into the entrance, read from a motion seek clock (`useBeatTime().t` under a seeked
+   * `MotionProvider`). The entrance is then a pure function of `t`; omit it for the wall-clock entrance.
+   */
+  t?: number
   isLoading?: boolean
   emptyState?: ReactNode
   className?: string

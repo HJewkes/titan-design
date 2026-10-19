@@ -103,6 +103,11 @@ export const VariantSchema = z
     change: z.enum(FRAME_CHANGES).optional(),
     /** The same frame rendered from the PR's base, so a Diff view sets base beside head. */
     baseImage: imagePath.optional(),
+    /**
+     * A story's named marks (ticks, bars, tick labels), each a CSS selector; the build refuses
+     * a frame where one matches nothing, has a zero box, or paints too faintly to see.
+     */
+    marks: z.record(id, z.string().min(1).max(200)).optional(),
   })
   .strict()
   .superRefine((v, ctx) => {
@@ -114,7 +119,7 @@ export const VariantSchema = z
     for (const [field, message] of mediaProblems(v))
       ctx.addIssue({ code: 'custom', path: [field], message })
     if (v.storyId !== undefined) return
-    for (const field of ['args', 'globals'] as const)
+    for (const field of ['args', 'globals', 'marks'] as const)
       if (v[field] !== undefined)
         ctx.addIssue({ code: 'custom', path: [field], message: `${field} need a storyId variant` })
   })
@@ -999,14 +1004,19 @@ export function isAudioVariant(variant: Variant): variant is AudioVariant {
 const LOOPBACK_URL_PATTERN = '^https?://(127\\.0\\.0\\.1|localhost|\\[::1\\])(:[0-9]+)?(/.*)?$'
 
 const NO_STORY_FIELDS = {
-  anyOf: [{ required: ['args'] }, { required: ['globals'] }, { required: ['scale'] }],
+  anyOf: [
+    { required: ['args'] },
+    { required: ['globals'] },
+    { required: ['scale'] },
+    { required: ['marks'] },
+  ],
 }
 
 const NO_FRAME_FIELDS = {
   anyOf: [...NO_STORY_FIELDS.anyOf, { required: ['frameReference'] }, { required: ['motion'] }],
 }
 
-// The variant superRefine (exactly one source; args, globals and scale only on stories; a frame
+// The variant superRefine (exactly one source; args, globals, scale and marks only on stories; a frame
 // reference only on images and clips; a clip declares its motion; audio names its transcript and
 // neither moves nor sizes), as JSON Schema.
 const VARIANT_SOURCE = {

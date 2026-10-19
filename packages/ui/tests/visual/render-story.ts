@@ -21,6 +21,7 @@ export interface IndexEntry {
   id: string
   type: string
   tags?: string[]
+  importPath?: string
 }
 
 /** Every story in the index `story-index.global-setup.ts` wrote; empty when it did not run. */

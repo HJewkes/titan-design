@@ -225,7 +225,10 @@
     "file-lines": 338
   },
   "components/ui/charts/bar-list/BarList.tsx#BarList": {
-    "props": 14
+    "props": 15
+  },
+  "components/ui/charts/line-chart/LineChart.tsx#LineChart": {
+    "props": 24
   },
   "components/ui/charts/network-graph/NetworkGraph.tsx#NetworkGraph": {
     "props": 21
