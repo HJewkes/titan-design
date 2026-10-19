@@ -19,6 +19,7 @@ import {
   VOLUME_STATUS_LABELS,
   getHeatmapColor,
   isMoreSevere,
+  volumeStatusDotStyle,
   type VolumeStatus,
 } from './muscleTaxonomy'
 import { Body, unlitBodyProps } from './bodyHighlighter'
@@ -329,8 +330,9 @@ interface MuscleButtonProps {
 }
 
 function MuscleButton({ entry, highlighted, onMusclePress, ramp }: MuscleButtonProps) {
-  const dotColor = getHeatmapColor(entry.status, useSurfaceMode())
-  const brandPrimary = getSemanticColors(useSurfaceMode())['brand-primary']
+  const mode = useSurfaceMode()
+  const dot = volumeStatusDotStyle(entry.status, getHeatmapColor(entry.status, mode), 1.5 * ramp)
+  const brandPrimary = getSemanticColors(mode)['brand-primary']
   const label = `${entry.name}, ${VOLUME_STATUS_LABELS[entry.status]}, ${entry.sets} sets this week`
   return (
     <Pressable
@@ -352,7 +354,7 @@ function MuscleButton({ entry, highlighted, onMusclePress, ramp }: MuscleButtonP
       testID={`body-map-muscle-${entry.key}`}
     >
       <View
-        style={{ width: 7 * ramp, height: 7 * ramp, borderRadius: 9999, backgroundColor: dotColor }}
+        style={{ width: 7 * ramp, height: 7 * ramp, borderRadius: 9999, ...dot }}
         accessibilityElementsHidden
         testID={`body-map-muscle-dot-${entry.key}`}
       />

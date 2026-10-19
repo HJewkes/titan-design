@@ -92,6 +92,13 @@ track in both modes except the light near red, which measures 2.70 there (3.81 a
 owner's console round 6 pick, declared in `BarList.test.tsx`. The focus ring is the stylesheet's `*:focus-visible` outline
 (`global.css`); no class set is added.
 
+## Seeked entrance
+
+`t` (TD-984) is the fifteenth prop: seconds from a motion seek clock, for a video frame. With `t`, each bar
+grows from zero in turn, staggered by the motion tokens over the chart kit's draw timing, as a pure function
+of `t` (`entranceAt` in `kit/chartEntrance.ts`), so a cold seek paints the frame playback reaches. Without
+`t` the bars render at full length, as before: BarList has no wall-clock entrance.
+
 ## Reference marker
 
 `referenceMarker: { value, label, formatValue? }` (TD-440) draws one labelled line on the value axis: a cutoff,
