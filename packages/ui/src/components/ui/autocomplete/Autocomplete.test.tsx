@@ -30,8 +30,9 @@ describe('Autocomplete', () => {
 
   it('colours the placeholder text-secondary, as Input and Select do', () => {
     render(<Autocomplete options={defaultOptions} placeholder="Search fruits..." />)
-    const classes = (capturedByNode.get(screen.getByPlaceholderText('Search fruits...')) ?? '')
-      .split(/\s+/)
+    const classes = (
+      capturedByNode.get(screen.getByPlaceholderText('Search fruits...')) ?? ''
+    ).split(/\s+/)
     expect(classes).toContain('placeholder:text-text-secondary')
     expect(classes).not.toContain('placeholder:text-text-tertiary')
   })
