@@ -13438,6 +13438,110 @@
     },
     {
       "composes": [
+        "ChipGroupParts"
+      ],
+      "family": "ui/chip-group",
+      "file": "packages/ui/src/components/ui/chip-group/ChipGroup.tsx",
+      "name": "ChipGroup",
+      "props": [
+        {
+          "default": null,
+          "description": "Additional className on the group.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Colour of the selected chip.",
+          "name": "color",
+          "required": false,
+          "type": "ChipColor"
+        },
+        {
+          "default": null,
+          "description": "Uncontrolled starting value.",
+          "name": "defaultValue",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Formats a count for display.",
+          "name": "formatCount",
+          "required": false,
+          "type": "((count: number) => string)"
+        },
+        {
+          "default": null,
+          "description": "Disables every chip.",
+          "name": "isDisabled",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "Placeholder capsules while the choices load.",
+          "name": "isLoading",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "The choices, in order.",
+          "name": "items",
+          "required": true,
+          "type": "readonly ChipGroupItem<T>[]"
+        },
+        {
+          "default": null,
+          "description": "Accessible name of the group.",
+          "name": "label",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Called with the newly selected value; never called for the chip already selected.",
+          "name": "onValueChange",
+          "required": false,
+          "type": "((value: T) => void)"
+        },
+        {
+          "default": null,
+          "description": "`wrap` flows onto more rows; `scroll` keeps one row, pins the first item and scrolls the rest.",
+          "name": "overflow",
+          "required": false,
+          "type": "ChipGroupOverflow"
+        },
+        {
+          "default": null,
+          "description": "Chip size.",
+          "name": "size",
+          "required": false,
+          "type": "ChipSize"
+        },
+        {
+          "default": null,
+          "description": "Controlled selected value.",
+          "name": "value",
+          "required": false,
+          "type": "string"
+        }
+      ],
+      "purpose": "ChipGroup — a single-select filter row of chips, each with an optional count.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/chip-group/ChipGroup.tsx",
+        "status": "packages/ui/src/components/ui/chip-group/ChipGroup.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-molecules-chipgroup--default"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
         "Pill"
       ],
       "family": "ui/chip",

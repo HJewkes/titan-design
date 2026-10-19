@@ -1038,6 +1038,36 @@ export function Chip(input: ChipProps): react_jsx_runtime.JSX.Element;
 // @public (undocumented)
 export type ChipColor = 'default' | 'primary' | 'secondary' | 'success' | 'error' | 'warning' | 'info';
 
+// @public
+export function ChipGroup<T extends string = string>(props: ChipGroupProps<T>): react_jsx_runtime.JSX.Element | null;
+
+// @public
+export interface ChipGroupItem<T extends string = string> {
+    count?: number;
+    isDisabled?: boolean;
+    label: string;
+    value: T;
+}
+
+// @public
+export type ChipGroupOverflow = 'wrap' | 'scroll';
+
+// @public
+export interface ChipGroupProps<T extends string = string> extends ViewProps {
+    className?: string;
+    color?: ChipColor;
+    defaultValue?: T;
+    formatCount?: (count: number) => string;
+    isDisabled?: boolean;
+    isLoading?: boolean;
+    items: ReadonlyArray<ChipGroupItem<T>>;
+    label: string;
+    onValueChange?: (value: T) => void;
+    overflow?: ChipGroupOverflow;
+    size?: ChipSize;
+    value?: T;
+}
+
 // @public (undocumented)
 export interface ChipProps extends ViewProps {
     // (undocumented)

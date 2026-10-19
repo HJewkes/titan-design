@@ -37,6 +37,7 @@ Generated from `src/arch/component-catalog.json` by `pnpm catalog`. Do not edit 
 | Checkbox | stable | ui/checkbox | Checkbox component for boolean inputs. | — | components-molecules-checkbox--all-sizes |
 | Chip | stable | ui/chip | Chip — a `Pill` preset for tags, labels, and filters. | Pill | components-atoms-chip--all-colors |
 | ChipBand | candidate | ui/chip | ChipBand — one beat's citations on a single line at video scale: the lead chip with its citation, the next chips as kind tabs, the rest as a `+d` count. | EvidenceChip, ScaledPill | components-molecules-chipband--default |
+| ChipGroup | candidate | ui/chip-group | ChipGroup — a single-select filter row of chips, each with an optional count. | ChipGroupParts | components-molecules-chipgroup--default |
 | CircularTimer | candidate | custom/CircularTimer | A circular countdown / countup with a time readout in the center — the graphical sibling of {@link TimerReadout }. | Progress | components-molecules-circulartimer--countdown-midway |
 | CoChangeChip | candidate | custom/ActiveWork | CoChangeChip — one symmetric "these two files change together" pair. | Card, FilePathLabel, Pill, Typography | custom-activework-cochangechip--default |
 | Collapse | stable | ui/collapse | Collapsible content container. | — | components-organisms-accordion--allow-multiple |
