@@ -170,6 +170,7 @@ Generated from `src/arch/component-catalog.json` by `pnpm catalog`. Do not edit 
 | SetTableHeader | candidate | custom/Workout | The expanded-set-table column-header row: SET · PREV · REPS · LOAD · RPE, with the weight column reflecting `unit`. | Typography | custom-workout-settableheader--kg |
 | SetsRepsLoad | candidate | custom/Workout | The `sets × reps @ load` prescription line, in the TempoDisplay visual language (Typography `mono` · value cells with muted `×` / `@` separators). | metricText | custom-workout-setsrepsload--default |
 | SeverityLabel | candidate | custom/ActiveWork | SeverityLabel — a task's severity as a coloured dot plus its label. | Indicator, Typography | custom-activework-severitylabel--all-severities |
+| Shelf | candidate | ui/shelf | A horizontal row of same-width items that snaps item by item, with the next item peeking at the trailing edge so the reader can see there is more. | ShelfNudges | components-molecules-shelf--default |
 | SideNav | candidate | shell | Shell S2 · SideNav — the persistent 60px left rail that switches the main viewport between an app's categories. | NavItem | shell-sidenav--another-app |
 | Sidebar | candidate | custom/Sidebar | Sidebar navigation component. | — | components-organisms-sidebar--collapsed |
 | Skeleton | stable | ui/skeleton | Skeleton component for loading placeholders. | — | components-atoms-skeleton--avatar |

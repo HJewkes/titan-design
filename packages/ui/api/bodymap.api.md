@@ -347,7 +347,7 @@ export interface VolumeLandmarks {
 export type VolumeLandmarkZone = 'under' | 'maintenance' | 'productive' | 'over';
 
 // @public
-export type VolumeStatus = 'untrained' | 'behind' | 'ontrack' | 'target' | 'approaching' | 'over';
+export type VolumeStatus = (typeof VOLUME_STATUSES)[number];
 
 // (No @packageDocumentation comment for this package)
 
