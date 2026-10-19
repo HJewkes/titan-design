@@ -54,6 +54,8 @@ export interface ShelfProps extends ViewProps {
 }
 
 const GAP = space.inline.lg
+// The row is geometry the snap maths depends on, so it is a style rather than a class.
+const LIST_STYLE = { flexDirection: 'row', gap: GAP } as const
 const ICON_PX = 20
 const EDGE_SLACK_PX = 1
 
@@ -142,7 +144,7 @@ function ShelfRow({ label, itemWidth, bleed, nudge, nudgeFrom, items, ...props }
           style={scrollerStyle(bleed)}
           testID="shelf-viewport"
         >
-          <View role="list" className="flex-row" style={{ gap: GAP }}>
+          <View role="list" style={LIST_STYLE}>
             {items.map((item, index) => (
               <ShelfItem key={item.key ?? index} width={slotWidth} onFocus={() => reveal(index)}>
                 {item}

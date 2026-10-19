@@ -1,4 +1,7 @@
+import fc from 'fast-check'
 import { describe, expect, it } from 'vitest'
+
+import { fcAssert } from '../../../test/property'
 
 import { nudgeTarget, resolveItemWidth, revealTarget, shelfGeometry } from './shelfMath'
 
@@ -87,5 +90,57 @@ describe('revealTarget', () => {
 
   it('never scrolls past the end for the last item', () => {
     expect(revealTarget(7, 0, geometry, 200, 16)).toBe(geometry.maxOffset)
+  })
+})
+
+const shelves = fc.record({
+  column: fc.integer({ min: 120, max: 2000 }),
+  count: fc.integer({ min: 1, max: 40 }),
+  itemWidth: fc.integer({ min: 80, max: 600 }),
+  gap: fc.integer({ min: 0, max: 24 }),
+  bleed: fc.constantFrom(0, 16, 24),
+})
+
+describe('shelf geometry properties', () => {
+  it('lands every nudge inside the row, on an item start or the end', () => {
+    fcAssert(
+      fc.property(
+        shelves,
+        fc.double({ min: 0, max: 1, noNaN: true }),
+        fc.constantFrom(1 as const, -1 as const),
+        (input, at, direction) => {
+          const geometry = shelfGeometry(input)
+          const target = nudgeTarget(at * geometry.maxOffset, direction, geometry, input.column)
+
+          expect(target).toBeGreaterThanOrEqual(0)
+          expect(target).toBeLessThanOrEqual(geometry.maxOffset)
+          const onStart =
+            Math.abs(target / geometry.step - Math.round(target / geometry.step)) < 1e-9
+          expect(onStart || target === geometry.maxOffset).toBe(true)
+        }
+      )
+    )
+  })
+
+  it('leaves a revealed item whole inside the column when it fits', () => {
+    fcAssert(
+      fc.property(
+        shelves,
+        fc.nat(),
+        fc.double({ min: 0, max: 1, noNaN: true }),
+        (input, pick, at) => {
+          fc.pre(input.itemWidth <= input.column)
+          const geometry = shelfGeometry(input)
+          const index = pick % input.count
+          const offset =
+            revealTarget(index, at * geometry.maxOffset, geometry, input.itemWidth, input.bleed) ??
+            at * geometry.maxOffset
+          const start = input.bleed + index * geometry.step - offset
+
+          expect(start).toBeGreaterThanOrEqual(input.bleed - 1e-9)
+          expect(start + input.itemWidth).toBeLessThanOrEqual(input.bleed + input.column + 1e-9)
+        }
+      )
+    )
   })
 })
