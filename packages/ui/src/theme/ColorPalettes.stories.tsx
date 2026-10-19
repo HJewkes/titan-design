@@ -9,6 +9,7 @@ import {
   discreteRainbow,
   bestTextColor,
   greyRamp,
+  primitiveColors,
 } from './tokens/primitives'
 import { semanticColorsLight, semanticColorsDark } from './tokens/semantic'
 import { WORKOUT_TOKENS } from './workout-tokens'
@@ -731,6 +732,8 @@ export const TextAndBorderColors: StoryObj = {
         <ColorSwatch name="scrim-press-strong" value={semanticColorsDark['scrim-press-strong']} />
         <ColorSwatch name="scrim-subtle" value={semanticColorsDark['scrim-subtle']} />
         <ColorSwatch name="scrim-default" value={semanticColorsDark['scrim-default']} />
+        <ColorSwatch name="scrim-strong" value={semanticColorsDark['scrim-strong']} />
+        <ColorSwatch name="on-scrim" value={semanticColorsDark['on-scrim']} />
         <ColorSwatch
           name="control-face-disabled"
           value={semanticColorsDark['control-face-disabled']}
@@ -739,8 +742,44 @@ export const TextAndBorderColors: StoryObj = {
         <ColorSwatch name="on-control-active" value={semanticColorsDark['on-control-active']} />
         <ColorSwatch name="on-data-strong" value={semanticColorsDark['on-data-strong']} />
       </View>
+      <MediaBadgeFrames />
     </View>
   ),
+}
+
+/** Synthetic video frames, lightest to darkest: the range a media badge has to read over. */
+const MEDIA_FRAMES = [
+  { name: 'white frame', color: primitiveColors.white },
+  { name: 'mid-grey frame', color: greyRamp[500] },
+  { name: 'black frame', color: primitiveColors.black },
+] as const
+
+/** `text-on-scrim` at `text-xs` on `bg-scrim-strong`, over each frame (TD-987). */
+function MediaBadgeFrames() {
+  return (
+    <View style={{ flexDirection: 'row', gap: 16, marginTop: 16 }}>
+      {MEDIA_FRAMES.map((frame) => (
+        <View
+          key={frame.name}
+          accessibilityLabel={frame.name}
+          style={{
+            width: 160,
+            height: 90,
+            backgroundColor: frame.color,
+            borderWidth: 1,
+            borderColor: SWATCH_BORDER,
+            alignItems: 'flex-end',
+            justifyContent: 'flex-end',
+            padding: 6,
+          }}
+        >
+          <View className="bg-scrim-strong rounded-sm px-squish-x-xs py-squish-y-xs">
+            <Text className="text-on-scrim text-xs font-bold">4:12</Text>
+          </View>
+        </View>
+      ))}
+    </View>
+  )
 }
 
 // ============================================================================
