@@ -28,6 +28,8 @@ import {
   SearchIcon,
   DatabaseIcon,
   ChartIcon,
+  PlayIcon,
+  VolumeOffIcon,
 } from './icons'
 import { TriangleDownIcon, TriangleUpIcon } from './statusIcons'
 import { SvgIcon } from './SvgIcon'
@@ -64,6 +66,8 @@ describe('icon primitives', () => {
       SearchIcon,
       DatabaseIcon,
       ChartIcon,
+      PlayIcon,
+      VolumeOffIcon,
     ].forEach((Icon) => {
       const { container, unmount } = render(<Icon />)
       expect(container.querySelector('svg')).toBeInTheDocument()
@@ -75,6 +79,7 @@ describe('icon primitives', () => {
     ['SearchIcon', SearchIcon],
     ['DatabaseIcon', DatabaseIcon],
     ['ChartIcon', ChartIcon],
+    ['VolumeOffIcon', VolumeOffIcon],
   ])('%s renders its glyph at the requested size', (_name, Icon) => {
     const { container } = render(<Icon size={16} />)
     const svg = container.querySelector('svg')!
