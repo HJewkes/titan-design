@@ -2,6 +2,7 @@ import { DATAVIZ_CATEGORICAL_ROLES } from '../../../../theme/extracted-colors-da
 import type { ColorToken } from '../../../../theme/resolve-color'
 import { CATEGORICAL_CVD_SAFE_MAX } from '../../../../theme/tokens/primitives'
 import { arcGeometry, arcMidpoint, arcPath, edgeSlots } from './network-graph-arc'
+import { polylineMidpoint, routedOffsets, routeToPath, straightRoute } from './network-graph-boxes'
 import {
   binWeight,
   edgeId,
@@ -17,6 +18,7 @@ import type {
   GraphIndex,
   GraphItemRef,
   GraphKind,
+  GraphBox,
   GraphModel,
   GraphPoint,
 } from './types'
@@ -100,7 +102,8 @@ function anchors(from: GraphPoint, to: GraphPoint, offset: number) {
  * Where the arrowhead's reference point sits. A horizontal path stops an arrowhead short of the
  * target, so the marker starts at the path end; an arc runs to the mark's rim, so the tip sits there.
  */
-export const arrowRefX = (shape: GraphModel['edgeShape']) => (shape === 'arc' ? ARROW_LENGTH : 0)
+export const arrowRefX = (shape: GraphModel['edgeShape']) =>
+  shape === 'horizontal' ? 0 : ARROW_LENGTH
 
 type Curve = Pick<EdgeGeometry, 'path' | 'mid'>
 
@@ -119,22 +122,66 @@ function arcCurve(from: GraphPoint, to: GraphPoint, slot: number): Curve {
   }
 }
 
+/** A node's rectangle: its box under the `box` shape, else the square around its dot. */
+export function nodeBox(model: GraphModel, id: string): GraphBox | null {
+  const box = model.nodeBoxes[id]
+  if (box) return box
+  const at = model.positions[id]
+  if (!at) return null
+  return {
+    x: at.x - NODE_RADIUS,
+    y: at.y - NODE_RADIUS,
+    width: 2 * NODE_RADIUS,
+    height: 2 * NODE_RADIUS,
+  }
+}
+
+/** The layout's route through every bend, else a straight line between the two borders, offset from its parallels. */
+function routedCurve(model: GraphModel, edge: GraphEdge, offset: number): Curve | null {
+  const route = model.routes[edgeId(edge)]
+  if (route) return { path: routeToPath(route), mid: polylineMidpoint(route) }
+  const source = nodeBox(model, edge.source)
+  const target = nodeBox(model, edge.target)
+  if (!source || !target) return null
+  const ends = straightRoute(
+    { id: edge.source, box: source },
+    { id: edge.target, box: target },
+    offset
+  )
+  return { path: routeToPath(ends), mid: polylineMidpoint(ends) }
+}
+
+/** Each edge's offset from its pair's centre line, by the layout's edge shape. */
+function edgeSpread(model: GraphModel): Map<string, number> {
+  if (model.edgeShape === 'arc') return edgeSlots(model.drawnEdges)
+  if (model.edgeShape === 'routed') {
+    return routedOffsets(
+      model.drawnEdges.filter((edge) => !model.routes[edgeId(edge)]),
+      edgeId
+    )
+  }
+  return parallelOffsets(model.drawnEdges)
+}
+
+function curveOf(model: GraphModel, edge: GraphEdge, spread: number): Curve | null {
+  const from = model.positions[edge.source]
+  const to = model.positions[edge.target]
+  if (!from || !to) return null
+  if (model.edgeShape === 'routed') return routedCurve(model, edge, spread)
+  return model.edgeShape === 'arc' ? arcCurve(from, to, spread) : horizontalCurve(from, to, spread)
+}
+
 export function edgeGeometries(
   model: GraphModel,
   edgeKinds: readonly GraphEdgeKind[] = []
 ): EdgeGeometry[] {
   const range = weightRange(model.drawnEdges)
   const dashed = new Set(edgeKinds.filter((kind) => kind.stroke === 'dashed').map((k) => k.id))
-  const isArc = model.edgeShape === 'arc'
-  const spread = isArc ? edgeSlots(model.drawnEdges) : parallelOffsets(model.drawnEdges)
+  const spread = edgeSpread(model)
   return model.drawnEdges.flatMap((edge) => {
-    const from = model.positions[edge.source]
-    const to = model.positions[edge.target]
-    if (!from || !to) return []
     const id = edgeId(edge)
-    const curve = isArc
-      ? arcCurve(from, to, spread.get(id) ?? 0)
-      : horizontalCurve(from, to, spread.get(id) ?? 0)
+    const curve = curveOf(model, edge, spread.get(id) ?? 0)
+    if (!curve) return []
     return [
       {
         id,

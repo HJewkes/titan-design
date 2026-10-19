@@ -4,6 +4,42 @@
 
 ```ts
 
+import * as react_jsx_runtime from 'react/jsx-runtime';
+import { ReactNode } from 'react';
+import { ViewProps } from 'react-native';
+
+// @public
+export const FILE_CARD_METRIC_ORDER: readonly ["loc", "function_count", "cyclomatic_max", "cyclomatic_sum", "max_nesting_depth", "fan_in", "fan_out", "instability"];
+
+// @public
+export function FileCard(input: FileCardProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface FileCardMetric {
+    delta?: number | null;
+    key: string;
+    label?: string;
+    percentile?: number | null;
+    value: number | null;
+}
+
+// @public
+export interface FileCardProps extends Omit<ViewProps, 'children'> {
+    className?: string;
+    fanIn?: number;
+    fanOut?: number;
+    loc?: number;
+    metrics?: readonly FileCardMetric[];
+    path: string;
+    status?: FileCardStatus;
+}
+
+// @public
+export type FileCardStatus = 'added' | 'removed' | 'renamed';
+
+// @public
+export const MAP_CARD_KEEP_OUT = 0.83;
+
 // @public
 export const MAP_WEIGHT: {
     readonly full: 1;
@@ -23,6 +59,52 @@ export interface MapBox {
 }
 
 // @public
+export function MapCard(input: MapCardProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface MapCardPlacement {
+    box: {
+        x: number;
+        y: number;
+        width: number;
+        height: number;
+    };
+    keepOutY: number;
+    leader: {
+        from: Point;
+        to: Point;
+    };
+    side: MapCardSide;
+}
+
+// @public
+export function mapCardPlacement(input: MapCardPlacementInput): MapCardPlacement;
+
+// @public
+export interface MapCardPlacementInput {
+    anchor: Point;
+    keepOutFraction?: number;
+    side?: 'auto' | MapCardSide;
+    size: MapCardSize;
+    viewport: Viewport;
+}
+
+// @public
+export interface MapCardProps {
+    accessibilityLabel?: string;
+    anchor: Point;
+    children: ReactNode;
+    className?: string;
+    enter?: number;
+    exit?: number;
+    keepOutFraction?: number;
+    side?: 'auto' | 'left' | 'right';
+    size?: MapCardSize;
+    title?: ReactNode;
+    viewport: Viewport;
+}
+
+// @public
 export interface MapCardRef {
     // (undocumented)
     anchor: string;
@@ -30,6 +112,15 @@ export interface MapCardRef {
     id: string;
     // (undocumented)
     kind: string;
+}
+
+// @public
+export type MapCardSide = 'left' | 'right';
+
+// @public
+export interface MapCardSize {
+    height: number;
+    width: number;
 }
 
 // @public
@@ -243,6 +334,77 @@ export interface MapTimeline {
 
 // @public
 export function resolveMapState(timeline: MapTimeline, layout: MapLayout, t: number): MapState;
+
+// @public
+export function SchemaCard(input: SchemaCardProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export function schemaCardDurationS(data: SchemaData, highlights?: readonly SchemaHighlight[]): number;
+
+// @public
+export interface SchemaCardProps extends Omit<ViewProps, 'children'> {
+    accessibilityLabel: string;
+    className?: string;
+    data: SchemaData;
+    emptyState?: ReactNode;
+    highlights?: readonly SchemaHighlight[];
+    isLoading?: boolean;
+    t?: number;
+    tableWidth?: number;
+}
+
+// @public
+export function schemaCardSize(data: SchemaData, tableWidth?: number): {
+    width: number;
+    height: number;
+};
+
+// @public
+export interface SchemaData {
+    relations?: readonly SchemaRelation[];
+    tables: readonly SchemaTable[];
+}
+
+// @public
+export interface SchemaField {
+    atS?: number;
+    id: string;
+    key?: 'primary' | 'foreign';
+    name: string;
+    type?: string;
+}
+
+// @public
+export interface SchemaFieldRef {
+    field: string;
+    table: string;
+}
+
+// @public
+export interface SchemaHighlight {
+    atS: number;
+    durS?: number;
+    field: SchemaFieldRef;
+}
+
+// @public
+export interface SchemaRelation {
+    atS?: number;
+    cardinality?: 'many-to-one' | 'one-to-one';
+    from: SchemaFieldRef;
+    id: string;
+    to: SchemaFieldRef;
+}
+
+// @public
+export interface SchemaTable {
+    atS?: number;
+    column?: number;
+    fields: readonly SchemaField[];
+    id: string;
+    name: string;
+    row?: number;
+}
 
 // @public
 export function validateMapLayout(layout: MapLayout): string[];

@@ -22,7 +22,7 @@ const objectEntries = Object.entries(pkg.exports).filter(
 )
 
 describe('package.json exports', () => {
-  it('has the nine TypeScript subpaths as object entries', () => {
+  it('has the ten TypeScript subpaths as object entries', () => {
     expect(objectEntries.map(([subpath]) => subpath)).toEqual([
       '.',
       './bodymap',
@@ -30,6 +30,7 @@ describe('package.json exports', () => {
       './workout',
       './motion',
       './diagram',
+      './visual-router',
       './theme',
       './theme/tokens',
       './theme/tokens-css',
@@ -60,6 +61,11 @@ describe('package.json exports', () => {
   it('resolves resolveMapState through the ./diagram subpath', async () => {
     const entry = await import('@titan-design/react-ui/diagram')
     expect(entry.resolveMapState).toBeTypeOf('function')
+  })
+
+  it('resolves routeVisual through the ./visual-router subpath', async () => {
+    const entry = await import('@titan-design/react-ui/visual-router')
+    expect(entry.routeVisual).toBeTypeOf('function')
   })
 })
 

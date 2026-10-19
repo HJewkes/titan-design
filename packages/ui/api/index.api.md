@@ -1338,6 +1338,32 @@ export interface ConversationIdentityProps {
 }
 
 // @public
+export interface ConversationLimits {
+    previewChars?: number;
+    toolRows?: number;
+}
+
+// @public
+export function ConversationTurn(input: ConversationTurnProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface ConversationTurnProps {
+    className?: string;
+    defaultExpanded?: boolean;
+    expanded?: boolean;
+    isDimmed?: boolean;
+    isUTC?: boolean;
+    limits?: ConversationLimits;
+    linkers?: ProseLinker[];
+    onExpandedChange?: (expanded: boolean) => void;
+    onRequestFullText?: (message: TimelineMessage) => void;
+    onToolCallPress?: (call: TimelineToolCall) => void;
+    roleLabels?: SessionRoleLabels;
+    showDate?: boolean;
+    turn: TimelineTurn;
+}
+
+// @public
 export interface CssPropertyEntry {
     cssVariable?: string | null;
     property: string;
@@ -2122,6 +2148,7 @@ export interface GaugeProps extends Omit<ViewProps, 'children'> {
     max?: number;
     // (undocumented)
     min?: number;
+    progress?: number;
     size?: number;
     thresholds?: GaugeThreshold[];
     unit?: string;
@@ -2959,6 +2986,14 @@ export function grainForTone(baseColor: string): string;
 export function grainOpacityForTone(baseColor: string): number;
 
 // @public
+export interface GraphBox {
+    height: number;
+    width: number;
+    x: number;
+    y: number;
+}
+
+// @public
 export interface GraphEdge {
     activityAt?: number;
     id?: string;
@@ -2983,13 +3018,14 @@ export interface GraphGroup {
 
 // @public
 export interface GraphGroupRegion {
+    box?: GraphBox;
     cx: number;
     cy: number;
     id: string;
     label: string;
     nodeIds: readonly string[];
     radius: number;
-    variant: 'region' | 'ring';
+    variant: 'region' | 'ring' | 'box';
 }
 
 // @public
@@ -3021,12 +3057,15 @@ export interface GraphLayoutInput {
 
 // @public
 export interface GraphLayoutResult {
-    edgeShape?: 'horizontal' | 'arc';
+    edgeShape?: 'horizontal' | 'arc' | 'routed';
     groups?: readonly GraphGroupRegion[];
     height: number;
     labelMode?: 'all' | 'declutter';
+    nodeBoxes?: Readonly<Record<string, GraphBox>>;
+    nodeShape?: 'dot' | 'box';
     order: readonly string[];
     positions: Readonly<Record<string, GraphPoint>>;
+    routes?: Readonly<Record<string, readonly GraphPoint[]>>;
     width: number;
 }
 
@@ -3034,15 +3073,18 @@ export interface GraphLayoutResult {
 export interface GraphModel {
     drawnEdges: readonly GraphEdge[];
     edges: readonly GraphEdge[];
-    edgeShape: 'horizontal' | 'arc';
+    edgeShape: 'horizontal' | 'arc' | 'routed';
     groups: readonly GraphGroupRegion[];
     height: number;
     index: GraphIndex;
     labelMode: 'all' | 'declutter';
+    nodeBoxes: Readonly<Record<string, GraphBox>>;
     nodes: readonly GraphNode[];
+    nodeShape: 'dot' | 'box';
     order: readonly string[];
     positions: Readonly<Record<string, GraphPoint>>;
     report: GraphCleanReport;
+    routes: Readonly<Record<string, readonly GraphPoint[]>>;
     unplacedEdges: number;
     unplacedNodes: number;
     width: number;
@@ -3934,6 +3976,7 @@ export interface MetricProps extends ViewProps {
     label: string;
     labelClassName?: string;
     labelPosition?: MetricLabelPosition;
+    progress?: number;
     // (undocumented)
     size?: 'sm' | 'md' | 'lg';
     tone?: MetricTone;
@@ -4067,6 +4110,58 @@ export const motion: {
         readonly context: {
             readonly opacity: 0.35;
             readonly saturation: 0;
+        };
+    };
+    readonly tiers: {
+        readonly video: {
+            readonly enter: 1000;
+            readonly emphasis: 500;
+            readonly hero: 1500;
+            readonly count: 1500;
+            readonly rise: 40;
+            readonly staggerEach: 60;
+            readonly staggerMax: 500;
+        };
+        readonly app: {
+            readonly enter: 250;
+            readonly emphasis: 150;
+            readonly hero: 400;
+            readonly count: 600;
+            readonly rise: 8;
+            readonly staggerEach: 40;
+            readonly staggerMax: 300;
+        };
+    };
+    readonly presets: {
+        readonly riseIn: {
+            readonly props: {
+                readonly opacity: readonly [0, 1];
+                readonly translateY: readonly ["rise", 0];
+            };
+            readonly duration: "emphasis";
+            readonly ease: "out";
+            readonly stagger: true;
+            readonly exit: {
+                readonly ratio: 0.85;
+                readonly ease: "in";
+            };
+            readonly reduced: "fade";
+        };
+        readonly countUp: {
+            readonly props: {
+                readonly value: readonly ["from", "to"];
+            };
+            readonly duration: "count";
+            readonly ease: "out";
+            readonly reduced: "jump";
+        };
+        readonly payoff: {
+            readonly props: {
+                readonly scale: readonly [0.6, 1];
+            };
+            readonly spring: "bouncy";
+            readonly allowOvershoot: true;
+            readonly reduced: "fade";
         };
     };
 };
@@ -5057,6 +5152,12 @@ export function scoreBand(score: number | null | undefined, cutoff?: CodeCutoff 
 // @public
 export function SearchIcon(props: IconProps): react_jsx_runtime.JSX.Element;
 
+// @public
+export function searchTurns(turns: TimelineTurn[], query: string): {
+    matched: Set<number>;
+    total: number;
+};
+
 // @public (undocumented)
 export function Section(input: SectionProps): react_jsx_runtime.JSX.Element;
 
@@ -5544,6 +5645,26 @@ export const semanticTypography: {
 export const sequentialEffort: readonly ["#2ED573", "#FFD352", "#F9B415", "#FF7900", "#D14343", "#A4221C"];
 
 // @public
+export function SessionConversation(props: SessionConversationProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface SessionConversationProps extends Omit<ViewProps, 'children'> {
+    defaultExpandedTurns?: number[];
+    emptyState?: ReactNode;
+    expandedTurns?: number[];
+    isLoading?: boolean;
+    isUTC?: boolean;
+    limits?: ConversationLimits;
+    linkers?: ProseLinker[];
+    onExpandedTurnsChange?: (turnIndexes: number[]) => void;
+    onRequestFullText?: (message: TimelineMessage) => void;
+    onToolCallPress?: (call: TimelineToolCall) => void;
+    roleLabels?: SessionRoleLabels;
+    searchQuery?: string;
+    turns: TimelineTurn[];
+}
+
+// @public
 export function SessionDetail(input: SessionDetailProps): react_jsx_runtime.JSX.Element;
 
 // @public (undocumented)
@@ -5603,6 +5724,9 @@ export interface SessionListProps {
 
 // @public
 export function sessionPeriod(iso: string): string;
+
+// @public
+export type SessionRoleLabels = Partial<Record<'user' | 'assistant' | 'injected' | 'channel' | 'compaction', string>>;
 
 // @public
 export function sessionRowMeta(session: SessionSummary, now: number, taskCount: number): string;
@@ -6097,6 +6221,16 @@ export function StatCard(input: StatCardProps): react_jsx_runtime.JSX.Element;
 
 // @public (undocumented)
 export type StatCardCaptionPlacement = 'beside' | 'below';
+
+// @public
+export function StatCardFigure(input: StatCardFigureProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface StatCardFigureProps {
+    progress?: number;
+    testID?: string;
+    value: string;
+}
 
 // @public
 export function StatCardHeader(input: StatCardHeaderProps): react_jsx_runtime.JSX.Element;
@@ -6926,6 +7060,16 @@ export interface TimelineItem {
 }
 
 // @public
+export interface TimelineMessage {
+    atMs: number | null;
+    byteOffset: number;
+    role: 'user' | 'assistant';
+    seq: number;
+    text: string;
+    truncated: boolean;
+}
+
+// @public
 export type TimelineOrientation = 'horizontal' | 'vertical';
 
 // @public
@@ -6943,6 +7087,16 @@ export interface TimelineProps extends Omit<ViewProps, 'children'> {
 
 // @public
 export type TimelineRange<T = number> = readonly [T, T];
+
+// @public
+export interface TimelineTokens {
+    cacheRead: number;
+    cacheWrite: number;
+    cacheWrite1h: number;
+    cacheWrite5m: number;
+    input: number;
+    output: number;
+}
 
 // @public
 export type TimelineTone = 'neutral' | 'primary' | 'success' | 'warning' | 'error' | 'info';
@@ -6967,6 +7121,22 @@ export interface TimelineToolCall {
 
 // @public
 export type TimelineToolOutcome = 'success' | 'error' | 'unknown' | 'pending';
+
+// @public
+export interface TimelineTurn {
+    assistant: TimelineMessage[];
+    costUsd: number;
+    endMs: number | null;
+    errorCount: number;
+    gapBeforeMs: number | null;
+    index: number;
+    injectedMarker: string | null;
+    origin: TimelineTurnOrigin;
+    startMs: number | null;
+    tokens: TimelineTokens;
+    toolCalls: TimelineToolCall[];
+    user: TimelineMessage | null;
+}
 
 // @public
 export type TimelineTurnOrigin = 'prompt' | 'injected' | 'compaction' | 'none';

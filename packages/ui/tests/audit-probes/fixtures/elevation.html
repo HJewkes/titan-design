@@ -1,0 +1,187 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      /* Shadows copy the lift-shadow.ts and elevation-planes.ts recipes; colours mimic token values. */
+      body {
+        margin: 0;
+        font-family: sans-serif;
+        background: #ffffff;
+      }
+      #storybook-root {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+        padding: 16px;
+      }
+      .row {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+      }
+      .card {
+        padding: 16px;
+        border-radius: 8px;
+        background: #ffffff;
+      }
+      .lift-1 {
+        box-shadow:
+          0 1px 2px rgba(0, 0, 0, 0.35),
+          0 2px 6px rgba(0, 0, 0, 0.3);
+      }
+      .lift-2 {
+        box-shadow:
+          inset 0 1px 0 rgba(255, 255, 255, 0.12),
+          0 1px 2px rgba(0, 0, 0, 0.35),
+          0 4px 12px rgba(0, 0, 0, 0.32);
+      }
+      .lift-4 {
+        box-shadow:
+          0 1px 2px rgba(0, 0, 0, 0.35),
+          0 10px 24px rgba(0, 0, 0, 0.3),
+          0 24px 48px rgba(0, 0, 0, 0.2);
+      }
+      .track {
+        width: 44px;
+        height: 24px;
+        border-radius: 12px;
+        background: #d1d5db;
+        padding: 2px;
+        box-sizing: border-box;
+      }
+      .thumb {
+        width: 20px;
+        height: 20px;
+        border-radius: 10px;
+        background: #ffffff;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+      }
+      .glow {
+        box-shadow: 0 0 8px 2px rgba(34, 197, 94, 0.5);
+        background: #22c55e;
+      }
+      .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 4px;
+      }
+      .tile {
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+      }
+      .focus-ring {
+        padding: 8px 12px;
+        border-radius: 6px;
+        box-shadow: 0 0 0 2px #2563eb;
+      }
+      .tab {
+        border: 0;
+        background: transparent;
+        padding: 4px;
+      }
+      .filled {
+        border: 0;
+        padding: 4px;
+        background: #2563eb;
+      }
+      svg {
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 2;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="storybook-root">
+      <!-- nested-lift: planted -->
+      <div data-testid="nl-nested" class="card lift-1">
+        <div class="card lift-2">Card B</div>
+      </div>
+      <!-- nested-lift: controls -->
+      <div data-testid="nl-flat-inner" class="card lift-1">
+        <div class="card" style="border: 1px solid #e5e7eb">Card B</div>
+      </div>
+      <div data-testid="nl-menu-inner" class="card lift-1">
+        <div class="card lift-4">Menu</div>
+      </div>
+      <div data-testid="nl-thumb" class="card lift-1">
+        <div class="track"><div class="thumb"></div></div>
+      </div>
+      <div data-testid="nl-siblings" class="row">
+        <div class="card lift-1">Card A</div>
+        <div class="card lift-1">Card B</div>
+      </div>
+
+      <!-- glow-scope: planted -->
+      <div data-testid="gs-tile" class="row">
+        <div class="tile glow"></div>
+      </div>
+      <div data-testid="gs-two-dots" class="row">
+        <div class="dot glow"></div>
+        <div class="dot glow"></div>
+      </div>
+      <!-- glow-scope: controls -->
+      <div data-testid="gs-one-dot" class="row">
+        <div class="dot glow"></div>
+        <span>Value</span>
+      </div>
+      <div data-testid="gs-focus-ring" class="row">
+        <div class="focus-ring">Label</div>
+      </div>
+      <div data-testid="gs-all-colors" class="row">
+        <div class="dot glow"></div>
+        <div class="dot glow"></div>
+        <div class="dot glow"></div>
+        <div class="dot glow"></div>
+        <div class="dot glow"></div>
+        <div class="dot glow"></div>
+      </div>
+
+      <!-- glyph-drift: planted -->
+      <div data-testid="gd-size" class="card row" style="color: #9ca3af">
+        <svg width="16" height="16" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg>
+        <span>Label</span>
+        <svg width="18" height="18" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg>
+      </div>
+      <div data-testid="gd-colour" class="card row">
+        <svg width="16" height="16" viewBox="0 0 24 24" style="color: #9ca3af">
+          <path d="m9 18 6-6-6-6" />
+        </svg>
+        <span>Label</span>
+        <svg width="16" height="16" viewBox="0 0 24 24" style="color: #6b7280">
+          <path d="m9 18 6-6-6-6" />
+        </svg>
+      </div>
+      <!-- glyph-drift: controls -->
+      <div data-testid="gd-same" class="card row" style="color: #9ca3af">
+        <svg width="16" height="16" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg>
+        <span>Label</span>
+        <svg width="16" height="16" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg>
+      </div>
+      <div data-testid="gd-selected" class="card row" role="tablist">
+        <button class="tab" role="tab" aria-selected="true" style="color: #2563eb">
+          <svg width="16" height="16" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg>
+        </button>
+        <button class="tab" role="tab" aria-selected="false" style="color: #6b7280">
+          <svg width="16" height="16" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg>
+        </button>
+      </div>
+      <div data-testid="gd-on-fill" class="card row" style="color: #9ca3af">
+        <svg width="16" height="16" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg>
+        <button class="filled" style="color: #ffffff">
+          <svg width="16" height="16" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg>
+        </button>
+      </div>
+      <div data-testid="gd-sizes" class="row" style="color: #9ca3af">
+        <div class="card">
+          <svg width="16" height="16" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg>
+        </div>
+        <div class="card">
+          <svg width="20" height="20" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

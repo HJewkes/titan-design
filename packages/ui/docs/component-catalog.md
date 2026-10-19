@@ -12,6 +12,8 @@ Generated from `src/arch/component-catalog.json` by `pnpm catalog`. Do not edit 
 | AgentStateLabel | candidate | custom/Agents | An agent's state as a dot and its word, never colour alone. | Indicator, Pill, Typography | custom-agents-agentstatelabel--default |
 | Alert | stable | ui/alert | Alert component for displaying status messages. | — | components-molecules-alert--all-statuses |
 | AnimatedNumber | candidate | ui/animated-number | A number that counts or rolls from `from` to `value` as `progress` goes 0 → 1. | Typography | components-atoms-animatednumber--default |
+| Annotate | candidate | ui/motion | Annotate: marks its children with a hand-drawn highlight, underline, box, circle, strike-through or cross, drawn on as `progress` runs 0..1. | AnnotationMark | components-molecules-annotate--default |
+| AnnotationMark | candidate | ui/motion | AnnotationMark: a rough-notation style mark (highlight, underline, box, circle, strike-through or crossed-off) drawn round `box` as far as `progress`. | — | components-molecules-annotationmark--default |
 | AppShell | candidate | shell | `AppShell` — the generic dashboard chrome: a {@link TopBar} band over a {@link SideNav} rail and a `children` content region. | SideNav, Surface, TopBar, brands | pages-appshell--audiobook-app |
 | Autocomplete | stable | ui/autocomplete | Autocomplete component for searchable dropdown selection. | AutocompleteParts | components-molecules-autocomplete--custom-no-results-text |
 | Avatar | stable | ui/avatar | Avatar component for user/entity representation. | — | components-atoms-avatar--all-sizes |
@@ -40,6 +42,7 @@ Generated from `src/arch/component-catalog.json` by `pnpm catalog`. Do not edit 
 | Collapse | stable | ui/collapse | Collapsible content container. | — | components-organisms-accordion--allow-multiple |
 | Composer | candidate | custom/Chat | The message input bar. | Button, Input, Surface | custom-chat-composer--default |
 | ConversationIdentity | candidate | custom/Chat | Who a direct thread is with, shown once at the top instead of on every message, the way Messages heads a conversation. | Avatar, Typography | custom-chat-conversationidentity--default |
+| ConversationTurn | candidate | custom/Session | One turn of an agent session: its opener, the assistant's messages in `seq` order, and every tool call of the turn in one disclosure under the text. | DateTime, MarkdownProse, TurnMessages, TurnToolGroup, Typography | custom-session-conversationturn--default |
 | DataRow | stable | ui/data-row | A label-and-value row: the dense rung of the row ladder. | — | components-molecules-datarow--custom-class-name |
 | DateSeparator | candidate | custom/Chat | — | DateTime, Divider, Typography | custom-chat-messagelist-dateseparator--older |
 | DateTime | candidate | ui/date-time | DateTime component for displaying formatted dates and times. | Typography | components-molecules-datetime--all-formats |
@@ -65,6 +68,7 @@ Generated from `src/arch/component-catalog.json` by `pnpm catalog`. Do not edit 
 | FatigueMeter | candidate | custom/Workout | A fatigue meter: a sliding needle over a fixed green→gold→orange→red velocity-loss gradient with VL10/VL20/VL30/stop scale markers. | ZoneTrack | custom-workout-dataviz-fatiguemeter--custom-scale |
 | FileActivityDetail | candidate | custom/ActiveWork | FileActivityDetail — the right-hand pane of {@link FileHistoryExplorer }: one file's full mined history. | Card, DataRow, DateTime, Eyebrow, FileActivityGrowthWell, FileActivityRow, FilePathLabel, Pill, Tile, Typography | custom-activework-fileactivitydetail--default |
 | FileActivityRow | candidate | custom/ActiveWork | FileActivityRow — one file in the ranked "hottest files" list: its path, total touches, the read/write/edit split, and a sparkline of per-session growth. | FilePathLabel, SparkBars, Typography | custom-activework-fileactivityrow--default |
+| FileCard | candidate | custom/Code | FileCard: one file's facts for a map card. | DataRow, FilePathLabel, Pill, Typography | custom-code-filecard--default |
 | FileHistoryExplorer | candidate | custom/ActiveWork | FileHistoryExplorer — a file browser ranked by mined activity instead of alphabetised by name: a KPI strip, a two-pane hottest-files list ⇄ detail, and the repo's strongest co-change pairs. | Card, CoChangeChip, Divider, Eyebrow, FileActivityDetail, FileActivityRow, Tile, Typography | custom-activework-filehistoryexplorer--default |
 | FilePathLabel | candidate | ui/file-path-label | FilePathLabel — a file path with the directory dimmed and the basename bright. | Typography | components-atoms-filepathlabel--base-only |
 | FormField | stable | ui/form-field | FormField component for wrapping form inputs with label, help text, and error states. | — | components-molecules-formfield--complete-form-example |
@@ -100,6 +104,7 @@ Generated from `src/arch/component-catalog.json` by `pnpm catalog`. Do not edit 
 | LiveAuraFrame | candidate | custom/Workout | Full-surface color-flood frame tied to a coaching category. | — | custom-workout-liveauraframe--all-states |
 | LiveFatigueCard | candidate | custom/Fatigue | — | FatigueLights, GhostSpark, RomProgressionChart, Surface, VerdictHero | custom-fatigue-live-fatigue-card--default |
 | LiveFatiguePanel | candidate | custom/Fatigue | — | LiveAuraFrame, LiveFatigueCard, VelocityHero | custom-fatigue-live-fatigue-panel--live-panel-v-2 |
+| MapCard | candidate | ui/map-card | MapCard: a pop-out card beside a point on a map, joined to it by a leader line. | Surface, Typography | components-molecules-mapcard--default |
 | MarkdownProse | candidate | custom/Prose | MarkdownProse — renders a small, predictable markdown subset as themed prose and auto-links references the caller describes. | Typography | custom-prose-markdownprose--code-blocks |
 | Menu | candidate | ui/menu | Menu component for dropdown menus. | Surface, TriggerSurface | components-molecules-menu--controlled |
 | MesoCard | candidate | custom/Workout | A mesocycle card with name, goal, split, week range, an optional volume heatmap strip, and an expandable WeekRow list. | Badge, Card, WeekRow | custom-workout-mesocard--collapsed |
@@ -110,6 +115,7 @@ Generated from `src/arch/component-catalog.json` by `pnpm catalog`. Do not edit 
 | Metric | candidate | ui/metric | — | — | components-molecules-metric--default |
 | MetricTiles | candidate | custom/Workout | MetricTiles — a row of equal-width stat tiles. | Stack, Tile | custom-workout-metrictiles--four-tiles |
 | Modal | candidate | ui/modal | Modal component for dialogs and overlays. | Surface | components-organisms-modal--backdrop-blur |
+| Morph | candidate | ui/motion | A keyed morph between two scenes (Manim's TransformMatchingParts): parts whose keys match move to their new box, key-mapped parts move and cross-fade, and the rest fade out and in. | — | components-molecules-morph--default |
 | MotionProvider | review | ui/motion | Puts every motion hook below it on `clock`, so a seek clock can drive a render frame by frame. | — | — |
 | MuscleGlyph | review | custom/Workout | — | — | — |
 | MuscleGroupChip | candidate | custom/Workout | MuscleGroupChip — a `Pill` preset that labels a muscle group with a volume-status dot. | Pill | custom-workout-musclegroupchip--all-statuses |
@@ -141,11 +147,13 @@ Generated from `src/arch/component-catalog.json` by `pnpm catalog`. Do not edit 
 | ScatterGridlines | review | ui/charts | Horizontal then vertical gridlines, each carrying its tick label. | — | — |
 | ScatterPointMark | review | ui/charts | One pressable bubble, ringed when selected, labelled when large or selected. | — | — |
 | ScheduleTiles | candidate | custom/Workout | ScheduleTiles — Date / Time / Until row for an upcoming session. | DateTime, Stack, Tile | custom-workout-scheduletiles--soon-under-a-day |
+| SchemaCard | candidate | ui/charts | SchemaCard: tables, their fields and the relations between them, laid out from data with no measuring. | EmptyState, SchemaConnectors, Skeleton, Surface, Typography | components-organisms-schemacard--default |
 | Section | stable | ui/section | — | — | components-atoms-section--default |
 | SegmentedBar | candidate | custom/Workout | A horizontal track split into weighted, individually-fillable segments — the presentational atom the per-set strips are built from. | — | custom-workout-segmentedbar--equal-segments |
 | SegmentedProgressBar | candidate | custom/Workout | A progress bar segmented by weighted slots (one chunk per exercise, width ∝ its set count): `value` fills the chunks left-to-right, and a single pace colour spans them all — green when at/ahead of the `target` pace, amber when behind, steel when there is no target. | SegmentedBar | custom-workout-segmentedprogressbar--ahead |
 | Select | candidate | ui/select | Select component for single or multi-selection. | SelectPopover | components-molecules-select--controlled |
 | SelectPopover | review | ui/select | — | Surface | — |
+| SessionConversation | candidate | custom/Session | An agent session read back as a conversation: each turn's opener, the assistant's text and one tool group per turn, with the idle gaps the read model marked. | ConversationTurn, EmptyState, GapIndicator, MarkdownProse, Skeleton, Typography | custom-session-sessionconversation--default |
 | SessionDetail | candidate | custom/ActiveWork | SessionDetail — one session log, readable: its title, when it ran and for how long, the tasks it touched (as pills, or as a table when the host supplies the rows), then the markdown body with task ids, `[[name]]` links and PR numbers auto-linked. | Card, Collapse, DateTime, Divider, MarkdownProse, Pill, SessionListItem, TaskRow, TaskTable, Tooltip, Typography | custom-activework-sessiondetail--ad-hoc |
 | SessionHeader | candidate | custom/Workout | The session-rail heading: the session title over a stat row and a chunked pace bar. | MetricTiles, ScheduleTiles, SegmentedProgressBar, Surface, TimerReadout, Typography | shell-sessionrail-sessionheader--live-behind |
 | SessionList | candidate | custom/ActiveWork | SessionList — the selectable list half of the session reader. | Divider, Eyebrow, SessionListItem, Typography | custom-activework-sessionlist--custom-label |

@@ -1,3 +1,4 @@
+import { formatCompact } from '../../../utils/number-format'
 import type { IndicatorColor } from '../../ui/indicator'
 import type {
   TimelineToolOutcome,
@@ -110,3 +111,40 @@ export const SIDECHAIN_LABEL = 'in subagent'
 
 /** Names the disclosure that holds a failed call's error text. */
 export const ERROR_TEXT_LABEL = 'Error text'
+
+/** "1 call", "6 calls", "1.2k calls": a count with its noun. */
+export function countLabel(count: number, one: string, many: string): string {
+  return `${formatCompact(count)} ${count === 1 ? one : many}`
+}
+
+/** Names the assistant's messages in a turn. */
+export const ASSISTANT_LABEL = 'Assistant'
+
+/** Names the reader when a host passes no `accessibilityLabel`. */
+export const CONVERSATION_LABEL = 'Session conversation'
+
+/** Reveals the rest of a message the preview cut. */
+export const SHOW_MORE_LABEL = 'Show more'
+
+/** Folds a message back to its preview. */
+export const SHOW_LESS_LABEL = 'Show less'
+
+/** Says the read model cut the message text at its cap. */
+export const TEXT_CUT_LABEL = 'Text cut at 4,000 characters'
+
+/** Asks the host for a message's full text. */
+export const LOAD_FULL_TEXT_LABEL = 'Load full text'
+
+/** The default empty state. */
+export const NO_TURNS_TITLE = 'No turns'
+export const NO_TURNS_DESCRIPTION = 'This session has no messages or tool calls yet.'
+
+/** The polite status line while a search is set: "3 of 41 turns match". */
+export function searchStatusLabel(matched: number, total: number): string {
+  return `${formatCompact(matched)} of ${countLabel(total, 'turn', 'turns')} ${matched === 1 ? 'matches' : 'match'}`
+}
+
+/** The row under a capped tool list: "Show 300 more calls". */
+export function moreCallsLabel(hidden: number): string {
+  return `Show ${countLabel(hidden, 'more call', 'more calls')}`
+}
