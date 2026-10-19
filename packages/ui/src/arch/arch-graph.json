@@ -1500,6 +1500,52 @@
       "standard": false
     },
     {
+      "name": "ChipGroup",
+      "file": "packages/ui/src/components/ui/chip-group/ChipGroup.tsx",
+      "dir": "ui",
+      "family": "ui/chip-group",
+      "exports": [
+        "ChipGroup",
+        "ChipGroupItem",
+        "ChipGroupOverflow",
+        "ChipGroupProps",
+        "accessibleName",
+        "ChipGroup.select",
+        "ChipGroup.handleKeyDown",
+        "GroupFrame",
+        "ScrollRow",
+        "GroupChip",
+        "ChipGroupSkeleton",
+        "withoutGroupProps"
+      ],
+      "libDependents": 1,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "Chip",
+        "Skeleton"
+      ],
+      "leak": {
+        "rawView": 4,
+        "rawText": 1,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 270,
+        "score": 5
+      },
+      "tier": "organism",
+      "verdict": "keep-internal",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
       "name": "CircularTimer",
       "file": "packages/ui/src/components/custom/CircularTimer/CircularTimer.tsx",
       "dir": "custom",
