@@ -81,6 +81,22 @@ export const Back: Story = {
   args: { data: backData, view: 'back', mode: 'detailed' },
 }
 
+/**
+ * Back and glutes are trained, but their MEV is withheld: no verdict, painted result-neutral, and
+ * keyed in the legend by the same ring as `MuscleGroupChip` (VW-741).
+ */
+export const NoVerdict: Story = {
+  args: {
+    data: backData.map((entry) =>
+      [MuscleGroup.LATS, MuscleGroup.UPPER_BACK, MuscleGroup.GLUTES].includes(entry.muscleGroup)
+        ? { ...entry, volumeStatus: 'noverdict' }
+        : entry
+    ),
+    view: 'back',
+    mode: 'detailed',
+  },
+}
+
 export const Simple: Story = {
   args: { data: sampleData, view: 'front', mode: 'simple' },
 }
