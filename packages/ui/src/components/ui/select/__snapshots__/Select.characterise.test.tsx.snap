@@ -1120,12 +1120,14 @@ exports[`Select characterisation > on a dark surface > renders the FieldFamily s
               style="background-color: rgb(28, 25, 22); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
             >
               <input
+                aria-disabled="true"
                 aria-label="Input disabled"
                 autocapitalize="sentences"
                 autocomplete="on"
                 autocorrect="on"
                 class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
                 dir="auto"
+                disabled=""
                 placeholder="Enter a name..."
                 readonly=""
                 rows="1"
@@ -1148,12 +1150,14 @@ exports[`Select characterisation > on a dark surface > renders the FieldFamily s
               style="background-color: rgb(28, 25, 22); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
             >
               <textarea
+                aria-disabled="true"
                 aria-label="TextArea disabled"
                 autocapitalize="sentences"
                 autocomplete="on"
                 autocorrect="on"
                 class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
                 dir="auto"
+                disabled=""
                 placeholder="Add a note..."
                 readonly=""
                 rows="2"
@@ -1744,12 +1748,14 @@ exports[`Select characterisation > on a dark surface > renders the FieldFamily s
               style="background-color: rgb(28, 25, 22); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
             >
               <input
+                aria-disabled="true"
                 aria-label="Input disabled"
                 autocapitalize="sentences"
                 autocomplete="on"
                 autocorrect="on"
                 class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
                 dir="auto"
+                disabled=""
                 placeholder="Enter a name..."
                 readonly=""
                 rows="1"
@@ -1772,12 +1778,14 @@ exports[`Select characterisation > on a dark surface > renders the FieldFamily s
               style="background-color: rgb(28, 25, 22); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
             >
               <textarea
+                aria-disabled="true"
                 aria-label="TextArea disabled"
                 autocapitalize="sentences"
                 autocomplete="on"
                 autocorrect="on"
                 class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
                 dir="auto"
+                disabled=""
                 placeholder="Add a note..."
                 readonly=""
                 rows="2"
@@ -5519,12 +5527,14 @@ exports[`Select characterisation > on a light surface > renders the FieldFamily 
               style="background-color: rgb(237, 234, 231); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
             >
               <input
+                aria-disabled="true"
                 aria-label="Input disabled"
                 autocapitalize="sentences"
                 autocomplete="on"
                 autocorrect="on"
                 class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
                 dir="auto"
+                disabled=""
                 placeholder="Enter a name..."
                 readonly=""
                 rows="1"
@@ -5547,12 +5557,14 @@ exports[`Select characterisation > on a light surface > renders the FieldFamily 
               style="background-color: rgb(237, 234, 231); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
             >
               <textarea
+                aria-disabled="true"
                 aria-label="TextArea disabled"
                 autocapitalize="sentences"
                 autocomplete="on"
                 autocorrect="on"
                 class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
                 dir="auto"
+                disabled=""
                 placeholder="Add a note..."
                 readonly=""
                 rows="2"
@@ -6143,12 +6155,14 @@ exports[`Select characterisation > on a light surface > renders the FieldFamily 
               style="background-color: rgb(237, 234, 231); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
             >
               <input
+                aria-disabled="true"
                 aria-label="Input disabled"
                 autocapitalize="sentences"
                 autocomplete="on"
                 autocorrect="on"
                 class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
                 dir="auto"
+                disabled=""
                 placeholder="Enter a name..."
                 readonly=""
                 rows="1"
@@ -6171,12 +6185,14 @@ exports[`Select characterisation > on a light surface > renders the FieldFamily 
               style="background-color: rgb(237, 234, 231); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
             >
               <textarea
+                aria-disabled="true"
                 aria-label="TextArea disabled"
                 autocapitalize="sentences"
                 autocomplete="on"
                 autocorrect="on"
                 class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
                 dir="auto"
+                disabled=""
                 placeholder="Add a note..."
                 readonly=""
                 rows="2"
