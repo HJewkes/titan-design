@@ -384,13 +384,13 @@ export const MOTION: {
         exitScale: 0.85;
         emphasis: number;
         count: number;
+        enter: number;
         exit: number;
         hero: number;
-        enter: number;
         staggerEach: number;
         staggerMax: number;
     };
-    readonly spring: Record<"bouncy" | "heavy" | "smooth" | "snappy", Required<Pick<SpringOptions, "stiffness" | "damping" | "mass">>>;
+    readonly spring: Record<"bouncy" | "heavy" | "snappy" | "smooth", Required<Pick<SpringOptions, "stiffness" | "damping" | "mass">>>;
     readonly springPreset: typeof springPreset;
     readonly staggerEachS: typeof staggerEachS;
     readonly preset: typeof motionPreset;

@@ -12488,6 +12488,13 @@
           "name": "sort",
           "required": false,
           "type": "\"none\" | \"descending\""
+        },
+        {
+          "default": null,
+          "description": "Seconds into the entrance, read from a motion seek clock (`useBeatTime().t` under a seeked `MotionProvider`): the bars grow in turn as a pure function of `t`.",
+          "name": "t",
+          "required": false,
+          "type": "number"
         }
       ],
       "purpose": "BarList: a ranked horizontal bar list.",

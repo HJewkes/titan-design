@@ -31,6 +31,8 @@ export interface RowViewProps extends CellsProps {
   fill: string
   /** Where the reference line sits on the track, or null when none is drawn. */
   markerFraction: number | null
+  /** Share of its length the bar paints: below 1 only during a seeked entrance. */
+  growth: number
 }
 
 function Label({ entry, size }: { entry: BarListModelRow; size: 'sm' | 'md' }) {
@@ -43,6 +45,7 @@ function Label({ entry, size }: { entry: BarListModelRow; size: 'sm' | 'md' }) {
 
 export function RowContent(props: RowViewProps) {
   const { entry, layout, size, fill, markerFraction } = props
+  const fraction = entry.fraction * props.growth
   if (layout === 'stacked') {
     return (
       <View className="gap-1">
@@ -58,7 +61,7 @@ export function RowContent(props: RowViewProps) {
           </Typography>
         ) : null}
         <View className="flex-row">
-          <Bar fraction={entry.fraction} fill={fill} size={size} markerFraction={markerFraction} />
+          <Bar fraction={fraction} fill={fill} size={size} markerFraction={markerFraction} />
         </View>
       </View>
     )
@@ -68,7 +71,7 @@ export function RowContent(props: RowViewProps) {
       <View className="w-24">
         <Label entry={entry} size={size} />
       </View>
-      <Bar fraction={entry.fraction} fill={fill} size={size} markerFraction={markerFraction} />
+      <Bar fraction={fraction} fill={fill} size={size} markerFraction={markerFraction} />
       <Cells {...props} />
     </View>
   )
@@ -93,7 +96,7 @@ export function RowItem({ name, children }: { name: string; children: ReactNode 
   )
 }
 
-interface ModelRowProps extends Pick<RowViewProps, 'entry' | 'layout' | 'size'> {
+interface ModelRowProps extends Pick<RowViewProps, 'entry' | 'layout' | 'size' | 'growth'> {
   shownCount: number
   sort: 'descending' | 'none'
   columnChars: BarListColumnChars

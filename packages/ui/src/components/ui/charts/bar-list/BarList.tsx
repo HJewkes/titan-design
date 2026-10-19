@@ -4,6 +4,7 @@ import { cn } from '../../../../utils/cn'
 import type { ListNavigationKeyEvent } from '../../../../hooks/useListNavigation'
 import { EmptyState } from '../../empty-state'
 import { useSurfaceMode } from '../../surface'
+import { entranceAt, markGrowthAt } from '../kit/chartEntrance'
 import { silverRed } from '../kit/silverRed'
 import { resolveColumns } from './BarListCells'
 import { ModelRow, OverflowRow, SkeletonRows } from './BarListParts'
@@ -50,6 +51,12 @@ export interface BarListProps extends Omit<ViewProps, 'children'> {
   isLoading?: boolean
   /** Replaces the default empty state, shown when `rows` is empty. */
   emptyState?: ReactNode
+  /**
+   * Seconds into the entrance, read from a motion seek clock (`useBeatTime().t` under a seeked
+   * `MotionProvider`): the bars grow in turn as a pure function of `t`. Omit it and the bars
+   * render at full length, as they always have.
+   */
+  t?: number
   /** Tailwind classes merged onto the list root. */
   className?: string
 }
@@ -109,6 +116,7 @@ export function BarList({
   isValueHidden = false,
   isLoading = false,
   emptyState,
+  t,
   className,
   ...props
 }: BarListProps) {
@@ -131,6 +139,7 @@ export function BarList({
     isValueHidden || model.flaggedCount > 0 || model.marker !== null
   )
   const columns = resolveColumns(model.columnChars, isValueHidden)
+  const entrance = t === undefined ? null : entranceAt(t, { marks: model.rows.length })
   const { onKeyDown: callerKeyDown, ...viewProps } = props as typeof props & KeyDownProps
 
   if (isLoading) {
@@ -182,6 +191,7 @@ export function BarList({
           layout={layout}
           size={size}
           palette={palette}
+          growth={entrance ? markGrowthAt(entrance, index) : 1}
           formatValue={formatValue}
           formatSecondary={formatSecondary}
         />

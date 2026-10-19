@@ -560,6 +560,7 @@ export interface BarListProps extends Omit<ViewProps, 'children'> {
     rows: BarListRow[];
     size?: 'sm' | 'md';
     sort?: 'descending' | 'none';
+    t?: number;
 }
 
 // @public
