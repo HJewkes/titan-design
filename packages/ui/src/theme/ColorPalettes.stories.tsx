@@ -757,7 +757,7 @@ const MEDIA_FRAMES = [
 /** `text-on-scrim` at `text-xs` on `bg-scrim-strong`, over each frame (TD-987). */
 function MediaBadgeFrames() {
   return (
-    <View style={{ flexDirection: 'row', gap: 16, marginTop: 16 }}>
+    <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 16, marginTop: 16 }}>
       {MEDIA_FRAMES.map((frame) => (
         <View
           key={frame.name}
