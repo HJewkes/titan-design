@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest'
-import { compositeOver, contrast } from '../../theme/color-checks'
+import { compositeOver } from '../../theme/color-checks'
 import { getSemanticColors, type ThemeMode } from '../../theme/tokens/semantic'
 import {
   ADJACENT_FLOOR,
   LIGHT_FADED_STEP,
-  PALETTES,
+  PALETTE,
   PLANE_FLOOR,
   fadedPalette,
   highlightZones,
@@ -13,27 +13,22 @@ import {
   rampLabel,
   scaleZones,
   stepDown,
-  type PaletteId,
   type ScaleId,
 } from './zone-fade'
 
 const SCALE_IDS: ScaleId[] = ['effort', 'diverging']
-const PALETTE_IDS: PaletteId[] = ['asBuilt', 'subtle']
-
-function everyLitReading(palette: PaletteId, mode: ThemeMode) {
+function everyLitReading(mode: ThemeMode) {
   return SCALE_IDS.flatMap((scale) =>
     scaleZones(scale, mode).map((zone, lit) => ({
       label: `${mode} ${scale} ${rampLabel(zone)} lit`,
-      readings: highlightZones(palette, scale, mode, lit),
+      readings: highlightZones(scale, mode, lit),
     }))
   )
 }
 
 describe('zone fade palettes', () => {
-  it('marks the dark as built option as the one that ships, subtle as the alternative', () => {
-    const shipping = PALETTE_IDS.filter((id) => PALETTES[id].title.includes('(ships)'))
-    expect(shipping).toEqual(['asBuilt'])
-    expect(PALETTES.subtle.title).toBe('Dark, subtle tokens (alternative)')
+  it('ships the dark as built fade', () => {
+    expect(PALETTE.title).toBe('Dark, as built (ships)')
   })
 
   it('names every zone colour of both scales by its ramp step', () => {
@@ -68,14 +63,14 @@ describe('zone fade palettes', () => {
   it('keeps only the landed zone at full colour', () => {
     const bright = scaleZones('effort', 'dark').map((z) => z.hex)
 
-    const zones = highlightZones('asBuilt', 'effort', 'dark', 2)
+    const zones = highlightZones('effort', 'dark', 2)
 
     expect(zones[2].color.fill).toBe(bright[2])
     expect(zones.filter((z, i) => z.color.fill === bright[i])).toHaveLength(1)
   })
 
   it('separates every dark lit zone from both faded neighbours by the floor as built', () => {
-    for (const { label, readings } of everyLitReading('asBuilt', 'dark')) {
+    for (const { label, readings } of everyLitReading('dark')) {
       for (const { vsLit } of readings.filter((r) => r.vsLit != null)) {
         expect(vsLit, label).toBeGreaterThanOrEqual(ADJACENT_FLOOR)
       }
@@ -83,34 +78,32 @@ describe('zone fade palettes', () => {
   })
 
   it('keeps every dark faded zone as built visible on the plane', () => {
-    for (const { label, readings } of everyLitReading('asBuilt', 'dark')) {
+    for (const { label, readings } of everyLitReading('dark')) {
       for (const { vsPlane } of readings) expect(vsPlane, label).toBeGreaterThanOrEqual(PLANE_FLOOR)
     }
   })
 
   it('fades the zone the owner flagged past amber 500 beside a lit red 600', () => {
-    const amber = fadedPalette('asBuilt', 'effort', 'dark')[1]
+    const amber = fadedPalette('effort', 'dark')[1]
 
     expect(amber.label).not.toBe('amber 500')
   })
 
-  it('fades every light zone to step 50, in both options', () => {
+  it('fades every light zone to step 50', () => {
     expect(LIGHT_FADED_STEP).toBe(50)
 
-    for (const palette of PALETTE_IDS) {
-      expect(fadedPalette(palette, 'diverging', 'light').map(({ label }) => label)).toEqual([
-        'blue 50',
-        'cyan 50',
-        'green 50',
-        'amber 50',
-        'red 50',
-      ])
-    }
+    expect(fadedPalette('diverging', 'light').map(({ label }) => label)).toEqual([
+      'blue 50',
+      'cyan 50',
+      'green 50',
+      'amber 50',
+      'red 50',
+    ])
   })
 
   it('keeps every light faded zone clear of the track and plane on planes 0 and -1', () => {
     for (const scale of SCALE_IDS) {
-      for (const { level, zones } of planeReadings('asBuilt', scale, 'light')) {
+      for (const { level, zones } of planeReadings(scale, 'light')) {
         for (const { color, vsPlane, vsTrack } of zones) {
           const label = `light ${scale} plane ${level} ${color.label}`
           expect(vsPlane, label).toBeGreaterThanOrEqual(PLANE_FLOOR)
@@ -121,7 +114,7 @@ describe('zone fade palettes', () => {
   })
 
   it('separates every light lit zone from both faded neighbours by the floor', () => {
-    for (const { label, readings } of everyLitReading('asBuilt', 'light')) {
+    for (const { label, readings } of everyLitReading('light')) {
       for (const { vsLit } of readings.filter((r) => r.vsLit != null)) {
         expect(vsLit, label).toBeGreaterThanOrEqual(ADJACENT_FLOOR)
       }
@@ -129,7 +122,7 @@ describe('zone fade palettes', () => {
   })
 
   it('leaves the dark faded steps as built', () => {
-    expect(fadedPalette('asBuilt', 'diverging', 'dark').map(({ label }) => label)).toEqual([
+    expect(fadedPalette('diverging', 'dark').map(({ label }) => label)).toEqual([
       'blue 700',
       'cyan 600',
       'green 500',
@@ -138,29 +131,13 @@ describe('zone fade palettes', () => {
     ])
   })
 
-  it("paints each dark zone with its hue's subtle token in the subtle option", () => {
+  it('measures the translucent dark track as painted on each plane', () => {
     const dark = getSemanticColors('dark')
 
-    const faded = fadedPalette('subtle', 'effort', 'dark')
-
-    expect(faded.map(({ label }) => label)).toEqual([
-      'status-success-subtle',
-      'status-warning-subtle',
-      'brand-primary-subtle',
-      'status-error-subtle',
-    ])
-    expect(faded[3].fill).toBe(dark['status-error-subtle'])
-  })
-
-  it('measures a translucent subtle fill as painted on each plane', () => {
-    const dark = getSemanticColors('dark')
-
-    const [base, background] = planeReadings('subtle', 'effort', 'dark')
+    const [base, background] = planeReadings('effort', 'dark')
 
     expect(base.plane).toBe(dark['surface-base'])
     expect(background.plane).toBe(dark['background-base'])
-    expect(base.zones[0].painted).toBe(compositeOver(dark['status-success-subtle'], base.plane))
-    expect(base.zones[0].vsPlane).toBeCloseTo(contrast(base.zones[0].painted, base.plane), 5)
     expect(background.track).toBe(compositeOver(dark['border-prominent'], background.plane))
   })
 })

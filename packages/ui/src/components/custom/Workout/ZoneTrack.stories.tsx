@@ -5,44 +5,32 @@ import { WORKOUT_TOKENS, heatmapColors } from '../../../theme/workout-tokens'
 import { Surface, useSurfaceMode } from '../../ui/surface'
 import { View } from 'react-native'
 import { Typography } from '../../ui/typography'
-import { compositeOver } from '../../../theme/color-checks'
 import { primitiveRamps } from '../../../theme/tokens/primitives'
-import { getSemanticColors, type ThemeMode } from '../../../theme/tokens/semantic'
+import type { ThemeMode } from '../../../theme/tokens/semantic'
 
 const { green, yellow, orange, red } = WORKOUT_TOKENS.scale
 type HighlightScale = 'effort' | 'diverging'
-type DarkFade = 'asBuilt' | 'subtle'
 interface ZoneHighlightArgs {
   scale: HighlightScale
-  darkFade: DarkFade
   reading: number
 }
 
-const DARK_FADE_LABEL: Record<DarkFade, string> = {
-  asBuilt: 'Dark, as built (ships)',
-  subtle: 'Dark, subtle tokens (alternative)',
-}
-
 const r = primitiveRamps
-type SemanticToken = keyof ReturnType<typeof getSemanticColors>
 
-/** Each zone's light step 50, its dark "as built" step and its subtle token, left to right. */
-const HIGHLIGHT_RAMPS: Record<
-  HighlightScale,
-  { light: string; asBuilt: string; subtle: SemanticToken }[]
-> = {
+/** Each zone's light step 50 and its dark "as built" step, left to right. */
+const HIGHLIGHT_RAMPS: Record<HighlightScale, { light: string; dark: string }[]> = {
   effort: [
-    { light: r.green[50], asBuilt: r.green[500], subtle: 'status-success-subtle' },
-    { light: r.amber[50], asBuilt: r.amber[600], subtle: 'status-warning-subtle' },
-    { light: r.orange[50], asBuilt: r.orange[700], subtle: 'brand-primary-subtle' },
-    { light: r.red[50], asBuilt: r.red[800], subtle: 'status-error-subtle' },
+    { light: r.green[50], dark: r.green[500] },
+    { light: r.amber[50], dark: r.amber[600] },
+    { light: r.orange[50], dark: r.orange[700] },
+    { light: r.red[50], dark: r.red[800] },
   ],
   diverging: [
-    { light: r.blue[50], asBuilt: r.blue[700], subtle: 'status-info-subtle' },
-    { light: r.cyan[50], asBuilt: r.cyan[600], subtle: 'brand-secondary-subtle' },
-    { light: r.green[50], asBuilt: r.green[500], subtle: 'status-success-subtle' },
-    { light: r.amber[50], asBuilt: r.amber[700], subtle: 'status-warning-subtle' },
-    { light: r.red[50], asBuilt: r.red[800], subtle: 'status-error-subtle' },
+    { light: r.blue[50], dark: r.blue[700] },
+    { light: r.cyan[50], dark: r.cyan[600] },
+    { light: r.green[50], dark: r.green[500] },
+    { light: r.amber[50], dark: r.amber[700] },
+    { light: r.red[50], dark: r.red[800] },
   ],
 }
 
@@ -52,14 +40,15 @@ function litColors(scale: HighlightScale, mode: ThemeMode): string[] {
   return [heat.under, heat.maintenance, heat.productive, heat.approaching, heat.over]
 }
 
-function highlightZones(scale: HighlightScale, darkFade: DarkFade, mode: ThemeMode) {
-  const colors = getSemanticColors(mode)
+function highlightZones(scale: HighlightScale, mode: ThemeMode) {
   const lit = litColors(scale, mode)
-  return HIGHLIGHT_RAMPS[scale].map(({ light, asBuilt, subtle }, i): ZoneTrackZone => {
-    const dark =
-      darkFade === 'asBuilt' ? asBuilt : compositeOver(colors[subtle], colors['surface-base'])
-    return { upTo: (i + 1) * 8, color: lit[i], faded: mode === 'light' ? light : dark }
-  })
+  return HIGHLIGHT_RAMPS[scale].map(
+    ({ light, dark }, i): ZoneTrackZone => ({
+      upTo: (i + 1) * 8,
+      color: lit[i],
+      faded: mode === 'light' ? light : dark,
+    })
+  )
 }
 
 const meta: Meta<typeof ZoneTrack> = {
@@ -92,26 +81,10 @@ const meta: Meta<typeof ZoneTrack> = {
 }
 export default meta
 
-function zoneHighlightStory(darkFade: DarkFade): StoryObj<Omit<ZoneHighlightArgs, 'darkFade'>> {
-  return {
-    args: { scale: 'effort', reading: 24 },
-    argTypes: {
-      scale: { control: 'select', options: ['effort', 'diverging'] },
-      reading: { control: { type: 'range', min: 0, max: 40, step: 1 } },
-    },
-    render: function Render({ scale, reading }) {
-      return <ZoneHighlightTrack scale={scale} darkFade={darkFade} reading={reading} />
-    },
-  }
-}
-
-function ZoneHighlightTrack({ scale, darkFade, reading }: ZoneHighlightArgs) {
+function ZoneHighlightTrack({ scale, reading }: ZoneHighlightArgs) {
   const mode = useSurfaceMode()
-  const zones = highlightZones(scale, darkFade, mode)
-  const caption =
-    mode === 'light'
-      ? 'Light, step 50 (ships; the same in both dark options)'
-      : DARK_FADE_LABEL[darkFade]
+  const zones = highlightZones(scale, mode)
+  const caption = mode === 'light' ? 'Light, step 50 (ships)' : 'Dark, as built (ships)'
   return (
     <View style={{ gap: 8 }}>
       <Typography variant="monoLabel" className="text-text-secondary">
@@ -132,16 +105,14 @@ function ZoneHighlightTrack({ scale, darkFade, reading }: ZoneHighlightArgs) {
  * other zone takes its `faded` colour. Light fades to step 50. Dark steps each zone down its
  * ramp until it clears 1.5:1 against a lit neighbour (Lab/Decisions/ZoneTrack Adjacent Contrast).
  */
-export const ZoneHighlight = {
-  ...zoneHighlightStory('asBuilt'),
-  name: 'Dark, as built (ships)',
-}
-
-/**
- * The alternative dark fade, for comparison only: each zone's hue takes its subtle fill token,
- * painted over the plane. Light is the same step 50 as the shipped story.
- */
-export const ZoneHighlightSubtle = {
-  ...zoneHighlightStory('subtle'),
-  name: 'Dark, subtle tokens (alternative)',
+export const ZoneHighlight: StoryObj<ZoneHighlightArgs> = {
+  name: 'Zone highlight (ships)',
+  args: { scale: 'effort', reading: 24 },
+  argTypes: {
+    scale: { control: 'select', options: ['effort', 'diverging'] },
+    reading: { control: { type: 'range', min: 0, max: 40, step: 1 } },
+  },
+  render: function Render({ scale, reading }) {
+    return <ZoneHighlightTrack scale={scale} reading={reading} />
+  },
 }

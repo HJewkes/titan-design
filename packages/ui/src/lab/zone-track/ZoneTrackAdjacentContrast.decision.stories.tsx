@@ -5,7 +5,7 @@ import { getSemanticColors, type ThemeMode } from '../../theme/tokens/semantic'
 import { Caption, ModeUnit, Swatch, UnitRow } from './ZoneFadeFrame'
 import {
   ADJACENT_FLOOR,
-  PALETTES,
+  PALETTE,
   PLANES,
   PLANE_FLOOR,
   SCALES,
@@ -14,7 +14,6 @@ import {
   paintOn,
   planeReadings,
   scaleZones,
-  type PaletteId,
   type PlaneReading,
   type ScaleId,
   type ZoneReading,
@@ -31,8 +30,8 @@ function readingCaption({ lit, vsLit, vsPlane }: ZoneReading): string {
 
 const ratio = (value: number, floor: number) => `${value.toFixed(2)}${value < floor ? ' MISS' : ''}`
 
-function ReadingRow({ palette, scale, mode, lit }: UnitProps & { scale: ScaleId; lit: number }) {
-  const readings = highlightZones(palette, scale, mode, lit)
+function ReadingRow({ scale, mode, lit }: UnitProps & { scale: ScaleId; lit: number }) {
+  const readings = highlightZones(scale, mode, lit)
   const plane = getSemanticColors(mode)['surface-base']
   const reading = lit * ZONE_SPAN + ZONE_SPAN / 2
   return (
@@ -85,17 +84,17 @@ function PlaneRow({ mode, reading }: { mode: ThemeMode; reading: PlaneReading })
   )
 }
 
-function ScaleBlock({ palette, scale, mode }: UnitProps & { scale: ScaleId }) {
-  const steps = fadedPalette(palette, scale, mode)
+function ScaleBlock({ scale, mode }: UnitProps & { scale: ScaleId }) {
+  const steps = fadedPalette(scale, mode)
     .map(({ label }) => label)
     .join(', ')
   return (
     <View className="gap-3" testID={`zone-adjacent-${scale}`}>
       <Caption mode={mode}>{`${SCALES[scale]}\nfaded: ${steps}`}</Caption>
       {scaleZones(scale, mode).map((zone, lit) => (
-        <ReadingRow key={zone.ramp} palette={palette} scale={scale} mode={mode} lit={lit} />
+        <ReadingRow key={zone.ramp} scale={scale} mode={mode} lit={lit} />
       ))}
-      {planeReadings(palette, scale, mode).map((reading) => (
+      {planeReadings(scale, mode).map((reading) => (
         <PlaneRow key={reading.level} mode={mode} reading={reading} />
       ))}
     </View>
@@ -103,15 +102,14 @@ function ScaleBlock({ palette, scale, mode }: UnitProps & { scale: ScaleId }) {
 }
 
 interface UnitProps {
-  palette: PaletteId
   mode: ThemeMode
 }
 
-const LIGHT_TITLE = 'Light, step 50 (ships; the same in both dark options)'
+const LIGHT_TITLE = 'Light, step 50 (ships)'
 
-function PaletteUnit({ palette, mode }: UnitProps) {
-  const { note } = PALETTES[palette]
-  const title = mode === 'light' ? LIGHT_TITLE : PALETTES[palette].title
+function PaletteUnit({ mode }: UnitProps) {
+  const { note } = PALETTE
+  const title = mode === 'light' ? LIGHT_TITLE : PALETTE.title
   return (
     <ModeUnit mode={mode} title={title}>
       <Caption mode={mode}>{note}</Caption>
@@ -119,27 +117,23 @@ function PaletteUnit({ palette, mode }: UnitProps) {
         {`Every zone lit in turn. Under each swatch: the lit zone's neighbours against it ` +
           `(floor ${ADJACENT_FLOOR}:1) and every zone against surface-base. Below, each faded ` +
           `zone against the track and the plane on planes 0 and -1 (floor ${PLANE_FLOOR}:1). ` +
-          `Subtle tokens are measured as painted over the plane. MISS marks a ratio under its floor.`}
+          `The track is measured as painted over the plane. MISS marks a ratio under its floor.`}
       </Caption>
       {(Object.keys(SCALES) as ScaleId[]).map((scale) => (
-        <ScaleBlock key={scale} palette={palette} scale={scale} mode={mode} />
+        <ScaleBlock key={scale} scale={scale} mode={mode} />
       ))}
     </ModeUnit>
   )
 }
 
-/** Dark as built (ships) and dark subtle (alternative) on the same data, then light at step 50. */
-const UNITS: UnitProps[] = [
-  { palette: 'asBuilt', mode: 'dark' },
-  { palette: 'subtle', mode: 'dark' },
-  { palette: 'asBuilt', mode: 'light' },
-]
+/** The shipped fade: dark as built, then light at step 50, on the same data. */
+const MODES: ThemeMode[] = ['dark', 'light']
 
 function RoundUnits() {
   return (
     <UnitRow>
-      {UNITS.map((unit) => (
-        <PaletteUnit key={`${unit.palette}-${unit.mode}`} {...unit} />
+      {MODES.map((mode) => (
+        <PaletteUnit key={mode} mode={mode} />
       ))}
     </UnitRow>
   )
@@ -147,7 +141,7 @@ function RoundUnits() {
 
 /**
  * TD-750, owner round: light fades every zone to step 50, the one step that clears both light planes.
- * Dark ships as built; the subtle fill tokens sit beside it as the alternative for the owner's pick.
+ * Dark ships as built, the owner's pick over the subtle fill tokens.
  */
 const meta: Meta = {
   title: 'Lab/Decisions/ZoneTrack Adjacent Contrast',

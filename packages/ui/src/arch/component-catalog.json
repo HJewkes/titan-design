@@ -10027,8 +10027,7 @@
       },
       "status": "candidate",
       "storyIds": [
-        "custom-workout-dataviz-zonetrack--zone-highlight",
-        "custom-workout-dataviz-zonetrack--zone-highlight-subtle"
+        "custom-workout-dataviz-zonetrack--zone-highlight"
       ],
       "tier": "organism"
     },
