@@ -10038,7 +10038,8 @@
         "custom-workout-dataviz-zonetrack--needle",
         "custom-workout-dataviz-zonetrack--solid-trend-fill",
         "custom-workout-dataviz-zonetrack--wall-density",
-        "custom-workout-dataviz-zonetrack--zone-highlight"
+        "custom-workout-dataviz-zonetrack--zone-highlight",
+        "custom-workout-dataviz-zonetrack--zone-highlight-subtle"
       ],
       "tier": "organism"
     },
