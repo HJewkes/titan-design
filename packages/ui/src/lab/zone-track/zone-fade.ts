@@ -32,8 +32,8 @@ export const ADJACENT_FLOOR = 1.5
 
 /**
  * A faded zone against `surface-base`. Palette B's faintest step, green 100 on white at 1.15:1,
- * still read as a zone to the owner; 1.1:1 keeps the near-plane ramp ends (50 on white, 900 and
- * 950 on dark) out of the palette.
+ * still read as a zone to the owner; 1.1:1 keeps the steps that match the plane (100 on the warm
+ * light `surface-base`, 900 and 950 on dark) out of the palette.
  */
 export const PLANE_FLOOR = 1.1
 
@@ -113,8 +113,12 @@ function floorFade(zones: RampColor[], mode: ThemeMode): RampColor[] {
   })
 }
 
-/** The step the light subtle fills (`status-*-subtle`, `brand-*-subtle`) take on `main`. */
-export const LIGHT_SUBTLE_STEP: RampStep = 100
+/**
+ * The light faded step. Step 100, the light subtle fills' step, now sits on the warm light
+ * `surface-base` at 1.00-1.04:1, and step 200 sits on `background-base` at 1.00-1.09:1, so
+ * step 50 is the one step that clears the plane floor on both light planes.
+ */
+export const LIGHT_FADED_STEP: RampStep = 50
 
 type SemanticToken = keyof ReturnType<typeof getSemanticColors>
 
@@ -141,9 +145,9 @@ export const rampFill = (color: RampColor): ZoneFill => ({
   fill: color.hex,
 })
 
-const lightSubtleStep = (zones: RampColor[]): ZoneFill[] =>
+const lightFadedStep = (zones: RampColor[]): ZoneFill[] =>
   zones.map(({ ramp }) =>
-    rampFill({ ramp, step: LIGHT_SUBTLE_STEP, hex: primitiveRamps[ramp][LIGHT_SUBTLE_STEP] })
+    rampFill({ ramp, step: LIGHT_FADED_STEP, hex: primitiveRamps[ramp][LIGHT_FADED_STEP] })
   )
 
 function subtleFill(zone: RampColor, mode: ThemeMode): ZoneFill {
@@ -152,25 +156,25 @@ function subtleFill(zone: RampColor, mode: ThemeMode): ZoneFill {
   return { ramp: zone.ramp, label: token, fill: getSemanticColors(mode)[token] }
 }
 
-/** Light takes step 100 in both options; they differ only in dark. */
+/** Light takes step 50 in both options; they differ only in dark. */
 const withLightStep =
   (dark: (zones: RampColor[]) => ZoneFill[]) =>
   (zones: RampColor[], mode: ThemeMode): ZoneFill[] =>
-    mode === 'light' ? lightSubtleStep(zones) : dark(zones)
+    mode === 'light' ? lightFadedStep(zones) : dark(zones)
 
 export const PALETTES: Record<PaletteId, FadedPalette> = {
   asBuilt: {
     title: 'Dark, as built (ships)',
     note:
       `Dark: each zone fades at least two steps, and further only until the lit zone on either ` +
-      `side clears ${ADJACENT_FLOOR}:1 against it. Light: step ${LIGHT_SUBTLE_STEP}.`,
+      `side clears ${ADJACENT_FLOOR}:1 against it. Light: step ${LIGHT_FADED_STEP}.`,
     fade: withLightStep((zones) => floorFade(zones, 'dark').map(rampFill)),
   },
   subtle: {
     title: 'Dark, subtle tokens (alternative)',
     note:
       `Dark: each zone's hue takes its subtle fill token, painted over the plane. ` +
-      `Light: step ${LIGHT_SUBTLE_STEP}.`,
+      `Light: step ${LIGHT_FADED_STEP}.`,
     fade: withLightStep((zones) => zones.map((zone) => subtleFill(zone, 'dark'))),
   },
 }

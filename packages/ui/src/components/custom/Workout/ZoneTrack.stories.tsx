@@ -35,23 +35,23 @@ const DARK_FADE_LABEL: Record<DarkFade, string> = {
 const r = primitiveRamps
 type SemanticToken = keyof ReturnType<typeof getSemanticColors>
 
-/** Each zone's light step 100, its dark "as built" step and its subtle token, left to right. */
+/** Each zone's light step 50, its dark "as built" step and its subtle token, left to right. */
 const HIGHLIGHT_RAMPS: Record<
   HighlightScale,
   { light: string; asBuilt: string; subtle: SemanticToken }[]
 > = {
   effort: [
-    { light: r.green[100], asBuilt: r.green[500], subtle: 'status-success-subtle' },
-    { light: r.amber[100], asBuilt: r.amber[600], subtle: 'status-warning-subtle' },
-    { light: r.orange[100], asBuilt: r.orange[700], subtle: 'brand-primary-subtle' },
-    { light: r.red[100], asBuilt: r.red[800], subtle: 'status-error-subtle' },
+    { light: r.green[50], asBuilt: r.green[500], subtle: 'status-success-subtle' },
+    { light: r.amber[50], asBuilt: r.amber[600], subtle: 'status-warning-subtle' },
+    { light: r.orange[50], asBuilt: r.orange[700], subtle: 'brand-primary-subtle' },
+    { light: r.red[50], asBuilt: r.red[800], subtle: 'status-error-subtle' },
   ],
   diverging: [
-    { light: r.blue[100], asBuilt: r.blue[700], subtle: 'status-info-subtle' },
-    { light: r.cyan[100], asBuilt: r.cyan[600], subtle: 'brand-secondary-subtle' },
-    { light: r.green[100], asBuilt: r.green[500], subtle: 'status-success-subtle' },
-    { light: r.amber[100], asBuilt: r.amber[700], subtle: 'status-warning-subtle' },
-    { light: r.red[100], asBuilt: r.red[800], subtle: 'status-error-subtle' },
+    { light: r.blue[50], asBuilt: r.blue[700], subtle: 'status-info-subtle' },
+    { light: r.cyan[50], asBuilt: r.cyan[600], subtle: 'brand-secondary-subtle' },
+    { light: r.green[50], asBuilt: r.green[500], subtle: 'status-success-subtle' },
+    { light: r.amber[50], asBuilt: r.amber[700], subtle: 'status-warning-subtle' },
+    { light: r.red[50], asBuilt: r.red[800], subtle: 'status-error-subtle' },
   ],
 }
 
@@ -143,7 +143,7 @@ function ZoneHighlightTrack({ scale, darkFade, reading }: ZoneHighlightArgs) {
   const zones = highlightZones(scale, darkFade, mode)
   const caption =
     mode === 'light'
-      ? 'Light, step 100 (ships; the same in both dark options)'
+      ? 'Light, step 50 (ships; the same in both dark options)'
       : DARK_FADE_LABEL[darkFade]
   return (
     <View style={{ gap: 8 }}>
@@ -162,7 +162,7 @@ function ZoneHighlightTrack({ scale, darkFade, reading }: ZoneHighlightArgs) {
 
 /**
  * The zone highlight, the shipped design: the zone the needle lands in keeps its colour, every
- * other zone takes its `faded` colour. Light fades to step 100. Dark steps each zone down its
+ * other zone takes its `faded` colour. Light fades to step 50. Dark steps each zone down its
  * ramp until it clears 1.5:1 against a lit neighbour (Lab/Decisions/ZoneTrack Adjacent Contrast).
  */
 export const ZoneHighlight = {
@@ -172,7 +172,7 @@ export const ZoneHighlight = {
 
 /**
  * The alternative dark fade, for comparison only: each zone's hue takes its subtle fill token,
- * painted over the plane. Light is the same step 100 as the shipped story.
+ * painted over the plane. Light is the same step 50 as the shipped story.
  */
 export const ZoneHighlightSubtle = {
   ...zoneHighlightStory('subtle'),

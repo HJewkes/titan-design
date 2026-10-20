@@ -1,10 +1,9 @@
 import { describe, expect, it } from 'vitest'
 import { compositeOver, contrast } from '../../theme/color-checks'
-import { primitiveRamps } from '../../theme/tokens/primitives'
 import { getSemanticColors, type ThemeMode } from '../../theme/tokens/semantic'
 import {
   ADJACENT_FLOOR,
-  LIGHT_SUBTLE_STEP,
+  LIGHT_FADED_STEP,
   PALETTES,
   PLANE_FLOOR,
   fadedPalette,
@@ -95,19 +94,48 @@ describe('zone fade palettes', () => {
     expect(amber.label).not.toBe('amber 500')
   })
 
-  it('fades every light zone to the step the light subtle fills use, in both options', () => {
-    const light = getSemanticColors('light')
-    expect(light['status-success-subtle']).toBe(primitiveRamps.green[LIGHT_SUBTLE_STEP])
+  it('fades every light zone to step 50, in both options', () => {
+    expect(LIGHT_FADED_STEP).toBe(50)
 
     for (const palette of PALETTE_IDS) {
       expect(fadedPalette(palette, 'diverging', 'light').map(({ label }) => label)).toEqual([
-        'blue 100',
-        'cyan 100',
-        'green 100',
-        'amber 100',
-        'red 100',
+        'blue 50',
+        'cyan 50',
+        'green 50',
+        'amber 50',
+        'red 50',
       ])
     }
+  })
+
+  it('keeps every light faded zone clear of the track and plane on planes 0 and -1', () => {
+    for (const scale of SCALE_IDS) {
+      for (const { level, zones } of planeReadings('asBuilt', scale, 'light')) {
+        for (const { color, vsPlane, vsTrack } of zones) {
+          const label = `light ${scale} plane ${level} ${color.label}`
+          expect(vsPlane, label).toBeGreaterThanOrEqual(PLANE_FLOOR)
+          expect(vsTrack, label).toBeGreaterThanOrEqual(PLANE_FLOOR)
+        }
+      }
+    }
+  })
+
+  it('separates every light lit zone from both faded neighbours by the floor', () => {
+    for (const { label, readings } of everyLitReading('asBuilt', 'light')) {
+      for (const { vsLit } of readings.filter((r) => r.vsLit != null)) {
+        expect(vsLit, label).toBeGreaterThanOrEqual(ADJACENT_FLOOR)
+      }
+    }
+  })
+
+  it('leaves the dark faded steps as built', () => {
+    expect(fadedPalette('asBuilt', 'diverging', 'dark').map(({ label }) => label)).toEqual([
+      'blue 700',
+      'cyan 600',
+      'green 500',
+      'amber 700',
+      'red 800',
+    ])
   })
 
   it("paints each dark zone with its hue's subtle token in the subtle option", () => {

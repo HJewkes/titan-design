@@ -107,7 +107,7 @@ interface UnitProps {
   mode: ThemeMode
 }
 
-const LIGHT_TITLE = 'Light, step 100 (ships; the same in both dark options)'
+const LIGHT_TITLE = 'Light, step 50 (ships; the same in both dark options)'
 
 function PaletteUnit({ palette, mode }: UnitProps) {
   const { note } = PALETTES[palette]
@@ -128,7 +128,7 @@ function PaletteUnit({ palette, mode }: UnitProps) {
   )
 }
 
-/** Dark as built (ships) and dark subtle (alternative) on the same data, then light at step 100. */
+/** Dark as built (ships) and dark subtle (alternative) on the same data, then light at step 50. */
 const UNITS: UnitProps[] = [
   { palette: 'asBuilt', mode: 'dark' },
   { palette: 'subtle', mode: 'dark' },
@@ -146,7 +146,7 @@ function RoundUnits() {
 }
 
 /**
- * TD-750, owner round: light fades every zone to step 100, the step the light subtle fills use.
+ * TD-750, owner round: light fades every zone to step 50, the one step that clears both light planes.
  * Dark ships as built; the subtle fill tokens sit beside it as the alternative for the owner's pick.
  */
 const meta: Meta = {
