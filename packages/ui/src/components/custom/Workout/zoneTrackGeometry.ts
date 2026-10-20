@@ -21,7 +21,7 @@ export interface ZoneTrackSizing {
 /**
  * Per-density magnitudes. `default` reproduces the original compact values exactly;
  * `wall` scales the track, needle, tick lines and tick labels up together so the gauge
- * reads across a room. `trackHeight` / `needleOverhang` remain overridable per call.
+ * reads across a room. `trackHeight` remains overridable per call.
  */
 export const ZONE_SIZES: Record<ZoneTrackSize, ZoneTrackSizing> = {
   default: {
@@ -168,20 +168,17 @@ export function zoneTrackLayout({
   marker,
   size,
   trackHeight: trackHeightProp,
-  needleOverhang: needleOverhangProp,
 }: {
   min: number
   max: number
   marker: ZoneTrackMarker | null
   size: ZoneTrackSize
   trackHeight?: number
-  needleOverhang?: number
 }): ZoneTrackLayout {
   const s = ZONE_SIZES[size]
   const trackHeight = trackHeightProp ?? s.trackHeight
-  const needleOverhang = needleOverhangProp ?? s.needleOverhang
   const isNeedle = marker?.type === 'needle'
-  const markerHeight = isNeedle ? trackHeight + needleOverhang * 2 : trackHeight
+  const markerHeight = isNeedle ? trackHeight + s.needleOverhang * 2 : trackHeight
   const markerFrac = marker != null ? fraction(marker.value, min, max) : 0
   return { min, max, sizing: s, trackHeight, markerHeight, markerFrac, isNeedle }
 }

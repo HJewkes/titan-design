@@ -10,15 +10,6 @@ import { primitiveRamps } from '../../../theme/tokens/primitives'
 import { getSemanticColors, type ThemeMode } from '../../../theme/tokens/semantic'
 
 const { green, yellow, orange, red } = WORKOUT_TOKENS.scale
-const t = getSemanticColors('dark')
-
-const FATIGUE_ZONES: ZoneTrackZone[] = [
-  { upTo: 10, color: green },
-  { upTo: 20, color: yellow },
-  { upTo: 30, color: orange },
-  { upTo: 40, color: red },
-]
-
 type HighlightScale = 'effort' | 'diverging'
 type DarkFade = 'asBuilt' | 'subtle'
 interface ZoneHighlightArgs {
@@ -71,14 +62,6 @@ function highlightZones(scale: HighlightScale, darkFade: DarkFade, mode: ThemeMo
   })
 }
 
-const FATIGUE_TICKS = [
-  { value: 0, label: 'fresh' },
-  { value: 10, label: 'VL10' },
-  { value: 20, label: 'VL20' },
-  { value: 30, label: 'VL30' },
-  { value: 40, label: 'stop' },
-]
-
 const meta: Meta<typeof ZoneTrack> = {
   title: 'Custom/Workout/DataViz/ZoneTrack',
   component: ZoneTrack,
@@ -87,12 +70,13 @@ const meta: Meta<typeof ZoneTrack> = {
     docs: {
       description: {
         component:
-          '**Primitive.** The shared linear-gauge base: a pill track with N zone bands, ' +
-          'optional tick marks + labels, and a single value marker — a `needle` line or a ' +
-          'left-anchored solid `fill`. Zones with a `faded` colour give the zone highlight: only ' +
-          'the zone the marker lands in stays lit. Used-by ↓ ' +
-          '[FatigueMeter](?path=/docs/custom-workout-dataviz-fatiguemeter--docs); the target base for ' +
-          'TrainingLoadGauge (ACWR) + RpeCalibration (band + marker). Zone colours are literal ' +
+          '**Primitive.** The shared linear-gauge base: a pill track with N zone bands and a ' +
+          'value marker. Its design is the zone highlight: only the zone the marker lands in ' +
+          'stays lit, and every other zone takes its `faded` colour. Used-by ↓ ' +
+          '[FatigueMeter](?path=/docs/custom-workout-dataviz-fatiguemeter--docs), ' +
+          '[VolumeLandmarkBar](?path=/docs/custom-workout-dataviz-volumelandmarkbar--docs) and ' +
+          'BodyweightGoalCard, whose stories show the needle, fill, band, tick and wall-size ' +
+          'modes they use. Zone colours are literal ' +
           'palette hex: the effort scale (`WORKOUT_TOKENS.scale`) for fatigue, `heatmapColors` (dataviz-diverging) for volume.' +
           ' Composes **Tooltip**.',
       },
@@ -107,23 +91,6 @@ const meta: Meta<typeof ZoneTrack> = {
   ],
 }
 export default meta
-
-type Story = StoryObj<typeof ZoneTrack>
-
-/** Needle over the fatigue zones with the VL scale — the FatigueMeter shape. */
-export const Needle: Story = {
-  args: {
-    zones: FATIGUE_ZONES,
-    max: 40,
-    marker: { type: 'needle', value: 21 },
-    ticks: FATIGUE_TICKS,
-  },
-}
-
-/** Fill marker with a colour paints a solid trend-coloured bar (FatigueGauge lineage). */
-export const SolidTrendFill: Story = {
-  args: { zones: FATIGUE_ZONES, max: 40, marker: { type: 'fill', value: 24, color: orange } },
-}
 
 function zoneHighlightStory(darkFade: DarkFade): StoryObj<Omit<ZoneHighlightArgs, 'darkFade'>> {
   return {
@@ -177,77 +144,4 @@ export const ZoneHighlight = {
 export const ZoneHighlightSubtle = {
   ...zoneHighlightStory('subtle'),
   name: 'Dark, subtle tokens (alternative)',
-}
-
-/** A range highlight + needle — the RpeCalibration "predicted CI band vs actual" idiom. */
-export const BandWithMarker: Story = {
-  args: {
-    zones: [
-      { upTo: 7, color: green },
-      { upTo: 8.5, color: yellow },
-      { upTo: 10, color: red },
-    ],
-    min: 6,
-    max: 10,
-    band: { from: 7.2, to: 8.4, color: t['hairline-strong'] },
-    marker: { type: 'needle', value: 8.1 },
-    ticks: [
-      { value: 6, label: '6' },
-      { value: 7, label: '7' },
-      { value: 8, label: '8' },
-      { value: 9, label: '9' },
-      { value: 10, label: '10' },
-    ],
-  },
-}
-
-/** Bare zone track — no marker, no ticks. */
-export const BareTrack: Story = {
-  args: { zones: FATIGUE_ZONES, max: 40 },
-}
-
-/** The across-the-room wall scale — `size="wall"` grows track, needle, tick lines and labels together. */
-export const WallDensity: Story = {
-  args: {
-    zones: FATIGUE_ZONES,
-    max: 40,
-    marker: { type: 'needle', value: 15 },
-    ticks: FATIGUE_TICKS,
-    size: 'wall',
-  },
-}
-
-/** `marker.glow` haloes the whole track in the marker colour — a "sweet spot" / attention cue. */
-export const Glow: Story = {
-  args: {
-    zones: FATIGUE_ZONES,
-    max: 40,
-    marker: { type: 'fill', value: 20, color: green, glow: true },
-    trackHeight: 12,
-  },
-}
-
-/** Colored + emphasized ticks with tooltips — hover a label to expand the acronym / show the raw value. */
-// The STOP label is text: in light it takes text-error, since red 600 misses 4.5:1 on the
-// grey 100 page (TD-789 3b).
-export const ColoredTooltipTicks: Story = {
-  args: {
-    zones: FATIGUE_ZONES,
-    max: 40,
-    marker: { type: 'needle', value: 22 },
-    trackHeight: 12,
-  },
-  render: function Render(args) {
-    const stop = useSurfaceMode() === 'light' ? getSemanticColors('light')['text-error'] : red
-    return (
-      <ZoneTrack
-        {...args}
-        ticks={[
-          { value: 10, label: 'VL10', tooltip: '10% velocity loss' },
-          { value: 20, label: 'VL20', emphasized: true, tooltip: '20% velocity loss — threshold' },
-          { value: 30, label: 'STOP', color: stop, tooltip: '30% velocity loss — stop the set' },
-        ]}
-      />
-    )
-  },
 }

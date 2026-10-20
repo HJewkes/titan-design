@@ -45,8 +45,6 @@ export interface ZoneTrackProps extends ViewProps {
   size?: ZoneTrackSize
   /** Track height in px. Overrides the `size` default (14 default / 24 wall). */
   trackHeight?: number
-  /** How far a needle marker overhangs the track top + bottom, in px. Overrides the `size` default (6 default / 9 wall). */
-  needleOverhang?: number
   /** Muted colour of the track behind / beyond the fill. Default the theme's `border-prominent`. */
   trackColor?: string
   className?: string
@@ -71,7 +69,6 @@ export function ZoneTrack({
   band = null,
   size = 'default',
   trackHeight,
-  needleOverhang,
   trackColor: trackColorProp,
   className,
   style,
@@ -82,7 +79,7 @@ export function ZoneTrack({
   const t = getSemanticColors(useSurfaceMode())
   const tickColor = t[TICK_TOKEN]
   const trackColor = trackColorProp ?? t[TRACK_TOKEN]
-  const layout = zoneTrackLayout({ min, max, marker, size, trackHeight, needleOverhang })
+  const layout = zoneTrackLayout({ min, max, marker, size, trackHeight })
 
   // Thin the tick labels on a narrow track so they never overlap (each occupies a fixed
   // `tickCellWidth` cell). Width 0 (unmeasured) → show all, so test/server renders match.

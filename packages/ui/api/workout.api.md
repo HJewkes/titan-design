@@ -2819,7 +2819,6 @@ export interface ZoneTrackProps extends ViewProps {
     marker?: ZoneTrackMarker | null;
     max: number;
     min?: number;
-    needleOverhang?: number;
     size?: ZoneTrackSize;
     ticks?: ZoneTrackTick[];
     trackColor?: string;

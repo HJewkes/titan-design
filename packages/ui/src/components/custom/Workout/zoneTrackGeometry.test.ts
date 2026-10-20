@@ -109,17 +109,16 @@ describe('zoneTrackLayout', () => {
     expect(layout.markerFrac).toBe(0.25)
   })
 
-  it('lets explicit heights beat the size defaults', () => {
+  it('lets an explicit track height beat the size default, keeping its overhang', () => {
     const layout = zoneTrackLayout({
       min: 0,
       max: 40,
       marker: { type: 'needle', value: 10 },
       size: 'wall',
       trackHeight: 30,
-      needleOverhang: 2,
     })
     expect(layout.trackHeight).toBe(30)
-    expect(layout.markerHeight).toBe(34)
+    expect(layout.markerHeight).toBe(30 + 9 * 2)
     expect(layout.sizing).toBe(ZONE_SIZES.wall)
   })
 

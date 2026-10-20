@@ -9985,13 +9985,6 @@
           "type": "number"
         },
         {
-          "default": null,
-          "description": "How far a needle marker overhangs the track top + bottom, in px.",
-          "name": "needleOverhang",
-          "required": false,
-          "type": "number"
-        },
-        {
           "default": "default",
           "description": "Density: `default` (compact) or `wall` (the across-the-room dashboard scale).",
           "name": "size",
@@ -10034,13 +10027,6 @@
       },
       "status": "candidate",
       "storyIds": [
-        "custom-workout-dataviz-zonetrack--band-with-marker",
-        "custom-workout-dataviz-zonetrack--bare-track",
-        "custom-workout-dataviz-zonetrack--colored-tooltip-ticks",
-        "custom-workout-dataviz-zonetrack--glow",
-        "custom-workout-dataviz-zonetrack--needle",
-        "custom-workout-dataviz-zonetrack--solid-trend-fill",
-        "custom-workout-dataviz-zonetrack--wall-density",
         "custom-workout-dataviz-zonetrack--zone-highlight",
         "custom-workout-dataviz-zonetrack--zone-highlight-subtle"
       ],
