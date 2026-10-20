@@ -3,6 +3,7 @@ import { Text, View } from 'react-native'
 import { cn } from '../../../utils/cn'
 import type { IconProps } from '../../icons'
 
+/** Props for {@link MediaThumbBadge}. */
 export interface MediaThumbBadgeProps {
   /** What the badge means, read in place of its glyph or short text (e.g. "Length 4:12", "No sound"). */
   accessibilityLabel: string
@@ -10,6 +11,7 @@ export interface MediaThumbBadgeProps {
   icon?: ComponentType<IconProps>
   /** Short visible text, such as a length in `m:ss`. */
   children?: string
+  /** Tailwind overrides via `cn()`. */
   className?: string
 }
 
@@ -32,7 +34,12 @@ export function MediaThumbBadge({
         className
       )}
     >
-      {Icon ? <Icon size={14} /> : null}
+      {Icon ? (
+        // One text-xs line tall, so an icon-only badge matches a text badge beside it.
+        <View className="h-4 justify-center">
+          <Icon size={14} />
+        </View>
+      ) : null}
       {children ? (
         <Text className="text-xs font-bold tabular-nums text-on-scrim">{children}</Text>
       ) : null}

@@ -29,7 +29,7 @@ const meta: Meta<StoryArgs> = {
     isMuted: true,
     topStartLabel: '',
     isLoading: false,
-    width: 320,
+    width: 288,
   },
   argTypes: {
     source: { control: 'select', options: Object.keys(mediaThumbSources) },

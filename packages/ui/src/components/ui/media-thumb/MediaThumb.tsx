@@ -4,8 +4,10 @@ import { cn } from '../../../utils/cn'
 import { PlayIcon } from '../../icons'
 import { Skeleton } from '../skeleton'
 
+/** How a `MediaThumb` frame fills its box. */
 export type MediaThumbFit = 'cover' | 'contain-blur'
 
+/** Props for {@link MediaThumb}. */
 export interface MediaThumbProps extends Omit<ViewProps, 'children'> {
   /** The poster frame. Omitted, or failing to load, the thumb shows a plane with a play glyph. */
   source?: ImageSourcePropType
@@ -26,12 +28,11 @@ export interface MediaThumbProps extends Omit<ViewProps, 'children'> {
   accessibilityLabel?: string
   /** Shows a Skeleton in place of the frame and hides the badges. */
   isLoading?: boolean
+  /** Tailwind overrides via `cn()`. */
   className?: string
 }
 
 const BACKDROP_BLUR = 14
-// Overscan hides the blur's soft, see-through edge.
-const BACKDROP_SCALE = 1.15
 
 function NoSourcePlane({ accessibilityLabel }: { accessibilityLabel?: string }) {
   const a11y = accessibilityLabel ? { accessibilityRole: 'image' as const, accessibilityLabel } : {}
@@ -77,9 +78,8 @@ function Frame({ source, fit, accessibilityLabel, onError }: FrameProps) {
         resizeMode="cover"
         blurRadius={BACKDROP_BLUR}
         className="absolute inset-0 h-full w-full"
-        style={{ transform: [{ scale: BACKDROP_SCALE }] }}
       />
-      <View className="absolute inset-0 bg-scrim-default" />
+      <View className="absolute inset-0 bg-scrim" />
       <Image
         {...a11y}
         source={source}

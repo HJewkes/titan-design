@@ -14,9 +14,9 @@ function poster(width: number, height: number, sky: string, ground: string): Ima
   return { uri: `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}` }
 }
 
-/** Poster frames for `MediaThumb` stories. `landscape` has a white sky, the hardest ground for a badge. */
+/** Poster frames for `MediaThumb` stories. `landscape` has white ground under the badges, their hardest case. */
 export const mediaThumbSources = {
-  landscape: poster(1280, 720, primitiveColors.white, primitiveRamps.blue[600]),
+  landscape: poster(1280, 720, primitiveRamps.blue[600], primitiveColors.white),
   portrait: poster(720, 1280, primitiveRamps.blue[200], primitiveRamps.green[700]),
   none: undefined,
   broken: { uri: 'data:image/png;base64,broken' },
