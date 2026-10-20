@@ -127,7 +127,6 @@ export const SolidTrendFill: Story = {
 
 function zoneHighlightStory(darkFade: DarkFade): StoryObj<Omit<ZoneHighlightArgs, 'darkFade'>> {
   return {
-    name: DARK_FADE_LABEL[darkFade],
     args: { scale: 'effort', reading: 24 },
     argTypes: {
       scale: { control: 'select', options: ['effort', 'diverging'] },
@@ -166,13 +165,19 @@ function ZoneHighlightTrack({ scale, darkFade, reading }: ZoneHighlightArgs) {
  * other zone takes its `faded` colour. Light fades to step 100. Dark steps each zone down its
  * ramp until it clears 1.5:1 against a lit neighbour (Lab/Decisions/ZoneTrack Adjacent Contrast).
  */
-export const ZoneHighlight = zoneHighlightStory('asBuilt')
+export const ZoneHighlight = {
+  ...zoneHighlightStory('asBuilt'),
+  name: 'Dark, as built (ships)',
+}
 
 /**
  * The alternative dark fade, for comparison only: each zone's hue takes its subtle fill token,
  * painted over the plane. Light is the same step 100 as the shipped story.
  */
-export const ZoneHighlightSubtle = zoneHighlightStory('subtle')
+export const ZoneHighlightSubtle = {
+  ...zoneHighlightStory('subtle'),
+  name: 'Dark, subtle tokens (alternative)',
+}
 
 /** A range highlight + needle — the RpeCalibration "predicted CI band vs actual" idiom. */
 export const BandWithMarker: Story = {
