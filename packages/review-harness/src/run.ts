@@ -43,7 +43,7 @@ import {
 const USAGE = `titan-review <round.json> [options]
 titan-review --example [--storybook <url>]
 titan-review build <draft.json> [--storybook <url>] [--tree <path>] [--prior-feedback <feedback.json>...]
-                  [--locks [<locks.json>]]
+                  [--locks [<locks.json>]] [--storybook-build]
 titan-review calibration <feedback.json...>
 titan-review round from-morning <items.json> [--decider <file>] [--out <draft.json>]
 titan-review locks footprint <pr> | --base <ref> --head <ref> [--repo <path>]
@@ -71,6 +71,11 @@ question's declared touches. It exits 3 on superseded-state, lock-order, re-ask,
 lock-head-missing (a holder head the tree lacks), orders lock-holder groups first and labels
 frames that render under a decided lock "rendered with decided #n". A non-PR question without
 touches only warns.
+With --storybook-build (needs --tree) it also runs build-storybook in the tree before round.json
+lands, into storybook/static/ beside the draft, and writes storybook/storybook.json
+(titan-review/storybook@1): the tree's repo, HEAD sha, whether it had uncommitted changes, the
+Storybook version, the story count and every file with its sha256 and size. A symlink in the
+build refuses it.
 
 calibration reads feedback files and prints how often the owner's answer matched our
 recommendation: per round, overall, and by confidence band (<0.5, 0.5-0.75, >=0.75).
@@ -127,6 +132,7 @@ and lint it.
                      round directories of the same unit are read without the flag)
   --locks [<path>]   For build: check the draft against this titan-locks/1 registry (default:
                      $${REGISTRY_ENV}); give it after the draft
+  --storybook-build  For build: ship a static Storybook of the tree's HEAD with the round
   --decider <file>   Decider recommendations for round from-morning (questionId, answer, cite)
   --base <ref>       For locks footprint: the base ref, in place of the PR's base branch
   --head <ref>       For locks footprint: the head ref, in place of the PR's head; for packet
@@ -162,7 +168,10 @@ and lint it.
 const DRAFT_FILE = 'draft.json'
 
 export interface CliIo
-  extends Omit<ReviewDeps, 'onReady'>, Pick<BuildIo, 'measure' | 'renderFrames' | 'git'>, PacketIo {
+  extends
+    Omit<ReviewDeps, 'onReady'>,
+    Pick<BuildIo, 'measure' | 'renderFrames' | 'git' | 'storybook'>,
+    PacketIo {
   openBrowser: (url: string) => void
   capture: (round: LoadedRound, outDir: string) => Promise<string[]>
   harnessFreshness: () => Promise<HarnessFreshness>
@@ -192,6 +201,7 @@ function parseCli(argv: string[]) {
       'no-capture': { type: 'boolean' },
       'contrast-override': { type: 'string' },
       'allow-stale': { type: 'boolean' },
+      'storybook-build': { type: 'boolean' },
       decider: { type: 'string' },
       tree: { type: 'string' },
       base: { type: 'string' },
@@ -336,6 +346,7 @@ async function build(parsed: Parsed, io: CliIo): Promise<number> {
       tree: parsed.values.tree && resolve(parsed.values.tree),
       priorFeedback: (parsed.values['prior-feedback'] ?? []).map((p) => resolve(p)),
       ...(locks && { locks }),
+      storybookBuild: !!parsed.values['storybook-build'],
     }
   )
 }
