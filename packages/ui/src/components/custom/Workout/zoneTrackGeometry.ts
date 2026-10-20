@@ -125,13 +125,16 @@ export function pct(frac: number): DimensionValue {
   return `${frac * 100}%`
 }
 
-/** Each zone's colour and its clamped domain span, used as the band's flex weight. */
 /** The band the reading lands in: the first whose `upTo` reaches it, else the last. */
 export function litZoneIndex(zones: ZoneTrackZone[], value: number): number {
   const index = zones.findIndex((zone) => value <= zone.upTo)
   return index === -1 ? zones.length - 1 : index
 }
 
+/**
+ * Each zone's colour and its clamped domain span, used as the band's flex weight. Given a
+ * `value`, every zone but the lit one takes its `faded` colour.
+ */
 export function zoneBands(
   zones: ZoneTrackZone[],
   min: number,

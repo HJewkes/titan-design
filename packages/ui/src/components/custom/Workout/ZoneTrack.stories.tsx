@@ -27,7 +27,10 @@ interface ZoneHighlightArgs {
   reading: number
 }
 
-const DARK_FADE_LABEL: Record<DarkFade, string> = { asBuilt: 'as built', subtle: 'subtle' }
+const DARK_FADE_LABEL: Record<DarkFade, string> = {
+  asBuilt: 'Dark, as built (ships)',
+  subtle: 'Dark, subtle tokens (alternative)',
+}
 
 const r = primitiveRamps
 type SemanticToken = keyof ReturnType<typeof getSemanticColors>
@@ -122,39 +125,54 @@ export const SolidTrendFill: Story = {
   args: { zones: FATIGUE_ZONES, max: 40, marker: { type: 'fill', value: 24, color: orange } },
 }
 
-/**
- * The zone highlight: the zone the needle lands in keeps its colour, every other zone takes its
- * `faded` colour. Light fades to step 100. Dark has two options, named in the caption: `as built`
- * steps each zone down its ramp until it clears 1.5:1 against a lit neighbour; `subtle` paints
- * the hue's subtle fill token over the plane (Lab/Decisions/ZoneTrack Adjacent Contrast).
- */
-export const ZoneHighlight: StoryObj<ZoneHighlightArgs> = {
-  args: { scale: 'effort', darkFade: 'asBuilt', reading: 24 },
-  argTypes: {
-    scale: { control: 'select', options: ['effort', 'diverging'] },
-    darkFade: { control: 'select', options: ['asBuilt', 'subtle'] },
-    reading: { control: { type: 'range', min: 0, max: 40, step: 1 } },
-  },
-  render: function Render({ scale, darkFade, reading }) {
-    const mode = useSurfaceMode()
-    const zones = highlightZones(scale, darkFade, mode)
-    const caption =
-      mode === 'light' ? 'faded: step 100' : `faded: dark ${DARK_FADE_LABEL[darkFade]}`
-    return (
-      <View style={{ gap: 8 }}>
-        <Typography variant="monoLabel" className="text-text-secondary">
-          {caption}
-        </Typography>
-        <ZoneTrack
-          zones={zones}
-          max={zones[zones.length - 1].upTo}
-          marker={{ type: 'needle', value: reading }}
-          accessibilityLabel={`Zone highlight, reading ${reading}`}
-        />
-      </View>
-    )
-  },
+function zoneHighlightStory(darkFade: DarkFade): StoryObj<Omit<ZoneHighlightArgs, 'darkFade'>> {
+  return {
+    name: DARK_FADE_LABEL[darkFade],
+    args: { scale: 'effort', reading: 24 },
+    argTypes: {
+      scale: { control: 'select', options: ['effort', 'diverging'] },
+      reading: { control: { type: 'range', min: 0, max: 40, step: 1 } },
+    },
+    render: function Render({ scale, reading }) {
+      return <ZoneHighlightTrack scale={scale} darkFade={darkFade} reading={reading} />
+    },
+  }
 }
+
+function ZoneHighlightTrack({ scale, darkFade, reading }: ZoneHighlightArgs) {
+  const mode = useSurfaceMode()
+  const zones = highlightZones(scale, darkFade, mode)
+  const caption =
+    mode === 'light'
+      ? 'Light, step 100 (ships; the same in both dark options)'
+      : DARK_FADE_LABEL[darkFade]
+  return (
+    <View style={{ gap: 8 }}>
+      <Typography variant="monoLabel" className="text-text-secondary">
+        {caption}
+      </Typography>
+      <ZoneTrack
+        zones={zones}
+        max={zones[zones.length - 1].upTo}
+        marker={{ type: 'needle', value: reading }}
+        accessibilityLabel={`Zone highlight, reading ${reading}`}
+      />
+    </View>
+  )
+}
+
+/**
+ * The zone highlight, the shipped design: the zone the needle lands in keeps its colour, every
+ * other zone takes its `faded` colour. Light fades to step 100. Dark steps each zone down its
+ * ramp until it clears 1.5:1 against a lit neighbour (Lab/Decisions/ZoneTrack Adjacent Contrast).
+ */
+export const ZoneHighlight = zoneHighlightStory('asBuilt')
+
+/**
+ * The alternative dark fade, for comparison only: each zone's hue takes its subtle fill token,
+ * painted over the plane. Light is the same step 100 as the shipped story.
+ */
+export const ZoneHighlightSubtle = zoneHighlightStory('subtle')
 
 /** A range highlight + needle — the RpeCalibration "predicted CI band vs actual" idiom. */
 export const BandWithMarker: Story = {

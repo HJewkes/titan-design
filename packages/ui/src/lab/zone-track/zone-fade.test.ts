@@ -5,6 +5,7 @@ import { getSemanticColors, type ThemeMode } from '../../theme/tokens/semantic'
 import {
   ADJACENT_FLOOR,
   LIGHT_SUBTLE_STEP,
+  PALETTES,
   PLANE_FLOOR,
   fadedPalette,
   highlightZones,
@@ -30,6 +31,12 @@ function everyLitReading(palette: PaletteId, mode: ThemeMode) {
 }
 
 describe('zone fade palettes', () => {
+  it('marks the dark as built option as the one that ships, subtle as the alternative', () => {
+    const shipping = PALETTE_IDS.filter((id) => PALETTES[id].title.includes('(ships)'))
+    expect(shipping).toEqual(['asBuilt'])
+    expect(PALETTES.subtle.title).toBe('Dark, subtle tokens (alternative)')
+  })
+
   it('names every zone colour of both scales by its ramp step', () => {
     expect(scaleZones('effort', 'dark').map(rampLabel)).toEqual([
       'green 300',

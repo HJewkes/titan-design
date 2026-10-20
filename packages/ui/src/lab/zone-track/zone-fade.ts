@@ -160,14 +160,14 @@ const withLightStep =
 
 export const PALETTES: Record<PaletteId, FadedPalette> = {
   asBuilt: {
-    title: 'as built',
+    title: 'Dark, as built (ships)',
     note:
       `Dark: each zone fades at least two steps, and further only until the lit zone on either ` +
       `side clears ${ADJACENT_FLOOR}:1 against it. Light: step ${LIGHT_SUBTLE_STEP}.`,
     fade: withLightStep((zones) => floorFade(zones, 'dark').map(rampFill)),
   },
   subtle: {
-    title: 'subtle',
+    title: 'Dark, subtle tokens (alternative)',
     note:
       `Dark: each zone's hue takes its subtle fill token, painted over the plane. ` +
       `Light: step ${LIGHT_SUBTLE_STEP}.`,

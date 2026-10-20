@@ -33,7 +33,7 @@ export function ModeUnit({
       testID={`zone-fade-unit-${mode}`}
     >
       <Text className="text-sm font-semibold" style={{ color: ink.primary }}>
-        {`${title} (${mode})`}
+        {title}
       </Text>
       {children}
     </Surface>
