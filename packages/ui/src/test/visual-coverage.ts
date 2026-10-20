@@ -21,6 +21,8 @@ export const REQUIRED_PREFIXES = [
   'pages-program-planning--',
   'pages-training-status--',
   'custom-activework-',
+  'components-molecules-mediathumb--',
+  'components-atoms-mediathumbbadge--',
 ] as const
 
 export const BASELINE_SUFFIX = '-chromium-linux.png'
