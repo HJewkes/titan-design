@@ -46,9 +46,10 @@ export const WORKOUT_TOKENS = {
   },
 } as const
 
-/** The five diverging volume meanings, plus the no-data fill. */
+/** The five diverging volume meanings, plus the no-data and no-verdict fills. */
 export interface HeatmapColors {
   none: string
+  noverdict: string
   under: string
   maintenance: string
   productive: string
@@ -71,6 +72,7 @@ export function heatmapColors(mode: ThemeMode): HeatmapColors {
   const c = getSemanticColors(mode)
   return {
     none: '#E0E0E0', // no training data — not a palette stop, so not a dataviz role
+    noverdict: c['result-neutral'], // trained, landmarks withheld — neutral, off the scale
     under: c['dataviz-diverging-0'], // below MEV
     maintenance: c['dataviz-diverging-1'], // MEV to MAV
     productive: c['dataviz-diverging-2'], // optimal center — MAV to MRV

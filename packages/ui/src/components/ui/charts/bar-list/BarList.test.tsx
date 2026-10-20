@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { act, fireEvent, render, screen, within } from '@testing-library/react'
+import { act, cleanup, fireEvent, render, screen, within } from '@testing-library/react'
 import { axe, toHaveNoViolations } from 'jest-axe'
 import { compositeOver, contrast } from '../../../../theme/color-checks'
 import { getSemanticColors } from '../../../../theme/tokens/semantic'
@@ -108,6 +108,29 @@ describe('BarList', () => {
     renderFixture(fixture('Funnel'))
     const fills = screen.getAllByTestId('bar-list-fill')
     expect(fills[1]).toHaveStyle({ width: '82%' })
+  })
+
+  it('grows the bars at t=0.5 s the same played up to it as seeked cold', () => {
+    const { rows } = fixture('Funnel')
+    const widths = () => screen.getAllByTestId('bar-list-fill').map((fill) => fill.style.width)
+    const played = render(<BarList accessibilityLabel="Funnel" rows={rows} t={0} />)
+    played.rerender(<BarList accessibilityLabel="Funnel" rows={rows} t={0.25} />)
+    played.rerender(<BarList accessibilityLabel="Funnel" rows={rows} t={0.5} />)
+    const playedWidths = widths()
+    played.unmount()
+    render(<BarList accessibilityLabel="Funnel" rows={rows} t={0.5} />)
+    expect(playedWidths).toEqual(widths())
+    const first = parseFloat(playedWidths[0] ?? '')
+    expect(first).toBeGreaterThan(0)
+    expect(first).toBeLessThan(100)
+  })
+
+  it('paints each bar at full length once the seeked entrance ends', () => {
+    renderFixture(fixture('Funnel'))
+    const settled = screen.getAllByTestId('bar-list-fill').map((fill) => fill.style.width)
+    cleanup()
+    renderFixture(fixture('Funnel'), { t: 10 })
+    expect(screen.getAllByTestId('bar-list-fill').map((fill) => fill.style.width)).toEqual(settled)
   })
 
   it('shows No value text and no bar for a missing value', () => {

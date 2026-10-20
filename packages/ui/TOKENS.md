@@ -24,7 +24,7 @@ Pick by **what the colour means**, not by what looks right.
 | **Text**                                                                   | `text-primary` / `-secondary` / `-tertiary`                                      | grey ramp steps directly                 |
 | **Rules and separators**                                                   | `hairline-*`, `divider`, `border-*`                                              | a hardcoded `border` colour              |
 | **A dimming layer over content** (modal, drawer, press)                    | `scrim-*`                                                                        | `bg-black/50` — see below                |
-| **A label ON a fill** (solid button, chart tile, toolbar)                  | `on-brand-*`, `on-status-*`, `on-control-*`, `on-data-strong`                    | `text-white`, `text-primary`             |
+| **A label ON a fill** (solid button, chart tile, toolbar)                  | `on-brand-*`, `on-status-*`, `on-control-*`, `on-data-strong`, `on-scrim`        | `text-white`, `text-primary`             |
 
 ### `result-*` vs `status-*` — the distinction that gets missed
 
@@ -50,9 +50,14 @@ carrying its own alpha — which is what `hairline-*`, `interactive-*` and `scri
 | `scrim-press-strong` | `rgba(0, 0, 0, 0.20)` | the active half of that pair              |
 | `scrim-subtle`       | `rgba(0, 0, 0, 0.30)` | blurred modal backdrop, filled input fill |
 | `scrim-default`      | `rgba(0, 0, 0, 0.50)` | modal backdrop, drawer overlay            |
+| `scrim-strong`       | `rgba(0, 0, 0, 0.78)` | badge ground over media (duration, muted) |
 
 Scrims do **not** flip with the theme. A scrim's job is to push content back so an overlay reads,
 and that is as true on a light page as a dark one.
+
+`on-scrim` (white in both themes) is the ink on `scrim-strong`. A badge over a video frame can land
+on any colour, so the pair owes AA over a white, a mid-grey and a black frame: 11.7, 16.8 and 21:1.
+`scrim-default` is not a badge ground; white over it on a white frame is about 3.9:1.
 
 ### `on-control-*` and `on-data-strong`
 

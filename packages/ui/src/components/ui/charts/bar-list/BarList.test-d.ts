@@ -33,7 +33,7 @@ describe('BarList types', () => {
     expectTypeOf<BarListProps>().not.toHaveProperty('readouts')
   })
 
-  it('declares exactly the fourteen audited props', () => {
+  it('declares exactly the fifteen audited props', () => {
     type Own = Exclude<keyof BarListProps, keyof ViewProps> | 'accessibilityLabel' | 'className'
     expectTypeOf<Own>().toEqualTypeOf<
       | 'rows'
@@ -49,6 +49,7 @@ describe('BarList types', () => {
       | 'isValueHidden'
       | 'isLoading'
       | 'emptyState'
+      | 't'
       | 'className'
     >()
   })

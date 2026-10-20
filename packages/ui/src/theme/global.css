@@ -361,6 +361,9 @@
     --color-scrim-press-strong: rgba(0, 0, 0, 0.20);
     --color-scrim-subtle: rgba(0, 0, 0, 0.30);
     --color-scrim-default: rgba(0, 0, 0, 0.50);
+    /* Media badge ground and its ink (TD-987), also not mirrored. */
+    --color-scrim-strong: rgba(0, 0, 0, 0.78);
+    --color-on-scrim: #FFFFFF;
 
     /* Disabled control face (TD-264), control and data-fill labels (VW-82). */
     --color-control-face-disabled: rgba(255, 255, 255, 0.12);
@@ -617,6 +620,8 @@
     --color-scrim-press-strong: rgba(0, 0, 0, 0.20);
     --color-scrim-subtle: rgba(0, 0, 0, 0.30);
     --color-scrim-default: rgba(0, 0, 0, 0.50);
+    --color-scrim-strong: rgba(0, 0, 0, 0.78);
+    --color-on-scrim: #FFFFFF;
     /* Control faces and their labels flip with the theme (TD-264). */
     --color-control-face-disabled: rgba(0, 0, 0, 0.06);
     --color-on-control-idle: #5A5958;

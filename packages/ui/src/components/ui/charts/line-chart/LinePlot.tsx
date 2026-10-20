@@ -42,6 +42,8 @@ export interface LinePlotProps {
   /** Direct end labels; a legend replaces them when false. */
   showEndLabels: boolean
   animate: boolean
+  /** Seconds into the entrance, from a seek clock; omit for the wall-clock CSS entrance. */
+  t?: number
   active: ProjectedPoint | null
   readout: PointReadout | null
 }
@@ -158,7 +160,7 @@ function ActiveMark({ active, stroke, height, mode }: ActiveMarkProps) {
 
 function PlotSvg(props: LinePlotProps & { gutter: GutterLabel[]; mode: ThemeMode }) {
   const { facet, frame, width, height, active, gutter, mode } = props
-  const entrance = useChartEntrance(props.animate)
+  const entrance = useChartEntrance(props.animate, props.t)
   const strokes = facet.geometry.series.map((s, i) => seriesStroke(s.series, i, mode))
   const activeIndex = facet.geometry.series.findIndex((s) => s.series.id === active?.seriesId)
   return (

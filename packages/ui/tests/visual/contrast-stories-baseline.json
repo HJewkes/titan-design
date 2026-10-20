@@ -143,6 +143,9 @@
   "components-molecules-button--primary light": {
     "#ffffff|#da5f00": 1
   },
+  "components-molecules-chipgroup--default light": {
+    "#ffffff|#da5f00": 1
+  },
   "components-molecules-datarow--with-value-class-name light": {
     "#ff7900|#edeae7": 1
   },
@@ -1355,7 +1358,7 @@
     "#f9b415|#ffffff": 1
   },
   "custom-workout-musclegroupchip--all-statuses dark": {
-    "#a29f9d|#3b3937": 7
+    "#a29f9d|#3b3937": 8
   },
   "custom-workout-musclegroupchip--approaching dark": {
     "#a29f9d|#3b3937": 1
@@ -1367,7 +1370,10 @@
     "#a29f9d|#3b3937": 1
   },
   "custom-workout-musclegroupchip--muscle-groups dark": {
-    "#a29f9d|#3b3937": 6
+    "#a29f9d|#3b3937": 7
+  },
+  "custom-workout-musclegroupchip--no-verdict dark": {
+    "#a29f9d|#3b3937": 1
   },
   "custom-workout-musclegroupchip--on-track dark": {
     "#a29f9d|#3b3937": 1
@@ -1391,6 +1397,9 @@
     "#a29f9d|#3b3937": 15
   },
   "custom-workout-musclestrip--empty-untrained dark": {
+    "#a29f9d|#3b3937": 15
+  },
+  "custom-workout-musclestrip--no-verdict dark": {
     "#a29f9d|#3b3937": 15
   },
   "custom-workout-musclestrip--one-of-each-status dark": {
@@ -2275,7 +2284,7 @@
   },
   "lab-decisions-volume-status-palette--compare dark": {
     "#888684|#252321": 8,
-    "#888684|#2c2a28": 43
+    "#888684|#2c2a28": 51
   },
   "lab-depth-correction-gate-2--composed dark": {
     "#888684|#252321": 2

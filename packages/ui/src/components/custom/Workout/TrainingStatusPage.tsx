@@ -11,14 +11,16 @@ import { MesoStatusCard, type MesoStatusCardProps } from './MesoStatusCard'
 import { useSurfaceMode } from '../../ui/surface/SurfaceContext'
 import {
   MuscleGroup,
+  VOLUME_STATUSES,
   VOLUME_STATUS_LABELS,
   getHeatmapColor,
+  volumeStatusDotStyle,
   type VolumeLandmarks,
   type VolumeStatus,
 } from './muscleTaxonomy'
 
 /** Volume statuses in display order for the legend and summary cards. */
-const STATUS_ORDER: VolumeStatus[] = ['behind', 'ontrack', 'target', 'approaching', 'over']
+const STATUS_ORDER = VOLUME_STATUSES.filter((status) => status !== 'untrained')
 
 /** One muscle's full volume picture — feeds the body maps and the detail panel. */
 export interface TrainingStatusMuscle {
@@ -72,6 +74,7 @@ export interface TrainingStatusPageProps extends ViewProps {
 export function deriveTrainingSummary(muscles: TrainingStatusMuscle[]): TrainingStatusSummary {
   const statusCounts: Record<VolumeStatus, number> = {
     untrained: 0,
+    noverdict: 0,
     behind: 0,
     ontrack: 0,
     target: 0,
@@ -178,9 +181,10 @@ function StatusLegend({ size = 'phone' }: { size?: BodyMapSize }) {
               width: 8 * ramp,
               height: 8 * ramp,
               borderRadius: 9999,
-              backgroundColor: getHeatmapColor(status, surfaceMode),
+              ...volumeStatusDotStyle(status, getHeatmapColor(status, surfaceMode), 1.5 * ramp),
             }}
             accessibilityElementsHidden
+            testID={`training-status-page-legend-${status}-dot`}
           />
           <Text
             className="text-text-secondary"
