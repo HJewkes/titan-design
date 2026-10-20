@@ -1,7 +1,9 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { View, Text, Pressable, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
+import { useHitTarget, type UseHitTargetResult } from '../../../hooks/useHitTarget'
 import { Pill, type PillTone, type PillVariant } from '../pill'
+import { ChipGroupContext } from './chipGroupContext'
 
 export type ChipVariant = 'solid' | 'subtle' | 'outline'
 export type ChipColor =
@@ -124,9 +126,18 @@ export function Chip({
   isDisabled = false,
   className,
   children,
+  onLayout,
   ...props
 }: ChipProps) {
   const sizes = sizeStyles[size]
+  const groupLimit = useContext(ChipGroupContext)
+  const inGroup = groupLimit !== undefined
+  // Every chip face is under 44px, so a chip a group presses carries a hit box (TD-10).
+  const hitTarget = useHitTarget({
+    enabled: inGroup && Boolean(onPress),
+    limit: groupLimit,
+    onLayout,
+  })
 
   return (
     <Pill
@@ -135,7 +146,7 @@ export function Chip({
       rounded={false}
       onPress={onPress}
       isDisabled={isDisabled}
-      leading={leftElement && <View className="mr-1.5">{leftElement}</View>}
+      leading={<ChipLeading layerProps={hitTarget.layerProps} leftElement={leftElement} />}
       trailing={
         <ChipTrailing
           rightElement={rightElement}
@@ -145,7 +156,9 @@ export function Chip({
           deleteLabel={removeLabel(children)}
         />
       }
-      {...toggleProps(Boolean(onPress), isSelected, isDisabled)}
+      hitSlop={hitTarget.hitSlop}
+      onLayout={hitTarget.onLayout}
+      {...selectionProps(Boolean(onPress), isSelected, isDisabled, inGroup)}
       className={cn(
         'self-auto gap-0',
         variant === 'outline' || isSelected !== undefined ? 'border' : 'border-0',
@@ -172,12 +185,44 @@ function chipFace(variant: ChipVariant, isSelected: boolean | undefined): PillVa
 }
 
 // A plain or non-pressable chip gets no aria-pressed: the attribute would announce it as a toggle, or fail axe on a View.
-function toggleProps(isPressable: boolean, isSelected: boolean | undefined, isDisabled: boolean) {
+function selectionProps(
+  isPressable: boolean,
+  isSelected: boolean | undefined,
+  isDisabled: boolean,
+  inGroup: boolean
+) {
   if (!isPressable || isSelected === undefined) return {}
+  if (inGroup) return radioProps(isSelected, isDisabled)
   return {
     accessibilityState: { selected: isSelected, disabled: isDisabled },
     'aria-pressed': isSelected,
   }
+}
+
+// react-native-web maps neither `checked` nor `aria-current` from accessibilityState, so both go on as aria-*.
+function radioProps(isSelected: boolean, isDisabled: boolean) {
+  return {
+    accessibilityRole: 'radio' as const,
+    accessibilityState: { checked: isSelected, disabled: isDisabled },
+    'aria-checked': isSelected,
+    'aria-current': isSelected ? ('true' as const) : undefined,
+  }
+}
+
+// The hit layer must be the pressable's first child, so it rides in the leading slot ahead of the element.
+function ChipLeading({
+  layerProps,
+  leftElement,
+}: {
+  layerProps: UseHitTargetResult['layerProps']
+  leftElement: React.ReactNode
+}) {
+  return (
+    <>
+      {layerProps && <View {...layerProps} />}
+      {leftElement && <View className="mr-1.5">{leftElement}</View>}
+    </>
+  )
 }
 
 // Several dismissible chips side by side need distinct names, so the label joins the chip's text when it has one.

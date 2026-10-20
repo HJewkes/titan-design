@@ -66,6 +66,7 @@ describe('deriveTrainingSummary', () => {
     expect(summary.trackedMuscles).toBe(4)
     expect(summary.statusCounts).toEqual({
       untrained: 0,
+      noverdict: 0,
       behind: 1,
       ontrack: 0,
       target: 2,
@@ -80,6 +81,7 @@ describe('deriveTrainingSummary', () => {
     expect(summary.trackedMuscles).toBe(0)
     expect(summary.statusCounts).toEqual({
       untrained: 0,
+      noverdict: 0,
       behind: 0,
       ontrack: 0,
       target: 0,
@@ -146,6 +148,18 @@ describe('TrainingStatusPage', () => {
       .getByTestId('training-status-page-bodymap-front')
       .querySelector('[data-testid="body-map-svg"]')
     expect(frontFigure?.getAttribute('style')).toContain('width: 480px')
+  })
+
+  it('keys no verdict in the legend as a ring and every verdict as a solid swatch', () => {
+    render(<TrainingStatusPage meso={meso} muscles={muscles} />)
+
+    const ring = screen.getByTestId('training-status-page-legend-noverdict-dot')
+    expect(ring).toHaveStyle({ borderTopWidth: '1.5px' })
+    expect(ring.getAttribute('style')).not.toContain('background-color')
+    for (const status of ['behind', 'ontrack', 'target', 'approaching', 'over']) {
+      const swatch = screen.getByTestId(`training-status-page-legend-${status}-dot`)
+      expect(swatch.getAttribute('style')).toContain('background-color')
+    }
   })
 
   it('opens the detail panel for a tapped muscle and closes it again', () => {

@@ -14,6 +14,8 @@ import {
 } from '../../utils/hit-target'
 import { Button, ButtonText } from './button'
 import { ToolbarButton, ToolbarButtonGroup } from './toolbar-button'
+import { Chip } from './chip'
+import { ChipGroup } from './chip-group'
 
 const require = createRequire(import.meta.url)
 const packageRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../..')
@@ -153,6 +155,55 @@ describe('hit targets in a ToolbarButtonGroup', () => {
       )
     }
   )
+})
+
+describe('hit targets in a ChipGroup', () => {
+  const sizes = (['sm', 'md', 'lg'] as const).flatMap((size) =>
+    (['wrap', 'scroll'] as const).map((overflow) => ({ size, overflow }))
+  )
+
+  // One chip, so the single hit layer captured is the one measured.
+  function renderGroup(size: 'sm' | 'md' | 'lg', overflow: 'wrap' | 'scroll') {
+    render(
+      <ChipGroup
+        label="Kind"
+        size={size}
+        overflow={overflow}
+        items={[{ value: 'all', label: 'All', count: 3 }]}
+        testID="group"
+      />
+    )
+    return resolvedPx(capturedClassNames.get('group') ?? '', 'gap-x', 'gap')
+  }
+
+  it.each(sizes)(
+    '$size $overflow stops each hit box at the neighbouring chip',
+    ({ size, overflow }) => {
+      const gapPx = renderGroup(size, overflow)
+
+      expect(outsetAlong('horizontal')).toBeLessThanOrEqual(gapPx)
+    }
+  )
+
+  it.each(sizes)('$size $overflow keeps 44 across the row', ({ size, overflow }) => {
+    renderGroup(size, overflow)
+
+    expect(hitBox().height).toBeGreaterThanOrEqual(HIT_TARGET_MIN)
+  })
+
+  it('keeps the hit box inside the chip', () => {
+    renderGroup('sm', 'wrap')
+
+    const layer = within(screen.getByRole('radio')).getByTestId(HIT_TARGET_TEST_ID)
+
+    expect(layer).toBeEmptyDOMElement()
+  })
+
+  it('leaves a Chip outside a group without a hit layer', () => {
+    render(<Chip onPress={() => {}}>All</Chip>)
+
+    expect(screen.queryByTestId(HIT_TARGET_TEST_ID)).toBeNull()
+  })
 })
 
 describe('hitSlopFor', () => {

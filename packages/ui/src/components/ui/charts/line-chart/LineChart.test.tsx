@@ -352,6 +352,19 @@ describe('LineChart entrance', () => {
     const { container } = renderFixture('Default', { animate: true })
     expect(dashOffsets(container)).toEqual([''])
   })
+
+  it('draws the frame at t=0.5 s the same played up to it as seeked cold', () => {
+    const props = { ...fixtureProps('Default'), animate: true }
+    const played = render(<LineChart {...props} t={0} />)
+    played.rerender(<LineChart {...props} t={0.25} />)
+    played.rerender(<LineChart {...props} t={0.5} />)
+    const cold = renderFixture('Default', { animate: true, t: 0.5 })
+    const offset = Number(dashOffsets(cold.container)[0])
+    expect(dashOffsets(played.container)).toEqual(dashOffsets(cold.container))
+    expect(offset).toBeGreaterThan(0)
+    expect(offset).toBeLessThan(0.5)
+    expect(cold.container.querySelector('path')?.style.transition).toBe('')
+  })
 })
 
 describe('LineChart accessibility', () => {

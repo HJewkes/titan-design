@@ -560,6 +560,7 @@ export interface BarListProps extends Omit<ViewProps, 'children'> {
     rows: BarListRow[];
     size?: 'sm' | 'md';
     sort?: 'descending' | 'none';
+    t?: number;
 }
 
 // @public
@@ -1036,6 +1037,36 @@ export function Chip(input: ChipProps): react_jsx_runtime.JSX.Element;
 
 // @public (undocumented)
 export type ChipColor = 'default' | 'primary' | 'secondary' | 'success' | 'error' | 'warning' | 'info';
+
+// @public
+export function ChipGroup<T extends string = string>(props: ChipGroupProps<T>): react_jsx_runtime.JSX.Element | null;
+
+// @public
+export interface ChipGroupItem<T extends string = string> {
+    count?: number;
+    isDisabled?: boolean;
+    label: string;
+    value: T;
+}
+
+// @public
+export type ChipGroupOverflow = 'wrap' | 'scroll';
+
+// @public
+export interface ChipGroupProps<T extends string = string> extends ViewProps {
+    className?: string;
+    color?: ChipColor;
+    defaultValue?: T;
+    formatCount?: (count: number) => string;
+    isDisabled?: boolean;
+    isLoading?: boolean;
+    items: ReadonlyArray<ChipGroupItem<T>>;
+    label: string;
+    onValueChange?: (value: T) => void;
+    overflow?: ChipGroupOverflow;
+    size?: ChipSize;
+    value?: T;
+}
 
 // @public (undocumented)
 export interface ChipProps extends ViewProps {
@@ -1559,6 +1590,8 @@ export const darkThemeCSSVars: {
     readonly '--color-scrim-press-strong': "rgba(0, 0, 0, 0.20)";
     readonly '--color-scrim-subtle': "rgba(0, 0, 0, 0.30)";
     readonly '--color-scrim-default': "rgba(0, 0, 0, 0.50)";
+    readonly '--color-scrim-strong': "rgba(0, 0, 0, 0.78)";
+    readonly '--color-on-scrim': "#FFFFFF";
     readonly '--color-control-face-disabled': "rgba(255, 255, 255, 0.12)";
     readonly '--color-on-control-idle': "#D1D1D1";
     readonly '--color-on-control-active': "#FFFFFF";
@@ -2329,6 +2362,8 @@ export function getSemanticColors(mode: ThemeMode): {
     readonly 'scrim-press-strong': "rgba(0, 0, 0, 0.20)";
     readonly 'scrim-subtle': "rgba(0, 0, 0, 0.30)";
     readonly 'scrim-default': "rgba(0, 0, 0, 0.50)";
+    readonly 'scrim-strong': "rgba(0, 0, 0, 0.78)";
+    readonly 'on-scrim': "#FFFFFF";
     readonly 'control-face-disabled': "rgba(0, 0, 0, 0.06)";
     readonly 'on-control-idle': "#5A5958";
     readonly 'on-control-active': "#1C1916";
@@ -2486,6 +2521,8 @@ export function getSemanticColors(mode: ThemeMode): {
     readonly 'scrim-press-strong': "rgba(0, 0, 0, 0.20)";
     readonly 'scrim-subtle': "rgba(0, 0, 0, 0.30)";
     readonly 'scrim-default': "rgba(0, 0, 0, 0.50)";
+    readonly 'scrim-strong': "rgba(0, 0, 0, 0.78)";
+    readonly 'on-scrim': "#FFFFFF";
     readonly 'control-face-disabled': "rgba(255, 255, 255, 0.12)";
     readonly 'on-control-idle': "#D1D1D1";
     readonly 'on-control-active': "#FFFFFF";
@@ -2672,6 +2709,8 @@ export function getThemeCSSVars(mode: ThemeMode): {
     readonly '--color-scrim-press-strong': "rgba(0, 0, 0, 0.20)";
     readonly '--color-scrim-subtle': "rgba(0, 0, 0, 0.30)";
     readonly '--color-scrim-default': "rgba(0, 0, 0, 0.50)";
+    readonly '--color-scrim-strong': "rgba(0, 0, 0, 0.78)";
+    readonly '--color-on-scrim': "#FFFFFF";
     readonly '--color-control-face-disabled': "rgba(0, 0, 0, 0.06)";
     readonly '--color-on-control-idle': "#5A5958";
     readonly '--color-on-control-active': "#1C1916";
@@ -2848,6 +2887,8 @@ export function getThemeCSSVars(mode: ThemeMode): {
     readonly '--color-scrim-press-strong': "rgba(0, 0, 0, 0.20)";
     readonly '--color-scrim-subtle': "rgba(0, 0, 0, 0.30)";
     readonly '--color-scrim-default': "rgba(0, 0, 0, 0.50)";
+    readonly '--color-scrim-strong': "rgba(0, 0, 0, 0.78)";
+    readonly '--color-on-scrim': "#FFFFFF";
     readonly '--color-control-face-disabled': "rgba(255, 255, 255, 0.12)";
     readonly '--color-on-control-idle': "#D1D1D1";
     readonly '--color-on-control-active': "#FFFFFF";
@@ -3642,6 +3683,8 @@ export const lightThemeCSSVars: {
     readonly '--color-scrim-press-strong': "rgba(0, 0, 0, 0.20)";
     readonly '--color-scrim-subtle': "rgba(0, 0, 0, 0.30)";
     readonly '--color-scrim-default': "rgba(0, 0, 0, 0.50)";
+    readonly '--color-scrim-strong': "rgba(0, 0, 0, 0.78)";
+    readonly '--color-on-scrim': "#FFFFFF";
     readonly '--color-control-face-disabled': "rgba(0, 0, 0, 0.06)";
     readonly '--color-on-control-idle': "#5A5958";
     readonly '--color-on-control-active': "#1C1916";
@@ -5367,6 +5410,8 @@ export const semanticColorsDark: {
     readonly 'scrim-press-strong': "rgba(0, 0, 0, 0.20)";
     readonly 'scrim-subtle': "rgba(0, 0, 0, 0.30)";
     readonly 'scrim-default': "rgba(0, 0, 0, 0.50)";
+    readonly 'scrim-strong': "rgba(0, 0, 0, 0.78)";
+    readonly 'on-scrim': "#FFFFFF";
     readonly 'control-face-disabled': "rgba(255, 255, 255, 0.12)";
     readonly 'on-control-idle': "#D1D1D1";
     readonly 'on-control-active': "#FFFFFF";
@@ -5527,6 +5572,8 @@ export const semanticColorsLight: {
     readonly 'scrim-press-strong': "rgba(0, 0, 0, 0.20)";
     readonly 'scrim-subtle': "rgba(0, 0, 0, 0.30)";
     readonly 'scrim-default': "rgba(0, 0, 0, 0.50)";
+    readonly 'scrim-strong': "rgba(0, 0, 0, 0.78)";
+    readonly 'on-scrim': "#FFFFFF";
     readonly 'control-face-disabled': "rgba(0, 0, 0, 0.06)";
     readonly 'on-control-idle': "#5A5958";
     readonly 'on-control-active': "#1C1916";
@@ -5774,6 +5821,32 @@ export function severityRank(severity?: TaskSeverity): number;
 
 // @public
 export type ShadowIntensity = 'subtle' | 'medium' | 'strong';
+
+// @public
+export function Shelf(input: ShelfProps): react_jsx_runtime.JSX.Element | null;
+
+// @public
+export type ShelfBleed = 'none' | 'sm' | 'md';
+
+// @public
+export type ShelfBreakpoint = keyof typeof primitiveBreakpoints;
+
+// @public
+export type ShelfItemWidth = number | Partial<Record<ShelfBreakpoint, number>>;
+
+// @public
+export type ShelfNudge = 'auto' | 'always' | 'never';
+
+// @public
+export interface ShelfProps extends ViewProps {
+    bleed?: ShelfBleed;
+    children?: React__default.ReactNode;
+    className?: string;
+    itemWidth: ShelfItemWidth;
+    label: string;
+    nudge?: ShelfNudge;
+    nudgeFrom?: ShelfBreakpoint;
+}
 
 // @public
 export function Sidebar(input: SidebarProps): react_jsx_runtime.JSX.Element;

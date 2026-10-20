@@ -19,7 +19,7 @@ type Wording = Pick<LineChartProps, 'xScale' | 'formatX' | 'formatY' | 'unit'>
 
 interface LineChartPictureProps extends Pick<
   LineChartProps,
-  'width' | 'height' | 'metricLabel' | 'onPointPress'
+  'width' | 'height' | 'metricLabel' | 'onPointPress' | 't'
 > {
   chart: LineChartState
   frame: PlotFrame
@@ -58,6 +58,7 @@ function LineChartPicture(props: LineChartPictureProps) {
           xLabelGap={densityFor(width).xLabelGap}
           showEndLabels={!showLegend}
           animate={props.animate}
+          t={props.t}
           active={active}
           readout={readout}
         />
@@ -99,6 +100,7 @@ export function LineChart({
   showLegend = false,
   facetColumns: _facetColumns,
   animate = true,
+  t,
   isLoading = false,
   emptyState,
   className,
@@ -164,6 +166,7 @@ export function LineChart({
         metricLabel={metricLabel}
         showLegend={showLegend}
         animate={animate}
+        t={t}
         onPointPress={onPointPress}
       />
     </View>

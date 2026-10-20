@@ -283,6 +283,8 @@ export const semanticColorsLight = {
   'scrim-press-strong': 'rgba(0, 0, 0, 0.20)',
   'scrim-subtle': 'rgba(0, 0, 0, 0.30)',
   'scrim-default': 'rgba(0, 0, 0, 0.50)',
+  'scrim-strong': 'rgba(0, 0, 0, 0.78)', // TD-987: badge ground over media
+  'on-scrim': p.white, // TD-987: badge ink on scrim-strong
 
   // Toolbar disabled face (TD-264). The idle and pressed faces are elevation
   // planes, so only the disabled face is a token.
@@ -596,6 +598,12 @@ export const semanticColorsDark = {
   'scrim-press-strong': 'rgba(0, 0, 0, 0.20)',
   'scrim-subtle': 'rgba(0, 0, 0, 0.30)',
   'scrim-default': 'rgba(0, 0, 0, 0.50)',
+  // TD-987: a badge ground over a video thumbnail (duration, muted). It owes
+  // AA under `on-scrim` over any frame, a white one included, which 0.50 does
+  // not. `on-scrim` is its ink: white in both themes, where `on-control-active`
+  // flips to grey 950 in light mode.
+  'scrim-strong': 'rgba(0, 0, 0, 0.78)',
+  'on-scrim': p.white,
 
   // Control chrome and data labels (VW-82), also approved 2026-09-13.
   //
