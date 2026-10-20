@@ -37,11 +37,13 @@ Generated from `src/arch/component-catalog.json` by `pnpm catalog`. Do not edit 
 | Checkbox | stable | ui/checkbox | Checkbox component for boolean inputs. | — | components-molecules-checkbox--all-sizes |
 | Chip | stable | ui/chip | Chip — a `Pill` preset for tags, labels, and filters. | Pill | components-atoms-chip--all-colors |
 | ChipBand | candidate | ui/chip | ChipBand — one beat's citations on a single line at video scale: the lead chip with its citation, the next chips as kind tabs, the rest as a `+d` count. | EvidenceChip, ScaledPill | components-molecules-chipband--default |
+| ChipGroup | candidate | ui/chip-group | ChipGroup — a single-select filter row of chips, each with an optional count. | ChipGroupParts | components-molecules-chipgroup--default |
 | CircularTimer | candidate | custom/CircularTimer | A circular countdown / countup with a time readout in the center — the graphical sibling of {@link TimerReadout }. | Progress | components-molecules-circulartimer--countdown-midway |
 | CoChangeChip | candidate | custom/ActiveWork | CoChangeChip — one symmetric "these two files change together" pair. | Card, FilePathLabel, Pill, Typography | custom-activework-cochangechip--default |
 | Collapse | stable | ui/collapse | Collapsible content container. | — | components-organisms-accordion--allow-multiple |
 | Composer | candidate | custom/Chat | The message input bar. | Button, Input, Surface | custom-chat-composer--default |
 | ConversationIdentity | candidate | custom/Chat | Who a direct thread is with, shown once at the top instead of on every message, the way Messages heads a conversation. | Avatar, Typography | custom-chat-conversationidentity--default |
+| ConversationTurn | candidate | custom/Session | One turn of an agent session: its opener, the assistant's messages in `seq` order, and every tool call of the turn in one disclosure under the text. | DateTime, MarkdownProse, TurnMessages, TurnToolGroup, Typography | custom-session-conversationturn--default |
 | DataRow | stable | ui/data-row | A label-and-value row: the dense rung of the row ladder. | — | components-molecules-datarow--custom-class-name |
 | DateSeparator | candidate | custom/Chat | — | DateTime, Divider, Typography | custom-chat-messagelist-dateseparator--older |
 | DateTime | candidate | ui/date-time | DateTime component for displaying formatted dates and times. | Typography | components-molecules-datetime--all-formats |
@@ -148,11 +150,13 @@ Generated from `src/arch/component-catalog.json` by `pnpm catalog`. Do not edit 
 | ScatterGridlines | review | ui/charts | Horizontal then vertical gridlines, each carrying its tick label. | — | — |
 | ScatterPointMark | review | ui/charts | One pressable bubble, ringed when selected, labelled when large or selected. | — | — |
 | ScheduleTiles | candidate | custom/Workout | ScheduleTiles — Date / Time / Until row for an upcoming session. | DateTime, Stack, Tile | custom-workout-scheduletiles--soon-under-a-day |
+| SchemaCard | candidate | ui/charts | SchemaCard: tables, their fields and the relations between them, laid out from data with no measuring. | EmptyState, SchemaConnectors, Skeleton, Surface, Typography | components-organisms-schemacard--default |
 | Section | stable | ui/section | — | — | components-atoms-section--default |
 | SegmentedBar | candidate | custom/Workout | A horizontal track split into weighted, individually-fillable segments — the presentational atom the per-set strips are built from. | — | custom-workout-segmentedbar--equal-segments |
 | SegmentedProgressBar | candidate | custom/Workout | A progress bar segmented by weighted slots (one chunk per exercise, width ∝ its set count): `value` fills the chunks left-to-right, and a single pace colour spans them all — green when at/ahead of the `target` pace, amber when behind, steel when there is no target. | SegmentedBar | custom-workout-segmentedprogressbar--ahead |
 | Select | candidate | ui/select | Select component for single or multi-selection. | SelectPopover | components-molecules-select--controlled |
 | SelectPopover | review | ui/select | — | Surface | — |
+| SessionConversation | candidate | custom/Session | An agent session read back as a conversation: each turn's opener, the assistant's text and one tool group per turn, with the idle gaps the read model marked. | ConversationTurn, EmptyState, GapIndicator, MarkdownProse, Skeleton, Typography | custom-session-sessionconversation--default |
 | SessionDetail | candidate | custom/ActiveWork | SessionDetail — one session log, readable: its title, when it ran and for how long, the tasks it touched (as pills, or as a table when the host supplies the rows), then the markdown body with task ids, `[[name]]` links and PR numbers auto-linked. | Card, Collapse, DateTime, Divider, MarkdownProse, Pill, SessionListItem, TaskRow, TaskTable, Tooltip, Typography | custom-activework-sessiondetail--ad-hoc |
 | SessionHeader | candidate | custom/Workout | The session-rail heading: the session title over a stat row and a chunked pace bar. | MetricTiles, ScheduleTiles, SegmentedProgressBar, Surface, TimerReadout, Typography | shell-sessionrail-sessionheader--live-behind |
 | SessionList | candidate | custom/ActiveWork | SessionList — the selectable list half of the session reader. | Divider, Eyebrow, SessionListItem, Typography | custom-activework-sessionlist--custom-label |
@@ -168,6 +172,7 @@ Generated from `src/arch/component-catalog.json` by `pnpm catalog`. Do not edit 
 | SetTableHeader | candidate | custom/Workout | The expanded-set-table column-header row: SET · PREV · REPS · LOAD · RPE, with the weight column reflecting `unit`. | Typography | custom-workout-settableheader--kg |
 | SetsRepsLoad | candidate | custom/Workout | The `sets × reps @ load` prescription line, in the TempoDisplay visual language (Typography `mono` · value cells with muted `×` / `@` separators). | metricText | custom-workout-setsrepsload--default |
 | SeverityLabel | candidate | custom/ActiveWork | SeverityLabel — a task's severity as a coloured dot plus its label. | Indicator, Typography | custom-activework-severitylabel--all-severities |
+| Shelf | candidate | ui/shelf | A horizontal row of same-width items that snaps item by item, with the next item peeking at the trailing edge so the reader can see there is more. | ShelfNudges | components-molecules-shelf--default |
 | SideNav | candidate | shell | Shell S2 · SideNav — the persistent 60px left rail that switches the main viewport between an app's categories. | NavItem | shell-sidenav--another-app |
 | Sidebar | candidate | custom/Sidebar | Sidebar navigation component. | — | components-organisms-sidebar--collapsed |
 | Skeleton | stable | ui/skeleton | Skeleton component for loading placeholders. | — | components-atoms-skeleton--avatar |

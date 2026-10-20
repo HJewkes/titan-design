@@ -3,7 +3,7 @@
     "name": "index",
     "path": "dist/index.mjs",
     "brotli": true,
-    "limit": "150 kB"
+    "limit": "155 kB"
   },
   {
     "name": "bodymap",
@@ -33,7 +33,13 @@
     "name": "diagram",
     "path": "dist/diagram.mjs",
     "brotli": true,
-    "limit": "21 kB"
+    "limit": "30 kB"
+  },
+  {
+    "name": "visual-router",
+    "path": "dist/visual-router.mjs",
+    "brotli": true,
+    "limit": "7 kB"
   },
   {
     "name": "theme",

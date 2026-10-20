@@ -28,3 +28,16 @@ export {
   FILE_CARD_METRIC_ORDER,
   type FileCardMetric,
 } from './components/custom/Code/file-card-rows'
+// Card content the map suite's MapCard hosts (TD-859).
+export {
+  SchemaCard,
+  schemaCardDurationS,
+  schemaCardSize,
+  type SchemaCardProps,
+  type SchemaData,
+  type SchemaField,
+  type SchemaFieldRef,
+  type SchemaHighlight,
+  type SchemaRelation,
+  type SchemaTable,
+} from './components/ui/charts/schema-card'

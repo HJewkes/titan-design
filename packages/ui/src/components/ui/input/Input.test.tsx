@@ -163,6 +163,14 @@ describe('Input geometry resolves to the spacing tokens', () => {
   )
 })
 
+describe('Input label face', () => {
+  it('sets the label in the heading face', () => {
+    render(<Input label="Email" />)
+
+    expect(capturedByNode.get(screen.getByText('Email'))).toContain('font-heading')
+  })
+})
+
 /**
  * Input's single-line heights sit on Button's control tokens (TD-275), so an
  * Input and a Button of the same size line up in one row. Horizontal padding

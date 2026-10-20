@@ -12,6 +12,7 @@ export default defineConfig({
     workout: 'src/workout.ts',
     motion: 'src/motion.ts',
     diagram: 'src/diagram.ts',
+    'visual-router': 'src/visual-router.ts',
     'theme/index': 'src/theme/index.ts',
     'theme/tokens': 'src/theme/tokens/index.ts',
     'theme/tokens-css': 'src/theme/tokens-css.ts',
