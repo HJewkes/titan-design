@@ -258,14 +258,18 @@ export const FAMILY_MEMBERS: FamilyMember[] = [...FAMILY_HUES, 'neutral']
 /** The one on-colour of a solid per mode. */
 export const ON_SOLID: Record<ThemeMode, Swatch> = { light: WHITE, dark: greyStep(950) }
 
-/** FD3's light ladder (600, with brand and warning kept at 500) and the shipped dark steps. */
+/**
+ * The family's solids: light is hue 600 for every hue, so orange and amber get a solid Pill whose
+ * white label clears AA (TD-993); dark is the shipped steps.
+ */
 export const SOLID_STEP: Record<ThemeMode, Record<FamilyHue, RampStep>> = {
-  light: { red: 600, orange: 500, amber: 500, green: 600, cyan: 600, blue: 600, magenta: 600 },
+  light: { red: 600, orange: 600, amber: 600, green: 600, cyan: 600, blue: 600, magenta: 600 },
   dark: { red: 500, orange: 400, amber: 300, green: 300, cyan: 500, blue: 500, magenta: 400 },
 }
 
-/** The light solids FD3 keeps at 500: owner picks, large-text AA. */
+/** The light solids FD3 records at 500: owner picks, large-text AA. */
 export const NAMED_EXCEPTIONS: FamilyHue[] = ['orange', 'amber']
+const EXCEPTION_STEP: RampStep = 500
 
 const NEUTRAL_SOLID: Record<ThemeMode, Swatch> = { light: greyStep(700), dark: greyStep(200) }
 
@@ -319,11 +323,14 @@ export interface LadderRung {
 export function lightLadder(): LadderRung[] {
   const inset = textPlanes('light')[0]
   return TONES.map((tone) => {
-    const cell = solidCell(TONE_HUE[tone], 'light')
+    const hue = TONE_HUE[tone]
+    const isException = NAMED_EXCEPTIONS.includes(hue)
+    const fill = isException ? hueStep(hue, EXCEPTION_STEP) : hueStep(hue, SOLID_STEP.light[hue])
+    const cell = { name: hue, fill: fill.hex, fillLabel: fill.label, on: ON_SOLID.light }
     return {
       tone,
       cell,
-      isException: NAMED_EXCEPTIONS.includes(TONE_HUE[tone]),
+      isException,
       edgeOnInset: readOn(cell, inset).fill,
     }
   })

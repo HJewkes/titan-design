@@ -123,17 +123,38 @@ describe('FD4 subtle packages', () => {
 })
 
 describe('FD5 family', () => {
-  it('reads every solid label at AA except the two light exceptions', () => {
-    const light = FAMILY_MEMBERS.map((m) =>
-      at2(worst(readAll(solidCell(m, 'light'), 'light'), 'label'))
-    )
-    const dark = FAMILY_MEMBERS.map((m) =>
-      at2(worst(readAll(solidCell(m, 'dark'), 'dark'), 'label'))
-    )
+  it('reads every solid label at AA in both modes', () => {
+    for (const mode of ['light', 'dark'] as const) {
+      const labels = FAMILY_MEMBERS.map((m) => worst(readAll(solidCell(m, mode), mode), 'label'))
+      expect(Math.min(...labels)).toBeGreaterThanOrEqual(4.5)
+    }
+  })
 
-    expect(FAMILY_MEMBERS.filter((_, i) => light[i] < 4.5)).toEqual(['orange', 'amber'])
-    expect([light[1], light[2]]).toEqual([3.74, 3.63])
-    expect(Math.min(...dark)).toBeGreaterThanOrEqual(4.5)
+  it('gives orange and amber a usable solid: 600 + white in light, the shipped step in dark', () => {
+    const read = (hue: 'orange' | 'amber', mode: 'light' | 'dark') => {
+      const cell = solidCell(hue, mode)
+      return `${cell.fillLabel} + ${cell.on.label} ${at2(worst(readAll(cell, mode), 'label'))}`
+    }
+
+    expect([read('orange', 'light'), read('amber', 'light')]).toEqual([
+      'orange 600 + white 5.19',
+      'amber 600 + white 5.02',
+    ])
+    expect([read('orange', 'dark'), read('amber', 'dark')]).toEqual([
+      'orange 400 + grey 950 6.66',
+      'amber 300 + grey 950 9.64',
+    ])
+  })
+
+  it.each([
+    ['light', composed.Fd5FamilyL],
+    ['dark', composed.Fd5FamilyD],
+  ] as const)('sets a live solid Pill for orange and amber in %s', (_, Story) => {
+    render(<Story />)
+
+    for (const hue of ['orange', 'amber']) {
+      expect(within(screen.getByTestId(`row-${hue}`)).getByText(`${hue} pill`)).toBeTruthy()
+    }
   })
 
   it('reads every subtle label at AA in both modes', () => {
