@@ -6,6 +6,7 @@
 
 import { ChatMessage } from '@titan-design/chat-protocol';
 import { ClassValue } from 'clsx';
+import { ComponentType } from 'react';
 import { DataPart } from '@titan-design/chat-protocol';
 import { DeliveryStatus } from '@titan-design/chat-protocol';
 import { ImageSourcePropType } from 'react-native';
@@ -3853,6 +3854,36 @@ export interface MarkdownProseProps {
 }
 
 // @public
+export function MediaThumb(input: MediaThumbProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export function MediaThumbBadge(input: MediaThumbBadgeProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface MediaThumbBadgeProps {
+    accessibilityLabel: string;
+    children?: string;
+    className?: string;
+    icon?: ComponentType<IconProps>;
+}
+
+// @public
+export type MediaThumbFit = 'cover' | 'contain-blur';
+
+// @public
+export interface MediaThumbProps extends Omit<ViewProps, 'children'> {
+    accessibilityLabel?: string;
+    aspect?: number;
+    bottomEnd?: ReactNode;
+    bottomStart?: ReactNode;
+    className?: string;
+    fit?: MediaThumbFit;
+    isLoading?: boolean;
+    source?: ImageSourcePropType;
+    topStart?: ReactNode;
+}
+
+// @public
 export function Menu(input: MenuProps): react_jsx_runtime.JSX.Element;
 
 // @public
@@ -4473,6 +4504,9 @@ export type PillVariant = 'solid' | 'subtle' | 'outline' | 'clear';
 
 // @public
 export const PLANE_ORDER: readonly ["frame", "background", "base", "elevated", "raised", "overlay"];
+
+// @public
+export function PlayIcon(props: IconProps): react_jsx_runtime.JSX.Element;
 
 // @public
 export function pluralize(count: number, one: string, many: string): string;
@@ -7824,6 +7858,9 @@ export interface VerdictHeroWordProps {
 
 // @public
 export function VoltrasMark(input: IconProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export function VolumeOffIcon(props: IconProps): react_jsx_runtime.JSX.Element;
 
 // @public (undocumented)
 export function VStack(props: StackProps): react_jsx_runtime.JSX.Element;

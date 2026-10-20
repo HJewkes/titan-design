@@ -15135,6 +15135,138 @@
     },
     {
       "composes": [
+        "Skeleton",
+        "mediaIcons"
+      ],
+      "family": "ui/media-thumb",
+      "file": "packages/ui/src/components/ui/media-thumb/MediaThumb.tsx",
+      "name": "MediaThumb",
+      "props": [
+        {
+          "default": null,
+          "description": "Names the frame as an image.",
+          "name": "accessibilityLabel",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": "16 / 9",
+          "description": "Width over height.",
+          "name": "aspect",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Corner slot, usually the length `MediaThumbBadge`.",
+          "name": "bottomEnd",
+          "required": false,
+          "type": "ReactNode"
+        },
+        {
+          "default": null,
+          "description": "Corner slot, usually a `MediaThumbBadge` such as \"No sound\".",
+          "name": "bottomStart",
+          "required": false,
+          "type": "ReactNode"
+        },
+        {
+          "default": null,
+          "description": "Tailwind overrides via `cn()`.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": "cover",
+          "description": "`cover` crops the frame to fill the box.",
+          "name": "fit",
+          "required": false,
+          "type": "MediaThumbFit"
+        },
+        {
+          "default": "false",
+          "description": "Shows a Skeleton in place of the frame and hides the badges.",
+          "name": "isLoading",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "The poster frame.",
+          "name": "source",
+          "required": false,
+          "type": "ImageSourcePropType"
+        },
+        {
+          "default": null,
+          "description": "Corner slot, usually a status badge.",
+          "name": "topStart",
+          "required": false,
+          "type": "ReactNode"
+        }
+      ],
+      "purpose": "A media poster frame at a fixed aspect ratio, with three corner badge slots.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/media-thumb/MediaThumb.tsx",
+        "status": "packages/ui/src/components/ui/media-thumb/MediaThumb.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-molecules-mediathumb--default"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "SvgIcon"
+      ],
+      "family": "ui/media-thumb",
+      "file": "packages/ui/src/components/ui/media-thumb/MediaThumbBadge.tsx",
+      "name": "MediaThumbBadge",
+      "props": [
+        {
+          "default": null,
+          "description": "What the badge means, read in place of its glyph or short text (e.g. \"Length 4:12\", \"No sound\").",
+          "name": "accessibilityLabel",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Short visible text, such as a length in `m:ss`.",
+          "name": "children",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Tailwind overrides via `cn()`.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "A glyph drawn before the text, or alone.",
+          "name": "icon",
+          "required": false,
+          "type": "ComponentType<IconProps>"
+        }
+      ],
+      "purpose": "A small dark badge for a `MediaThumb` corner.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/media-thumb/MediaThumbBadge.tsx",
+        "status": "packages/ui/src/components/ui/media-thumb/MediaThumbBadge.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-atoms-mediathumbbadge--default"
+      ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [
         "Surface",
         "TriggerSurface"
       ],

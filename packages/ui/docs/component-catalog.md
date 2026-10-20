@@ -107,6 +107,8 @@ Generated from `src/arch/component-catalog.json` by `pnpm catalog`. Do not edit 
 | LiveFatiguePanel | candidate | custom/Fatigue | — | LiveAuraFrame, LiveFatigueCard, VelocityHero | custom-fatigue-live-fatigue-panel--live-panel-v-2 |
 | MapCard | candidate | ui/map-card | MapCard: a pop-out card beside a point on a map, joined to it by a leader line. | Surface, Typography | components-molecules-mapcard--default |
 | MarkdownProse | candidate | custom/Prose | MarkdownProse — renders a small, predictable markdown subset as themed prose and auto-links references the caller describes. | Typography | custom-prose-markdownprose--code-blocks |
+| MediaThumb | candidate | ui/media-thumb | A media poster frame at a fixed aspect ratio, with three corner badge slots. | Skeleton, mediaIcons | components-molecules-mediathumb--default |
+| MediaThumbBadge | candidate | ui/media-thumb | A small dark badge for a `MediaThumb` corner. | SvgIcon | components-atoms-mediathumbbadge--default |
 | Menu | candidate | ui/menu | Menu component for dropdown menus. | Surface, TriggerSurface | components-molecules-menu--controlled |
 | MesoCard | candidate | custom/Workout | A mesocycle card with name, goal, split, week range, an optional volume heatmap strip, and an expandable WeekRow list. | Badge, Card, WeekRow | custom-workout-mesocard--collapsed |
 | MesoProgressBar | candidate | custom/Workout | Segmented horizontal bar of mesocycles. | — | custom-workout-mesoprogressbar--active-current |

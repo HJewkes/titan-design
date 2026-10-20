@@ -4986,6 +4986,81 @@
       "standard": false
     },
     {
+      "name": "MediaThumb",
+      "file": "packages/ui/src/components/ui/media-thumb/MediaThumb.tsx",
+      "dir": "ui",
+      "family": "ui/media-thumb",
+      "exports": [
+        "MediaThumb",
+        "MediaThumbFit",
+        "MediaThumbProps",
+        "NoSourcePlane",
+        "Frame",
+        "Corner"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "Skeleton",
+        "mediaIcons"
+      ],
+      "leak": {
+        "rawView": 4,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 147,
+        "score": 4
+      },
+      "tier": "organism",
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "MediaThumbBadge",
+      "file": "packages/ui/src/components/ui/media-thumb/MediaThumbBadge.tsx",
+      "dir": "ui",
+      "family": "ui/media-thumb",
+      "exports": [
+        "MediaThumbBadge",
+        "MediaThumbBadgeProps"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "SvgIcon"
+      ],
+      "leak": {
+        "rawView": 2,
+        "rawText": 1,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 49,
+        "score": 3
+      },
+      "tier": "molecule",
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
       "name": "Menu",
       "file": "packages/ui/src/components/ui/menu/Menu.tsx",
       "dir": "ui",
