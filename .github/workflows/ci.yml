@@ -345,14 +345,27 @@ jobs:
           if-no-files-found: warn
           retention-days: 7
 
+  # TP-3104: flags a merge call shape (the gh CLI, REST or GraphQL merge APIs) committed into
+  # code or an agent brief. The allowlist is .github/merge-lint.json, empty here; at level warn the
+  # job never fails. The exact pin moves only by a reviewed re-pin PR.
+  merge-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Merge call shapes
+        run: npx --yes -p @titan-design/tool-guard@0.5.3 titan-merge-lint
+
   # The job the ruleset requires (TD-725). Its first step is the all-green aggregator, so it
-  # fails when build, visual or contrast fails, is cancelled or goes missing, and every later step
+  # fails when build, visual, contrast or merge-lint fails, is cancelled or goes missing, and every later step
   # then skips. The audit, stories-axe and play steps run here rather than in jobs of their own,
   # each of which paid its own queue wait. The image is visual's: the play functions need its
   # Chromium.
   check:
     if: always()
-    needs: [build, visual, contrast]
+    needs: [build, visual, contrast, merge-lint]
     runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/playwright:v1.58.2-noble
