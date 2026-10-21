@@ -10,6 +10,12 @@ changelog:compile` folds them into `[Unreleased]` at release.
 
 ## [Unreleased]
 
+## [0.23.1] - 2026-10-21
+
+### Fixed
+
+- The publish job checks out full history, so `prepublishOnly`'s ratchet-baseline test finds `origin/main` on a tag push. 0.22.0 and 0.23.0 were tagged but never reached npm because that test failed there.
+
 ## [0.23.0] - 2026-10-20
 
 ### Added
