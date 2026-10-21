@@ -2807,7 +2807,7 @@ export type ZoneTrackMarker = {
 } | {
     type: 'fill';
     value: number;
-    color?: string;
+    color: string;
     glow?: boolean;
 };
 
@@ -2819,7 +2819,6 @@ export interface ZoneTrackProps extends ViewProps {
     marker?: ZoneTrackMarker | null;
     max: number;
     min?: number;
-    needleOverhang?: number;
     size?: ZoneTrackSize;
     ticks?: ZoneTrackTick[];
     trackColor?: string;
@@ -2839,6 +2838,7 @@ export interface ZoneTrackTick {
 // @public
 export interface ZoneTrackZone {
     color: string;
+    faded?: string;
     upTo: number;
 }
 

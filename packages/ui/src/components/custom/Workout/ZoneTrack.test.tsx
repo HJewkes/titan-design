@@ -4,9 +4,17 @@ import { axe } from 'jest-axe'
 import { ZoneTrack, type ZoneTrackZone } from './ZoneTrack'
 import { WORKOUT_TOKENS } from '../../../theme/workout-tokens'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { Surface } from '../../ui/surface'
 
 const { green, yellow, orange, red } = WORKOUT_TOKENS.scale
 const t = getSemanticColors('dark')
+
+// Normalise through the DOM so hex, rgb() and rgba() compare as one form.
+function cssColor(color: string) {
+  const probe = document.createElement('div')
+  probe.style.backgroundColor = color
+  return probe.style.backgroundColor
+}
 
 const ZONES: ZoneTrackZone[] = [
   { upTo: 10, color: green },
@@ -60,10 +68,28 @@ describe('ZoneTrack', () => {
     expect(screen.getByTestId('zone-track-needle')).toHaveStyle({ left: '100%' })
   })
 
-  it('clip-reveals the gradient for a fill marker without a colour', () => {
-    render(<ZoneTrack zones={ZONES} max={40} marker={{ type: 'fill', value: 20 }} />)
-    expect(screen.getByTestId('zone-track-unfilled')).toHaveStyle({ left: '50%' })
-    expect(screen.queryByTestId('zone-track-fill')).not.toBeInTheDocument()
+  it('keeps only the zone the reading lands in lit when zones carry a faded colour', () => {
+    const faded = ZONES.map((zone) => ({ ...zone, faded: t['surface-base'] }))
+    render(<ZoneTrack zones={faded} max={40} marker={{ type: 'needle', value: 24 }} />)
+    const bands = screen.getAllByTestId('zone-track-band')
+    expect(bands.map((b) => b.style.backgroundColor)).toEqual(
+      [t['surface-base'], t['surface-base'], orange, t['surface-base']].map(cssColor)
+    )
+  })
+
+  it('lights the last zone for a reading past every zone', () => {
+    const faded = ZONES.map((zone) => ({ ...zone, faded: t['surface-base'] }))
+    render(<ZoneTrack zones={faded} max={40} marker={{ type: 'needle', value: 100 }} />)
+    const bands = screen.getAllByTestId('zone-track-band')
+    expect(bands[3]).toHaveStyle({ backgroundColor: red })
+    expect(bands[0]).toHaveStyle({ backgroundColor: t['surface-base'] })
+  })
+
+  it('keeps every zone at full colour without a marker', () => {
+    const faded = ZONES.map((zone) => ({ ...zone, faded: t['surface-base'] }))
+    render(<ZoneTrack zones={faded} max={40} />)
+    const bands = screen.getAllByTestId('zone-track-band')
+    expect(bands.map((b) => b.style.backgroundColor)).toEqual(ZONES.map((z) => cssColor(z.color)))
   })
 
   it('draws a solid trend fill when the fill marker has a colour', () => {
@@ -262,4 +288,41 @@ describe('ZoneTrack onLayout', () => {
       expect(screen.getAllByTestId('zone-track-tick-label').length).toBeLessThan(MANY_TICKS.length)
     )
   })
+})
+
+describe('ZoneTrack un-reached track layers', () => {
+  // react-native-web writes `transparent` as rgba(0, 0, 0, 0).
+  const isPainted = (color: string) => color !== '' && !/^rgba\(.*,\s*0\)$/.test(color)
+
+  const paintedLayers = () =>
+    ['zone-track-track', 'zone-track-band', 'zone-track-unfilled']
+      .map((id) => (screen.getByTestId(id) as HTMLElement).style.backgroundColor)
+      .filter(isPainted)
+
+  const FILL = { type: 'fill', value: 10, color: green } as const
+
+  it.each(['dark', 'light'] as const)(
+    'paints one %s border-prominent layer under the un-reached region of clear zones',
+    (mode) => {
+      render(
+        <Surface theme={mode}>
+          <ZoneTrack zones={[{ upTo: 40, color: 'transparent' }]} max={40} marker={FILL} />
+        </Surface>
+      )
+      expect(paintedLayers()).toEqual([cssColor(getSemanticColors(mode)['border-prominent'])])
+    }
+  )
+
+  it.each(['dark', 'light'] as const)(
+    'paints one %s border-prominent layer when the zone already carries the track token',
+    (mode) => {
+      const track = getSemanticColors(mode)['border-prominent']
+      render(
+        <Surface theme={mode}>
+          <ZoneTrack zones={[{ upTo: 40, color: track }]} max={40} marker={FILL} />
+        </Surface>
+      )
+      expect(paintedLayers()).toEqual([cssColor(track)])
+    }
+  )
 })

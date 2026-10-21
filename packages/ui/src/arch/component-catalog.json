@@ -9951,7 +9951,7 @@
       "props": [
         {
           "default": "null",
-          "description": "Optional translucent range highlight drawn over the gradient.",
+          "description": "Optional translucent range highlight drawn over the zones.",
           "name": "band",
           "required": false,
           "type": "ZoneTrackBand | null"
@@ -9981,13 +9981,6 @@
           "default": "0",
           "description": "Domain minimum (left edge).",
           "name": "min",
-          "required": false,
-          "type": "number"
-        },
-        {
-          "default": null,
-          "description": "How far a needle marker overhangs the track top + bottom, in px.",
-          "name": "needleOverhang",
           "required": false,
           "type": "number"
         },
@@ -10027,21 +10020,14 @@
           "type": "ZoneTrackZone[]"
         }
       ],
-      "purpose": "Low-level gauge primitive: a horizontal pill track carrying an N-band zone gradient, optional tick marks with labels, and a single value marker (a needle line or a left-anchored fill).",
+      "purpose": "Low-level gauge primitive: a horizontal pill track carrying N zone bands, optional tick marks with labels, and a single value marker (a needle line or a left-anchored fill).",
       "sources": {
         "props": "packages/ui/src/components/custom/Workout/ZoneTrack.tsx",
         "status": "packages/ui/src/components/custom/Workout/ZoneTrack.stories.tsx"
       },
       "status": "candidate",
       "storyIds": [
-        "custom-workout-dataviz-zonetrack--band-with-marker",
-        "custom-workout-dataviz-zonetrack--bare-track",
-        "custom-workout-dataviz-zonetrack--colored-tooltip-ticks",
-        "custom-workout-dataviz-zonetrack--glow",
-        "custom-workout-dataviz-zonetrack--gradient-fill",
-        "custom-workout-dataviz-zonetrack--needle",
-        "custom-workout-dataviz-zonetrack--solid-trend-fill",
-        "custom-workout-dataviz-zonetrack--wall-density"
+        "custom-workout-dataviz-zonetrack--zone-highlight"
       ],
       "tier": "organism"
     },
