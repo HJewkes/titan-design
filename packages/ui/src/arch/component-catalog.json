@@ -12093,7 +12093,7 @@
         },
         {
           "default": null,
-          "description": "Callback when card is pressed (makes card interactive)",
+          "description": "Press callback; it makes the card one `role=\"button\"`, so never wrap form controls in it.",
           "name": "onPress",
           "required": false,
           "type": "(() => void)"
@@ -16937,7 +16937,7 @@
         },
         {
           "default": null,
-          "description": "Callback when card is pressed (makes card interactive)",
+          "description": "Press callback; it makes the card one `role=\"button\"`, so never wrap form controls in it.",
           "name": "onPress",
           "required": false,
           "type": "(() => void)"
