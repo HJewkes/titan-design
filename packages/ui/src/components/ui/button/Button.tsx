@@ -90,12 +90,9 @@ const variantStyles: Record<ButtonVariant, Record<ButtonColor, string>> = {
       'bg-brand-primary-solid active:bg-brand-primary-active web:hover:bg-brand-primary-hover',
     secondary:
       'bg-brand-secondary-solid active:bg-brand-secondary-dark web:hover:bg-brand-secondary-dark',
-    success:
-      'bg-status-success-solid active:opacity-90 web:hover:opacity-90',
-    error:
-      'bg-status-error-solid active:opacity-90 web:hover:opacity-90',
-    warning:
-      'bg-status-warning-solid active:opacity-90 web:hover:opacity-90',
+    success: 'bg-status-success-solid active:opacity-90 web:hover:opacity-90',
+    error: 'bg-status-error-solid active:opacity-90 web:hover:opacity-90',
+    warning: 'bg-status-warning-solid active:opacity-90 web:hover:opacity-90',
     info: 'bg-status-info-solid active:opacity-90 web:hover:opacity-90',
   },
   outline: {
@@ -112,16 +109,12 @@ const variantStyles: Record<ButtonVariant, Record<ButtonColor, string>> = {
     info: 'border-2 border-status-info bg-transparent active:bg-status-info-subtle web:hover:bg-status-info-subtle',
   },
   ghost: {
-    primary:
-      'bg-transparent active:bg-brand-primary-subtle web:hover:bg-brand-primary-subtle',
+    primary: 'bg-transparent active:bg-brand-primary-subtle web:hover:bg-brand-primary-subtle',
     secondary:
       'bg-transparent active:bg-brand-secondary-subtle web:hover:bg-brand-secondary-subtle',
-    success:
-      'bg-transparent active:bg-status-success-subtle web:hover:bg-status-success-subtle',
-    error:
-      'bg-transparent active:bg-status-error-subtle web:hover:bg-status-error-subtle',
-    warning:
-      'bg-transparent active:bg-status-warning-subtle web:hover:bg-status-warning-subtle',
+    success: 'bg-transparent active:bg-status-success-subtle web:hover:bg-status-success-subtle',
+    error: 'bg-transparent active:bg-status-error-subtle web:hover:bg-status-error-subtle',
+    warning: 'bg-transparent active:bg-status-warning-subtle web:hover:bg-status-warning-subtle',
     info: 'bg-transparent active:bg-status-info-subtle web:hover:bg-status-info-subtle',
   },
   link: {

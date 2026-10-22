@@ -24,7 +24,8 @@ vi.mock('react-native', async (importOriginal) => {
 })
 
 const MOUSE = { button: 0, detail: 1 }
-const settle = () => new Promise((resolve) => setTimeout(resolve, 20))
+// RNW's PressResponder starts a press 50 ms after the mousedown; wait past it.
+const settle = () => new Promise((resolve) => setTimeout(resolve, 150))
 
 function renderCardWithField() {
   render(
