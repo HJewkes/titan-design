@@ -230,8 +230,21 @@ export const InsideACard: Story = {
 }
 
 export const Clickable: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'A Card with `onPress` is one `role="button"`: it lifts on hover and shrinks to ' +
+          '`scale(0.99)` while pressed (`data-pressed` on web), with no movement under ' +
+          '`prefers-reduced-motion`. The pressed state is the card’s own, not CSS `:active`, so a ' +
+          'press that starts on a nested control never presses the card. Even so, **a pressable Card ' +
+          'must not wrap form controls** (radios, inputs, buttons): a button cannot hold them. Put ' +
+          'the controls in a plain Card and the action on a Button.',
+      },
+    },
+  },
   render: () => (
-    <Card isInteractive onPress={() => console.log('Card clicked!')} style={{ width: 320 }}>
+    <Card isInteractive onPress={() => {}} style={{ width: 320 }}>
       <CardHeader>
         <CardTitle>Clickable Card</CardTitle>
         <CardDescription>Click anywhere on this card</CardDescription>
