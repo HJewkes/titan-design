@@ -2,6 +2,7 @@ import React, { forwardRef } from 'react'
 import { Pressable, Text, View, ActivityIndicator, type PressableProps } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { useHitTarget } from '../../../hooks/useHitTarget'
+import { usePrefersReducedMotion } from '../../../hooks/usePrefersReducedMotion'
 import { getSemanticColors, type ThemeMode } from '../../../theme/tokens/semantic'
 import { resolveColor, type ColorToken } from '../../../theme/resolve-color'
 import { useSurfaceMode } from '../surface'
@@ -86,42 +87,42 @@ const variantStyles: Record<ButtonVariant, Record<ButtonColor, string>> = {
     // Hover and active step down the ramp from the rest fill (decision 0003); the
     // light `brand-primary-dark` equals the rest fill, so it is no hover at all.
     primary:
-      'bg-brand-primary-solid active:bg-brand-primary-active active:scale-[0.98] web:hover:bg-brand-primary-hover web:active:scale-[0.98]',
+      'bg-brand-primary-solid active:bg-brand-primary-active web:hover:bg-brand-primary-hover',
     secondary:
-      'bg-brand-secondary-solid active:bg-brand-secondary-dark active:scale-[0.98] web:hover:bg-brand-secondary-dark web:active:scale-[0.98]',
+      'bg-brand-secondary-solid active:bg-brand-secondary-dark web:hover:bg-brand-secondary-dark',
     success:
-      'bg-status-success-solid active:opacity-90 active:scale-[0.98] web:hover:opacity-90 web:active:scale-[0.98]',
+      'bg-status-success-solid active:opacity-90 web:hover:opacity-90',
     error:
-      'bg-status-error-solid active:opacity-90 active:scale-[0.98] web:hover:opacity-90 web:active:scale-[0.98]',
+      'bg-status-error-solid active:opacity-90 web:hover:opacity-90',
     warning:
-      'bg-status-warning-solid active:opacity-90 active:scale-[0.98] web:hover:opacity-90 web:active:scale-[0.98]',
-    info: 'bg-status-info-solid active:opacity-90 active:scale-[0.98] web:hover:opacity-90 web:active:scale-[0.98]',
+      'bg-status-warning-solid active:opacity-90 web:hover:opacity-90',
+    info: 'bg-status-info-solid active:opacity-90 web:hover:opacity-90',
   },
   outline: {
     primary:
-      'border-2 border-brand-primary bg-transparent active:bg-brand-primary-subtle active:scale-[0.98] web:hover:bg-brand-primary-subtle web:active:scale-[0.98]',
+      'border-2 border-brand-primary bg-transparent active:bg-brand-primary-subtle web:hover:bg-brand-primary-subtle',
     secondary:
-      'border-2 border-brand-secondary bg-transparent active:bg-brand-secondary-subtle active:scale-[0.98] web:hover:bg-brand-secondary-subtle web:active:scale-[0.98]',
+      'border-2 border-brand-secondary bg-transparent active:bg-brand-secondary-subtle web:hover:bg-brand-secondary-subtle',
     success:
-      'border-2 border-status-success bg-transparent active:bg-status-success-subtle active:scale-[0.98] web:hover:bg-status-success-subtle web:active:scale-[0.98]',
+      'border-2 border-status-success bg-transparent active:bg-status-success-subtle web:hover:bg-status-success-subtle',
     error:
-      'border-2 border-status-error bg-transparent active:bg-status-error-subtle active:scale-[0.98] web:hover:bg-status-error-subtle web:active:scale-[0.98]',
+      'border-2 border-status-error bg-transparent active:bg-status-error-subtle web:hover:bg-status-error-subtle',
     warning:
-      'border-2 border-status-warning bg-transparent active:bg-status-warning-subtle active:scale-[0.98] web:hover:bg-status-warning-subtle web:active:scale-[0.98]',
-    info: 'border-2 border-status-info bg-transparent active:bg-status-info-subtle active:scale-[0.98] web:hover:bg-status-info-subtle web:active:scale-[0.98]',
+      'border-2 border-status-warning bg-transparent active:bg-status-warning-subtle web:hover:bg-status-warning-subtle',
+    info: 'border-2 border-status-info bg-transparent active:bg-status-info-subtle web:hover:bg-status-info-subtle',
   },
   ghost: {
     primary:
-      'bg-transparent active:bg-brand-primary-subtle active:scale-[0.98] web:hover:bg-brand-primary-subtle web:active:scale-[0.98]',
+      'bg-transparent active:bg-brand-primary-subtle web:hover:bg-brand-primary-subtle',
     secondary:
-      'bg-transparent active:bg-brand-secondary-subtle active:scale-[0.98] web:hover:bg-brand-secondary-subtle web:active:scale-[0.98]',
+      'bg-transparent active:bg-brand-secondary-subtle web:hover:bg-brand-secondary-subtle',
     success:
-      'bg-transparent active:bg-status-success-subtle active:scale-[0.98] web:hover:bg-status-success-subtle web:active:scale-[0.98]',
+      'bg-transparent active:bg-status-success-subtle web:hover:bg-status-success-subtle',
     error:
-      'bg-transparent active:bg-status-error-subtle active:scale-[0.98] web:hover:bg-status-error-subtle web:active:scale-[0.98]',
+      'bg-transparent active:bg-status-error-subtle web:hover:bg-status-error-subtle',
     warning:
-      'bg-transparent active:bg-status-warning-subtle active:scale-[0.98] web:hover:bg-status-warning-subtle web:active:scale-[0.98]',
-    info: 'bg-transparent active:bg-status-info-subtle active:scale-[0.98] web:hover:bg-status-info-subtle web:active:scale-[0.98]',
+      'bg-transparent active:bg-status-warning-subtle web:hover:bg-status-warning-subtle',
+    info: 'bg-transparent active:bg-status-info-subtle web:hover:bg-status-info-subtle',
   },
   link: {
     primary: 'bg-transparent',
@@ -131,6 +132,17 @@ const variantStyles: Record<ButtonVariant, Record<ButtonColor, string>> = {
     warning: 'bg-transparent',
     info: 'bg-transparent',
   },
+}
+
+/**
+ * The press: the fill steps down (above) and the face shrinks by one percent, over the
+ * 100 ms base transition. Scale, not opacity: an opacity press would fade the label off
+ * its contrast pair, and the status solids already spend `opacity-90` on hover. Reduced
+ * motion keeps the colour step alone; a link or a disabled button does not move (TD-1012).
+ */
+function pressStyles(variant: ButtonVariant, disabled: boolean, reducedMotion: boolean) {
+  if (variant === 'link' || disabled || reducedMotion) return undefined
+  return 'active:scale-[0.99]'
 }
 
 function textStyles(variant: ButtonVariant, color: ButtonColor): string {
@@ -201,6 +213,7 @@ export const Button = forwardRef<View, ButtonProps>(function Button(
   const disabled = isDisabled || isLoading
   const hitTarget = useHitTarget({ enabled: needsHitTarget[size], onLayout })
   const mode = useSurfaceMode()
+  const reducedMotion = usePrefersReducedMotion()
 
   return (
     <Pressable
@@ -210,9 +223,10 @@ export const Button = forwardRef<View, ButtonProps>(function Button(
       accessibilityState={{ disabled }}
       className={cn(
         // Base styles
-        'flex-row items-center justify-center rounded-md transition-all duration-150',
+        'flex-row items-center justify-center rounded-md transition-all duration-100',
         // Variant + color styles
         variantStyles[variant][color],
+        pressStyles(variant, disabled, reducedMotion),
         // Label colour lives on the container: ButtonText renders `text-inherit`, so a
         // colour set only on the inner Text never reaches the common `<ButtonText>`
         // child path — which is why solid labels stayed browser-default white (AW-141).
@@ -222,7 +236,7 @@ export const Button = forwardRef<View, ButtonProps>(function Button(
         // Full width
         fullWidth && 'w-full',
         // Disabled styles - more refined
-        disabled && 'opacity-40 cursor-not-allowed active:scale-100 web:active:scale-100',
+        disabled && 'opacity-40 cursor-not-allowed',
         // Link variant has no padding
         variant === 'link' && 'px-0 py-0 min-h-0',
         className

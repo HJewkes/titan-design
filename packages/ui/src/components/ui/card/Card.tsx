@@ -1,6 +1,14 @@
-import React, { useMemo, useState } from 'react'
-import { View, Text, Pressable, type ViewProps, type ViewStyle } from 'react-native'
+import React, { useCallback, useMemo, useState } from 'react'
+import {
+  View,
+  Text,
+  Pressable,
+  type GestureResponderEvent,
+  type ViewProps,
+  type ViewStyle,
+} from 'react-native'
 import { cn } from '../../../utils/cn'
+import { usePrefersReducedMotion } from '../../../hooks/usePrefersReducedMotion'
 import { liftStyle, type LiftStep } from '../../../theme/lift'
 import { resolveColor } from '../../../theme/resolve-color'
 import { Surface } from '../surface/Surface'
@@ -27,7 +35,12 @@ export interface CardProps extends ViewProps {
   isInteractive?: boolean
   /** Whether the card is in a loading state (renders skeleton) */
   isLoading?: boolean
-  /** Callback when card is pressed (makes card interactive) */
+  /**
+   * Callback when card is pressed. The card becomes one `role="button"`, so it must not
+   * wrap form controls (radios, inputs, buttons): a button cannot hold them, and a
+   * screen reader announces the whole card as one control. Put the action on a Button
+   * inside the card instead.
+   */
   onPress?: () => void
   /** Custom border color (hex, rgb, or CSS color). Useful for status cards. */
   borderColor?: string
@@ -87,6 +100,49 @@ function useCardDepth(variant: CardVariant, elevation: CardElevation, hovered: b
   return { ...resolved, depthStyle }
 }
 
+const NESTED_CONTROL = [
+  'input',
+  'textarea',
+  'select',
+  'button',
+  'a[href]',
+  '[contenteditable="true"]',
+  ...['button', 'link', 'radio', 'checkbox', 'switch', 'slider', 'textbox', 'combobox', 'tab'].map(
+    (role) => `[role="${role}"]`
+  ),
+].join(', ')
+
+/**
+ * Whether a press began on a control nested inside the card. On web the press reaches
+ * the card from any descendant, and CSS `:active` holds on every ancestor, so a card
+ * pressed by its own radio scaled whole (TD-1012). Native gives the nested control the
+ * responder, so the card never sees the press there.
+ */
+function startsInNestedControl(event: GestureResponderEvent): boolean {
+  if (typeof Element === 'undefined') return false
+  const target: unknown = event.nativeEvent.target
+  const card: unknown = event.currentTarget
+  if (!(target instanceof Element) || !(card instanceof Element)) return false
+  const control = target.closest(NESTED_CONTROL)
+  return control !== null && control !== card
+}
+
+/** The card's own pressed state, scoped to presses that start on the card itself. */
+function useCardPress() {
+  const [isPressed, setIsPressed] = useState(false)
+  const onPressIn = useCallback((event: GestureResponderEvent) => {
+    if (!startsInNestedControl(event)) setIsPressed(true)
+  }, [])
+  const onPressOut = useCallback(() => setIsPressed(false), [])
+  return { isPressed, onPressIn, onPressOut }
+}
+
+/** `data-pressed` on web (RNW renders `dataSet`; native ignores it), keeping a caller's own marks. */
+function pressedDataSet(props: ViewProps, isPressed: boolean): ViewProps {
+  const own = (props as { dataSet?: Record<string, string> }).dataSet
+  return { dataSet: { ...own, pressed: isPressed ? 'true' : undefined } } as ViewProps
+}
+
 /**
  * Card component for containing related content. Sits `elevation` planes above
  * the enclosing Surface and publishes its own plane, so a card nested in a card
@@ -129,12 +185,16 @@ export function Card({
   const isClickable = isInteractive || !!onPress
   const [isHovered, setIsHovered] = useState(false)
   const depth = useCardDepth(variant, elevation, isHovered && isClickable)
+  const press = useCardPress()
+  const reducedMotion = usePrefersReducedMotion()
+  const moves = isClickable && !reducedMotion
 
   const baseClassName = cn(
     'rounded-lg overflow-hidden relative',
     borderColor ? 'border' : EDGE_CLASS[variant],
-    isClickable && 'web:cursor-pointer web:transition-all web:duration-150',
-    isClickable && 'web:hover:-translate-y-0.5 active:scale-[0.99]',
+    isClickable && 'web:cursor-pointer web:transition-all web:duration-100',
+    moves && 'web:hover:-translate-y-0.5',
+    moves && press.isPressed && 'scale-[0.99]',
     isLoading && 'pointer-events-none animate-pulse',
     className
   )
@@ -174,12 +234,15 @@ export function Card({
       {isClickable ? (
         <Pressable
           onPress={onPress}
+          onPressIn={press.onPressIn}
+          onPressOut={press.onPressOut}
           onHoverIn={() => setIsHovered(true)}
           onHoverOut={() => setIsHovered(false)}
           accessibilityRole="button"
           className={baseClassName}
           style={mergedStyle}
           {...props}
+          {...pressedDataSet(props, press.isPressed)}
         >
           {content}
         </Pressable>
