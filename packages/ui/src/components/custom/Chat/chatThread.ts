@@ -6,7 +6,7 @@ import type {
   Participant,
   TextPart,
 } from '@titan-design/chat-protocol'
-import { parseProseBlocks } from '../Prose'
+import { parseProseBlocks, plainInline, type ProseBlock } from '../Prose'
 
 /** Consecutive messages from one author closer than this form one run. */
 export const GROUP_WINDOW_MS = 5 * 60 * 1000
@@ -36,14 +36,16 @@ export function messageBody(message: ChatMessage): string {
     .join('\n\n')
 }
 
-// The bold and code spans MarkdownProse renders; any other markup is shown, and spoken, literally.
-const RENDERED_INLINE = /\*\*([^*]+)\*\*|`([^`]+)`/g
+// An ordered item's number is spoken, as the bubble shows it; a bullet glyph is not.
+function blockTexts(blocks: ProseBlock[]): string[] {
+  return blocks
+    .flatMap((block) => [block.ordered ? `${block.n}. ${block.text}` : block.text, ...blockTexts(block.children ?? [])])
+    .filter(Boolean)
+}
 
 /** The text a message bubble shows, as one line for a screen reader to speak. */
 export function plainText(markdown: string): string {
-  return parseProseBlocks(markdown)
-    .map(({ text }) => text.replace(RENDERED_INLINE, (_span, bold, code) => bold ?? code))
-    .join(' ')
+  return blockTexts(parseProseBlocks(markdown)).map(plainInline).join(' ')
 }
 
 export function isStreaming(message: ChatMessage): boolean {

@@ -7,9 +7,10 @@ import type { ProseBlock } from './proseTypes'
 
 /**
  * A fenced block: the language label on a raised header over mono code in an
- * inset well. The code scrolls sideways rather than wrapping.
+ * inset well. The code scrolls sideways rather than wrapping. `highlighted` replaces the
+ * plain code with the caller's spans; it renders inside the same mono `<Text>`.
  */
-export function CodeBlock({ code, lang }: { code: string; lang: string }) {
+export function CodeBlock({ code, lang, highlighted }: { code: string; lang: string; highlighted?: ReactNode }) {
   return (
     <View className="overflow-hidden rounded-md border border-border-subtle" testID="prose-code">
       {lang ? (
@@ -27,7 +28,7 @@ export function CodeBlock({ code, lang }: { code: string; lang: string }) {
       <Surface pressed rounded={false} testID="prose-code-body">
         <ScrollView horizontal showsHorizontalScrollIndicator>
           <Text selectable className="px-3 py-2 font-mono text-xs leading-5 text-text-primary">
-            {code}
+            {highlighted ?? code}
           </Text>
         </ScrollView>
       </Surface>
@@ -50,7 +51,7 @@ export function ProseTable({ block, inline }: ProseTableProps) {
         <TableRow isHoverable={false}>
           {header.map((cell, c) => (
             <TableHeaderCell key={c} align={align[c]}>
-              {cell}
+              {inline(cell)}
             </TableHeaderCell>
           ))}
         </TableRow>
