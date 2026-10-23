@@ -63,6 +63,7 @@ describe('parseProseBlocks on a docs page', () => {
         ['warning', '', ['p', 'code']],
       ]
     )
+    expect(ofType('callout')[1]!.children![1]!.text).toBe('echo none\n:::')
   })
 })
 

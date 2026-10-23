@@ -25,7 +25,8 @@
       "replace": "  const children = parseLines(item.content.slice(0, 1), depth + 1)",
       "kills": [
         "numbers ordered items and nests what is indented under them",
-        "groups items into lists, nested lists inside their item"
+        "groups items into lists, nested lists inside their item",
+        "passes each fence to the highlight seam and renders what it returns"
       ]
     },
     {
@@ -33,7 +34,10 @@
       "file": "packages/ui/src/components/custom/Prose/proseNest.ts",
       "find": "    if (inFence) continue\n",
       "replace": "",
-      "kills": ["reads containers with their kind, title and nested blocks"]
+      "kills": [
+        "reads containers with their kind, title and nested blocks",
+        "gives every heading its source level and a VitePress-style unique id"
+      ]
     },
     {
       "name": "underscore italic needs a doubled underscore",
