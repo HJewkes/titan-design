@@ -21,12 +21,14 @@ export interface ProseBlock {
   level?: number
   /** Headings: the anchor id, from `{#id}` or the slug of the heading text. */
   id?: string
-  /** Ordered list items: set, with `n` the item's number. */
+  /** Ordered list items: set. */
   ordered?: true
+  /** Ordered list items: the number shown, counting on from the list's first. */
   n?: number
   /** List items and callouts: the blocks nested inside. */
   children?: ProseBlock[]
-  /** Callouts: the container kind and its title (empty for the default). */
+  /** Callouts: the container kind. */
   kind?: ProseCalloutKind
+  /** Callouts: the title after the kind, empty when the kind's name stands in. */
   title?: string
 }

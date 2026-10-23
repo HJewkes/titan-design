@@ -43,6 +43,7 @@ export interface ProseLink {
   isExternal: boolean
 }
 
+/** A safe link plus the press handler that routes it. */
 export interface ProseAnchorProps extends ProseLink {
   /** Owns navigation on a plain click (client routing); a modified click still opens a tab. */
   onPress?: () => void
