@@ -56,7 +56,7 @@ export const Ego: Story = {
   args: {
     egoId: EGO_FOCUS,
     graph: egoGraph,
-    height: 360,
+    height: 480,
     accessibilityLabel: 'Neighbours of api',
   },
 }
