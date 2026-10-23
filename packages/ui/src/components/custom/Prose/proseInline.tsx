@@ -1,7 +1,13 @@
 import { Fragment, type ReactNode } from 'react'
 import { Linking, Platform, Text, type TextProps } from 'react-native'
 import { anchorProps } from '../../ui/link/anchorProps'
-import { INLINE_SOURCES, inlineKindOf, innerText, linkParts } from './proseInlineTokens'
+import {
+  INLINE_SOURCES,
+  inlineKindOf,
+  innerText,
+  linkParts,
+  plainInline,
+} from './proseInlineTokens'
 import { isExternalHref, safeHref } from './proseUrl'
 
 /** How a linked reference reads: brand for the domain's own ids, link for cross-references, muted for asides. */
@@ -49,7 +55,11 @@ export interface ProseAnchorProps extends ProseLink {
  */
 export function ProseAnchor({ href, isExternal, onPress, children }: ProseAnchorProps) {
   const openNative = !onPress && Platform.OS !== 'web' && isExternal
-  const anchor = anchorProps({ href, isExternal, onPress: openNative ? () => void Linking.openURL(href) : onPress })
+  const anchor = anchorProps({
+    href,
+    isExternal,
+    onPress: openNative ? () => void Linking.openURL(href) : onPress,
+  })
   const web = { href: anchor.href, hrefAttrs: anchor.hrefAttrs } as TextProps
   return (
     <Text
@@ -113,7 +123,10 @@ export function inlineContext(linkers: ProseLinker[]): Omit<InlineContext, 'rend
   const parts = [...INLINE_SOURCES, ...linkers.map((l) => l.pattern.source)]
   return {
     tokenizer: new RegExp(`(${parts.join('|')})`, 'g'),
-    linkers: linkers.map((linker) => ({ linker, whole: new RegExp(`^(?:${linker.pattern.source})$`) })),
+    linkers: linkers.map((linker) => ({
+      linker,
+      whole: new RegExp(`^(?:${linker.pattern.source})$`),
+    })),
   }
 }
 
@@ -128,7 +141,7 @@ function renderLinkPiece(piece: string, key: number, ctx: InlineContext): ReactN
       </Text>
     )
   }
-  const link = { href, label: innerText(piece, 'link'), children, isExternal: isExternalHref(href) }
+  const link = { href, label: plainInline(label), children, isExternal: isExternalHref(href) }
   return <Fragment key={key}>{ctx.renderLink(link)}</Fragment>
 }
 
@@ -144,9 +157,13 @@ function renderPiece(piece: string, key: number, ctx: InlineContext): ReactNode 
     )
   }
   if (kind) {
-    const className = kind === 'bold' ? 'font-semibold text-text-primary' : 'italic'
+    const isBold = kind === 'bold'
     return (
-      <Text key={key} className={className}>
+      <Text
+        key={key}
+        className={isBold ? 'font-semibold text-text-primary' : 'italic'}
+        testID={isBold ? undefined : 'prose-em'}
+      >
         {renderInline(innerText(piece, kind), ctx)}
       </Text>
     )

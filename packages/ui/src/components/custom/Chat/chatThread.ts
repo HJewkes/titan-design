@@ -39,7 +39,10 @@ export function messageBody(message: ChatMessage): string {
 // An ordered item's number is spoken, as the bubble shows it; a bullet glyph is not.
 function blockTexts(blocks: ProseBlock[]): string[] {
   return blocks
-    .flatMap((block) => [block.ordered ? `${block.n}. ${block.text}` : block.text, ...blockTexts(block.children ?? [])])
+    .flatMap((block) => [
+      block.ordered ? `${block.n}. ${block.text}` : block.text,
+      ...blockTexts(block.children ?? []),
+    ])
     .filter(Boolean)
 }
 

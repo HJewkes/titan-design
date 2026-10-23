@@ -6,7 +6,13 @@ import { Alert, AlertTitle, type AlertStatus } from '../../ui/alert'
 import { Typography } from '../../ui/typography'
 import { parseProseBlocks } from './parseProseBlocks'
 import { CodeBlock, ProseTable } from './ProseBlocks'
-import { ProseAnchor, inlineContext, renderInline, type ProseLink, type ProseLinker } from './proseInline'
+import {
+  ProseAnchor,
+  inlineContext,
+  renderInline,
+  type ProseLink,
+  type ProseLinker,
+} from './proseInline'
 import type { ProseBlock, ProseCalloutKind } from './proseTypes'
 
 export type { ProseBlock, ProseBlockType, ProseCalloutKind } from './proseTypes'
@@ -110,7 +116,12 @@ function ListItem({ block, ctx }: BlockProps) {
 function Callout({ block, ctx }: BlockProps) {
   const kind = block.kind ?? 'info'
   return (
-    <Alert status={CALLOUT_STATUS[kind]} role="note" accessibilityRole={undefined} testID={`prose-callout-${kind}`}>
+    <Alert
+      status={CALLOUT_STATUS[kind]}
+      role="note"
+      accessibilityRole={undefined}
+      testID={`prose-callout-${kind}`}
+    >
       <AlertTitle>{block.title ? ctx.inline(block.title) : kind.toUpperCase()}</AlertTitle>
       <BlockList blocks={block.children ?? []} ctx={ctx} />
     </Alert>
@@ -120,7 +131,9 @@ function Callout({ block, ctx }: BlockProps) {
 function Block({ block, ctx }: BlockProps) {
   if (block.type === 'code') {
     const lang = block.lang ?? ''
-    return <CodeBlock code={block.text} lang={lang} highlighted={ctx.highlight?.(block.text, lang)} />
+    return (
+      <CodeBlock code={block.text} lang={lang} highlighted={ctx.highlight?.(block.text, lang)} />
+    )
   }
   if (block.type === 'table') return <ProseTable block={block} inline={ctx.inline} />
   if (block.type === 'callout') return <Callout block={block} ctx={ctx} />
@@ -144,7 +157,17 @@ function groupLists(blocks: ProseBlock[]): (ProseBlock | ProseBlock[])[] {
   return groups
 }
 
-function BlockList({ blocks, ctx, className, testID }: { blocks: ProseBlock[]; ctx: RenderContext; className?: string; testID?: string }) {
+function BlockList({
+  blocks,
+  ctx,
+  className,
+  testID,
+}: {
+  blocks: ProseBlock[]
+  ctx: RenderContext
+  className?: string
+  testID?: string
+}) {
   return (
     <View className={cn('gap-2', className)} testID={testID}>
       {groupLists(blocks).map((group, i) =>
@@ -194,5 +217,12 @@ export function MarkdownProse({
       </Text>
     )
   }
-  return <BlockList blocks={blocks} ctx={{ inline, size, highlight }} className={className} testID={testID} />
+  return (
+    <BlockList
+      blocks={blocks}
+      ctx={{ inline, size, highlight }}
+      className={className}
+      testID={testID}
+    />
+  )
 }

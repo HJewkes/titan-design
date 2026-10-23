@@ -10,7 +10,15 @@ import type { ProseBlock } from './proseTypes'
  * inset well. The code scrolls sideways rather than wrapping. `highlighted` replaces the
  * plain code with the caller's spans; it renders inside the same mono `<Text>`.
  */
-export function CodeBlock({ code, lang, highlighted }: { code: string; lang: string; highlighted?: ReactNode }) {
+export function CodeBlock({
+  code,
+  lang,
+  highlighted,
+}: {
+  code: string
+  lang: string
+  highlighted?: ReactNode
+}) {
   return (
     <View className="overflow-hidden rounded-md border border-border-subtle" testID="prose-code">
       {lang ? (

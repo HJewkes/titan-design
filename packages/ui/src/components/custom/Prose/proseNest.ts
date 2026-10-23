@@ -55,7 +55,12 @@ export function readCallout(lines: string[], start: number): CalloutRead | null 
   }
   const word = open[1]!.toLowerCase()
   const kind = (CALLOUT_KINDS.has(word) ? word : 'info') as ProseCalloutKind
-  return { kind, title: open[2]!, inner: lines.slice(start + 1, i), next: Math.min(i + 1, lines.length) }
+  return {
+    kind,
+    title: open[2]!,
+    inner: lines.slice(start + 1, i),
+    next: Math.min(i + 1, lines.length),
+  }
 }
 
 export interface ListItemRead {
@@ -70,7 +75,11 @@ export interface ListItemRead {
  * A list item and every line indented past its marker, blank lines between them included.
  * An ordered item numbered other than 1 cannot interrupt a paragraph, as in CommonMark.
  */
-export function readListItem(lines: string[], start: number, inParagraph: boolean): ListItemRead | null {
+export function readListItem(
+  lines: string[],
+  start: number,
+  inParagraph: boolean
+): ListItemRead | null {
   const match = LIST_ITEM.exec(lines[start]!)
   if (!match || !match[5]!.trim()) return null
   const ordered = match[3] !== undefined

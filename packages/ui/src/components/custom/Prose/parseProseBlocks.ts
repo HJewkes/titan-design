@@ -1,5 +1,11 @@
 import { isFenceOpen, readFence, readTable } from './proseFenceTable'
-import { readCallout, readComment, readListItem, skipFrontmatter, type ListItemRead } from './proseNest'
+import {
+  readCallout,
+  readComment,
+  readListItem,
+  skipFrontmatter,
+  type ListItemRead,
+} from './proseNest'
 import { plainInline } from './proseInlineTokens'
 import { createSlugger, readCustomId, slugify } from './proseSlug'
 import type { ProseBlock, ProseBlockType } from './proseTypes'
@@ -69,7 +75,10 @@ function readBlock(
   const callout = nested ? readCallout(lines, i) : null
   if (callout) {
     const { kind, title, inner, next } = callout
-    return { block: { type: 'callout', kind, title, text: title, children: parseLines(inner, depth + 1) }, next }
+    return {
+      block: { type: 'callout', kind, title, text: title, children: parseLines(inner, depth + 1) },
+      next,
+    }
   }
   const table = readTable(lines, i)
   if (table) return { block: tableBlock(table), next: table.next }
@@ -79,7 +88,11 @@ function readBlock(
   return item ? { block: listItemBlock(item, blocks, depth), next: item.next } : null
 }
 
-function tableBlock({ header, align, rows }: NonNullable<ReturnType<typeof readTable>>): ProseBlock {
+function tableBlock({
+  header,
+  align,
+  rows,
+}: NonNullable<ReturnType<typeof readTable>>): ProseBlock {
   return { type: 'table', text: [...header, ...rows.flat()].join(' '), header, align, rows }
 }
 
