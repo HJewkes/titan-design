@@ -32,6 +32,8 @@ export interface GraphEdge {
   weight?: number | null
   /** Epoch ms of the latest traffic; a newer value pulses the edge. */
   activityAt?: number
+  /** Halves the stroke's opacity, as `GraphNode.isMuted` does a mark's. */
+  isMuted?: boolean
 }
 
 /** A node kind: its label and, optionally, its colour. */

@@ -21,7 +21,7 @@ import { labelBox, RING_LABEL_CLEARANCE } from './network-graph-labels'
 import { buildGraphModel, GRAPH_NODE_RADIUS } from './network-graph-model'
 import { ARROW_LENGTH } from './network-graph-plot-model'
 import { NetworkGraph } from './NetworkGraph'
-import { DIM_OPACITY } from './NetworkGraphPlot'
+import { DIM_OPACITY, MUTED_OPACITY } from './NetworkGraphPlot'
 import type { GraphLayout, GraphLayoutInput, GraphPoint, NetworkGraphProps } from './types'
 import { PULSE_MS } from './useNetworkGraph'
 
@@ -435,6 +435,20 @@ describe('NetworkGraph active item (R1: aria-activedescendant)', () => {
     expect(ids).toHaveLength(3)
     expect(new Set(ids).size).toBe(3)
     expect(ids.every((id) => /^\S+$/.test(id))).toBe(true)
+  })
+})
+
+describe('NetworkGraph muted edges', () => {
+  it('a muted edge paints at half opacity and an unmuted one at full', () => {
+    const edges = smallFixture.edges.map((e) =>
+      e.kind === 'message' ? { ...e, isMuted: true } : e
+    )
+    const { container } = renderGraph({ edges })
+    expect(edgeMark(container, MESSAGE_TO_WORKER_01)).toHaveAttribute(
+      'opacity',
+      String(MUTED_OPACITY)
+    )
+    expect(edgeMark(container, SPAWN_TO_WORKER_01)).toHaveAttribute('opacity', '1')
   })
 })
 

@@ -1,0 +1,5 @@
+---
+section: Added
+---
+
+`DependencyGraph`: a system's units boxed by tier with routed dependency edges, on a layout computed before render, so no layout runs in the browser and it server-renders and hydrates. `graph` takes the nodes, edges, tiers and layout a build step produces. Pressing a unit, or Enter on it, focuses it: its direct dependencies, its dependents and the edges to them stay at full strength while the rest mutes, and a panel names them beside the consumer's `renderNodeLink` slot. `egoId` draws one unit's neighbourhood, for a page about it. Focus is `focusedId`, `defaultFocusedId`, `onFocusedIdChange`. Pure helpers ship with it: `egoSubgraph`, `neighbourhood`, `cleanDependencies`, `dependencyEdgeId`, and `fromCompoundLayout`, which adapts a compound layout result (the shape `computeCompoundLayout` returns) to `graph.layout`. `GraphEdge` takes an optional `isMuted`, which halves an edge's opacity as `GraphNode.isMuted` does a node's; unset, `NetworkGraph` paints as before (TD-1023).

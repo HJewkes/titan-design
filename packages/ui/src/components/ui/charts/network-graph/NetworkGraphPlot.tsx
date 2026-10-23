@@ -13,7 +13,7 @@ import {
   type EdgeGeometry,
   type GraphEmphasis,
 } from './network-graph-plot-model'
-import { BoxMark, DIM_OPACITY, NodeMark } from './NetworkGraphNodeMarks'
+import { BoxMark, DIM_OPACITY, MUTED_OPACITY, NodeMark } from './NetworkGraphNodeMarks'
 import type { GraphFocus, GraphItemRef, GraphModel } from './types'
 import { PULSE_MS } from './useNetworkGraph'
 
@@ -70,7 +70,7 @@ function EdgeMark({ geometry, markerPrefix, isStrong, isDimmed }: EdgeMarkProps)
       strokeWidth={EDGE_STROKE_WIDTHS[geometry.step]}
       strokeDasharray={geometry.isDashed ? EDGE_DASH : undefined}
       markerEnd={`url(#${markerPrefix}-${isStrong ? 'strong' : 'rest'})`}
-      opacity={isDimmed ? DIM_OPACITY : 1}
+      opacity={isDimmed ? DIM_OPACITY : geometry.edge.isMuted ? MUTED_OPACITY : 1}
       style={{ stroke: resolveColor(isStrong ? EDGE_STRONG_COLOR : EDGE_REST_COLOR) }}
       data-edge={geometry.id}
       data-emphasis={isStrong ? 'strong' : 'rest'}

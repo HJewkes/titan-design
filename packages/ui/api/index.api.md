@@ -932,6 +932,15 @@ export const categoricalPalette: {
 export type CategoricalVariant = keyof typeof categoricalPalette;
 
 // @public
+export interface CenteredBox {
+    height: number;
+    id: string;
+    width: number;
+    x: number;
+    y: number;
+}
+
+// @public
 export function changeLabel(kind: CodeChangeKind, delta?: number): string;
 
 // @public
@@ -1145,6 +1154,9 @@ export interface CircularTimerProps {
 export function clampedContextFraction(metrics: AgentMetrics): number | null;
 
 // @public
+export function cleanDependencies(input: DependencyGraphData): DependencyGraphData;
+
+// @public
 export function clusteredLayout(options?: ClusteredLayoutOptions): GraphLayout;
 
 // @public
@@ -1343,6 +1355,18 @@ export interface ComposerProps {
     // (undocumented)
     sendLabel?: string;
     value?: string;
+}
+
+// @public
+export interface CompoundLayoutAdapterOptions {
+    tierOfGroup?: (groupId: string) => string | null;
+}
+
+// @public
+export interface CompoundLayoutLike {
+    edges: readonly LaidOutDependency[];
+    groups: readonly CenteredBox[];
+    nodes: readonly CenteredBox[];
 }
 
 // @public
@@ -1674,6 +1698,73 @@ export const DEFAULT_ROSTER_FIELDS: AgentRosterField[];
 // @public @deprecated (undocumented)
 export const defaultPreset: ThemePreset;
 
+// @public
+export interface DependencyEdge {
+    source: string;
+    target: string;
+}
+
+// @public
+export const dependencyEdgeId: (source: string, target: string) => string;
+
+// @public
+export function DependencyGraph(input: DependencyGraphProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface DependencyGraphData {
+    edges: DependencyEdge[];
+    nodes: DependencyNode[];
+}
+
+// @public
+export interface DependencyGraphInput extends DependencyGraphData {
+    layout: DependencyGraphLayout;
+    tiers: DependencyTier[];
+}
+
+// @public
+export interface DependencyGraphLayout {
+    nodes: Readonly<Record<string, GraphBox>>;
+    routes?: Readonly<Record<string, readonly GraphPoint[]>>;
+    tiers?: Readonly<Record<string, GraphBox>>;
+}
+
+// @public
+export interface DependencyGraphProps extends Omit<ViewProps, 'children'> {
+    accessibilityLabel: string;
+    className?: string;
+    defaultFocusedId?: string | null;
+    egoId?: string;
+    emptyState?: ReactNode;
+    focusedId?: string | null;
+    graph: DependencyGraphInput;
+    height: number;
+    isLoading?: boolean;
+    onFocusedIdChange?: (id: string | null) => void;
+    renderNodeLink?: (node: DependencyNode) => ReactNode;
+    width: number;
+}
+
+// @public
+export interface DependencyNeighbourhood {
+    dependsOn: DependencyNode[];
+    usedBy: DependencyNode[];
+}
+
+// @public
+export interface DependencyNode {
+    description?: string;
+    id: string;
+    label: string;
+    tier: string;
+}
+
+// @public
+export interface DependencyTier {
+    id: string;
+    label: string;
+}
+
 // @public @deprecated (undocumented)
 export type DeprecatedPillSize = 'xl';
 
@@ -1793,6 +1884,9 @@ export interface EgoLayoutOptions {
     focusId: string | null;
     hops?: number;
 }
+
+// @public
+export function egoSubgraph(data: DependencyGraphData, id: string): DependencyGraphData;
 
 // @public (undocumented)
 export const ELEVATION_PLANE: Record<ElevationLevel, SurfaceLevel>;
@@ -2155,6 +2249,9 @@ export interface FormSectionProps extends ViewProps {
     description?: string;
     title?: string;
 }
+
+// @public
+export function fromCompoundLayout(layout: CompoundLayoutLike, input?: CompoundLayoutAdapterOptions): DependencyGraphLayout;
 
 // @public
 export function GapIndicator(input: GapIndicatorProps): react_jsx_runtime.JSX.Element;
@@ -3039,6 +3136,7 @@ export interface GraphBox {
 export interface GraphEdge {
     activityAt?: number;
     id?: string;
+    isMuted?: boolean;
     kind?: string;
     source: string;
     target: string;
@@ -3486,6 +3584,13 @@ export function Label(props: LabelProps): react_jsx_runtime.JSX.Element;
 
 // @public (undocumented)
 export interface LabelProps extends Omit<TypographyProps, 'variant'> {
+}
+
+// @public
+export interface LaidOutDependency {
+    attrs?: Readonly<Record<string, unknown>>;
+    dstId: string;
+    srcId: string;
 }
 
 // @public
@@ -4268,6 +4373,9 @@ export interface NavItemProps {
     // (undocumented)
     onPress?: () => void;
 }
+
+// @public
+export function neighbourhood(data: DependencyGraphData, id: string): DependencyNeighbourhood;
 
 // @public
 export function NetworkGraph(input: NetworkGraphProps): react_jsx_runtime.JSX.Element;
