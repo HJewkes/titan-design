@@ -43,6 +43,12 @@ const KNOWN_TYPE_ONLY_BARE_NAMES = new Set([
   'ElevationLevel', // theme/elevation.ts: type alias
   'ExerciseIndicatorKind', // components/custom/Workout/ExerciseIndicator.tsx: type alias
   'GlowIntensity', // theme/elevation.ts: type alias
+  // The /dependency-graph entry (TD-1023) shares these with the root, so the dts bundler moves
+  // them to a shared chunk and re-exports them bare: interfaces in network-graph/types.ts.
+  'GraphGroup',
+  'GraphLayout',
+  'GraphPoint',
+  'NetworkGraphProps',
   // The goal family, which VW-385 gave another re-export hop (the summary and the
   // tile now both re-export the milestone types): every one is an interface or a
   // type alias in `GoalTrajectoryChartGeometry.ts` / `goalMilestone.ts`.

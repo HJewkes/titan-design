@@ -42,6 +42,12 @@
     "limit": "7 kB"
   },
   {
+    "name": "dependency-graph",
+    "path": "dist/dependency-graph.mjs",
+    "brotli": true,
+    "limit": "36 kB"
+  },
+  {
     "name": "theme",
     "path": "dist/theme/index.mjs",
     "brotli": true,
