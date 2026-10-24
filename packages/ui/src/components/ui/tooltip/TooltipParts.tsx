@@ -1,6 +1,6 @@
 import React from 'react'
 import { Platform } from 'react-native'
-import { primitiveZIndex } from '../../../theme/tokens/primitives'
+import { bodyOverlayZIndex } from '../../../utils/overlay-z-index'
 import type { PortalPosition } from './tooltipPosition'
 
 let createPortal: typeof import('react-dom').createPortal | undefined
@@ -31,7 +31,7 @@ export function TooltipPortal({ isVisible, position, className, children }: Tool
         top: position?.top ?? 0,
         left: position?.left ?? 0,
         transform: position?.transform ?? 'translate(-50%, -100%)',
-        zIndex: primitiveZIndex.tooltip,
+        zIndex: bodyOverlayZIndex('tooltip'),
         pointerEvents: 'none',
       }}
       data-testid="tooltip-portal"

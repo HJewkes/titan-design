@@ -17,7 +17,7 @@ exports[`Tooltip characterisation > open in a portal at bottom 1`] = `
   <div
     class="extra"
     data-testid="tooltip-portal"
-    style="position: fixed; top: 148px; left: 240px; transform: translate(-50%, 0%); z-index: 1800; pointer-events: none;"
+    style="position: fixed; top: 148px; left: 240px; transform: translate(-50%, 0%); z-index: 11799; pointer-events: none;"
   >
     <div
       class="css-view-175oi2r"
@@ -54,7 +54,7 @@ exports[`Tooltip characterisation > open in a portal at bottom-end 1`] = `
   <div
     class="extra"
     data-testid="tooltip-portal"
-    style="position: fixed; top: 148px; left: 240px; transform: translate(-50%, 0%); z-index: 1800; pointer-events: none;"
+    style="position: fixed; top: 148px; left: 240px; transform: translate(-50%, 0%); z-index: 11799; pointer-events: none;"
   >
     <div
       class="css-view-175oi2r"
@@ -91,7 +91,7 @@ exports[`Tooltip characterisation > open in a portal at bottom-start 1`] = `
   <div
     class="extra"
     data-testid="tooltip-portal"
-    style="position: fixed; top: 148px; left: 240px; transform: translate(-50%, 0%); z-index: 1800; pointer-events: none;"
+    style="position: fixed; top: 148px; left: 240px; transform: translate(-50%, 0%); z-index: 11799; pointer-events: none;"
   >
     <div
       class="css-view-175oi2r"
@@ -128,7 +128,7 @@ exports[`Tooltip characterisation > open in a portal at left 1`] = `
   <div
     class="extra"
     data-testid="tooltip-portal"
-    style="position: fixed; top: 120px; left: 192px; transform: translate(-100%, -50%); z-index: 1800; pointer-events: none;"
+    style="position: fixed; top: 120px; left: 192px; transform: translate(-100%, -50%); z-index: 11799; pointer-events: none;"
   >
     <div
       class="css-view-175oi2r"
@@ -165,7 +165,7 @@ exports[`Tooltip characterisation > open in a portal at right 1`] = `
   <div
     class="extra"
     data-testid="tooltip-portal"
-    style="position: fixed; top: 120px; left: 288px; transform: translate(0%, -50%); z-index: 1800; pointer-events: none;"
+    style="position: fixed; top: 120px; left: 288px; transform: translate(0%, -50%); z-index: 11799; pointer-events: none;"
   >
     <div
       class="css-view-175oi2r"
@@ -202,7 +202,7 @@ exports[`Tooltip characterisation > open in a portal at top 1`] = `
   <div
     class="extra"
     data-testid="tooltip-portal"
-    style="position: fixed; top: 92px; left: 240px; transform: translate(-50%, -100%); z-index: 1800; pointer-events: none;"
+    style="position: fixed; top: 92px; left: 240px; transform: translate(-50%, -100%); z-index: 11799; pointer-events: none;"
   >
     <div
       class="css-view-175oi2r"
@@ -239,7 +239,7 @@ exports[`Tooltip characterisation > open in a portal at top-end 1`] = `
   <div
     class="extra"
     data-testid="tooltip-portal"
-    style="position: fixed; top: 92px; left: 240px; transform: translate(-50%, -100%); z-index: 1800; pointer-events: none;"
+    style="position: fixed; top: 92px; left: 240px; transform: translate(-50%, -100%); z-index: 11799; pointer-events: none;"
   >
     <div
       class="css-view-175oi2r"
@@ -276,7 +276,7 @@ exports[`Tooltip characterisation > open in a portal at top-start 1`] = `
   <div
     class="extra"
     data-testid="tooltip-portal"
-    style="position: fixed; top: 92px; left: 240px; transform: translate(-50%, -100%); z-index: 1800; pointer-events: none;"
+    style="position: fixed; top: 92px; left: 240px; transform: translate(-50%, -100%); z-index: 11799; pointer-events: none;"
   >
     <div
       class="css-view-175oi2r"

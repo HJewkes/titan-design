@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useCallback } from 'react'
 import { View, Text, Pressable, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
+import { bodyOverlayZIndex } from '../../../utils/overlay-z-index'
 import { CheckMark } from '../../icons'
 import { Surface } from '../surface'
 import { statusStyles, iconColors, textGlyphs, toastRole, type ToastStatus } from './toastStatus'
@@ -117,7 +118,8 @@ export function ToastProvider({
       {children}
       {/* Toast Container */}
       <View
-        className={cn('fixed z-toast flex flex-col gap-2', positionStyles[position])}
+        className={cn('fixed flex flex-col gap-2', positionStyles[position])}
+        style={{ zIndex: bodyOverlayZIndex('toast') }}
         pointerEvents="box-none"
       >
         {toasts.map((toast) => (
