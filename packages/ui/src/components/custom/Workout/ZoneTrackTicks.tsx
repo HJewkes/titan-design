@@ -85,7 +85,7 @@ function ZoneTrackTickLabel({
 }: Omit<TickColors, 'ticks'> & { tick: ZoneTrackTick; label: string }) {
   const s = layout.sizing
   const emphasized = tick.emphasized === true
-  const labelColor = tick.color ?? (emphasized ? brand : muted)
+  const labelColor = tick.labelColor ?? tick.color ?? (emphasized ? brand : muted)
   const labelNode = (
     <Text
       testID="zone-track-tick-label"

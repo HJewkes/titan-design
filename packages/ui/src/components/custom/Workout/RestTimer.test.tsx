@@ -6,6 +6,7 @@ import { RestTimer } from './RestTimer'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { alpha } from '../../../utils/colors'
 import { Surface } from '../../ui/surface'
+import { capturedClassNames } from '../../../test/classname-capture'
 
 const defaultProps = {
   totalSeconds: 150,
@@ -242,6 +243,14 @@ describe('RestTimer ring variant', () => {
     fireEvent.click(screen.getByTestId('rest-timer-add-time'))
     expect(onSkip).toHaveBeenCalledOnce()
     expect(onAddTime).toHaveBeenCalledOnce()
+  })
+
+  // Dark text-tertiary falls below 4.5:1 on the base plane the ring sits on (TD-972).
+  it('inks the next-set line text-secondary', () => {
+    render(<RestTimer {...ringProps} nextSetInfo="Next · Bench · set 3 of 4" />)
+    const classes = capturedClassNames.get('rest-timer-next-set')?.split(' ') ?? []
+    expect(classes).toContain('text-text-secondary')
+    expect(classes).not.toContain('text-text-tertiary')
   })
 
   it('respects visible=false', () => {

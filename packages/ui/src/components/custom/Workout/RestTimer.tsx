@@ -127,7 +127,7 @@ function RestTimerRing({
       />
       {nextSetInfo != null && (
         <Text
-          className="text-text-tertiary"
+          className="text-text-secondary"
           style={{ fontSize: 13, fontFamily: 'Inter, sans-serif' }}
           testID="rest-timer-next-set"
         >
