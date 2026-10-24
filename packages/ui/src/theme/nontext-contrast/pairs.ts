@@ -56,7 +56,7 @@ const boundaries: NonTextPair[] = [
     floor: MARK,
     sources: [
       src('ui/input/Input.tsx', 'border-border-input'),
-      src('ui/select/Select.tsx', 'border-border-input'),
+      src('ui/select/selectModel.ts', 'border-border-input'),
       src('ui/autocomplete/Autocomplete.tsx', 'border-border-input'),
       src('ui/checkbox/Checkbox.tsx', 'border-border-input'),
       src('ui/radio/Radio.tsx', 'border-border-input'),
@@ -69,7 +69,7 @@ const boundaries: NonTextPair[] = [
     floor: MARK,
     sources: [
       src('ui/input/Input.tsx', 'web:hover:border-border-input-hover'),
-      src('ui/select/Select.tsx', 'web:hover:border-border-input-hover'),
+      src('ui/select/selectModel.ts', 'web:hover:border-border-input-hover'),
     ],
   },
   {
@@ -182,7 +182,7 @@ const separators: NonTextPair[] = [
     token: 'hairline-subtle',
     floor: SUBTLE,
     sources: [
-      src('ui/select/Select.tsx', 'border-hairline-subtle'),
+      src('ui/select/selectModel.ts', 'border-hairline-subtle'),
       src('ui/card/Card.tsx', 'border-hairline-subtle'),
     ],
   },
