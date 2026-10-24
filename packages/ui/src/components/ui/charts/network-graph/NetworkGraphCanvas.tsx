@@ -21,7 +21,7 @@ import { NetworkGraphHitLayer } from './NetworkGraphHitLayer'
 import { DefaultNodeTip, EdgeWeight, NodeButton, NodeTip } from './NetworkGraphParts'
 import { NetworkGraphPlot } from './NetworkGraphPlot'
 import type { GraphFocus, GraphItemRef, GraphModel, GraphNode, NetworkGraphProps } from './types'
-import { useGraphRoot } from './useGraphRoot'
+import { FOCUS_IN_PLACE, useGraphRoot } from './useGraphRoot'
 import { useNetworkGraph, type NetworkGraphState } from './useNetworkGraph'
 
 export type GraphContentProps = Omit<
@@ -159,7 +159,10 @@ export function NetworkGraphCanvas({ graph, model, summary }: NetworkGraphCanvas
     (item: GraphItemRef) => {
       activate(item)
       toggle(item)
-      ;(scrollRef.current?.getScrollableNode() as { focus?: () => void } | undefined)?.focus?.()
+      const root = scrollRef.current?.getScrollableNode() as
+        | { focus?: (options: FocusOptions) => void }
+        | undefined
+      root?.focus?.(FOCUS_IN_PLACE)
     },
     [activate, toggle]
   )
