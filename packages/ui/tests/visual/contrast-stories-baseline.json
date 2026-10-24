@@ -1088,25 +1088,6 @@
   "custom-workout-dataviz-volumelandmarkbar--under-mev light": {
     "#ff7900|#d4d1ce": 1
   },
-  "custom-workout-dataviz-zonetrack--band-with-marker dark": {
-    "#888684|#252321": 1
-  },
-  "custom-workout-dataviz-zonetrack--colored-tooltip-ticks dark": {
-    "#888684|#252321": 1,
-    "#d14343|#252321": 1
-  },
-  "custom-workout-dataviz-zonetrack--colored-tooltip-ticks light": {
-    "#ff7900|#edeae7": 1
-  },
-  "custom-workout-dataviz-zonetrack--gradient-fill dark": {
-    "#888684|#252321": 5
-  },
-  "custom-workout-dataviz-zonetrack--needle dark": {
-    "#888684|#252321": 5
-  },
-  "custom-workout-dataviz-zonetrack--wall-density dark": {
-    "#888684|#252321": 5
-  },
   "custom-workout-exercisecard--expanded-with-sets dark": {
     "#888684|#2c2a28": 5
   },

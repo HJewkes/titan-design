@@ -35,31 +35,30 @@ export interface ZoneTrackProps extends ViewProps {
   max: number
   /** Domain minimum (left edge). Default 0. */
   min?: number
-  /** The value marker — a needle line or a left-anchored fill. Omit for a bare gradient track. */
+  /** The value marker — a needle line or a left-anchored fill. Omit for a bare zone track. */
   marker?: ZoneTrackMarker | null
   /** Optional tick marks with labels below the track. */
   ticks?: ZoneTrackTick[]
-  /** Optional translucent range highlight drawn over the gradient. */
+  /** Optional translucent range highlight drawn over the zones. */
   band?: ZoneTrackBand | null
   /** Density: `default` (compact) or `wall` (the across-the-room dashboard scale). Scales track, needle, ticks and labels together. */
   size?: ZoneTrackSize
   /** Track height in px. Overrides the `size` default (14 default / 24 wall). */
   trackHeight?: number
-  /** How far a needle marker overhangs the track top + bottom, in px. Overrides the `size` default (6 default / 9 wall). */
-  needleOverhang?: number
   /** Muted colour of the track behind / beyond the fill. Default the theme's `border-prominent`. */
   trackColor?: string
   className?: string
 }
 
 /**
- * Low-level gauge primitive: a horizontal pill track carrying an N-band zone gradient,
+ * Low-level gauge primitive: a horizontal pill track carrying N zone bands,
  * optional tick marks with labels, and a single value marker (a needle line or a
  * left-anchored fill). The zone bands are weighted by their domain span, so thresholds
  * need not be evenly spaced. This is the shared visual base for the linear gauge family
  * (FatigueMeter needle, TrainingLoadGauge zone bar, RpeCalibration band + marker) — pass
  * the domain (`min`/`max`), the `zones`, and a `marker`; colours are literal hex from the
- * ramp tokens (never `var()` refs, so they survive the RNW/vitest alias).
+ * ramp tokens (never `var()` refs, so they survive the RNW/vitest alias). Give each zone a
+ * `faded` colour for the zone highlight: the zone the marker lands in stays lit, the rest fade.
  */
 export function ZoneTrack({
   zones,
@@ -70,7 +69,6 @@ export function ZoneTrack({
   band = null,
   size = 'default',
   trackHeight,
-  needleOverhang,
   trackColor: trackColorProp,
   className,
   style,
@@ -81,7 +79,7 @@ export function ZoneTrack({
   const t = getSemanticColors(useSurfaceMode())
   const tickColor = t[TICK_TOKEN]
   const trackColor = trackColorProp ?? t[TRACK_TOKEN]
-  const layout = zoneTrackLayout({ min, max, marker, size, trackHeight, needleOverhang })
+  const layout = zoneTrackLayout({ min, max, marker, size, trackHeight })
 
   // Thin the tick labels on a narrow track so they never overlap (each occupies a fixed
   // `tickCellWidth` cell). Width 0 (unmeasured) → show all, so test/server renders match.
@@ -105,7 +103,7 @@ export function ZoneTrack({
       <View style={{ position: 'relative', height: layout.markerHeight }}>
         <ZoneTrackPill
           layout={layout}
-          bands={zoneBands(zones, min, max)}
+          bands={zoneBands(zones, min, max, marker?.value)}
           band={band}
           marker={marker}
           trackColor={trackColor}
