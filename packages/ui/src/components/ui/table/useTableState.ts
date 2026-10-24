@@ -145,7 +145,20 @@ const NO_ROWS: never[] = []
 const NO_COLUMNS: readonly ColumnDef<never>[] = []
 const NO_IDS: readonly string[] = []
 
-const defaultRowId = (row: object): string => String((row as { id?: unknown }).id)
+const anonymousRowIds = new WeakMap<object, string>()
+let anonymousRowCount = 0
+
+/** A row's own `id`; a row without one gets a synthetic id that stays with the row object through sorting and paging. */
+const defaultRowId = (row: object): string => {
+  const { id } = row as { id?: unknown }
+  if (id !== undefined && id !== null) return String(id)
+  let synthetic = anonymousRowIds.get(row)
+  if (synthetic === undefined) {
+    synthetic = `row-${anonymousRowCount++}`
+    anonymousRowIds.set(row, synthetic)
+  }
+  return synthetic
+}
 
 function useSortSlice<T>(options: UseTableOptions<T>) {
   const { sort, onSortChange, defaultSortColumn, defaultSortDirection = null } = options

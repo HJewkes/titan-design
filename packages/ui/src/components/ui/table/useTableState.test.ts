@@ -528,3 +528,17 @@ describe('useTableState manual mode', () => {
     expect(onRangeNeeded).toHaveBeenCalledTimes(2)
   })
 })
+
+describe('useTableState default row id', () => {
+  // Mutation caught: defaultRowId returning String(row.id) gives both id-less rows the id 'undefined',
+  // so selecting one selects the other.
+  it('gives rows without an id distinct ids so selecting one leaves the other unselected', () => {
+    const rows = [{ name: 'alpha' }, { name: 'beta' }]
+    const { result } = renderHook(() => useTableState<{ name: string }>({ data: rows }))
+    act(() => result.current.toggleRowSelected(rows[0]))
+    expect(result.current.selectedIds).toHaveLength(1)
+    expect(result.current.selectedIds).not.toContain('undefined')
+    expect(result.current.isRowSelected(rows[0])).toBe(true)
+    expect(result.current.isRowSelected(rows[1])).toBe(false)
+  })
+})
