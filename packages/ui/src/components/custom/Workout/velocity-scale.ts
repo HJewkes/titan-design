@@ -250,10 +250,6 @@ export function makeBarColorFor(
       : velScaleColor(zoneTokenMap[getVelocityZoneColor(v)], mode)
 }
 
-// The light scale's orange and red are bar fills and fall under AA as small text on the base plane;
-// the dark scale passes there, while dark `text-error` does not.
-const LIGHT_LOSS_TEXT_TOKENS: Record<2 | 3, ColorToken> = { 2: 'text-warning', 3: 'text-error' }
-
 /** The info row's loss text: orange and red at the same thresholds as the bars, else unstyled. */
 export function getLossStyle(
   loss: number,
@@ -262,6 +258,10 @@ export function getLossStyle(
 ): Record<string, string> | null {
   const band = velocityLossBand(loss, thresholds)
   if (band < 2) return null
-  if (mode === 'light') return { color: getSemanticColors(mode)[LIGHT_LOSS_TEXT_TOKENS[band]] }
+  // The light scale's orange and red are bar fills and fall under AA as small text on the base
+  // plane; the dark scale passes there, while dark `text-error` does not.
+  if (mode === 'light') {
+    return { color: getSemanticColors(mode)[band === 2 ? 'text-warning' : 'text-error'] }
+  }
   return { color: velScaleColor(LOSS_BAND_TOKENS[band], mode) }
 }
