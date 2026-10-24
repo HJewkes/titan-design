@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent, within } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { capturedByNode } from '../../../test/classname-capture'
-import { Select } from './Select'
+import { Select, type SelectProps } from './Select'
 import { Surface } from '../surface'
 import { insetFieldStyle } from '../surface/insetField'
 
@@ -284,10 +284,10 @@ describe('Select', () => {
       expect(new Set(ids).size).toBe(2)
     })
 
-    it.each([
+    it.each<[string, Partial<SelectProps>]>([
       ['single', {}],
       ['multi', { isMulti: true, values: ['1'] }],
-    ] as const)('has no accessibility violations when open (%s)', async (_mode, modeProps) => {
+    ])('has no accessibility violations when open (%s)', async (_mode, modeProps) => {
       const { container } = render(
         <Select options={defaultOptions} value="1" accessibilityLabel="Fruit" {...modeProps} />
       )
