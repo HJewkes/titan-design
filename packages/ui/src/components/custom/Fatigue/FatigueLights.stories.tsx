@@ -42,7 +42,7 @@ export const Default: Story = {
   // Draws its own raised card at the in-card width, so it needs only the page.
   parameters: { canvas: 'page' },
   render: (args) => (
-    <Surface level="raised" className="p-inset-md" style={{ width: 396 }}>
+    <Surface level="raised" className="p-inset-md" style={{ width: '100%', maxWidth: 396 }}>
       <FatigueLights {...args} />
     </Surface>
   ),

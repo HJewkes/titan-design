@@ -101,7 +101,7 @@ function SwatchGroup({ label, defs }: { label: string; defs: SwatchDef[] }) {
     <View style={{ gap: 12 }}>
       <Text
         style={{
-          fontSize: 9,
+          fontSize: 10,
           letterSpacing: 1.4,
           ...MONO_TEXT,
           color: t['text-tertiary'],
@@ -176,7 +176,7 @@ export const Palette: Story = {
       <View style={{ gap: 8, maxWidth: 720 }}>
         <Text
           className="text-text-secondary"
-          style={{ fontSize: 9, letterSpacing: 1.4, ...MONO_TEXT }}
+          style={{ fontSize: 10, letterSpacing: 1.4, ...MONO_TEXT }}
         >
           LIVE-FATIGUE · QUALITY COLOUR LANGUAGE
         </Text>
