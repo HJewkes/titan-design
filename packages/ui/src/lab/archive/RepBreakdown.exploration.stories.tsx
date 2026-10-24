@@ -712,8 +712,10 @@ function Kicker({ children }: { children: ReactNode }) {
     </Text>
   )
 }
-function Legend() {
-  const labelColor = useOnSurfaceColor('secondary')
+/** `onPage`: on the story page rather than a Lab panel, so the labels follow the page plane. */
+function Legend({ onPage }: { onPage?: boolean }) {
+  const pageColor = useOnSurfaceColor('secondary')
+  const labelColor = onPage ? pageColor : C['text-secondary']
   const item = (swatch: ReactNode, label: string) => (
     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
       {swatch}
@@ -749,7 +751,12 @@ function Legend() {
         </View>,
         'CADENCE — shape + off signal'
       )}
-      {item(<FormFlag size="xs" />, 'both cut → form breaking')}
+      {item(
+        <View style={{ backgroundColor: PANEL_BG, borderRadius: 4, padding: 2 }}>
+          <FormFlag size="xs" />
+        </View>,
+        'both cut → form breaking'
+      )}
     </View>
   )
 }
@@ -954,7 +961,7 @@ export const Overview: Story = {
           which makes the set &quot;look tired&quot; and the two cheat reps jump out fastest at wall
           scale.
         </Caption>
-        <Legend />
+        <Legend onPage />
       </View>
       <View style={{ flexDirection: 'row', gap: 20, flexWrap: 'wrap', alignItems: 'flex-start' }}>
         <Panel width={620}>
@@ -1477,7 +1484,7 @@ function DirectionalLegend() {
       {chip(OFF_WARN, '•', 'GRIND — slow concentric (mild)')}
       <Text
         style={{
-          color: C['text-tertiary'],
+          color: useOnSurfaceColor('tertiary'),
           fontSize: 11,
           fontStyle: 'italic',
           fontFamily: FONT_UI,
