@@ -267,7 +267,7 @@ function SheetRow({ label, meta, sets }: { label: string; meta: string; sets: Se
           <Text className="text-text-primary" style={{ fontSize: 13, fontWeight: '800' }}>
             {label}
           </Text>
-          <Text className="text-text-tertiary" style={{ fontSize: 10, fontFamily: 'monospace' }}>
+          <Text className="text-text-secondary" style={{ fontSize: 10, fontFamily: 'monospace' }}>
             {meta}
           </Text>
         </View>
