@@ -8,6 +8,7 @@ import {
   loadStory,
   readStoryIds,
 } from './render-story'
+import { STORY_INDEX_ENV } from './story-index.global-setup'
 
 /**
  * Storybook story visual-regression baselines.
