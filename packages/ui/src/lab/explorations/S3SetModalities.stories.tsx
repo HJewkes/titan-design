@@ -321,7 +321,6 @@ export const StripVocabulary: Story = {
           flexWrap: 'wrap',
           gap: 14,
           alignItems: 'center',
-          marginTop: 4,
         }}
       >
         <Swatch color={velColor(1.1)} label="fastest" />
@@ -332,7 +331,7 @@ export const StripVocabulary: Story = {
         <Swatch color={CYAN} label="variable · continue" outlined />
       </View>
 
-      <View style={{ height: 1, backgroundColor: BORDER_SUBTLE, marginVertical: 4 }} />
+      <View style={{ height: 1, backgroundColor: BORDER_SUBTLE }} />
 
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 16 }}>
         {MODS.map((m) => (
@@ -346,7 +345,6 @@ export const StripVocabulary: Story = {
           fontSize: 12.5,
           color: T_TERTIARY,
           maxWidth: 820,
-          marginTop: 8,
         }}
       >
         Open calls: how a drop set shows the WEIGHT drop (baseline step vs marker vs load labels) ·

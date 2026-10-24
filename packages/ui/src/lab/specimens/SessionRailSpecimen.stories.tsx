@@ -675,28 +675,32 @@ export const Directions: Story = {
         </div>
       </div>
       <div className="speccol" style={{ width: 340, padding: '6px 4px 0 14px', overflowY: 'auto' }}>
-        <div className="speclabel">reference · real ExerciseCard (native width)</div>
-        <div style={{ marginBottom: 22 }}>
-          <ReferenceCard />
-        </div>
-        <div className="speclabel">the rail modifications</div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 12, paddingRight: 8 }}>
-          {RAIL_DELTAS.map(([k, v], i) => (
-            <div key={i} style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-              <span
-                style={{
-                  fontSize: 11,
-                  fontWeight: 800,
-                  letterSpacing: 0.4,
-                  textTransform: 'uppercase',
-                  color: '#FF7900',
-                }}
-              >
-                {k}
-              </span>
-              <span style={{ fontSize: 12, lineHeight: 1.45, color: '#B8BEC9' }}>{v}</span>
+        <div className="gap-section-sm" style={{ display: 'flex', flexDirection: 'column' }}>
+          <div>
+            <div className="speclabel">reference · real ExerciseCard (native width)</div>
+            <ReferenceCard />
+          </div>
+          <div>
+            <div className="speclabel">the rail modifications</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12, paddingRight: 8 }}>
+              {RAIL_DELTAS.map(([k, v], i) => (
+                <div key={i} style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                  <span
+                    style={{
+                      fontSize: 11,
+                      fontWeight: 800,
+                      letterSpacing: 0.4,
+                      textTransform: 'uppercase',
+                      color: '#FF7900',
+                    }}
+                  >
+                    {k}
+                  </span>
+                  <span style={{ fontSize: 12, lineHeight: 1.45, color: '#B8BEC9' }}>{v}</span>
+                </div>
+              ))}
             </div>
-          ))}
+          </div>
         </div>
       </div>
     </Frame>

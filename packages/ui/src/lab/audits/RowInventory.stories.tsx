@@ -20,7 +20,9 @@ import { StatusDot } from '../../components/custom/Workout/StatusDot'
 import { PrBadge } from '../../components/custom/Workout/PrBadge'
 import { PlaceholderStrip } from '../../components/custom/Workout/PlaceholderStrip'
 import { SupersetWrapper } from '../../components/custom/Workout/SupersetWrapper'
+import { Typography } from '../../components/ui/typography'
 import { getSemanticColors } from '../../theme/tokens/semantic'
+import { StoryPage, StorySpecimens } from '../story-canvas'
 
 const t = getSemanticColors('dark')
 
@@ -85,20 +87,14 @@ function Cell({
 function Section({ title, note, children }: { title: string; note?: string; children: ReactNode }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-      <div style={{ display: 'flex', alignItems: 'baseline', gap: 10 }}>
-        <span
-          style={{
-            fontSize: 11,
-            fontWeight: 800,
-            letterSpacing: 1.2,
-            textTransform: 'uppercase',
-            color: '#FF7900',
-          }}
-        >
-          {title}
-        </span>
-        {!!note && <span style={{ fontSize: 11, color: '#8D95A3' }}>{note}</span>}
-      </div>
+      <View className="flex-row items-baseline gap-inline-md">
+        <Typography variant="overline">{title}</Typography>
+        {!!note && (
+          <Typography variant="caption" color="secondary">
+            {note}
+          </Typography>
+        )}
+      </View>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 14, alignItems: 'flex-start' }}>
         {children}
       </div>
@@ -162,232 +158,228 @@ type Story = StoryObj
 export const AllRows: Story = {
   name: 'All row representations',
   render: () => (
-    <div
-      style={{
-        minHeight: '100vh',
-        background: '#0c0d0f',
-        padding: 28,
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 34,
-        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-      }}
+    <StoryPage
+      className="min-h-screen"
+      header={
+        <View className="gap-stack-sm">
+          <Typography variant="h5">Workout library · row representations</Typography>
+          <Typography variant="body2" color="secondary" className="max-w-[720px]">
+            Every existing component that draws an exercise / set / workout / week / meso as a list
+            entry. Read-only survey for the S3 reuse decision — names + entity + expand behavior, no
+            code changes.
+          </Typography>
+        </View>
+      }
     >
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-        <span style={{ fontSize: 20, fontWeight: 800, color: '#E8EAED' }}>
-          Workout library · row representations
-        </span>
-        <span style={{ fontSize: 12, color: '#8D95A3', maxWidth: 720 }}>
-          Every existing component that draws an exercise / set / workout / week / meso as a list
-          entry. Read-only survey for the S3 reuse decision — names + entity + expand behavior, no
-          code changes.
-        </span>
-      </div>
-
-      <Section
-        title="Exercise"
-        note="3 representations of the one ExerciseCard: collapsed glance, expanded body, upcoming"
-      >
-        <Cell name="ExerciseCard" entity="exercise" expand="collapsed · expandable">
-          <ExerciseCard
-            name="Seated Cable Row"
-            summary={{ sets: 4, reps: 8, weight: 145, unit: 'lbs' }}
-            isPR
-            totalPlannedSets={5}
-            setVelocities={setVel}
-          />
-        </Cell>
-        <Cell name="ExerciseCard" entity="exercise" expand="expanded → reveals SetRows">
-          <ExerciseCard
-            name="Seated Cable Row"
-            defaultExpanded
-            summary={{ sets: 4, reps: 8, weight: 145, unit: 'lbs' }}
-            tempo={[3, 1, 2, 0]}
-            sets={exSets}
-          />
-        </Cell>
-        <Cell name="ExerciseCard" entity="exercise" expand="upcoming (static)">
-          <ExerciseCard
-            name="Face Pull"
-            upcoming
-            prescription="3 × 12-15 @ RPE 7"
-            previousBest="15 × 35 lb"
-          />
-        </Cell>
-      </Section>
-
-      <Section
-        title="Set"
-        note="SetRow is the primitive — one row per set lifecycle state (done / live / todo)"
-      >
-        <Cell name="SetRow" entity="set · done" expand="no · flat mini strip" width={360}>
-          <SetRow
-            state="done"
-            setNumber={1}
-            reps={8}
-            weight={145}
-            rpe={8}
-            unit="lbs"
-            velocities={[0.6, 0.58, 0.55, 0.52]}
-          />
-        </Cell>
-        <Cell name="SetRow" entity="set · live" expand="no · compact spotlight" width={360}>
-          <SetRow
-            state="live"
-            setNumber={2}
-            unit="lbs"
-            target={{ reps: 8, weight: 145 }}
-            reps={8}
-            weight={145}
-            velocities={[0.58, 0.55, 0.53, 0.5]}
-          />
-        </Cell>
-        <Cell name="SetRow" entity="set · todo" expand="no · grey stub strip" width={360}>
-          <SetRow state="todo" setNumber={4} unit="lbs" target={{ reps: 8, weight: 145 }} />
-        </Cell>
-      </Section>
-
-      <Section
-        title="Workout"
-        note="WorkoutCard is the full row; the chip density is a Pill inside WeekRow; ExerciseDetailPage overloads ExerciseCard as a 3rd"
-      >
-        <Cell
-          name="WorkoutCard"
-          entity="workout"
-          expand="expandable · expanded+onToggle → ExerciseCards"
-          width={380}
+      <StorySpecimens gap="md">
+        <Section
+          title="Exercise"
+          note="3 representations of the one ExerciseCard: collapsed glance, expanded body, upcoming"
         >
-          <WorkoutCard
-            name="Push Day A"
-            date="Mon · Jul 6"
-            duration="52 min"
-            status="today"
-            muscleGroups={[
-              { group: 'chest', label: 'Chest', volumeStatus: 'productive' },
-              { group: 'delts', label: 'Delts', volumeStatus: 'maintenance' },
-              { group: 'triceps', label: 'Triceps', volumeStatus: 'under' },
-            ]}
-            totalSets={18}
-            totalVolume={7340}
-            unit="lbs"
-            onToggle={() => {}}
-          />
-        </Cell>
-      </Section>
+          <Cell name="ExerciseCard" entity="exercise" expand="collapsed · expandable">
+            <ExerciseCard
+              name="Seated Cable Row"
+              summary={{ sets: 4, reps: 8, weight: 145, unit: 'lbs' }}
+              isPR
+              totalPlannedSets={5}
+              setVelocities={setVel}
+            />
+          </Cell>
+          <Cell name="ExerciseCard" entity="exercise" expand="expanded → reveals SetRows">
+            <ExerciseCard
+              name="Seated Cable Row"
+              defaultExpanded
+              summary={{ sets: 4, reps: 8, weight: 145, unit: 'lbs' }}
+              tempo={[3, 1, 2, 0]}
+              sets={exSets}
+            />
+          </Cell>
+          <Cell name="ExerciseCard" entity="exercise" expand="upcoming (static)">
+            <ExerciseCard
+              name="Face Pull"
+              upcoming
+              prescription="3 × 12-15 @ RPE 7"
+              previousBest="15 × 35 lb"
+            />
+          </Cell>
+        </Section>
 
-      <Section
-        title="Week"
-        note="WeekRow is the primitive; ExerciseDetailPage overloads ExerciseCard as a competing week row"
-      >
-        <Cell
-          name="WeekRow"
-          entity="week"
-          expand="no · row of workout Pills + intensity bar"
-          width={380}
+        <Section
+          title="Set"
+          note="SetRow is the primitive — one row per set lifecycle state (done / live / todo)"
         >
-          <WeekRow
-            weekNumber={3}
-            totalWeeks={4}
-            isCurrent
-            intensityLevel={0.55}
-            intensityThreshold={0.8}
-            workouts={weeks[1].workouts}
-          />
-        </Cell>
-      </Section>
+          <Cell name="SetRow" entity="set · done" expand="no · flat mini strip" width={360}>
+            <SetRow
+              state="done"
+              setNumber={1}
+              reps={8}
+              weight={145}
+              rpe={8}
+              unit="lbs"
+              velocities={[0.6, 0.58, 0.55, 0.52]}
+            />
+          </Cell>
+          <Cell name="SetRow" entity="set · live" expand="no · compact spotlight" width={360}>
+            <SetRow
+              state="live"
+              setNumber={2}
+              unit="lbs"
+              target={{ reps: 8, weight: 145 }}
+              reps={8}
+              weight={145}
+              velocities={[0.58, 0.55, 0.53, 0.5]}
+            />
+          </Cell>
+          <Cell name="SetRow" entity="set · todo" expand="no · grey stub strip" width={360}>
+            <SetRow state="todo" setNumber={4} unit="lbs" target={{ reps: 8, weight: 145 }} />
+          </Cell>
+        </Section>
 
-      <Section
-        title="Mesocycle"
-        note="3 views for different jobs (list card / timeline / detail) — each with its own status enum"
-      >
-        <Cell
-          name="MesoCard"
-          entity="meso"
-          expand="expandable · expanded+onToggle → WeekRows"
-          width={380}
+        <Section
+          title="Workout"
+          note="WorkoutCard is the full row; the chip density is a Pill inside WeekRow; ExerciseDetailPage overloads ExerciseCard as a 3rd"
         >
-          <MesoCard
-            name="Accumulation"
-            goal="Hypertrophy"
-            split="Upper/Lower"
-            weekRange="Weeks 1-4"
-            currentWeek={2}
-            totalWeeks={4}
-            weeks={weeks}
-            volumeHeatmap={[
-              { group: 'chest', percentage: 80 },
-              { group: 'back', percentage: 70 },
-              { group: 'legs', percentage: 90 },
-            ]}
-          />
-        </Cell>
-        <Cell name="MesoProgressBar" entity="meso · timeline" expand="no · segments" width={380}>
-          <MesoProgressBar mesos={mesos} />
-        </Cell>
-      </Section>
-
-      <Section
-        title="Shared sub-parts"
-        note="appear inside the rows above — not entity rows themselves"
-      >
-        <Cell name="MuscleGroupChip" entity="muscle-group" expand="no">
-          <View style={{ flexDirection: 'row', gap: 8, flexWrap: 'wrap' }}>
-            <MuscleGroupChip name="Chest" volumeStatus="ontrack" />
-            <MuscleGroupChip name="Quads" volumeStatus="behind" />
-            <MuscleGroupChip name="Lats" volumeStatus="over" />
-          </View>
-        </Cell>
-        <Cell name="StatusDot" entity="status glyph" expand="no">
-          <StatusDot variant="success" label="On track" />
-        </Cell>
-        <Cell name="PrBadge" entity="badge" expand="no">
-          <PrBadge type="e1rm" animate={false} />
-        </Cell>
-        <Cell name="PlaceholderStrip" entity="pending-set strip" expand="no">
-          <View style={{ flexDirection: 'row', gap: 4 }}>
-            <PlaceholderStrip />
-            <PlaceholderStrip />
-            <PlaceholderStrip />
-          </View>
-        </Cell>
-        <Cell name="SupersetWrapper" entity="grouping bracket" expand="no">
-          <SupersetWrapper label="SS1" color="#FF7900">
-            <View style={{ padding: 10, backgroundColor: t['surface-raised'], borderRadius: 8 }}>
-              <Text style={{ color: '#F3F4F6' }}>Exercise A</Text>
-            </View>
-            <View style={{ padding: 10, backgroundColor: t['surface-raised'], borderRadius: 8 }}>
-              <Text style={{ color: '#F3F4F6' }}>Exercise B</Text>
-            </View>
-          </SupersetWrapper>
-        </Cell>
-      </Section>
-
-      <Section
-        title="Page-level organisms"
-        note="composition roots (390px+), not rows — listed for reference, see their own stories"
-      >
-        {[
-          ['ActiveWorkoutPage', 'renders ExerciseCards + SupersetWrapper + InputBar/RestTimer'],
-          ['ProgramPlanningPage', 'MesoProgressBar + MesoCard → WeekRow → WorkoutCard drill-down'],
-          ['ExerciseDetailPage', 'EntryList overloads ExerciseCard as week AND session rows'],
-          ['MesoStatusCard', 'per-exercise meso detail card (StatusDot + metric grid + gauges)'],
-          ['ReadinessCheck', 'pre-workout factor rows + score gauge'],
-        ].map(([n, d]) => (
-          <div
-            key={n}
-            style={{
-              width: 340,
-              padding: 14,
-              borderRadius: 12,
-              border: '1px dashed #31343d',
-              background: '#0f1012',
-            }}
+          <Cell
+            name="WorkoutCard"
+            entity="workout"
+            expand="expandable · expanded+onToggle → ExerciseCards"
+            width={380}
           >
-            <div style={{ fontSize: 13, fontWeight: 800, color: '#E8EAED' }}>{n}</div>
-            <div style={{ fontSize: 11, color: '#8D95A3', marginTop: 4 }}>{d}</div>
-          </div>
-        ))}
-      </Section>
-    </div>
+            <WorkoutCard
+              name="Push Day A"
+              date="Mon · Jul 6"
+              duration="52 min"
+              status="today"
+              muscleGroups={[
+                { group: 'chest', label: 'Chest', volumeStatus: 'productive' },
+                { group: 'delts', label: 'Delts', volumeStatus: 'maintenance' },
+                { group: 'triceps', label: 'Triceps', volumeStatus: 'under' },
+              ]}
+              totalSets={18}
+              totalVolume={7340}
+              unit="lbs"
+              onToggle={() => {}}
+            />
+          </Cell>
+        </Section>
+
+        <Section
+          title="Week"
+          note="WeekRow is the primitive; ExerciseDetailPage overloads ExerciseCard as a competing week row"
+        >
+          <Cell
+            name="WeekRow"
+            entity="week"
+            expand="no · row of workout Pills + intensity bar"
+            width={380}
+          >
+            <WeekRow
+              weekNumber={3}
+              totalWeeks={4}
+              isCurrent
+              intensityLevel={0.55}
+              intensityThreshold={0.8}
+              workouts={weeks[1].workouts}
+            />
+          </Cell>
+        </Section>
+
+        <Section
+          title="Mesocycle"
+          note="3 views for different jobs (list card / timeline / detail) — each with its own status enum"
+        >
+          <Cell
+            name="MesoCard"
+            entity="meso"
+            expand="expandable · expanded+onToggle → WeekRows"
+            width={380}
+          >
+            <MesoCard
+              name="Accumulation"
+              goal="Hypertrophy"
+              split="Upper/Lower"
+              weekRange="Weeks 1-4"
+              currentWeek={2}
+              totalWeeks={4}
+              weeks={weeks}
+              volumeHeatmap={[
+                { group: 'chest', percentage: 80 },
+                { group: 'back', percentage: 70 },
+                { group: 'legs', percentage: 90 },
+              ]}
+            />
+          </Cell>
+          <Cell name="MesoProgressBar" entity="meso · timeline" expand="no · segments" width={380}>
+            <MesoProgressBar mesos={mesos} />
+          </Cell>
+        </Section>
+
+        <Section
+          title="Shared sub-parts"
+          note="appear inside the rows above — not entity rows themselves"
+        >
+          <Cell name="MuscleGroupChip" entity="muscle-group" expand="no">
+            <View style={{ flexDirection: 'row', gap: 8, flexWrap: 'wrap' }}>
+              <MuscleGroupChip name="Chest" volumeStatus="ontrack" />
+              <MuscleGroupChip name="Quads" volumeStatus="behind" />
+              <MuscleGroupChip name="Lats" volumeStatus="over" />
+            </View>
+          </Cell>
+          <Cell name="StatusDot" entity="status glyph" expand="no">
+            <StatusDot variant="success" label="On track" />
+          </Cell>
+          <Cell name="PrBadge" entity="badge" expand="no">
+            <PrBadge type="e1rm" animate={false} />
+          </Cell>
+          <Cell name="PlaceholderStrip" entity="pending-set strip" expand="no">
+            <View style={{ flexDirection: 'row', gap: 4 }}>
+              <PlaceholderStrip />
+              <PlaceholderStrip />
+              <PlaceholderStrip />
+            </View>
+          </Cell>
+          <Cell name="SupersetWrapper" entity="grouping bracket" expand="no">
+            <SupersetWrapper label="SS1" color="#FF7900">
+              <View style={{ padding: 10, backgroundColor: t['surface-raised'], borderRadius: 8 }}>
+                <Text style={{ color: '#F3F4F6' }}>Exercise A</Text>
+              </View>
+              <View style={{ padding: 10, backgroundColor: t['surface-raised'], borderRadius: 8 }}>
+                <Text style={{ color: '#F3F4F6' }}>Exercise B</Text>
+              </View>
+            </SupersetWrapper>
+          </Cell>
+        </Section>
+
+        <Section
+          title="Page-level organisms"
+          note="composition roots (390px+), not rows — listed for reference, see their own stories"
+        >
+          {[
+            ['ActiveWorkoutPage', 'renders ExerciseCards + SupersetWrapper + InputBar/RestTimer'],
+            [
+              'ProgramPlanningPage',
+              'MesoProgressBar + MesoCard → WeekRow → WorkoutCard drill-down',
+            ],
+            ['ExerciseDetailPage', 'EntryList overloads ExerciseCard as week AND session rows'],
+            ['MesoStatusCard', 'per-exercise meso detail card (StatusDot + metric grid + gauges)'],
+            ['ReadinessCheck', 'pre-workout factor rows + score gauge'],
+          ].map(([n, d]) => (
+            <div
+              key={n}
+              style={{
+                width: 340,
+                padding: 14,
+                borderRadius: 12,
+                border: '1px dashed #31343d',
+                background: '#0f1012',
+              }}
+            >
+              <div style={{ fontSize: 13, fontWeight: 800, color: '#E8EAED' }}>{n}</div>
+              <div style={{ fontSize: 11, color: '#8D95A3', marginTop: 4 }}>{d}</div>
+            </div>
+          ))}
+        </Section>
+      </StorySpecimens>
+    </StoryPage>
   ),
 }

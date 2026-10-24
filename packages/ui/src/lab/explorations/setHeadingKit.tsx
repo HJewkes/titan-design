@@ -4,9 +4,12 @@
  * When these decisions harden they move into the real `ExerciseCard` + a titan `SessionRail` organism.
  */
 import type { ReactNode } from 'react'
+import { View } from 'react-native'
 import { TempoDisplay } from '../../components/custom/Workout/TempoDisplay'
+import { Typography } from '../../components/ui/typography'
 import { greyRamp, primitiveRamps } from '../../theme/tokens/primitives'
 import { getSemanticColors } from '../../theme/tokens/semantic'
+import { StoryPage, StorySpecimens } from '../story-canvas'
 
 // ---- geometry
 export const RAIL_W = 232
@@ -333,25 +336,20 @@ export function Page({
   children: ReactNode
 }) {
   return (
-    <div
-      style={{
-        minHeight: '100vh',
-        background: T['background-frame'],
-        color: T_PRIMARY,
-        padding: 28,
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 22,
-        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-      }}
+    <StoryPage
+      className="min-h-screen"
+      header={
+        <View className="gap-stack-sm">
+          <Typography variant="h5">{title}</Typography>
+          <Typography variant="body2" color="secondary" className="max-w-[820px]">
+            {note}
+          </Typography>
+        </View>
+      }
     >
       <style>{PULSE_CSS}</style>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-        <span style={{ fontSize: 20, fontWeight: 800 }}>{title}</span>
-        <span style={{ fontSize: 12, color: T_SECONDARY, maxWidth: 820 }}>{note}</span>
-      </div>
-      {children}
-    </div>
+      <StorySpecimens>{children}</StorySpecimens>
+    </StoryPage>
   )
 }
 export const sectionTitle = {
