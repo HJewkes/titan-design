@@ -213,7 +213,7 @@ describe('TrainingStatusPage accessibility', () => {
   it('has no accessibility violations with the chest panel open', async () => {
     const { container } = render(<TrainingStatusPage meso={meso} muscles={muscles} />)
     fireEvent.click(screen.getByTestId('body-map-muscle-chest'))
-    expect(screen.getByTestId('body-map-detail-panel')).toBeInTheDocument()
+    expect(screen.getByRole('dialog', { name: 'Chest volume details' })).toBeInTheDocument()
     expect(await axe(container)).toHaveNoViolations()
   }, 30_000)
 })
