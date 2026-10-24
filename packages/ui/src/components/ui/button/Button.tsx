@@ -208,6 +208,7 @@ export const Button = forwardRef<View, ButtonProps>(function Button(
       disabled={disabled}
       accessibilityRole="button"
       accessibilityState={{ disabled }}
+      aria-busy={isLoading || undefined}
       className={cn(
         // Base styles
         'flex-row items-center justify-center rounded-md transition-all duration-150',
@@ -239,6 +240,10 @@ export const Button = forwardRef<View, ButtonProps>(function Button(
           // A literal hex for the mode, the path Spinner takes for ActivityIndicator (VW-316).
           color={variant === 'solid' ? getSemanticColors(mode)[solidLabelToken[color]] : undefined}
           className="mr-2"
+          // The button's busy state announces loading; the indicator's own unnamed progressbar would not.
+          aria-hidden
+          accessibilityElementsHidden
+          importantForAccessibility="no-hide-descendants"
         />
       )}
       {isLoading && loadingText ? (
@@ -291,5 +296,13 @@ export interface ButtonSpinnerProps {
  * Spinner component for Button loading state.
  */
 export function ButtonSpinner({ className }: ButtonSpinnerProps) {
-  return <ActivityIndicator size="small" className={cn('text-inherit', className)} />
+  return (
+    <ActivityIndicator
+      size="small"
+      className={cn('text-inherit', className)}
+      aria-hidden
+      accessibilityElementsHidden
+      importantForAccessibility="no-hide-descendants"
+    />
+  )
 }

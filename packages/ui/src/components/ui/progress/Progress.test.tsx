@@ -225,18 +225,33 @@ describe('Progress', () => {
   describe('accessibility', () => {
     it('has no accessibility violations for Progress', async () => {
       const { container } = render(<Progress value={50} label="Upload progress" />)
-      const results = await axe(container, {
-        rules: { 'aria-progressbar-name': { enabled: false } },
-      })
-      expect(results).toHaveNoViolations()
+      expect(await axe(container)).toHaveNoViolations()
+    })
+
+    it('has no accessibility violations for an unlabelled Progress', async () => {
+      const { container } = render(<Progress value={50} />)
+      expect(await axe(container)).toHaveNoViolations()
     })
 
     it('has no accessibility violations for CircularProgress', async () => {
       const { container } = render(<CircularProgress value={50} />)
-      const results = await axe(container, {
-        rules: { 'aria-progressbar-name': { enabled: false } },
-      })
-      expect(results).toHaveNoViolations()
+      expect(await axe(container)).toHaveNoViolations()
+    })
+
+    it.each([
+      ['a labelled Progress', <Progress key="l" value={50} label="Upload" />, 'Upload'],
+      ['an unlabelled Progress', <Progress key="u" value={50} />, 'Progress'],
+      ['a CircularProgress', <CircularProgress key="c" value={50} />, 'Progress'],
+      [
+        'a named CircularProgress',
+        <CircularProgress key="n" value={50} accessibilityLabel="Ring" />,
+        'Ring',
+      ],
+    ])('exposes exactly one named progressbar for %s', (_, element, name) => {
+      render(element)
+      const bars = screen.getAllByRole('progressbar')
+      expect(bars).toHaveLength(1)
+      expect(bars[0]).toHaveAccessibleName(name)
     })
 
     it('has no accessibility violations for ProgressSteps', async () => {
