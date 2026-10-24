@@ -9,7 +9,7 @@ import { primitiveColors } from '../../../theme/tokens/primitives'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { Indicator } from '../../ui/indicator'
 import { Surface, useSurfaceMode } from '../../ui/surface'
-import { useMeasuredWidth } from '../Table/column-fit'
+import { useMeasuredWidth } from '../../../hooks/useMeasuredWidth'
 import { Typography } from '../../ui/typography'
 import {
   GoalMilestoneSummary,
