@@ -8,6 +8,7 @@ import { getSemanticColors, type ThemeMode } from '../../../theme/tokens/semanti
 import { useSurfaceMode } from '../../ui/surface/SurfaceContext'
 import { alpha } from '../../../utils/colors'
 import { getGlowShadow } from '../../../theme/elevation'
+import { usePrefersReducedMotion } from '../../../hooks/usePrefersReducedMotion'
 import {
   MuscleGroup,
   SimpleMuscleGroup,
@@ -177,7 +178,12 @@ export function BodyMap({
   )
 
   const [highlight] = useState(() => new Animated.Value(highlightedMuscle ? 1 : 0))
+  const prefersReducedMotion = usePrefersReducedMotion()
   useEffect(() => {
+    if (prefersReducedMotion) {
+      highlight.setValue(highlightedMuscle ? 1 : 0)
+      return undefined
+    }
     const animation = Animated.timing(highlight, {
       toValue: highlightedMuscle ? 1 : 0,
       duration: 250,
@@ -186,7 +192,7 @@ export function BodyMap({
     })
     animation.start()
     return () => animation.stop()
-  }, [highlightedMuscle, highlight])
+  }, [highlightedMuscle, highlight, prefersReducedMotion])
 
   const scale = highlight.interpolate({ inputRange: [0, 1], outputRange: [1, 1.02] })
   const glowColor = highlightedMuscle

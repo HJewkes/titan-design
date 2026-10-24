@@ -13,6 +13,7 @@ import { getGlowShadow } from '../../../theme/elevation'
 import { WORKOUT_TOKENS } from '../../../theme/workout-tokens'
 import { useSurfaceMode } from '../../ui/surface'
 import { alpha } from '../../../utils/colors'
+import { usePrefersReducedMotion } from '../../../hooks/usePrefersReducedMotion'
 
 export type IntensityBarOrientation = 'vertical' | 'horizontal'
 
@@ -110,7 +111,13 @@ export function IntensityBar({
 
   const [fillAnim] = useState(() => new Animated.Value(fillLevel))
 
+  const prefersReducedMotion = usePrefersReducedMotion()
+
   useEffect(() => {
+    if (prefersReducedMotion) {
+      fillAnim.setValue(fillLevel)
+      return undefined
+    }
     const animation = Animated.timing(fillAnim, {
       toValue: fillLevel,
       duration: 250,
@@ -118,7 +125,7 @@ export function IntensityBar({
     })
     animation.start()
     return () => animation.stop()
-  }, [fillLevel, fillAnim])
+  }, [fillLevel, fillAnim, prefersReducedMotion])
 
   const fillSizePercent = fillAnim.interpolate({
     inputRange: [0, 1],
