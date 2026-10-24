@@ -6,6 +6,9 @@ import { useInsetFieldStyle } from '../surface/insetField'
 import { SelectPopover } from './SelectPopover'
 import { hasSelection, isValueSelected, selectDisplayLabel, toggleValue } from './selectModel'
 
+// React Native's `Role` union omits it; RNW passes it straight through to the DOM.
+const LISTBOX_ROLE = 'listbox' as ViewProps['role']
+
 export interface SelectOption<T = string> {
   value: T
   label: string
@@ -182,7 +185,7 @@ export function Select<T extends string = string>({
           <SelectPopover onClose={() => setIsOpen(false)}>
             <ScrollView
               id={listboxId}
-              role="listbox"
+              role={LISTBOX_ROLE}
               aria-label={accessibilityLabel}
               aria-multiselectable={isMulti || undefined}
               className="py-1"
