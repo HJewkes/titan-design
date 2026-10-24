@@ -280,6 +280,20 @@ function buildHubAndSpokes(): GraphFixture {
   )
 }
 
+/** A focus, 4 neighbours and 15 second-hop nodes: the ego view sized for a phone. */
+function buildEgoTwenty(): GraphFixture {
+  const near = series('lead', 4, 2)
+  const far = series('worker', 15)
+  return fixture(
+    [node('lead-01', 'lead'), ...near.map((id) => node(id, 'lead')), ...inGroup(far)],
+    [
+      ...near.map((id) => spawn('lead-01', id)),
+      ...far.map((id, i) => spawn(near[i % near.length] as string, id)),
+    ],
+    { focusId: 'lead-01' }
+  )
+}
+
 function buildManyGroups(): GraphFixture {
   const groups = series('group', 14)
   let next = 1
@@ -388,6 +402,7 @@ export const networkGraphFixtures = {
   'Mutual pair': buildMutualPair(),
   'Grouped (40)': buildGrouped(),
   'Hub and spokes': buildHubAndSpokes(),
+  'Ego (20)': buildEgoTwenty(),
   'Directed chain': fixture(inGroup(series('alpha', 6)), chainSpawns(series('alpha', 6)), {
     focusId: 'alpha-03',
   }),
