@@ -5,7 +5,7 @@ import type { NetworkGraphState } from './useNetworkGraph'
 interface WebFocusEvent {
   target: unknown
   relatedTarget?: unknown
-  currentTarget: { focus: () => void; contains: (node: unknown) => boolean }
+  currentTarget: { focus: (options?: FocusOptions) => void; contains: (node: unknown) => boolean }
 }
 
 interface WebKeyEvent {
@@ -38,6 +38,9 @@ function useScrollToActive(activeDomId: string | undefined) {
   return useCallback(() => setRequests((count) => count + 1), [])
 }
 
+/** Moving focus must not scroll the page: mid-press, the release would miss the item (TD-1024). */
+export const FOCUS_IN_PLACE = { preventScroll: true }
+
 /**
  * Keeps DOM focus on the graph root, the one tab stop, and reports focus entering and leaving it.
  * A pointer that is down tells a press on the canvas from a Tab into it.
@@ -52,7 +55,7 @@ function useFocusHandlers(graph: NetworkGraphState, onEntered: () => void) {
     onPointerUp: setPointer(false),
     onPointerCancel: setPointer(false),
     onFocus: (event: WebFocusEvent) => {
-      if (event.target !== event.currentTarget) return event.currentTarget.focus()
+      if (event.target !== event.currentTarget) return event.currentTarget.focus(FOCUS_IN_PLACE)
       graph.enter(isPointerDown.current)
       if (!isPointerDown.current) onEntered()
     },
