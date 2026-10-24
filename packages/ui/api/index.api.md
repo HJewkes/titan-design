@@ -1800,9 +1800,6 @@ export const ELEVATION_PLANE: Record<ElevationLevel, SurfaceLevel>;
 // @public
 export type ElevationLevel = -2 | -1 | 0 | 1 | 2 | 3 | 4 | 5;
 
-// @public
-export function elevationPlane(level: ElevationLevel): SurfaceLevel;
-
 // @public (undocumented)
 export const EMPTY_TASK_FLOW_FILTERS: TaskFlowFilters;
 
@@ -2199,9 +2196,6 @@ export interface GaugeThreshold {
 export function getCategoricalColor(index: number, variant?: CategoricalVariant): string;
 
 // @public
-export function getDiscreteRainbowColor(index: number, size: number): string;
-
-// @public
 export function getElevationShadow(level: ElevationLevel, mode?: ThemeMode, opts?: LiftOptions): ViewStyle;
 
 // @public
@@ -2540,365 +2534,6 @@ export function getSemanticColors(mode: ThemeMode): {
     readonly 'avatar-text': "#FFFFFF";
 };
 
-// @public (undocumented)
-export function getThemeCSSVars(mode: ThemeMode): {
-    readonly '--ease-out': "cubic-bezier(0.22, 1, 0.36, 1)";
-    readonly '--ease-in-out': "cubic-bezier(0.65, 0, 0.35, 1)";
-    readonly '--ease-spring': "cubic-bezier(0.34, 1.56, 0.64, 1)";
-    readonly '--ease-in': "cubic-bezier(0.55, 0, 1, 0.45)";
-    readonly '--duration-fast': "150ms";
-    readonly '--duration-normal': "250ms";
-    readonly '--duration-slow': "400ms";
-    readonly '--color-brand-primary-rgb': "255, 121, 0";
-    readonly '--color-brand-secondary-rgb': "48, 123, 155";
-    readonly '--color-status-success-rgb': "46, 213, 115";
-    readonly '--color-status-error-rgb': "209, 67, 67";
-    readonly '--color-status-error-vivid-rgb': "255, 71, 87";
-    readonly '--color-status-warning-rgb': "249, 180, 21";
-    readonly '--color-status-info-rgb': "33, 150, 243";
-    readonly '--color-background-base-rgb': "16, 16, 16";
-    readonly '--font-family-sans': "'Inter'";
-    readonly '--font-family-body': "'Nunito Sans'";
-    readonly '--font-family-heading': "'Space Grotesk'";
-    readonly '--font-family-mono': "'JetBrains Mono', monospace";
-    readonly '--color-brand-primary': "#FF7900";
-    readonly '--color-brand-primary-light': "#FFA063";
-    readonly '--color-brand-primary-dark': "#DA5F00";
-    readonly '--color-brand-primary-subtle': "#FFE6D4";
-    readonly '--color-brand-primary-muted': "#FFC7A2";
-    readonly '--color-brand-primary-strong': "rgba(255, 121, 0, 0.50)";
-    readonly '--color-brand-secondary': "#307B9B";
-    readonly '--color-brand-secondary-light': "#2697B7";
-    readonly '--color-brand-secondary-dark': "#2A617F";
-    readonly '--color-brand-secondary-subtle': "#C2F6FF";
-    readonly '--color-brand-secondary-muted': "#62EAFF";
-    readonly '--color-brand-secondary-strong': "rgba(48, 123, 155, 0.50)";
-    readonly '--color-on-brand-primary': "#FFFFFF";
-    readonly '--color-on-brand-secondary': "#FFFFFF";
-    readonly '--color-on-brand-primary-subtle': "#983804";
-    readonly '--color-on-brand-secondary-subtle': "#2A617F";
-    readonly '--color-status-success': "#2B6B25";
-    readonly '--color-status-success-subtle': "#B5FFD2";
-    readonly '--color-status-success-muted': "rgba(46, 213, 115, 0.30)";
-    readonly '--color-status-success-strong': "rgba(46, 213, 115, 0.50)";
-    readonly '--color-status-live': "#2ED573";
-    readonly '--color-status-deload': "#9C0D7A";
-    readonly '--color-status-live-muted': "#22A444";
-    readonly '--color-status-error': "#D14343";
-    readonly '--color-status-error-subtle': "#FFE3E5";
-    readonly '--color-status-error-muted': "rgba(209, 67, 67, 0.30)";
-    readonly '--color-status-error-strong': "rgba(209, 67, 67, 0.50)";
-    readonly '--color-status-warning': "#A45E00";
-    readonly '--color-status-warning-subtle': "#FFEAA9";
-    readonly '--color-status-warning-muted': "rgba(249, 180, 21, 0.30)";
-    readonly '--color-status-warning-strong': "rgba(249, 180, 21, 0.50)";
-    readonly '--color-status-info': "#135AA8";
-    readonly '--color-status-info-subtle': "#D9EFFF";
-    readonly '--color-status-info-muted': "rgba(33, 150, 243, 0.30)";
-    readonly '--color-status-info-strong': "rgba(33, 150, 243, 0.50)";
-    readonly '--color-brand-primary-solid': "#DA5F00";
-    readonly '--color-brand-secondary-solid': "#307B9B";
-    readonly '--color-status-success-solid': "#298732";
-    readonly '--color-status-error-solid': "#D14343";
-    readonly '--color-status-warning-solid': "#C27400";
-    readonly '--color-status-info-solid': "#1072CB";
-    readonly '--color-status-error-vivid': "#A4221C";
-    readonly '--color-status-error-vivid-light': "#E05254";
-    readonly '--color-status-error-vivid-dark': "#A4221C";
-    readonly '--color-status-error-vivid-subtle': "rgba(164, 34, 28, 0.12)";
-    readonly '--color-status-error-vivid-muted': "rgba(164, 34, 28, 0.30)";
-    readonly '--color-status-error-vivid-strong': "rgba(164, 34, 28, 0.50)";
-    readonly '--color-text-primary': "#121828";
-    readonly '--color-text-secondary': "#424140";
-    readonly '--color-text-tertiary': "#5A5958";
-    readonly '--color-text-disabled': "rgba(55, 65, 81, 0.48)";
-    readonly '--color-text-inverse': "#FFFFFF";
-    readonly '--color-text-error': "#A4221C";
-    readonly '--color-text-brand': "#983804";
-    readonly '--color-text-brand-secondary': "#22465F";
-    readonly '--color-text-success': "#264D1C";
-    readonly '--color-text-warning': "#814D14";
-    readonly '--color-text-info': "#135AA8";
-    readonly '--color-text-link': "#135AA8";
-    readonly '--color-surface-base': "#EDEAE7";
-    readonly '--color-surface-elevated': "#F9F6F3";
-    readonly '--color-surface-raised': "#FFFFFF";
-    readonly '--color-background-base': "#D4D1CE";
-    readonly '--color-background-default': "#EDEAE7";
-    readonly '--color-background-subtle': "#F9F6F3";
-    readonly '--color-background-frame': "#BDBAB7";
-    readonly '--color-border-prominent': "#A29F9D";
-    readonly '--color-border-focus': "#1072CB";
-    readonly '--color-interactive-hover': "rgba(55, 65, 81, 0.04)";
-    readonly '--color-interactive-focus': "rgba(55, 65, 81, 0.12)";
-    readonly '--color-interactive-active': "rgba(55, 65, 81, 0.16)";
-    readonly '--color-interactive-selected': "rgba(55, 65, 81, 0.08)";
-    readonly '--color-interactive-selected-solid': "#5A5958";
-    readonly '--color-interactive-disabled': "rgba(55, 65, 81, 0.12)";
-    readonly '--color-divider': "rgba(0, 0, 0, 0.16)";
-    readonly '--color-brand-primary-hover': "#B94A00";
-    readonly '--color-brand-primary-active': "#983804";
-    readonly '--color-brand-secondary-hover': "#2A617F";
-    readonly '--color-brand-secondary-active': "#22465F";
-    readonly '--color-status-success-light': "#58F69E";
-    readonly '--color-status-success-dark': "#264D1C";
-    readonly '--color-status-error-light': "#E05254";
-    readonly '--color-status-error-dark': "#A4221C";
-    readonly '--color-status-warning-light': "#FFD352";
-    readonly '--color-status-warning-dark': "#814D14";
-    readonly '--color-status-info-light': "#78C2FF";
-    readonly '--color-status-info-dark': "#14407E";
-    readonly '--color-on-status-success': "#FFFFFF";
-    readonly '--color-on-status-error': "#FFFFFF";
-    readonly '--color-on-status-warning': "#FFFFFF";
-    readonly '--color-on-status-info': "#FFFFFF";
-    readonly '--color-on-status-success-subtle': "#2B6B25";
-    readonly '--color-on-status-error-subtle': "#A4221C";
-    readonly '--color-on-status-warning-subtle': "#814D14";
-    readonly '--color-on-status-info-subtle': "#135AA8";
-    readonly '--color-result-improve': "#4caf50";
-    readonly '--color-result-improve-light': "rgba(76, 175, 80, 0.12)";
-    readonly '--color-result-improve-dark': "#248a24";
-    readonly '--color-result-degrade': "#ef5350";
-    readonly '--color-result-degrade-light': "rgba(239, 83, 80, 0.12)";
-    readonly '--color-result-degrade-dark': "#b30000";
-    readonly '--color-result-inconclusive': "#9E9A97";
-    readonly '--color-result-inconclusive-light': "rgba(158, 154, 151, 0.12)";
-    readonly '--color-result-neutral': "#72716F";
-    readonly '--color-on-result-improve': "#FFFFFF";
-    readonly '--color-on-result-degrade': "#FFFFFF";
-    readonly '--color-on-result-inconclusive': "#FFFFFF";
-    readonly '--color-data-1': "#1965B0";
-    readonly '--color-data-2': "#4EB265";
-    readonly '--color-data-3': "#F7F056";
-    readonly '--color-data-4': "#DC050C";
-    readonly '--color-data-5': "#882E72";
-    readonly '--color-data-6': "#F4A736";
-    readonly '--color-data-7': "#7BAFDE";
-    readonly '--color-data-8': "#90C987";
-    readonly '--color-data-9': "#CAACCB";
-    readonly '--color-data-10': "#EE8026";
-    readonly '--color-dataviz-diverging-0': "#2196F3";
-    readonly '--color-dataviz-diverging-1': "#01B5D1";
-    readonly '--color-dataviz-diverging-2': "#2ED573";
-    readonly '--color-dataviz-diverging-3': "#E08C00";
-    readonly '--color-dataviz-diverging-4': "#D14343";
-    readonly '--color-dataviz-sequential-0': "#2ED573";
-    readonly '--color-dataviz-sequential-1': "#F9B415";
-    readonly '--color-dataviz-sequential-2': "#FF7900";
-    readonly '--color-dataviz-sequential-3': "#DA5F00";
-    readonly '--color-dataviz-sequential-4': "#A4221C";
-    readonly '--color-dataviz-sequential-5': "#7E1002";
-    readonly '--color-dataviz-categorical-0': "#2196F3";
-    readonly '--color-dataviz-categorical-1': "#BA2996";
-    readonly '--color-dataviz-categorical-2': "#D14343";
-    readonly '--color-dataviz-categorical-3': "#FF7900";
-    readonly '--color-dataviz-categorical-4': "#298732";
-    readonly '--color-dataviz-categorical-5': "#01B5D1";
-    readonly '--color-dataviz-categorical-6': "#A45E00";
-    readonly '--color-text-link-hover': "#135AA8";
-    readonly '--color-surface-overlay': "#FFFFFF";
-    readonly '--color-surface-input': "#F9F6F3";
-    readonly '--color-border-input': "#72716F";
-    readonly '--color-border-input-hover': "#5A5958";
-    readonly '--color-border-input-focus': "#1072CB";
-    readonly '--color-border-input-error': "#D14343";
-    readonly '--color-hairline-subtle': "rgba(0, 0, 0, 0.10)";
-    readonly '--color-hairline-default': "rgba(0, 0, 0, 0.16)";
-    readonly '--color-hairline-strong': "rgba(0, 0, 0, 0.24)";
-    readonly '--color-scrim-press': "rgba(0, 0, 0, 0.10)";
-    readonly '--color-scrim-press-strong': "rgba(0, 0, 0, 0.20)";
-    readonly '--color-scrim-subtle': "rgba(0, 0, 0, 0.30)";
-    readonly '--color-scrim-default': "rgba(0, 0, 0, 0.50)";
-    readonly '--color-scrim-strong': "rgba(0, 0, 0, 0.78)";
-    readonly '--color-on-scrim': "#FFFFFF";
-    readonly '--color-control-face-disabled': "rgba(0, 0, 0, 0.06)";
-    readonly '--color-on-control-idle': "#5A5958";
-    readonly '--color-on-control-active': "#1C1916";
-    readonly '--color-on-data-strong': "#0B0B0B";
-    readonly '--color-interactive-disabled-text': "rgba(55, 65, 81, 0.26)";
-    readonly '--color-avatar-background': "#72716F";
-    readonly '--color-avatar-text': "#FFFFFF";
-} | {
-    readonly '--ease-out': "cubic-bezier(0.22, 1, 0.36, 1)";
-    readonly '--ease-in-out': "cubic-bezier(0.65, 0, 0.35, 1)";
-    readonly '--ease-spring': "cubic-bezier(0.34, 1.56, 0.64, 1)";
-    readonly '--ease-in': "cubic-bezier(0.55, 0, 1, 0.45)";
-    readonly '--duration-fast': "150ms";
-    readonly '--duration-normal': "250ms";
-    readonly '--duration-slow': "400ms";
-    readonly '--color-brand-primary-rgb': "255, 121, 0";
-    readonly '--color-brand-secondary-rgb': "48, 123, 155";
-    readonly '--color-status-success-rgb': "46, 213, 115";
-    readonly '--color-status-error-rgb': "209, 67, 67";
-    readonly '--color-status-error-vivid-rgb': "255, 71, 87";
-    readonly '--color-status-warning-rgb': "249, 180, 21";
-    readonly '--color-status-info-rgb': "33, 150, 243";
-    readonly '--color-background-base-rgb': "16, 16, 16";
-    readonly '--font-family-sans': "'Inter'";
-    readonly '--font-family-body': "'Nunito Sans'";
-    readonly '--font-family-heading': "'Space Grotesk'";
-    readonly '--font-family-mono': "'JetBrains Mono', monospace";
-    readonly '--color-brand-primary': "#FF7900";
-    readonly '--color-brand-primary-light': "#FFA063";
-    readonly '--color-brand-primary-dark': "#DA5F00";
-    readonly '--color-brand-primary-subtle': "rgba(255, 121, 0, 0.12)";
-    readonly '--color-brand-primary-muted': "rgba(255, 121, 0, 0.30)";
-    readonly '--color-brand-primary-strong': "rgba(255, 121, 0, 0.50)";
-    readonly '--color-brand-secondary': "#2697B7";
-    readonly '--color-brand-secondary-light': "#2697B7";
-    readonly '--color-brand-secondary-dark': "#2A617F";
-    readonly '--color-brand-secondary-subtle': "rgba(34, 211, 238, 0.12)";
-    readonly '--color-brand-secondary-muted': "rgba(48, 123, 155, 0.30)";
-    readonly '--color-brand-secondary-strong': "rgba(48, 123, 155, 0.50)";
-    readonly '--color-on-brand-primary': "#1C1916";
-    readonly '--color-on-brand-secondary': "#1C1916";
-    readonly '--color-on-brand-primary-subtle': "#FF7900";
-    readonly '--color-on-brand-secondary-subtle': "#22D3EE";
-    readonly '--color-status-success': "#2ED573";
-    readonly '--color-status-success-subtle': "rgba(46, 213, 115, 0.12)";
-    readonly '--color-status-success-muted': "rgba(46, 213, 115, 0.30)";
-    readonly '--color-status-success-strong': "rgba(46, 213, 115, 0.50)";
-    readonly '--color-status-live': "#2ED573";
-    readonly '--color-status-deload': "#BA2996";
-    readonly '--color-status-live-muted': "#22A444";
-    readonly '--color-status-error': "#E05254";
-    readonly '--color-status-error-subtle': "rgba(247, 113, 117, 0.08)";
-    readonly '--color-status-error-muted': "rgba(209, 67, 67, 0.30)";
-    readonly '--color-status-error-strong': "rgba(209, 67, 67, 0.50)";
-    readonly '--color-status-warning': "#F9B415";
-    readonly '--color-status-warning-subtle': "rgba(249, 180, 21, 0.12)";
-    readonly '--color-status-warning-muted': "rgba(249, 180, 21, 0.30)";
-    readonly '--color-status-warning-strong': "rgba(249, 180, 21, 0.50)";
-    readonly '--color-status-info': "#2196F3";
-    readonly '--color-status-info-subtle': "rgba(120, 194, 255, 0.12)";
-    readonly '--color-status-info-muted': "rgba(33, 150, 243, 0.30)";
-    readonly '--color-status-info-strong': "rgba(33, 150, 243, 0.50)";
-    readonly '--color-brand-primary-solid': "#FF7900";
-    readonly '--color-brand-secondary-solid': "#2697B7";
-    readonly '--color-status-success-solid': "#2ED573";
-    readonly '--color-status-error-solid': "#E05254";
-    readonly '--color-status-warning-solid': "#F9B415";
-    readonly '--color-status-info-solid': "#2196F3";
-    readonly '--color-status-error-vivid': "#FF4757";
-    readonly '--color-status-error-vivid-light': "#E05254";
-    readonly '--color-status-error-vivid-dark': "#A4221C";
-    readonly '--color-status-error-vivid-subtle': "rgba(255, 71, 87, 0.12)";
-    readonly '--color-status-error-vivid-muted': "rgba(255, 71, 87, 0.30)";
-    readonly '--color-status-error-vivid-strong': "rgba(255, 71, 87, 0.50)";
-    readonly '--color-text-primary': "#F9F6F3";
-    readonly '--color-text-secondary': "#A29F9D";
-    readonly '--color-text-tertiary': "#888684";
-    readonly '--color-text-disabled': "rgba(255, 255, 255, 0.38)";
-    readonly '--color-text-inverse': "#1C1916";
-    readonly '--color-text-error': "#E05254";
-    readonly '--color-text-brand': "#FF7900";
-    readonly '--color-text-brand-secondary': "#22D3EE";
-    readonly '--color-text-success': "#21C05D";
-    readonly '--color-text-warning': "#F9B415";
-    readonly '--color-text-info': "#78C2FF";
-    readonly '--color-text-link': "#78C2FF";
-    readonly '--color-surface-base': "#252321";
-    readonly '--color-surface-elevated': "#2C2A28";
-    readonly '--color-surface-raised': "#31302F";
-    readonly '--color-background-base': "#1C1916";
-    readonly '--color-background-default': "#252321";
-    readonly '--color-background-subtle': "#2C2A28";
-    readonly '--color-background-frame': "#100D0A";
-    readonly '--color-border-prominent': "rgba(255, 255, 255, 0.30)";
-    readonly '--color-border-focus': "#828DF8";
-    readonly '--color-interactive-hover': "rgba(255, 255, 255, 0.04)";
-    readonly '--color-interactive-focus': "rgba(255, 255, 255, 0.12)";
-    readonly '--color-interactive-active': "rgba(255, 255, 255, 0.16)";
-    readonly '--color-interactive-selected': "rgba(255, 255, 255, 0.08)";
-    readonly '--color-interactive-selected-solid': "#F9F6F3";
-    readonly '--color-interactive-disabled': "rgba(255, 255, 255, 0.12)";
-    readonly '--color-divider': "rgba(255, 255, 255, 0.09)";
-    readonly '--color-brand-primary-hover': "#FFA063";
-    readonly '--color-brand-primary-active': "#FFC7A2";
-    readonly '--color-brand-secondary-hover': "#2697B7";
-    readonly '--color-brand-secondary-active': "#01B5D1";
-    readonly '--color-status-success-light': "#58F69E";
-    readonly '--color-status-success-dark': "#298732";
-    readonly '--color-status-error-light': "#E05254";
-    readonly '--color-status-error-dark': "#A4221C";
-    readonly '--color-status-warning-light': "#FFD352";
-    readonly '--color-status-warning-dark': "#C27400";
-    readonly '--color-status-info-light': "#78C2FF";
-    readonly '--color-status-info-dark': "#1072CB";
-    readonly '--color-on-status-success': "#1C1916";
-    readonly '--color-on-status-error': "#1C1916";
-    readonly '--color-on-status-warning': "#1C1916";
-    readonly '--color-on-status-info': "#1C1916";
-    readonly '--color-on-status-success-subtle': "#2ED573";
-    readonly '--color-on-status-error-subtle': "#F77175";
-    readonly '--color-on-status-warning-subtle': "#F9B415";
-    readonly '--color-on-status-info-subtle': "#78C2FF";
-    readonly '--color-result-improve': "#4caf50";
-    readonly '--color-result-improve-light': "rgba(76, 175, 80, 0.16)";
-    readonly '--color-result-improve-dark': "#248a24";
-    readonly '--color-result-degrade': "#ef5350";
-    readonly '--color-result-degrade-light': "rgba(239, 83, 80, 0.16)";
-    readonly '--color-result-degrade-dark': "#b30000";
-    readonly '--color-result-inconclusive': "#9E9A97";
-    readonly '--color-result-inconclusive-light': "rgba(158, 154, 151, 0.16)";
-    readonly '--color-result-neutral': "#A29F9D";
-    readonly '--color-on-result-improve': "#FFFFFF";
-    readonly '--color-on-result-degrade': "#FFFFFF";
-    readonly '--color-on-result-inconclusive': "#FFFFFF";
-    readonly '--color-data-1': "#1965B0";
-    readonly '--color-data-2': "#4EB265";
-    readonly '--color-data-3': "#F7F056";
-    readonly '--color-data-4': "#DC050C";
-    readonly '--color-data-5': "#882E72";
-    readonly '--color-data-6': "#F4A736";
-    readonly '--color-data-7': "#7BAFDE";
-    readonly '--color-data-8': "#90C987";
-    readonly '--color-data-9': "#CAACCB";
-    readonly '--color-data-10': "#EE8026";
-    readonly '--color-dataviz-diverging-0': "#2196F3";
-    readonly '--color-dataviz-diverging-1': "#22D3EE";
-    readonly '--color-dataviz-diverging-2': "#58F69E";
-    readonly '--color-dataviz-diverging-3': "#F9B415";
-    readonly '--color-dataviz-diverging-4': "#D14343";
-    readonly '--color-dataviz-sequential-0': "#2ED573";
-    readonly '--color-dataviz-sequential-1': "#FFD352";
-    readonly '--color-dataviz-sequential-2': "#F9B415";
-    readonly '--color-dataviz-sequential-3': "#FF7900";
-    readonly '--color-dataviz-sequential-4': "#D14343";
-    readonly '--color-dataviz-sequential-5': "#A4221C";
-    readonly '--color-dataviz-categorical-0': "#2196F3";
-    readonly '--color-dataviz-categorical-1': "#D548AF";
-    readonly '--color-dataviz-categorical-2': "#E05254";
-    readonly '--color-dataviz-categorical-3': "#FF7900";
-    readonly '--color-dataviz-categorical-4': "#2ED573";
-    readonly '--color-dataviz-categorical-5': "#22D3EE";
-    readonly '--color-dataviz-categorical-6': "#A45E00";
-    readonly '--color-text-link-hover': "#3CA8FF";
-    readonly '--color-surface-overlay': "#373635";
-    readonly '--color-surface-input': "#2C2A28";
-    readonly '--color-border-input': "#888684";
-    readonly '--color-border-input-hover': "#A29F9D";
-    readonly '--color-border-input-focus': "#828DF8";
-    readonly '--color-border-input-error': "#E05254";
-    readonly '--color-hairline-subtle': "rgba(255, 255, 255, 0.10)";
-    readonly '--color-hairline-default': "rgba(255, 255, 255, 0.15)";
-    readonly '--color-hairline-strong': "rgba(255, 255, 255, 0.22)";
-    readonly '--color-scrim-press': "rgba(0, 0, 0, 0.10)";
-    readonly '--color-scrim-press-strong': "rgba(0, 0, 0, 0.20)";
-    readonly '--color-scrim-subtle': "rgba(0, 0, 0, 0.30)";
-    readonly '--color-scrim-default': "rgba(0, 0, 0, 0.50)";
-    readonly '--color-scrim-strong': "rgba(0, 0, 0, 0.78)";
-    readonly '--color-on-scrim': "#FFFFFF";
-    readonly '--color-control-face-disabled': "rgba(255, 255, 255, 0.12)";
-    readonly '--color-on-control-idle': "#D1D1D1";
-    readonly '--color-on-control-active': "#FFFFFF";
-    readonly '--color-on-data-strong': "#0B0B0B";
-    readonly '--color-interactive-disabled-text': "rgba(255, 255, 255, 0.26)";
-    readonly '--color-avatar-background': "#5A5958";
-    readonly '--color-avatar-text': "#FFFFFF";
-};
-
 // @public
 export function GhostBand(input: GhostBandProps): react_jsx_runtime.JSX.Element | null;
 
@@ -2946,75 +2581,6 @@ export interface GhostSparkProps {
 
 // @public (undocumented)
 export type GlowIntensity = 'tight' | 'subtle' | 'medium' | 'strong';
-
-// @public (undocumented)
-export const gluestackConfig: {
-    readonly tokens: {
-        readonly colors: {
-            readonly primary500: "var(--color-brand-primary)";
-            readonly primary600: "var(--color-brand-primary-dark)";
-            readonly primary400: "var(--color-brand-primary-light)";
-            readonly secondary500: "var(--color-brand-secondary)";
-            readonly secondary600: "var(--color-brand-secondary-dark)";
-            readonly secondary400: "var(--color-brand-secondary-light)";
-            readonly success500: "var(--color-status-success)";
-            readonly error500: "var(--color-status-error)";
-            readonly warning500: "var(--color-status-warning)";
-            readonly info500: "var(--color-status-info)";
-            readonly textLight: "var(--color-text-primary)";
-            readonly textDark: "var(--color-text-inverse)";
-            readonly backgroundLight: "var(--color-background-default)";
-            readonly backgroundDark: "var(--color-surface-base)";
-        };
-        readonly space: {
-            readonly '0': 0;
-            readonly '1': 4;
-            readonly '2': 8;
-            readonly '3': 12;
-            readonly '4': 16;
-            readonly '5': 20;
-            readonly '6': 24;
-            readonly '8': 32;
-            readonly '10': 40;
-            readonly '12': 48;
-            readonly '16': 64;
-            readonly '20': 80;
-            readonly '24': 96;
-        };
-        readonly radii: {
-            readonly none: 0;
-            readonly sm: 4;
-            readonly md: 8;
-            readonly lg: 12;
-            readonly xl: 16;
-            readonly '2xl': 24;
-            readonly full: 9999;
-        };
-        readonly fontSizes: {
-            readonly xs: 12;
-            readonly sm: 14;
-            readonly md: 16;
-            readonly lg: 18;
-            readonly xl: 20;
-            readonly '2xl': 24;
-            readonly '3xl': 30;
-            readonly '4xl': 36;
-            readonly '5xl': 48;
-        };
-    };
-    readonly aliases: {
-        readonly bg: "backgroundColor";
-        readonly p: "padding";
-        readonly px: "paddingHorizontal";
-        readonly py: "paddingVertical";
-        readonly m: "margin";
-        readonly mx: "marginHorizontal";
-        readonly my: "marginVertical";
-        readonly h: "height";
-        readonly w: "width";
-        readonly rounded: "borderRadius";
-    };
-};
 
 // @public
 export type GradientStyle = {
@@ -3450,9 +3016,6 @@ export function insetWell(tone?: string, mode?: ThemeMode): ViewStyle;
 export function isCssPropertyManifest(candidate: unknown): candidate is CssPropertyManifest;
 
 // @public
-export function isDark(hex: string): boolean;
-
-// @public
 export function isDoneStage(stage: TaskStage): boolean;
 
 // @public
@@ -3697,6 +3260,9 @@ export const lightThemeCSSVars: {
 
 // @public
 export function linearGradient(from: ColorToken, to: ColorToken, angle?: number, mode?: ThemeMode): GradientStyle;
+
+// @public
+export function linearGradientStops(stops: readonly GradientStop[], angle?: number, mode?: ThemeMode): GradientStyle;
 
 // @public
 export function Link(input: LinkProps): react_jsx_runtime.JSX.Element;
@@ -4595,16 +4161,10 @@ export interface PortfolioOverviewStat {
 }
 
 // @public
-export function postIt(tone?: string, deg?: number, mode?: ThemeMode): ViewStyle;
-
-// @public
 export const PR_REF_PATTERN: RegExp;
 
 // @public
 export const PRESENCE_STATES: readonly ["working", "available", "blocked"];
-
-// @public
-export const PRESSED_ELEVATION_LEVEL: ElevationLevel;
 
 // @public
 export function pressedLevel(parent: SurfaceLevel): SurfaceLevel;
@@ -4756,7 +4316,7 @@ export const primitiveSizing: {
 // @public (undocumented)
 export const primitiveSpacing: Readonly<Record<SpacingStep, string>>;
 
-// @public (undocumented)
+// @public
 export const primitiveTypography: {
     readonly fontFamilies: {
         readonly sans: readonly ["Inter", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Helvetica", "Arial", "sans-serif"];
@@ -6972,9 +6532,6 @@ export interface TaskTableProps {
     // (undocumented)
     tasks: TaskListItem[];
 }
-
-// @public (undocumented)
-export type ThemeConfig = typeof gluestackConfig;
 
 // @public (undocumented)
 export type ThemeMode = 'light' | 'dark';

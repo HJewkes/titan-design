@@ -13,7 +13,12 @@ export * from './color-utils'
 export * from './elevation'
 export * from './manifest'
 export { resolveColor } from './resolve-color'
-export { linearGradient, surfaceGradient, type GradientStyle } from './gradients'
+export {
+  linearGradient,
+  linearGradientStops,
+  surfaceGradient,
+  type GradientStyle,
+} from './gradients'
 
 // ThemeProvider TYPES may stay on the root (erased at build — no nativewind
 // pull). Only the ThemeProvider VALUE moves to the `/theme` subpath.
@@ -21,7 +26,6 @@ export type { ThemeProviderProps, ThemeProviderMode } from './ThemeProvider'
 
 // Re-export commonly used items
 export { getSemanticColors, type ThemeMode } from './tokens/semantic'
-export { getThemeCSSVars, gluestackConfig } from './config'
 export {
   hexToRgb,
   rgbToHsv,
@@ -30,17 +34,14 @@ export {
   lighten,
   darken,
   getHoverColors,
-  isDark,
   type ShadowIntensity,
 } from './color-utils'
 export {
   ELEVATION_PLANE,
-  elevationPlane,
   getElevationSurface,
   getElevationShadow,
   getPressedRecessShadow,
   FLOATING_ELEVATION_MIN,
-  PRESSED_ELEVATION_LEVEL,
   type ElevationLevel,
 } from './elevation'
 export * from './lift'

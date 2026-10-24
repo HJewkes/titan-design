@@ -40,9 +40,6 @@ export const divergingScale: readonly ["#2196F3", "#22D3EE", "#58F69E", "#F9B415
 // @public
 export function getCategoricalColor(index: number, variant?: CategoricalVariant): string;
 
-// @public
-export function getDiscreteRainbowColor(index: number, size: number): string;
-
 // @public (undocumented)
 export function getSemanticColors(mode: ThemeMode): {
     readonly 'brand-primary': "#FF7900";
@@ -626,7 +623,7 @@ export const primitiveSizing: {
 // @public (undocumented)
 export const primitiveSpacing: Readonly<Record<SpacingStep, string>>;
 
-// @public (undocumented)
+// @public
 export const primitiveTypography: {
     readonly fontFamilies: {
         readonly sans: readonly ["Inter", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Helvetica", "Arial", "sans-serif"];

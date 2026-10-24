@@ -32,7 +32,7 @@ import { Platform, type ViewStyle } from 'react-native'
 import { hexToRgb } from './color-utils'
 import { insetWell } from './materials'
 import { FLOATING_LIFT_MIN, liftStyle, type LiftOptions, type LiftStep } from './lift'
-import { surfaceBackground, type SurfaceLevel } from './surface-planes'
+import { surfaceBackground } from './surface-planes'
 import {
   ELEVATION_PLANE,
   GLOW_CONFIG,
@@ -46,14 +46,6 @@ export { ELEVATION_PLANE, type ElevationLevel, type GlowIntensity } from './elev
 
 /** The lowest elevation that is floating (menu, popover, toast) rather than content. */
 export const FLOATING_ELEVATION_MIN: ElevationLevel = FLOATING_LIFT_MIN
-
-/** Elevation backing a `<Surface pressed>` recess: one plane down. */
-export const PRESSED_ELEVATION_LEVEL: ElevationLevel = -1
-
-/** The ramp plane an absolute elevation sits on. */
-export function elevationPlane(level: ElevationLevel): SurfaceLevel {
-  return ELEVATION_PLANE[level]
-}
 
 /** The background hex for an absolute elevation: always a ramp step. */
 export function getElevationSurface(level: ElevationLevel, mode: ThemeMode = 'dark'): string {

@@ -395,50 +395,6 @@ export const discreteRainbow = [
  * Palette indices for discrete rainbow colors at different palette sizes.
  * For a given palette size (index + 1), returns the indices of colors to use.
  */
-const discreteRainbowPalettes: number[][] = [
-  [10],
-  [10, 26],
-  [10, 18, 26],
-  [10, 15, 18, 26],
-  [10, 14, 15, 18, 26],
-  [10, 14, 15, 17, 18, 26],
-  [9, 10, 14, 15, 17, 18, 26],
-  [9, 10, 14, 15, 17, 18, 23, 26],
-  [9, 10, 14, 15, 17, 18, 23, 26, 28],
-  [9, 10, 14, 15, 17, 18, 21, 24, 26, 28],
-  [9, 10, 12, 14, 15, 17, 18, 21, 24, 26, 28],
-  [3, 6, 9, 10, 12, 14, 15, 17, 18, 21, 24, 26],
-  [3, 6, 9, 10, 12, 14, 15, 16, 17, 18, 21, 24, 26],
-  [3, 6, 9, 10, 12, 14, 15, 16, 17, 18, 20, 22, 24, 26],
-  [3, 6, 9, 10, 12, 14, 15, 16, 17, 18, 20, 22, 24, 26, 28],
-  [3, 5, 7, 9, 10, 12, 14, 15, 16, 17, 18, 20, 22, 24, 26, 28],
-  [3, 5, 7, 8, 9, 10, 12, 14, 15, 16, 17, 18, 20, 22, 24, 26, 28],
-  [3, 5, 7, 8, 9, 10, 12, 14, 15, 16, 17, 18, 20, 22, 24, 26, 27, 28],
-  [2, 4, 5, 7, 8, 9, 10, 12, 14, 15, 16, 17, 18, 20, 22, 24, 26, 27, 28],
-  [2, 4, 5, 7, 8, 9, 10, 11, 13, 14, 15, 16, 17, 18, 20, 22, 24, 26, 27, 28],
-  [2, 4, 5, 7, 8, 9, 10, 11, 13, 14, 15, 16, 17, 18, 19, 21, 23, 25, 26, 27, 28],
-  [2, 4, 5, 7, 8, 9, 10, 11, 13, 14, 15, 16, 17, 18, 19, 21, 23, 25, 26, 27, 28, 29],
-  [1, 2, 4, 5, 7, 8, 9, 10, 11, 13, 14, 15, 16, 17, 18, 19, 21, 23, 25, 26, 27, 28, 29],
-]
-
-/**
- * Get a color from the discrete rainbow palette for a given index and palette size.
- * Colors are optimized for visual distinction at each palette size.
- *
- * @param index - The index of the color in the series (0-based)
- * @param size - The total number of colors needed (1-23)
- * @returns The hex color string
- */
-export function getDiscreteRainbowColor(index: number, size: number): string {
-  index = Math.max(0, index)
-  size = Math.min(Math.max(1, size), discreteRainbowPalettes.length)
-
-  const palette = discreteRainbowPalettes[size - 1]
-  if (index >= palette.length) index = index % palette.length
-
-  return discreteRainbow[palette[index] - 1]
-}
-
 export const primitiveTypography = {
   fontFamilies: {
     sans: [
