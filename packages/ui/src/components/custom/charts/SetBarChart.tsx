@@ -658,7 +658,7 @@ export function ChartSideRail({
               }}
             >
               <Text
-                className="text-text-tertiary"
+                className="text-text-secondary"
                 style={textStyle}
                 numberOfLines={1}
                 testID={s.testID}
