@@ -11,7 +11,7 @@
     {
       "name": "tiers no longer become compound boxes",
       "file": "packages/ui/src/components/ui/charts/dependency-graph/dependency-graph-model.ts",
-      "find": "        return box && used.has(id) ? [{ id: `tier:${id}`, label, box }] : []\n",
+      "find": "        return box && used.has(id) ? [{ id: `tier:${id}`, label, box, stroke: REST_MARK }] : []\n",
       "replace": "        return []\n",
       "kills": ["places every node inside its own tier box, on routed edges"]
     }
