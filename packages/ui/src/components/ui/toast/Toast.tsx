@@ -117,7 +117,7 @@ export function ToastProvider({
       {children}
       {/* Toast Container */}
       <View
-        className={cn('fixed z-[9999] flex flex-col gap-2', positionStyles[position])}
+        className={cn('fixed z-toast flex flex-col gap-2', positionStyles[position])}
         pointerEvents="box-none"
       >
         {toasts.map((toast) => (

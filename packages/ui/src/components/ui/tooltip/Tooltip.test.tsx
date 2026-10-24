@@ -8,6 +8,7 @@ import * as tooltipBarrel from './index'
 import { Button, ButtonText } from '../button'
 import { Modal } from '../modal'
 import { resolveAll, spacingClassesAt } from '../../../test/spacing-resolver'
+import { primitiveZIndex } from '../../../theme/tokens/primitives'
 
 function hoverTrigger(triggerText: string) {
   const button = screen.getByText(triggerText)
@@ -247,7 +248,7 @@ describe('Tooltip', () => {
       hoverTrigger('Hover me')
       const portal = screen.getByTestId('tooltip-portal')
       expect(portal.style.position).toBe('fixed')
-      expect(portal.style.zIndex).toBe('10000')
+      expect(portal.style.zIndex).toBe(String(primitiveZIndex.tooltip))
       expect(portal.style.pointerEvents).toBe('none')
     })
 

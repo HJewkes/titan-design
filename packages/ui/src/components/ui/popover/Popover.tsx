@@ -185,7 +185,7 @@ export function PopoverContent({ children, className }: PopoverContentProps) {
         focusable={false}
         tabIndex={-1}
         aria-hidden
-        className="fixed inset-0 z-40"
+        className="fixed inset-0 z-overlay"
         style={{ position: 'absolute' }}
       />
       {/* Content — floating: overlay plane + lift, no ring. */}
@@ -193,7 +193,7 @@ export function PopoverContent({ children, className }: PopoverContentProps) {
         elevation={4}
         rounded={false}
         className={cn(
-          'absolute z-50 min-w-[200px]',
+          'absolute z-popover min-w-[200px]',
           'rounded-lg p-inset-lg',
           placementStyles[placement],
           className
