@@ -2,7 +2,9 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { useEffect, useMemo, useState } from 'react'
 import { getSemanticColors } from '../theme/tokens/semantic'
 import { primitiveColors } from '../theme/tokens/primitives'
+import { resolveColor, type ColorToken } from '../theme/resolve-color'
 import { alpha } from '../utils/colors'
+import { StoryPage, StorySpecimens } from '../lab/story-canvas'
 import { archGraph as graph } from './arch-graph-derived'
 
 /**
@@ -15,7 +17,13 @@ import { archGraph as graph } from './arch-graph-derived'
  * candidates). Regenerate with `node scripts/arch-graph.mjs --reindex`.
  */
 
-const C = getSemanticColors('dark')
+// CSS custom properties, not dark hex, so the board follows the toolbar theme like its canvas.
+const C = Object.fromEntries(
+  (Object.keys(getSemanticColors('dark')) as ColorToken[]).map((token) => [
+    token,
+    resolveColor(token),
+  ])
+) as Record<ColorToken, string>
 
 type Comp = (typeof graph.components)[number]
 type Tier = 'atom' | 'molecule' | 'organism' | 'page'
@@ -504,7 +512,7 @@ function Th({ children, right }: { children: React.ReactNode; right?: boolean })
       style={{
         textAlign: right ? 'right' : 'left',
         padding: '6px 12px',
-        color: C['text-tertiary'],
+        color: C['text-secondary'],
         fontSize: 11,
         fontWeight: 600,
         textTransform: 'uppercase',
@@ -723,7 +731,7 @@ function Section({
   children: React.ReactNode
 }) {
   return (
-    <section style={{ marginTop: 28 }}>
+    <section>
       <h2
         style={{
           color: C['text-primary'],
@@ -737,7 +745,7 @@ function Section({
       </h2>
       <p
         style={{
-          color: C['text-tertiary'],
+          color: C['text-secondary'],
           fontSize: 13,
           margin: '4px 0 12px',
           fontFamily: 'Inter, sans-serif',
@@ -766,91 +774,101 @@ function ArchitecturePage() {
   const sel = selected ? byName[selected] : null
 
   return (
-    <div
-      style={{
-        padding: 28,
-        background: C['background-base'],
-        minHeight: '100vh',
-        fontFamily: 'Inter, sans-serif',
-      }}
-    >
-      <h1 style={{ color: C['text-primary'], fontSize: 26, fontWeight: 800, margin: 0 }}>
-        Component Architecture
-      </h1>
-      <p style={{ color: C['text-secondary'], fontSize: 14, margin: '6px 0 16px', maxWidth: 760 }}>
-        Deterministic dependency + health map from the codewatch symbol graph and the consuming
-        apps. Node label shows <span style={{ fontFamily: 'monospace' }}>lib·app</span> usage.
-        Regenerate:{' '}
-        <span style={{ fontFamily: 'monospace', color: C['text-primary'] }}>
-          node scripts/arch-graph.mjs --reindex
-        </span>
-        .
-      </p>
-      <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: 8 }}>
-        <Chip color={C['text-secondary']}>{graph.components.length} components</Chip>
-        <Chip color={C['status-error-vivid']}>{dead} dead everywhere</Chip>
-        <Chip color={C['status-warning']}>
-          {graph.summary.deadByAssociation.length} dead-by-association
-        </Chip>
-        <Chip color={C['status-info']}>
-          {graph.summary.auditedCount}/{graph.components.length} audited
-        </Chip>
-        <Chip color={C['brand-secondary']}>
-          {standardDead} standard dead · {standardMissing} missing
-        </Chip>
-        <Chip color={C['status-warning']}>{leakText} raw Text/View leaks in-library</Chip>
-        {graph.summary.consumers.map((c) => (
-          <Chip key={c.name} color={c.present ? C['status-success'] : C['text-tertiary']}>
-            {c.name}
-            {c.present ? '' : ' (absent)'}
-          </Chip>
-        ))}
+    <StoryPage>
+      <div style={{ fontFamily: 'Inter, sans-serif' }}>
+        <StorySpecimens>
+          <div>
+            <h1 style={{ color: C['text-primary'], fontSize: 26, fontWeight: 800, margin: 0 }}>
+              Component Architecture
+            </h1>
+            <p
+              style={{
+                color: C['text-secondary'],
+                fontSize: 14,
+                margin: '6px 0 16px',
+                maxWidth: 760,
+              }}
+            >
+              Deterministic dependency + health map from the codewatch symbol graph and the
+              consuming apps. Node label shows{' '}
+              <span style={{ fontFamily: 'monospace' }}>lib·app</span> usage. Regenerate:{' '}
+              <span style={{ fontFamily: 'monospace', color: C['text-primary'] }}>
+                node scripts/arch-graph.mjs --reindex
+              </span>
+              .
+            </p>
+            <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+              <Chip color={C['text-secondary']}>{graph.components.length} components</Chip>
+              <Chip color={C['status-error-vivid']}>{dead} dead everywhere</Chip>
+              <Chip color={C['status-warning']}>
+                {graph.summary.deadByAssociation.length} dead-by-association
+              </Chip>
+              <Chip color={C['status-info']}>
+                {graph.summary.auditedCount}/{graph.components.length} audited
+              </Chip>
+              <Chip color={C['brand-secondary']}>
+                {standardDead} standard dead · {standardMissing} missing
+              </Chip>
+              <Chip color={C['status-warning']}>{leakText} raw Text/View leaks in-library</Chip>
+              {graph.summary.consumers.map((c) => (
+                <Chip key={c.name} color={c.present ? C['status-success'] : C['text-tertiary']}>
+                  {c.name}
+                  {c.present ? '' : ' (absent)'}
+                </Chip>
+              ))}
+            </div>
+          </div>
+
+          <Section
+            title="Dependency diagram"
+            subtitle="Columns by composition depth (leaves = atoms). Hover to trace, click a node to pin it, or press ↗ on any node to render the component live. Border color = verdict; dashed outline = only dead consumers."
+          >
+            <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginBottom: 10 }}>
+              {Object.entries(VERDICT).map(([k, v]) => (
+                <Chip key={k} color={v.color}>
+                  {v.label}
+                </Chip>
+              ))}
+            </div>
+            {!!sel && (
+              <DetailPanel
+                comp={sel}
+                onOpenRender={setModalFor}
+                onClose={() => setSelected(null)}
+              />
+            )}
+            <Diagram selected={selected} onSelect={setSelected} onOpenRender={setModalFor} />
+          </Section>
+
+          <Section
+            title="Standard component coverage"
+            subtitle="The canonical set a design system is expected to provide (curated in annotations.json), cross-referenced against what we ship. 'present but dead' = we built it but nothing uses it."
+          >
+            <StandardCoverageTable />
+          </Section>
+
+          <Section
+            title="Dead & unshipped"
+            subtitle="Zero production dependents in the library AND zero imports across all apps (dead everywhere), or kept alive only by other dead components (only dead consumers). Dashed warning outline in the diagram."
+          >
+            <DeadTable />
+          </Section>
+
+          <Section
+            title="Primitive-substitution leaks"
+            subtitle="Files importing a raw RN primitive that a titan atom already covers (Text→Typography, View→Surface/Stack, Pressable→Button…). The library bypassing its own primitives is the root cause of drift."
+          >
+            <SubstitutionTable />
+          </Section>
+
+          <Section
+            title="Extraction candidates"
+            subtitle="Highest inline-primitive density — repeated raw <View>/<Text>/style blocks and hardcoded hex that could be promoted into reusable primitives. rawHex flags token violations."
+          >
+            <ExtractionTable />
+          </Section>
+        </StorySpecimens>
       </div>
-
-      <Section
-        title="Dependency diagram"
-        subtitle="Columns by composition depth (leaves = atoms). Hover to trace, click a node to pin it, or press ↗ on any node to render the component live. Border color = verdict; dashed outline = only dead consumers."
-      >
-        <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginBottom: 10 }}>
-          {Object.entries(VERDICT).map(([k, v]) => (
-            <Chip key={k} color={v.color}>
-              {v.label}
-            </Chip>
-          ))}
-        </div>
-        {!!sel && (
-          <DetailPanel comp={sel} onOpenRender={setModalFor} onClose={() => setSelected(null)} />
-        )}
-        <Diagram selected={selected} onSelect={setSelected} onOpenRender={setModalFor} />
-      </Section>
-
-      <Section
-        title="Standard component coverage"
-        subtitle="The canonical set a design system is expected to provide (curated in annotations.json), cross-referenced against what we ship. 'present but dead' = we built it but nothing uses it."
-      >
-        <StandardCoverageTable />
-      </Section>
-
-      <Section
-        title="Dead & unshipped"
-        subtitle="Zero production dependents in the library AND zero imports across all apps (dead everywhere), or kept alive only by other dead components (only dead consumers). Dashed warning outline in the diagram."
-      >
-        <DeadTable />
-      </Section>
-
-      <Section
-        title="Primitive-substitution leaks"
-        subtitle="Files importing a raw RN primitive that a titan atom already covers (Text→Typography, View→Surface/Stack, Pressable→Button…). The library bypassing its own primitives is the root cause of drift."
-      >
-        <SubstitutionTable />
-      </Section>
-
-      <Section
-        title="Extraction candidates"
-        subtitle="Highest inline-primitive density — repeated raw <View>/<Text>/style blocks and hardcoded hex that could be promoted into reusable primitives. rawHex flags token violations."
-      >
-        <ExtractionTable />
-      </Section>
 
       {!!modalFor && (
         <RenderModal
@@ -859,7 +877,7 @@ function ArchitecturePage() {
           onClose={() => setModalFor(null)}
         />
       )}
-    </div>
+    </StoryPage>
   )
 }
 
