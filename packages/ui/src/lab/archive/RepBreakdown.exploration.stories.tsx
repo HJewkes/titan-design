@@ -1484,7 +1484,7 @@ function DirectionalLegend() {
       {chip(OFF_WARN, '•', 'GRIND — slow concentric (mild)')}
       <Text
         style={{
-          color: useOnSurfaceColor('tertiary'),
+          color: useOnSurfaceColor('secondary'),
           fontSize: 11,
           fontStyle: 'italic',
           fontFamily: FONT_UI,

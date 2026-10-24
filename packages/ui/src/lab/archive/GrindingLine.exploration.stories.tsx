@@ -619,17 +619,17 @@ type Story = StoryObj
 export const DeviationVsControlAware: Story = {
   name: 'Deviation vs control-aware',
   render: function Render() {
+    // Tertiary misses 4.5:1 on the base plane, so the eyebrow takes secondary.
     const onPage = {
       primary: useOnSurfaceColor('primary'),
       secondary: useOnSurfaceColor('secondary'),
-      tertiary: useOnSurfaceColor('tertiary'),
     }
     return (
       <Page>
         <View style={{ gap: 6, maxWidth: 900 }}>
           <Text
             style={[
-              { fontSize: 9, letterSpacing: 1.4, fontFamily: FONT_MONO, color: onPage.tertiary },
+              { fontSize: 9, letterSpacing: 1.4, fontFamily: FONT_MONO, color: onPage.secondary },
               debossLabel,
             ]}
           >
