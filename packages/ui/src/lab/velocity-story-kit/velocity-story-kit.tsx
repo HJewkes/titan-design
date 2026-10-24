@@ -21,17 +21,7 @@ import type { Decorator } from '@storybook/react-vite'
 import { View, Text } from 'react-native'
 import { VelocityStrip, type VelocitySet } from '../../components/custom/Workout/VelocityStrip'
 import { DualVelocityStrip } from '../../components/custom/Workout/DualVelocityStrip'
-import { greyRamp } from '../../theme/tokens/primitives'
-import { getSemanticColors } from '../../theme/tokens/semantic'
-
-const t = getSemanticColors('dark')
-
-/** The real dark surface-background plane — stories sit on the token, not an ad-hoc grey. */
-export const SURFACE_BG = greyRamp[950]
-
-export const VIEW_LABEL = t['text-secondary']
-export const VIEW_NOTE = t['text-tertiary']
-export const VIEW_HEADING = t['text-primary']
+import { StoryPage, StorySpecimen, StorySpecimens } from '../story-canvas'
 
 export const LEFT_SLOT = 'Left'
 export const RIGHT_SLOT = 'Right'
@@ -60,8 +50,8 @@ export const dualOf = (velocities: number[], label: string) => ({ velocities, la
 export function ViewLabel({ text }: { text: string }) {
   return (
     <Text
+      className="text-text-secondary"
       style={{
-        color: VIEW_LABEL,
         fontSize: 10,
         fontWeight: '700',
         letterSpacing: 1,
@@ -73,16 +63,30 @@ export function ViewLabel({ text }: { text: string }) {
   )
 }
 
+// Secondary, not tertiary: on the base plane tertiary falls under AA at this size.
 export function Note({ children }: { children: ReactNode }) {
-  return <Text style={{ color: VIEW_NOTE, fontSize: 10, lineHeight: 15 }}>{children}</Text>
-}
-
-/** Page frame every scenario story sits in — one surface, one rhythm. */
-export function Sheet({ children, width = 640 }: { children: ReactNode; width?: number }) {
   return (
-    <View style={{ padding: 24, backgroundColor: SURFACE_BG, gap: 26, width }}>{children}</View>
+    <Text className="text-text-secondary" style={{ fontSize: 10, lineHeight: 15 }}>
+      {children}
+    </Text>
   )
 }
+
+/**
+ * Page frame every scenario story sits in: the app's page canvas, specimens on the section
+ * scale. `width` caps the specimen column. Stories using it set `layout: 'fullscreen'`.
+ */
+export function Sheet({ children, width = 640 }: { children: ReactNode; width?: number }) {
+  return (
+    <StoryPage>
+      <View style={{ width: '100%', maxWidth: width }}>
+        <StorySpecimens>{children}</StorySpecimens>
+      </View>
+    </StoryPage>
+  )
+}
+
+const WALL_WIDTH = 564
 
 /**
  * Wall frame for hero stories. The eyebrow is ORGANISM chrome — the north-star
@@ -90,20 +94,22 @@ export function Sheet({ children, width = 640 }: { children: ReactNode; width?: 
  * is judged in the context it will live in.
  */
 export const wallDecorator: Decorator = (Story) => (
-  <View style={{ width: 620, padding: 28, backgroundColor: SURFACE_BG }}>
-    <Text
-      style={{
-        color: VIEW_NOTE,
-        fontSize: 10,
-        fontWeight: '700',
-        letterSpacing: 1,
-        marginBottom: 12,
-      }}
-    >
-      CONCENTRIC VELOCITY · THIS SET · (organism chrome — not the component)
-    </Text>
-    <Story />
-  </View>
+  <StoryPage>
+    <View style={{ width: '100%', maxWidth: WALL_WIDTH }}>
+      <StorySpecimen
+        label={
+          <Text
+            className="text-text-secondary"
+            style={{ fontSize: 10, fontWeight: '700', letterSpacing: 1 }}
+          >
+            CONCENTRIC VELOCITY · THIS SET · (organism chrome — not the component)
+          </Text>
+        }
+      >
+        <Story />
+      </StorySpecimen>
+    </View>
+  </StoryPage>
 )
 
 // ── The single-above-dual pairing ───────────────────────────────────────────
@@ -264,7 +270,7 @@ export const SET_TYPE_BOARD: BoardRow[] = [
 
 export function SetTypeBoard({ view }: { view: StripView }) {
   return (
-    <View style={{ gap: 30 }}>
+    <StorySpecimens>
       {SET_TYPE_BOARD.map((row) => (
         <ScenarioPair
           key={row.type}
@@ -281,8 +287,8 @@ export function SetTypeBoard({ view }: { view: StripView }) {
               style={{ flexDirection: 'row', alignItems: 'baseline', gap: 10, flexWrap: 'wrap' }}
             >
               <Text
+                className="text-text-primary"
                 style={{
-                  color: VIEW_HEADING,
                   fontSize: 13,
                   fontWeight: '800',
                   letterSpacing: 1,
@@ -296,7 +302,7 @@ export function SetTypeBoard({ view }: { view: StripView }) {
           }
         />
       ))}
-    </View>
+    </StorySpecimens>
   )
 }
 
@@ -404,7 +410,7 @@ export const REP_TYPE_ROWS: RepTypeRow[] = [
 
 export function RepTypeBoard({ view }: { view: StripView }) {
   return (
-    <View style={{ gap: 30 }}>
+    <StorySpecimens>
       {REP_TYPE_ROWS.map((row) => (
         <ScenarioPair
           key={row.key}
@@ -417,8 +423,8 @@ export function RepTypeBoard({ view }: { view: StripView }) {
           header={
             <>
               <Text
+                className="text-text-primary"
                 style={{
-                  color: VIEW_HEADING,
                   fontSize: 13,
                   fontWeight: '800',
                   letterSpacing: 0.5,
@@ -431,6 +437,6 @@ export function RepTypeBoard({ view }: { view: StripView }) {
           }
         />
       ))}
-    </View>
+    </StorySpecimens>
   )
 }
