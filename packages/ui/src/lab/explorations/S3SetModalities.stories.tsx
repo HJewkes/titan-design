@@ -176,6 +176,7 @@ function Card({ m }: { m: Modality }) {
         padding: 18,
         gap: 12,
         width: 460,
+        maxWidth: '100%',
       }}
     >
       <View
