@@ -1074,6 +1074,7 @@ export interface ChipProps extends ViewProps {
     // (undocumented)
     children?: React__default.ReactNode;
     className?: string;
+    // @deprecated
     color?: ChipColor;
     isDisabled?: boolean;
     isSelected?: boolean;
@@ -1082,6 +1083,7 @@ export interface ChipProps extends ViewProps {
     onPress?: () => void;
     rightElement?: React__default.ReactNode;
     size?: ChipSize;
+    tone?: PillTone;
     variant?: ChipVariant;
 }
 

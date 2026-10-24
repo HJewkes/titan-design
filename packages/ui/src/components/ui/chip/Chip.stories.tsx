@@ -11,10 +11,11 @@ const meta: Meta<typeof Chip> = {
       control: 'select',
       options: ['solid', 'subtle', 'outline'],
     },
-    color: {
+    tone: {
       control: 'select',
-      options: ['default', 'primary', 'secondary', 'success', 'error', 'warning', 'info'],
+      options: ['neutral', 'brand', 'brand-secondary', 'success', 'error', 'warning', 'info'],
     },
+    color: { table: { disable: true } },
     size: {
       control: 'select',
       options: ['sm', 'md', 'lg'],
@@ -31,7 +32,7 @@ export const Default: Story = {
   args: {
     children: 'Chip',
     variant: 'subtle',
-    color: 'default',
+    tone: 'neutral',
     size: 'md',
   },
 }
