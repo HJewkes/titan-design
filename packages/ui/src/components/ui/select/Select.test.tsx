@@ -124,7 +124,7 @@ describe('Select', () => {
       render(<Select options={defaultOptions} isMulti values={['1', '3']} />)
       fireEvent.click(screen.getByRole('combobox'))
       expect(screen.queryByText('✓')).toBeNull()
-      const ticked = screen.getAllByRole('checkbox').map((row) => row.querySelector('svg') !== null)
+      const ticked = screen.getAllByRole('option').map((row) => row.querySelector('svg') !== null)
       expect(ticked).toEqual([true, false, true])
     })
   })
@@ -243,10 +243,56 @@ describe('Select', () => {
       expect(screen.getAllByRole('option')).toHaveLength(defaultOptions.length)
     })
 
-    it('exposes each multi-select option as a checkbox', () => {
-      render(<Select options={defaultOptions} isMulti values={[]} />)
+    it('exposes each multi-select option as an option of a multiselectable listbox', () => {
+      render(<Select options={defaultOptions} isMulti values={['2']} />)
       fireEvent.click(screen.getByRole('combobox'))
-      expect(screen.getAllByRole('checkbox')).toHaveLength(defaultOptions.length)
+      expect(screen.getByRole('listbox')).toHaveAttribute('aria-multiselectable', 'true')
+      const selected = screen.getAllByRole('option').map((o) => o.getAttribute('aria-selected'))
+      expect(selected).toEqual(['false', 'true', 'false'])
+    })
+  })
+
+  // TD-144: the open dropdown failed axe on aria-required-attr and aria-required-parent.
+  describe('open listbox', () => {
+    it('renders the options inside a listbox', () => {
+      render(<Select options={defaultOptions} accessibilityLabel="Fruit" />)
+      fireEvent.click(screen.getByRole('combobox'))
+      const listbox = screen.getByRole('listbox', { name: 'Fruit' })
+      expect(within(listbox).getAllByRole('option')).toHaveLength(defaultOptions.length)
+    })
+
+    it('points the trigger at the listbox with aria-controls only while open', () => {
+      render(<Select options={defaultOptions} />)
+      const trigger = screen.getByRole('combobox')
+      expect(trigger).not.toHaveAttribute('aria-controls')
+
+      fireEvent.click(trigger)
+      const listboxId = screen.getByRole('listbox').id
+      expect(listboxId).not.toBe('')
+      expect(trigger).toHaveAttribute('aria-controls', listboxId)
+    })
+
+    it('gives each Select its own listbox id', () => {
+      render(
+        <>
+          <Select options={defaultOptions} accessibilityLabel="First" />
+          <Select options={defaultOptions} accessibilityLabel="Second" />
+        </>
+      )
+      screen.getAllByRole('combobox').forEach((trigger) => fireEvent.click(trigger))
+      const ids = screen.getAllByRole('listbox').map((listbox) => listbox.id)
+      expect(new Set(ids).size).toBe(2)
+    })
+
+    it.each([
+      ['single', {}],
+      ['multi', { isMulti: true, values: ['1'] }],
+    ] as const)('has no accessibility violations when open (%s)', async (_mode, modeProps) => {
+      const { container } = render(
+        <Select options={defaultOptions} value="1" accessibilityLabel="Fruit" {...modeProps} />
+      )
+      fireEvent.click(screen.getByRole('combobox'))
+      expect(await axe(container)).toHaveNoViolations()
     })
   })
 })

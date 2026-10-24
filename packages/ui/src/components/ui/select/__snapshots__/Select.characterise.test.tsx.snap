@@ -190,6 +190,7 @@ exports[`Select characterisation > on a dark surface > renders the Controlled st
         class="css-view-175oi2r"
       >
         <div
+          aria-controls=":rp:"
           aria-expanded="true"
           class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
           role="combobox"
@@ -238,11 +239,14 @@ exports[`Select characterisation > on a dark surface > renders the Controlled st
         >
           <div
             class="css-view-175oi2r r-WebkitOverflowScrolling-150rngu r-flexDirection-eqz5dr r-flexGrow-16y2uox r-flexShrink-1wbh5a2 r-overflowX-11yh6sk r-overflowY-1rnoaur r-transform-agouwx"
+            id=":rp:"
+            role="listbox"
           >
             <div
               class="css-view-175oi2r"
             >
               <div
+                aria-selected="true"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -255,6 +259,7 @@ exports[`Select characterisation > on a dark surface > renders the Controlled st
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -267,6 +272,7 @@ exports[`Select characterisation > on a dark surface > renders the Controlled st
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -279,6 +285,7 @@ exports[`Select characterisation > on a dark surface > renders the Controlled st
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -291,6 +298,7 @@ exports[`Select characterisation > on a dark surface > renders the Controlled st
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -445,6 +453,7 @@ exports[`Select characterisation > on a dark surface > renders the Default story
         class="css-view-175oi2r"
       >
         <div
+          aria-controls=":rd:"
           aria-expanded="true"
           class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
           role="combobox"
@@ -479,11 +488,14 @@ exports[`Select characterisation > on a dark surface > renders the Default story
         >
           <div
             class="css-view-175oi2r r-WebkitOverflowScrolling-150rngu r-flexDirection-eqz5dr r-flexGrow-16y2uox r-flexShrink-1wbh5a2 r-overflowX-11yh6sk r-overflowY-1rnoaur r-transform-agouwx"
+            id=":rd:"
+            role="listbox"
           >
             <div
               class="css-view-175oi2r"
             >
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -496,6 +508,7 @@ exports[`Select characterisation > on a dark surface > renders the Default story
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -508,6 +521,7 @@ exports[`Select characterisation > on a dark surface > renders the Default story
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -520,6 +534,7 @@ exports[`Select characterisation > on a dark surface > renders the Default story
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -532,6 +547,7 @@ exports[`Select characterisation > on a dark surface > renders the Default story
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -774,6 +790,7 @@ exports[`Select characterisation > on a dark surface > renders the InFormLayout 
           class="css-view-175oi2r"
         >
           <div
+            aria-controls=":rq:"
             aria-expanded="true"
             class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
             role="combobox"
@@ -808,11 +825,14 @@ exports[`Select characterisation > on a dark surface > renders the InFormLayout 
           >
             <div
               class="css-view-175oi2r r-WebkitOverflowScrolling-150rngu r-flexDirection-eqz5dr r-flexGrow-16y2uox r-flexShrink-1wbh5a2 r-overflowX-11yh6sk r-overflowY-1rnoaur r-transform-agouwx"
+              id=":rq:"
+              role="listbox"
             >
               <div
                 class="css-view-175oi2r"
               >
                 <div
+                  aria-selected="false"
                   class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                   role="option"
                   tabindex="0"
@@ -825,6 +845,7 @@ exports[`Select characterisation > on a dark surface > renders the InFormLayout 
                   </div>
                 </div>
                 <div
+                  aria-selected="false"
                   class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                   role="option"
                   tabindex="0"
@@ -837,6 +858,7 @@ exports[`Select characterisation > on a dark surface > renders the InFormLayout 
                   </div>
                 </div>
                 <div
+                  aria-selected="false"
                   class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                   role="option"
                   tabindex="0"
@@ -849,6 +871,7 @@ exports[`Select characterisation > on a dark surface > renders the InFormLayout 
                   </div>
                 </div>
                 <div
+                  aria-selected="false"
                   class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                   role="option"
                   tabindex="0"
@@ -861,6 +884,7 @@ exports[`Select characterisation > on a dark surface > renders the InFormLayout 
                   </div>
                 </div>
                 <div
+                  aria-selected="false"
                   class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                   role="option"
                   tabindex="0"
@@ -982,6 +1006,7 @@ exports[`Select characterisation > on a dark surface > renders the Invalid story
         class="css-view-175oi2r"
       >
         <div
+          aria-controls=":ri:"
           aria-expanded="true"
           class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
           role="combobox"
@@ -1016,11 +1041,14 @@ exports[`Select characterisation > on a dark surface > renders the Invalid story
         >
           <div
             class="css-view-175oi2r r-WebkitOverflowScrolling-150rngu r-flexDirection-eqz5dr r-flexGrow-16y2uox r-flexShrink-1wbh5a2 r-overflowX-11yh6sk r-overflowY-1rnoaur r-transform-agouwx"
+            id=":ri:"
+            role="listbox"
           >
             <div
               class="css-view-175oi2r"
             >
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -1033,6 +1061,7 @@ exports[`Select characterisation > on a dark surface > renders the Invalid story
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -1045,6 +1074,7 @@ exports[`Select characterisation > on a dark surface > renders the Invalid story
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -1057,6 +1087,7 @@ exports[`Select characterisation > on a dark surface > renders the Invalid story
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -1069,6 +1100,7 @@ exports[`Select characterisation > on a dark surface > renders the Invalid story
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -1151,6 +1183,7 @@ exports[`Select characterisation > on a dark surface > renders the ManyOptions s
         class="css-view-175oi2r"
       >
         <div
+          aria-controls=":rn:"
           aria-expanded="true"
           class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
           role="combobox"
@@ -1185,11 +1218,14 @@ exports[`Select characterisation > on a dark surface > renders the ManyOptions s
         >
           <div
             class="css-view-175oi2r r-WebkitOverflowScrolling-150rngu r-flexDirection-eqz5dr r-flexGrow-16y2uox r-flexShrink-1wbh5a2 r-overflowX-11yh6sk r-overflowY-1rnoaur r-transform-agouwx"
+            id=":rn:"
+            role="listbox"
           >
             <div
               class="css-view-175oi2r"
             >
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -1202,6 +1238,7 @@ exports[`Select characterisation > on a dark surface > renders the ManyOptions s
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -1214,6 +1251,7 @@ exports[`Select characterisation > on a dark surface > renders the ManyOptions s
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -1226,6 +1264,7 @@ exports[`Select characterisation > on a dark surface > renders the ManyOptions s
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -1238,6 +1277,7 @@ exports[`Select characterisation > on a dark surface > renders the ManyOptions s
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -1250,6 +1290,7 @@ exports[`Select characterisation > on a dark surface > renders the ManyOptions s
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -1262,6 +1303,7 @@ exports[`Select characterisation > on a dark surface > renders the ManyOptions s
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -1274,6 +1316,7 @@ exports[`Select characterisation > on a dark surface > renders the ManyOptions s
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -1286,6 +1329,7 @@ exports[`Select characterisation > on a dark surface > renders the ManyOptions s
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -1298,6 +1342,7 @@ exports[`Select characterisation > on a dark surface > renders the ManyOptions s
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -1310,6 +1355,7 @@ exports[`Select characterisation > on a dark surface > renders the ManyOptions s
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -1322,6 +1368,7 @@ exports[`Select characterisation > on a dark surface > renders the ManyOptions s
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -1334,6 +1381,7 @@ exports[`Select characterisation > on a dark surface > renders the ManyOptions s
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -1346,6 +1394,7 @@ exports[`Select characterisation > on a dark surface > renders the ManyOptions s
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -1358,6 +1407,7 @@ exports[`Select characterisation > on a dark surface > renders the ManyOptions s
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -1370,6 +1420,7 @@ exports[`Select characterisation > on a dark surface > renders the ManyOptions s
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -1382,6 +1433,7 @@ exports[`Select characterisation > on a dark surface > renders the ManyOptions s
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -1394,6 +1446,7 @@ exports[`Select characterisation > on a dark surface > renders the ManyOptions s
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -1406,6 +1459,7 @@ exports[`Select characterisation > on a dark surface > renders the ManyOptions s
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -1418,6 +1472,7 @@ exports[`Select characterisation > on a dark surface > renders the ManyOptions s
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -1430,6 +1485,7 @@ exports[`Select characterisation > on a dark surface > renders the ManyOptions s
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -1442,6 +1498,7 @@ exports[`Select characterisation > on a dark surface > renders the ManyOptions s
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -1454,6 +1511,7 @@ exports[`Select characterisation > on a dark surface > renders the ManyOptions s
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -1466,6 +1524,7 @@ exports[`Select characterisation > on a dark surface > renders the ManyOptions s
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -1478,6 +1537,7 @@ exports[`Select characterisation > on a dark surface > renders the ManyOptions s
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -1490,6 +1550,7 @@ exports[`Select characterisation > on a dark surface > renders the ManyOptions s
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -1502,6 +1563,7 @@ exports[`Select characterisation > on a dark surface > renders the ManyOptions s
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -1514,6 +1576,7 @@ exports[`Select characterisation > on a dark surface > renders the ManyOptions s
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -1526,6 +1589,7 @@ exports[`Select characterisation > on a dark surface > renders the ManyOptions s
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -1538,6 +1602,7 @@ exports[`Select characterisation > on a dark surface > renders the ManyOptions s
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -1550,6 +1615,7 @@ exports[`Select characterisation > on a dark surface > renders the ManyOptions s
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -1562,6 +1628,7 @@ exports[`Select characterisation > on a dark surface > renders the ManyOptions s
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -1574,6 +1641,7 @@ exports[`Select characterisation > on a dark surface > renders the ManyOptions s
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -1586,6 +1654,7 @@ exports[`Select characterisation > on a dark surface > renders the ManyOptions s
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -1598,6 +1667,7 @@ exports[`Select characterisation > on a dark surface > renders the ManyOptions s
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -1610,6 +1680,7 @@ exports[`Select characterisation > on a dark surface > renders the ManyOptions s
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -1622,6 +1693,7 @@ exports[`Select characterisation > on a dark surface > renders the ManyOptions s
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -1634,6 +1706,7 @@ exports[`Select characterisation > on a dark surface > renders the ManyOptions s
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -1646,6 +1719,7 @@ exports[`Select characterisation > on a dark surface > renders the ManyOptions s
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -1658,6 +1732,7 @@ exports[`Select characterisation > on a dark surface > renders the ManyOptions s
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -1670,6 +1745,7 @@ exports[`Select characterisation > on a dark surface > renders the ManyOptions s
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -1682,6 +1758,7 @@ exports[`Select characterisation > on a dark surface > renders the ManyOptions s
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -1694,6 +1771,7 @@ exports[`Select characterisation > on a dark surface > renders the ManyOptions s
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -1706,6 +1784,7 @@ exports[`Select characterisation > on a dark surface > renders the ManyOptions s
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -1718,6 +1797,7 @@ exports[`Select characterisation > on a dark surface > renders the ManyOptions s
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -1730,6 +1810,7 @@ exports[`Select characterisation > on a dark surface > renders the ManyOptions s
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -1742,6 +1823,7 @@ exports[`Select characterisation > on a dark surface > renders the ManyOptions s
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -1754,6 +1836,7 @@ exports[`Select characterisation > on a dark surface > renders the ManyOptions s
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -1766,6 +1849,7 @@ exports[`Select characterisation > on a dark surface > renders the ManyOptions s
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -1778,6 +1862,7 @@ exports[`Select characterisation > on a dark surface > renders the ManyOptions s
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -1861,6 +1946,7 @@ exports[`Select characterisation > on a dark surface > renders the MultiSelect s
         class="css-view-175oi2r"
       >
         <div
+          aria-controls=":rj:"
           aria-expanded="true"
           class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
           role="combobox"
@@ -1894,14 +1980,18 @@ exports[`Select characterisation > on a dark surface > renders the MultiSelect s
           style="background-color: rgb(55, 54, 53); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 10px 24px rgba(0,0,0,0.30), 0 24px 48px rgba(0,0,0,0.20);"
         >
           <div
+            aria-multiselectable="true"
             class="css-view-175oi2r r-WebkitOverflowScrolling-150rngu r-flexDirection-eqz5dr r-flexGrow-16y2uox r-flexShrink-1wbh5a2 r-overflowX-11yh6sk r-overflowY-1rnoaur r-transform-agouwx"
+            id=":rj:"
+            role="listbox"
           >
             <div
               class="css-view-175oi2r"
             >
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
-                role="checkbox"
+                role="option"
                 tabindex="0"
               >
                 <div
@@ -1915,8 +2005,9 @@ exports[`Select characterisation > on a dark surface > renders the MultiSelect s
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
-                role="checkbox"
+                role="option"
                 tabindex="0"
               >
                 <div
@@ -1930,8 +2021,9 @@ exports[`Select characterisation > on a dark surface > renders the MultiSelect s
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
-                role="checkbox"
+                role="option"
                 tabindex="0"
               >
                 <div
@@ -1945,8 +2037,9 @@ exports[`Select characterisation > on a dark surface > renders the MultiSelect s
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
-                role="checkbox"
+                role="option"
                 tabindex="0"
               >
                 <div
@@ -1960,8 +2053,9 @@ exports[`Select characterisation > on a dark surface > renders the MultiSelect s
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
-                role="checkbox"
+                role="option"
                 tabindex="0"
               >
                 <div
@@ -2067,6 +2161,7 @@ exports[`Select characterisation > on a dark surface > renders the MultiSelectWi
         class="css-view-175oi2r"
       >
         <div
+          aria-controls=":rk:"
           aria-expanded="true"
           class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
           role="combobox"
@@ -2114,14 +2209,18 @@ exports[`Select characterisation > on a dark surface > renders the MultiSelectWi
           style="background-color: rgb(55, 54, 53); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 10px 24px rgba(0,0,0,0.30), 0 24px 48px rgba(0,0,0,0.20);"
         >
           <div
+            aria-multiselectable="true"
             class="css-view-175oi2r r-WebkitOverflowScrolling-150rngu r-flexDirection-eqz5dr r-flexGrow-16y2uox r-flexShrink-1wbh5a2 r-overflowX-11yh6sk r-overflowY-1rnoaur r-transform-agouwx"
+            id=":rk:"
+            role="listbox"
           >
             <div
               class="css-view-175oi2r"
             >
               <div
+                aria-selected="true"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
-                role="checkbox"
+                role="option"
                 tabindex="0"
               >
                 <div
@@ -2143,7 +2242,7 @@ exports[`Select characterisation > on a dark surface > renders the MultiSelectWi
                     >
                       <mask
                         height="24"
-                        id=":r0:"
+                        id=":rl:"
                         maskUnits="userSpaceOnUse"
                         width="24"
                         x="0"
@@ -2160,7 +2259,7 @@ exports[`Select characterisation > on a dark surface > renders the MultiSelectWi
                       </mask>
                       <polygon
                         fill="currentColor"
-                        mask="url(#:r0:)"
+                        mask="url(#:rl:)"
                         points="5.37,15.97 5.6,16.23 6.19,16.9 6.79,17.56 7.38,18.23 9.06,19.44 11.19,17.98 11.44,17.48 11.71,16.97 11.99,16.45 12.28,15.93 12.59,15.39 12.91,14.85 13.25,14.29 13.6,13.74 13.97,13.17 14.36,12.6 14.76,12.02 15.19,11.43 15.62,10.84 16.08,10.24 16.55,9.64 17.04,9.02 17.55,8.41 18.07,7.78 18.61,7.15 19.17,6.52 19.75,5.88 20.34,5.23 20.96,4.58 20.64,4.22 19.91,4.73 19.18,5.24 18.48,5.76 17.79,6.27 17.12,6.78 16.46,7.29 15.83,7.81 15.2,8.32 14.6,8.83 14.01,9.35 13.44,9.86 12.89,10.38 12.35,10.9 11.83,11.42 11.33,11.94 10.84,12.46 10.38,12.98 9.93,13.51 9.5,14.04 9.09,14.57 8.7,15.1 8.33,15.64 7.98,16.18 9.54,15.76 9.97,15.69 9.31,15.09 8.66,14.48 8,13.87 7.34,13.27 6.69,12.66 6.03,12.06 5.37,11.45"
                         stroke="none"
                       />
@@ -2175,8 +2274,9 @@ exports[`Select characterisation > on a dark surface > renders the MultiSelectWi
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
-                role="checkbox"
+                role="option"
                 tabindex="0"
               >
                 <div
@@ -2190,8 +2290,9 @@ exports[`Select characterisation > on a dark surface > renders the MultiSelectWi
                 </div>
               </div>
               <div
+                aria-selected="true"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
-                role="checkbox"
+                role="option"
                 tabindex="0"
               >
                 <div
@@ -2213,7 +2314,7 @@ exports[`Select characterisation > on a dark surface > renders the MultiSelectWi
                     >
                       <mask
                         height="24"
-                        id=":r1:"
+                        id=":rm:"
                         maskUnits="userSpaceOnUse"
                         width="24"
                         x="0"
@@ -2230,7 +2331,7 @@ exports[`Select characterisation > on a dark surface > renders the MultiSelectWi
                       </mask>
                       <polygon
                         fill="currentColor"
-                        mask="url(#:r1:)"
+                        mask="url(#:rm:)"
                         points="5.37,15.97 5.6,16.23 6.19,16.9 6.79,17.56 7.38,18.23 9.06,19.44 11.19,17.98 11.44,17.48 11.71,16.97 11.99,16.45 12.28,15.93 12.59,15.39 12.91,14.85 13.25,14.29 13.6,13.74 13.97,13.17 14.36,12.6 14.76,12.02 15.19,11.43 15.62,10.84 16.08,10.24 16.55,9.64 17.04,9.02 17.55,8.41 18.07,7.78 18.61,7.15 19.17,6.52 19.75,5.88 20.34,5.23 20.96,4.58 20.64,4.22 19.91,4.73 19.18,5.24 18.48,5.76 17.79,6.27 17.12,6.78 16.46,7.29 15.83,7.81 15.2,8.32 14.6,8.83 14.01,9.35 13.44,9.86 12.89,10.38 12.35,10.9 11.83,11.42 11.33,11.94 10.84,12.46 10.38,12.98 9.93,13.51 9.5,14.04 9.09,14.57 8.7,15.1 8.33,15.64 7.98,16.18 9.54,15.76 9.97,15.69 9.31,15.09 8.66,14.48 8,13.87 7.34,13.27 6.69,12.66 6.03,12.06 5.37,11.45"
                         stroke="none"
                       />
@@ -2245,8 +2346,9 @@ exports[`Select characterisation > on a dark surface > renders the MultiSelectWi
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
-                role="checkbox"
+                role="option"
                 tabindex="0"
               >
                 <div
@@ -2260,8 +2362,9 @@ exports[`Select characterisation > on a dark surface > renders the MultiSelectWi
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
-                role="checkbox"
+                role="option"
                 tabindex="0"
               >
                 <div
@@ -2346,6 +2449,7 @@ exports[`Select characterisation > on a dark surface > renders the WithDisabledO
         class="css-view-175oi2r"
       >
         <div
+          aria-controls=":ro:"
           aria-expanded="true"
           class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
           role="combobox"
@@ -2380,11 +2484,14 @@ exports[`Select characterisation > on a dark surface > renders the WithDisabledO
         >
           <div
             class="css-view-175oi2r r-WebkitOverflowScrolling-150rngu r-flexDirection-eqz5dr r-flexGrow-16y2uox r-flexShrink-1wbh5a2 r-overflowX-11yh6sk r-overflowY-1rnoaur r-transform-agouwx"
+            id=":ro:"
+            role="listbox"
           >
             <div
               class="css-view-175oi2r"
             >
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -2398,6 +2505,7 @@ exports[`Select characterisation > on a dark surface > renders the WithDisabledO
               </div>
               <div
                 aria-disabled="true"
+                aria-selected="false"
                 class="css-view-175oi2r r-pointerEvents-12vffkv"
                 role="option"
                 tabindex="-1"
@@ -2410,6 +2518,7 @@ exports[`Select characterisation > on a dark surface > renders the WithDisabledO
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -2423,6 +2532,7 @@ exports[`Select characterisation > on a dark surface > renders the WithDisabledO
               </div>
               <div
                 aria-disabled="true"
+                aria-selected="false"
                 class="css-view-175oi2r r-pointerEvents-12vffkv"
                 role="option"
                 tabindex="-1"
@@ -2435,6 +2545,7 @@ exports[`Select characterisation > on a dark surface > renders the WithDisabledO
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -2511,6 +2622,7 @@ exports[`Select characterisation > on a dark surface > renders the WithPlacehold
         class="css-view-175oi2r"
       >
         <div
+          aria-controls=":re:"
           aria-expanded="true"
           class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
           role="combobox"
@@ -2545,11 +2657,14 @@ exports[`Select characterisation > on a dark surface > renders the WithPlacehold
         >
           <div
             class="css-view-175oi2r r-WebkitOverflowScrolling-150rngu r-flexDirection-eqz5dr r-flexGrow-16y2uox r-flexShrink-1wbh5a2 r-overflowX-11yh6sk r-overflowY-1rnoaur r-transform-agouwx"
+            id=":re:"
+            role="listbox"
           >
             <div
               class="css-view-175oi2r"
             >
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -2562,6 +2677,7 @@ exports[`Select characterisation > on a dark surface > renders the WithPlacehold
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -2574,6 +2690,7 @@ exports[`Select characterisation > on a dark surface > renders the WithPlacehold
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -2586,6 +2703,7 @@ exports[`Select characterisation > on a dark surface > renders the WithPlacehold
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -2598,6 +2716,7 @@ exports[`Select characterisation > on a dark surface > renders the WithPlacehold
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -2688,6 +2807,7 @@ exports[`Select characterisation > on a dark surface > renders the WithPreselect
         class="css-view-175oi2r"
       >
         <div
+          aria-controls=":rf:"
           aria-expanded="true"
           class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
           role="combobox"
@@ -2736,11 +2856,14 @@ exports[`Select characterisation > on a dark surface > renders the WithPreselect
         >
           <div
             class="css-view-175oi2r r-WebkitOverflowScrolling-150rngu r-flexDirection-eqz5dr r-flexGrow-16y2uox r-flexShrink-1wbh5a2 r-overflowX-11yh6sk r-overflowY-1rnoaur r-transform-agouwx"
+            id=":rf:"
+            role="listbox"
           >
             <div
               class="css-view-175oi2r"
             >
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -2753,6 +2876,7 @@ exports[`Select characterisation > on a dark surface > renders the WithPreselect
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -2765,6 +2889,7 @@ exports[`Select characterisation > on a dark surface > renders the WithPreselect
                 </div>
               </div>
               <div
+                aria-selected="true"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -2777,6 +2902,7 @@ exports[`Select characterisation > on a dark surface > renders the WithPreselect
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -2789,6 +2915,7 @@ exports[`Select characterisation > on a dark surface > renders the WithPreselect
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -2871,6 +2998,7 @@ exports[`Select characterisation > on a dark surface > renders the filled varian
       class="css-view-175oi2r"
     >
       <div
+        aria-controls=":rs:"
         aria-expanded="true"
         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
         role="combobox"
@@ -2906,11 +3034,14 @@ exports[`Select characterisation > on a dark surface > renders the filled varian
       >
         <div
           class="css-view-175oi2r r-WebkitOverflowScrolling-150rngu r-flexDirection-eqz5dr r-flexGrow-16y2uox r-flexShrink-1wbh5a2 r-overflowX-11yh6sk r-overflowY-1rnoaur r-transform-agouwx"
+          id=":rs:"
+          role="listbox"
         >
           <div
             class="css-view-175oi2r"
           >
             <div
+              aria-selected="false"
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               role="option"
               tabindex="0"
@@ -2923,6 +3054,7 @@ exports[`Select characterisation > on a dark surface > renders the filled varian
               </div>
             </div>
             <div
+              aria-selected="false"
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               role="option"
               tabindex="0"
@@ -2936,6 +3068,7 @@ exports[`Select characterisation > on a dark surface > renders the filled varian
             </div>
             <div
               aria-disabled="true"
+              aria-selected="false"
               class="css-view-175oi2r r-pointerEvents-12vffkv"
               role="option"
               tabindex="-1"
@@ -2965,6 +3098,7 @@ exports[`Select characterisation > on a dark surface > renders the filled varian
       class="css-view-175oi2r"
     >
       <div
+        aria-controls=":rs:"
         aria-expanded="true"
         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
         role="combobox"
@@ -3014,11 +3148,14 @@ exports[`Select characterisation > on a dark surface > renders the filled varian
       >
         <div
           class="css-view-175oi2r r-WebkitOverflowScrolling-150rngu r-flexDirection-eqz5dr r-flexGrow-16y2uox r-flexShrink-1wbh5a2 r-overflowX-11yh6sk r-overflowY-1rnoaur r-transform-agouwx"
+          id=":rs:"
+          role="listbox"
         >
           <div
             class="css-view-175oi2r"
           >
             <div
+              aria-selected="false"
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               role="option"
               tabindex="0"
@@ -3031,6 +3168,7 @@ exports[`Select characterisation > on a dark surface > renders the filled varian
               </div>
             </div>
             <div
+              aria-selected="true"
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               role="option"
               tabindex="0"
@@ -3044,6 +3182,7 @@ exports[`Select characterisation > on a dark surface > renders the filled varian
             </div>
             <div
               aria-disabled="true"
+              aria-selected="false"
               class="css-view-175oi2r r-pointerEvents-12vffkv"
               role="option"
               tabindex="-1"
@@ -3253,6 +3392,7 @@ exports[`Select characterisation > on a light surface > renders the Controlled s
         class="css-view-175oi2r"
       >
         <div
+          aria-controls=":r1n:"
           aria-expanded="true"
           class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
           role="combobox"
@@ -3301,11 +3441,14 @@ exports[`Select characterisation > on a light surface > renders the Controlled s
         >
           <div
             class="css-view-175oi2r r-WebkitOverflowScrolling-150rngu r-flexDirection-eqz5dr r-flexGrow-16y2uox r-flexShrink-1wbh5a2 r-overflowX-11yh6sk r-overflowY-1rnoaur r-transform-agouwx"
+            id=":r1n:"
+            role="listbox"
           >
             <div
               class="css-view-175oi2r"
             >
               <div
+                aria-selected="true"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -3318,6 +3461,7 @@ exports[`Select characterisation > on a light surface > renders the Controlled s
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -3330,6 +3474,7 @@ exports[`Select characterisation > on a light surface > renders the Controlled s
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -3342,6 +3487,7 @@ exports[`Select characterisation > on a light surface > renders the Controlled s
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -3354,6 +3500,7 @@ exports[`Select characterisation > on a light surface > renders the Controlled s
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -3508,6 +3655,7 @@ exports[`Select characterisation > on a light surface > renders the Default stor
         class="css-view-175oi2r"
       >
         <div
+          aria-controls=":r1b:"
           aria-expanded="true"
           class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
           role="combobox"
@@ -3542,11 +3690,14 @@ exports[`Select characterisation > on a light surface > renders the Default stor
         >
           <div
             class="css-view-175oi2r r-WebkitOverflowScrolling-150rngu r-flexDirection-eqz5dr r-flexGrow-16y2uox r-flexShrink-1wbh5a2 r-overflowX-11yh6sk r-overflowY-1rnoaur r-transform-agouwx"
+            id=":r1b:"
+            role="listbox"
           >
             <div
               class="css-view-175oi2r"
             >
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -3559,6 +3710,7 @@ exports[`Select characterisation > on a light surface > renders the Default stor
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -3571,6 +3723,7 @@ exports[`Select characterisation > on a light surface > renders the Default stor
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -3583,6 +3736,7 @@ exports[`Select characterisation > on a light surface > renders the Default stor
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -3595,6 +3749,7 @@ exports[`Select characterisation > on a light surface > renders the Default stor
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -3837,6 +3992,7 @@ exports[`Select characterisation > on a light surface > renders the InFormLayout
           class="css-view-175oi2r"
         >
           <div
+            aria-controls=":r1o:"
             aria-expanded="true"
             class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
             role="combobox"
@@ -3871,11 +4027,14 @@ exports[`Select characterisation > on a light surface > renders the InFormLayout
           >
             <div
               class="css-view-175oi2r r-WebkitOverflowScrolling-150rngu r-flexDirection-eqz5dr r-flexGrow-16y2uox r-flexShrink-1wbh5a2 r-overflowX-11yh6sk r-overflowY-1rnoaur r-transform-agouwx"
+              id=":r1o:"
+              role="listbox"
             >
               <div
                 class="css-view-175oi2r"
               >
                 <div
+                  aria-selected="false"
                   class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                   role="option"
                   tabindex="0"
@@ -3888,6 +4047,7 @@ exports[`Select characterisation > on a light surface > renders the InFormLayout
                   </div>
                 </div>
                 <div
+                  aria-selected="false"
                   class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                   role="option"
                   tabindex="0"
@@ -3900,6 +4060,7 @@ exports[`Select characterisation > on a light surface > renders the InFormLayout
                   </div>
                 </div>
                 <div
+                  aria-selected="false"
                   class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                   role="option"
                   tabindex="0"
@@ -3912,6 +4073,7 @@ exports[`Select characterisation > on a light surface > renders the InFormLayout
                   </div>
                 </div>
                 <div
+                  aria-selected="false"
                   class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                   role="option"
                   tabindex="0"
@@ -3924,6 +4086,7 @@ exports[`Select characterisation > on a light surface > renders the InFormLayout
                   </div>
                 </div>
                 <div
+                  aria-selected="false"
                   class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                   role="option"
                   tabindex="0"
@@ -4045,6 +4208,7 @@ exports[`Select characterisation > on a light surface > renders the Invalid stor
         class="css-view-175oi2r"
       >
         <div
+          aria-controls=":r1g:"
           aria-expanded="true"
           class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
           role="combobox"
@@ -4079,11 +4243,14 @@ exports[`Select characterisation > on a light surface > renders the Invalid stor
         >
           <div
             class="css-view-175oi2r r-WebkitOverflowScrolling-150rngu r-flexDirection-eqz5dr r-flexGrow-16y2uox r-flexShrink-1wbh5a2 r-overflowX-11yh6sk r-overflowY-1rnoaur r-transform-agouwx"
+            id=":r1g:"
+            role="listbox"
           >
             <div
               class="css-view-175oi2r"
             >
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -4096,6 +4263,7 @@ exports[`Select characterisation > on a light surface > renders the Invalid stor
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -4108,6 +4276,7 @@ exports[`Select characterisation > on a light surface > renders the Invalid stor
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -4120,6 +4289,7 @@ exports[`Select characterisation > on a light surface > renders the Invalid stor
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -4132,6 +4302,7 @@ exports[`Select characterisation > on a light surface > renders the Invalid stor
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -4214,6 +4385,7 @@ exports[`Select characterisation > on a light surface > renders the ManyOptions 
         class="css-view-175oi2r"
       >
         <div
+          aria-controls=":r1l:"
           aria-expanded="true"
           class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
           role="combobox"
@@ -4248,11 +4420,14 @@ exports[`Select characterisation > on a light surface > renders the ManyOptions 
         >
           <div
             class="css-view-175oi2r r-WebkitOverflowScrolling-150rngu r-flexDirection-eqz5dr r-flexGrow-16y2uox r-flexShrink-1wbh5a2 r-overflowX-11yh6sk r-overflowY-1rnoaur r-transform-agouwx"
+            id=":r1l:"
+            role="listbox"
           >
             <div
               class="css-view-175oi2r"
             >
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -4265,6 +4440,7 @@ exports[`Select characterisation > on a light surface > renders the ManyOptions 
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -4277,6 +4453,7 @@ exports[`Select characterisation > on a light surface > renders the ManyOptions 
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -4289,6 +4466,7 @@ exports[`Select characterisation > on a light surface > renders the ManyOptions 
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -4301,6 +4479,7 @@ exports[`Select characterisation > on a light surface > renders the ManyOptions 
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -4313,6 +4492,7 @@ exports[`Select characterisation > on a light surface > renders the ManyOptions 
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -4325,6 +4505,7 @@ exports[`Select characterisation > on a light surface > renders the ManyOptions 
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -4337,6 +4518,7 @@ exports[`Select characterisation > on a light surface > renders the ManyOptions 
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -4349,6 +4531,7 @@ exports[`Select characterisation > on a light surface > renders the ManyOptions 
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -4361,6 +4544,7 @@ exports[`Select characterisation > on a light surface > renders the ManyOptions 
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -4373,6 +4557,7 @@ exports[`Select characterisation > on a light surface > renders the ManyOptions 
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -4385,6 +4570,7 @@ exports[`Select characterisation > on a light surface > renders the ManyOptions 
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -4397,6 +4583,7 @@ exports[`Select characterisation > on a light surface > renders the ManyOptions 
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -4409,6 +4596,7 @@ exports[`Select characterisation > on a light surface > renders the ManyOptions 
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -4421,6 +4609,7 @@ exports[`Select characterisation > on a light surface > renders the ManyOptions 
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -4433,6 +4622,7 @@ exports[`Select characterisation > on a light surface > renders the ManyOptions 
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -4445,6 +4635,7 @@ exports[`Select characterisation > on a light surface > renders the ManyOptions 
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -4457,6 +4648,7 @@ exports[`Select characterisation > on a light surface > renders the ManyOptions 
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -4469,6 +4661,7 @@ exports[`Select characterisation > on a light surface > renders the ManyOptions 
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -4481,6 +4674,7 @@ exports[`Select characterisation > on a light surface > renders the ManyOptions 
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -4493,6 +4687,7 @@ exports[`Select characterisation > on a light surface > renders the ManyOptions 
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -4505,6 +4700,7 @@ exports[`Select characterisation > on a light surface > renders the ManyOptions 
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -4517,6 +4713,7 @@ exports[`Select characterisation > on a light surface > renders the ManyOptions 
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -4529,6 +4726,7 @@ exports[`Select characterisation > on a light surface > renders the ManyOptions 
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -4541,6 +4739,7 @@ exports[`Select characterisation > on a light surface > renders the ManyOptions 
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -4553,6 +4752,7 @@ exports[`Select characterisation > on a light surface > renders the ManyOptions 
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -4565,6 +4765,7 @@ exports[`Select characterisation > on a light surface > renders the ManyOptions 
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -4577,6 +4778,7 @@ exports[`Select characterisation > on a light surface > renders the ManyOptions 
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -4589,6 +4791,7 @@ exports[`Select characterisation > on a light surface > renders the ManyOptions 
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -4601,6 +4804,7 @@ exports[`Select characterisation > on a light surface > renders the ManyOptions 
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -4613,6 +4817,7 @@ exports[`Select characterisation > on a light surface > renders the ManyOptions 
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -4625,6 +4830,7 @@ exports[`Select characterisation > on a light surface > renders the ManyOptions 
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -4637,6 +4843,7 @@ exports[`Select characterisation > on a light surface > renders the ManyOptions 
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -4649,6 +4856,7 @@ exports[`Select characterisation > on a light surface > renders the ManyOptions 
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -4661,6 +4869,7 @@ exports[`Select characterisation > on a light surface > renders the ManyOptions 
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -4673,6 +4882,7 @@ exports[`Select characterisation > on a light surface > renders the ManyOptions 
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -4685,6 +4895,7 @@ exports[`Select characterisation > on a light surface > renders the ManyOptions 
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -4697,6 +4908,7 @@ exports[`Select characterisation > on a light surface > renders the ManyOptions 
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -4709,6 +4921,7 @@ exports[`Select characterisation > on a light surface > renders the ManyOptions 
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -4721,6 +4934,7 @@ exports[`Select characterisation > on a light surface > renders the ManyOptions 
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -4733,6 +4947,7 @@ exports[`Select characterisation > on a light surface > renders the ManyOptions 
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -4745,6 +4960,7 @@ exports[`Select characterisation > on a light surface > renders the ManyOptions 
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -4757,6 +4973,7 @@ exports[`Select characterisation > on a light surface > renders the ManyOptions 
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -4769,6 +4986,7 @@ exports[`Select characterisation > on a light surface > renders the ManyOptions 
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -4781,6 +4999,7 @@ exports[`Select characterisation > on a light surface > renders the ManyOptions 
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -4793,6 +5012,7 @@ exports[`Select characterisation > on a light surface > renders the ManyOptions 
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -4805,6 +5025,7 @@ exports[`Select characterisation > on a light surface > renders the ManyOptions 
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -4817,6 +5038,7 @@ exports[`Select characterisation > on a light surface > renders the ManyOptions 
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -4829,6 +5051,7 @@ exports[`Select characterisation > on a light surface > renders the ManyOptions 
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -4841,6 +5064,7 @@ exports[`Select characterisation > on a light surface > renders the ManyOptions 
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -4924,6 +5148,7 @@ exports[`Select characterisation > on a light surface > renders the MultiSelect 
         class="css-view-175oi2r"
       >
         <div
+          aria-controls=":r1h:"
           aria-expanded="true"
           class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
           role="combobox"
@@ -4957,14 +5182,18 @@ exports[`Select characterisation > on a light surface > renders the MultiSelect 
           style="background-color: rgb(255, 255, 255); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 10px 24px rgba(0,0,0,0.12), 0 24px 48px rgba(0,0,0,0.08);"
         >
           <div
+            aria-multiselectable="true"
             class="css-view-175oi2r r-WebkitOverflowScrolling-150rngu r-flexDirection-eqz5dr r-flexGrow-16y2uox r-flexShrink-1wbh5a2 r-overflowX-11yh6sk r-overflowY-1rnoaur r-transform-agouwx"
+            id=":r1h:"
+            role="listbox"
           >
             <div
               class="css-view-175oi2r"
             >
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
-                role="checkbox"
+                role="option"
                 tabindex="0"
               >
                 <div
@@ -4978,8 +5207,9 @@ exports[`Select characterisation > on a light surface > renders the MultiSelect 
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
-                role="checkbox"
+                role="option"
                 tabindex="0"
               >
                 <div
@@ -4993,8 +5223,9 @@ exports[`Select characterisation > on a light surface > renders the MultiSelect 
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
-                role="checkbox"
+                role="option"
                 tabindex="0"
               >
                 <div
@@ -5008,8 +5239,9 @@ exports[`Select characterisation > on a light surface > renders the MultiSelect 
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
-                role="checkbox"
+                role="option"
                 tabindex="0"
               >
                 <div
@@ -5023,8 +5255,9 @@ exports[`Select characterisation > on a light surface > renders the MultiSelect 
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
-                role="checkbox"
+                role="option"
                 tabindex="0"
               >
                 <div
@@ -5130,6 +5363,7 @@ exports[`Select characterisation > on a light surface > renders the MultiSelectW
         class="css-view-175oi2r"
       >
         <div
+          aria-controls=":r1i:"
           aria-expanded="true"
           class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
           role="combobox"
@@ -5177,14 +5411,18 @@ exports[`Select characterisation > on a light surface > renders the MultiSelectW
           style="background-color: rgb(255, 255, 255); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 10px 24px rgba(0,0,0,0.12), 0 24px 48px rgba(0,0,0,0.08);"
         >
           <div
+            aria-multiselectable="true"
             class="css-view-175oi2r r-WebkitOverflowScrolling-150rngu r-flexDirection-eqz5dr r-flexGrow-16y2uox r-flexShrink-1wbh5a2 r-overflowX-11yh6sk r-overflowY-1rnoaur r-transform-agouwx"
+            id=":r1i:"
+            role="listbox"
           >
             <div
               class="css-view-175oi2r"
             >
               <div
+                aria-selected="true"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
-                role="checkbox"
+                role="option"
                 tabindex="0"
               >
                 <div
@@ -5206,7 +5444,7 @@ exports[`Select characterisation > on a light surface > renders the MultiSelectW
                     >
                       <mask
                         height="24"
-                        id=":r2:"
+                        id=":r1j:"
                         maskUnits="userSpaceOnUse"
                         width="24"
                         x="0"
@@ -5223,7 +5461,7 @@ exports[`Select characterisation > on a light surface > renders the MultiSelectW
                       </mask>
                       <polygon
                         fill="currentColor"
-                        mask="url(#:r2:)"
+                        mask="url(#:r1j:)"
                         points="5.37,15.97 5.6,16.23 6.19,16.9 6.79,17.56 7.38,18.23 9.06,19.44 11.19,17.98 11.44,17.48 11.71,16.97 11.99,16.45 12.28,15.93 12.59,15.39 12.91,14.85 13.25,14.29 13.6,13.74 13.97,13.17 14.36,12.6 14.76,12.02 15.19,11.43 15.62,10.84 16.08,10.24 16.55,9.64 17.04,9.02 17.55,8.41 18.07,7.78 18.61,7.15 19.17,6.52 19.75,5.88 20.34,5.23 20.96,4.58 20.64,4.22 19.91,4.73 19.18,5.24 18.48,5.76 17.79,6.27 17.12,6.78 16.46,7.29 15.83,7.81 15.2,8.32 14.6,8.83 14.01,9.35 13.44,9.86 12.89,10.38 12.35,10.9 11.83,11.42 11.33,11.94 10.84,12.46 10.38,12.98 9.93,13.51 9.5,14.04 9.09,14.57 8.7,15.1 8.33,15.64 7.98,16.18 9.54,15.76 9.97,15.69 9.31,15.09 8.66,14.48 8,13.87 7.34,13.27 6.69,12.66 6.03,12.06 5.37,11.45"
                         stroke="none"
                       />
@@ -5238,8 +5476,9 @@ exports[`Select characterisation > on a light surface > renders the MultiSelectW
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
-                role="checkbox"
+                role="option"
                 tabindex="0"
               >
                 <div
@@ -5253,8 +5492,9 @@ exports[`Select characterisation > on a light surface > renders the MultiSelectW
                 </div>
               </div>
               <div
+                aria-selected="true"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
-                role="checkbox"
+                role="option"
                 tabindex="0"
               >
                 <div
@@ -5276,7 +5516,7 @@ exports[`Select characterisation > on a light surface > renders the MultiSelectW
                     >
                       <mask
                         height="24"
-                        id=":r3:"
+                        id=":r1k:"
                         maskUnits="userSpaceOnUse"
                         width="24"
                         x="0"
@@ -5293,7 +5533,7 @@ exports[`Select characterisation > on a light surface > renders the MultiSelectW
                       </mask>
                       <polygon
                         fill="currentColor"
-                        mask="url(#:r3:)"
+                        mask="url(#:r1k:)"
                         points="5.37,15.97 5.6,16.23 6.19,16.9 6.79,17.56 7.38,18.23 9.06,19.44 11.19,17.98 11.44,17.48 11.71,16.97 11.99,16.45 12.28,15.93 12.59,15.39 12.91,14.85 13.25,14.29 13.6,13.74 13.97,13.17 14.36,12.6 14.76,12.02 15.19,11.43 15.62,10.84 16.08,10.24 16.55,9.64 17.04,9.02 17.55,8.41 18.07,7.78 18.61,7.15 19.17,6.52 19.75,5.88 20.34,5.23 20.96,4.58 20.64,4.22 19.91,4.73 19.18,5.24 18.48,5.76 17.79,6.27 17.12,6.78 16.46,7.29 15.83,7.81 15.2,8.32 14.6,8.83 14.01,9.35 13.44,9.86 12.89,10.38 12.35,10.9 11.83,11.42 11.33,11.94 10.84,12.46 10.38,12.98 9.93,13.51 9.5,14.04 9.09,14.57 8.7,15.1 8.33,15.64 7.98,16.18 9.54,15.76 9.97,15.69 9.31,15.09 8.66,14.48 8,13.87 7.34,13.27 6.69,12.66 6.03,12.06 5.37,11.45"
                         stroke="none"
                       />
@@ -5308,8 +5548,9 @@ exports[`Select characterisation > on a light surface > renders the MultiSelectW
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
-                role="checkbox"
+                role="option"
                 tabindex="0"
               >
                 <div
@@ -5323,8 +5564,9 @@ exports[`Select characterisation > on a light surface > renders the MultiSelectW
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
-                role="checkbox"
+                role="option"
                 tabindex="0"
               >
                 <div
@@ -5409,6 +5651,7 @@ exports[`Select characterisation > on a light surface > renders the WithDisabled
         class="css-view-175oi2r"
       >
         <div
+          aria-controls=":r1m:"
           aria-expanded="true"
           class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
           role="combobox"
@@ -5443,11 +5686,14 @@ exports[`Select characterisation > on a light surface > renders the WithDisabled
         >
           <div
             class="css-view-175oi2r r-WebkitOverflowScrolling-150rngu r-flexDirection-eqz5dr r-flexGrow-16y2uox r-flexShrink-1wbh5a2 r-overflowX-11yh6sk r-overflowY-1rnoaur r-transform-agouwx"
+            id=":r1m:"
+            role="listbox"
           >
             <div
               class="css-view-175oi2r"
             >
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -5461,6 +5707,7 @@ exports[`Select characterisation > on a light surface > renders the WithDisabled
               </div>
               <div
                 aria-disabled="true"
+                aria-selected="false"
                 class="css-view-175oi2r r-pointerEvents-12vffkv"
                 role="option"
                 tabindex="-1"
@@ -5473,6 +5720,7 @@ exports[`Select characterisation > on a light surface > renders the WithDisabled
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -5486,6 +5734,7 @@ exports[`Select characterisation > on a light surface > renders the WithDisabled
               </div>
               <div
                 aria-disabled="true"
+                aria-selected="false"
                 class="css-view-175oi2r r-pointerEvents-12vffkv"
                 role="option"
                 tabindex="-1"
@@ -5498,6 +5747,7 @@ exports[`Select characterisation > on a light surface > renders the WithDisabled
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -5574,6 +5824,7 @@ exports[`Select characterisation > on a light surface > renders the WithPlacehol
         class="css-view-175oi2r"
       >
         <div
+          aria-controls=":r1c:"
           aria-expanded="true"
           class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
           role="combobox"
@@ -5608,11 +5859,14 @@ exports[`Select characterisation > on a light surface > renders the WithPlacehol
         >
           <div
             class="css-view-175oi2r r-WebkitOverflowScrolling-150rngu r-flexDirection-eqz5dr r-flexGrow-16y2uox r-flexShrink-1wbh5a2 r-overflowX-11yh6sk r-overflowY-1rnoaur r-transform-agouwx"
+            id=":r1c:"
+            role="listbox"
           >
             <div
               class="css-view-175oi2r"
             >
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -5625,6 +5879,7 @@ exports[`Select characterisation > on a light surface > renders the WithPlacehol
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -5637,6 +5892,7 @@ exports[`Select characterisation > on a light surface > renders the WithPlacehol
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -5649,6 +5905,7 @@ exports[`Select characterisation > on a light surface > renders the WithPlacehol
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -5661,6 +5918,7 @@ exports[`Select characterisation > on a light surface > renders the WithPlacehol
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -5751,6 +6009,7 @@ exports[`Select characterisation > on a light surface > renders the WithPreselec
         class="css-view-175oi2r"
       >
         <div
+          aria-controls=":r1d:"
           aria-expanded="true"
           class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
           role="combobox"
@@ -5799,11 +6058,14 @@ exports[`Select characterisation > on a light surface > renders the WithPreselec
         >
           <div
             class="css-view-175oi2r r-WebkitOverflowScrolling-150rngu r-flexDirection-eqz5dr r-flexGrow-16y2uox r-flexShrink-1wbh5a2 r-overflowX-11yh6sk r-overflowY-1rnoaur r-transform-agouwx"
+            id=":r1d:"
+            role="listbox"
           >
             <div
               class="css-view-175oi2r"
             >
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -5816,6 +6078,7 @@ exports[`Select characterisation > on a light surface > renders the WithPreselec
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -5828,6 +6091,7 @@ exports[`Select characterisation > on a light surface > renders the WithPreselec
                 </div>
               </div>
               <div
+                aria-selected="true"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -5840,6 +6104,7 @@ exports[`Select characterisation > on a light surface > renders the WithPreselec
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -5852,6 +6117,7 @@ exports[`Select characterisation > on a light surface > renders the WithPreselec
                 </div>
               </div>
               <div
+                aria-selected="false"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="option"
                 tabindex="0"
@@ -5934,6 +6200,7 @@ exports[`Select characterisation > on a light surface > renders the filled varia
       class="css-view-175oi2r"
     >
       <div
+        aria-controls=":r1q:"
         aria-expanded="true"
         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
         role="combobox"
@@ -5969,11 +6236,14 @@ exports[`Select characterisation > on a light surface > renders the filled varia
       >
         <div
           class="css-view-175oi2r r-WebkitOverflowScrolling-150rngu r-flexDirection-eqz5dr r-flexGrow-16y2uox r-flexShrink-1wbh5a2 r-overflowX-11yh6sk r-overflowY-1rnoaur r-transform-agouwx"
+          id=":r1q:"
+          role="listbox"
         >
           <div
             class="css-view-175oi2r"
           >
             <div
+              aria-selected="false"
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               role="option"
               tabindex="0"
@@ -5986,6 +6256,7 @@ exports[`Select characterisation > on a light surface > renders the filled varia
               </div>
             </div>
             <div
+              aria-selected="false"
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               role="option"
               tabindex="0"
@@ -5999,6 +6270,7 @@ exports[`Select characterisation > on a light surface > renders the filled varia
             </div>
             <div
               aria-disabled="true"
+              aria-selected="false"
               class="css-view-175oi2r r-pointerEvents-12vffkv"
               role="option"
               tabindex="-1"
@@ -6028,6 +6300,7 @@ exports[`Select characterisation > on a light surface > renders the filled varia
       class="css-view-175oi2r"
     >
       <div
+        aria-controls=":r1q:"
         aria-expanded="true"
         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
         role="combobox"
@@ -6077,11 +6350,14 @@ exports[`Select characterisation > on a light surface > renders the filled varia
       >
         <div
           class="css-view-175oi2r r-WebkitOverflowScrolling-150rngu r-flexDirection-eqz5dr r-flexGrow-16y2uox r-flexShrink-1wbh5a2 r-overflowX-11yh6sk r-overflowY-1rnoaur r-transform-agouwx"
+          id=":r1q:"
+          role="listbox"
         >
           <div
             class="css-view-175oi2r"
           >
             <div
+              aria-selected="false"
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               role="option"
               tabindex="0"
@@ -6094,6 +6370,7 @@ exports[`Select characterisation > on a light surface > renders the filled varia
               </div>
             </div>
             <div
+              aria-selected="true"
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               role="option"
               tabindex="0"
@@ -6107,6 +6384,7 @@ exports[`Select characterisation > on a light surface > renders the filled varia
             </div>
             <div
               aria-disabled="true"
+              aria-selected="false"
               class="css-view-175oi2r r-pointerEvents-12vffkv"
               role="option"
               tabindex="-1"

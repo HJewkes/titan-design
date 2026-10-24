@@ -1,4 +1,4 @@
-import { useState, createContext, useContext } from 'react'
+import { useState, useId, createContext, useContext } from 'react'
 import { View, Text, Pressable, ScrollView, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { CheckMark } from '../../icons'
@@ -101,6 +101,7 @@ export function Select<T extends string = string>({
   ...props
 }: SelectProps<T>) {
   const [isOpen, setIsOpen] = useState(false)
+  const listboxId = useId()
   const well = useInsetFieldStyle(variant === 'filled')
 
   const selection = { isMulti, value, values }
@@ -137,6 +138,7 @@ export function Select<T extends string = string>({
           accessibilityRole="combobox"
           accessibilityLabel={accessibilityLabel}
           aria-expanded={isOpen}
+          aria-controls={isOpen ? listboxId : undefined}
           accessibilityState={{ expanded: isOpen, disabled: isDisabled }}
           style={well}
           className={cn(
@@ -178,7 +180,13 @@ export function Select<T extends string = string>({
         {/* Dropdown */}
         {isOpen && (
           <SelectPopover onClose={() => setIsOpen(false)}>
-            <ScrollView className="py-1">
+            <ScrollView
+              id={listboxId}
+              role="listbox"
+              aria-label={accessibilityLabel}
+              aria-multiselectable={isMulti || undefined}
+              className="py-1"
+            >
               {options.map((option) => (
                 <SelectOption key={option.value} option={option} />
               ))}
@@ -202,7 +210,8 @@ function SelectOption<T>({ option }: SelectOptionComponentProps<T>) {
     <Pressable
       onPress={() => !option.isDisabled && selectValue(option.value)}
       disabled={option.isDisabled}
-      role={isMulti ? 'checkbox' : 'option'}
+      role="option"
+      aria-selected={selected}
       accessibilityState={{ selected, disabled: option.isDisabled }}
       className={cn(
         'flex-row items-center px-4 py-2',
