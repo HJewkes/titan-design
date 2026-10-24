@@ -1,3 +1,4 @@
+/* global document, window */
 import { createRequire } from 'node:module'
 import { afterEach, beforeAll, describe, expect, it } from 'vitest'
 import { AXE_VIOLATION_KIND, auditPage, axeWarnings, domChecks, tokenColours } from './checks.mjs'

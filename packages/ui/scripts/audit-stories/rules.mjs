@@ -18,11 +18,19 @@ export const RULE_BY_KIND = Object.freeze({
   'proximity-inversion': 'DR-LA-01',
   'font-size-near-miss': 'DR-TY-05',
   'font-size-drift': 'DR-TY-05',
+  'axe-violation': 'DR-IX-14',
   ...PROBE_RULES,
 })
 
+// An axe-violation finding whose axe rule enforces a narrower design rule cites that one.
+export const RULE_BY_AXE_RULE = Object.freeze({ 'target-size': 'DR-IX-02', label: 'DR-IX-13' })
+
+const ruleOf = (finding) =>
+  (finding.kind === 'axe-violation' && RULE_BY_AXE_RULE[finding.axe_rule]) ||
+  RULE_BY_KIND[finding.kind]
+
 const tag = (finding) => {
-  const rule = RULE_BY_KIND[finding.kind]
+  const rule = ruleOf(finding)
   return rule ? { ...finding, rule } : finding
 }
 
