@@ -1,7 +1,5 @@
 {
   "CLAUDE.md": ["path:stories-smoke.test.tsx", "path:tokens.css", "retired:Gluestack"],
-  "README.md": ["retired:Gluestack"],
-  "docs/ARCHITECTURE.md": ["retired:Gluestack", "retired:lucide-react", "retired:useTheme()"],
   "docs/STORYBOOK_SETUP.md": ["import:@storybook/react"],
   "docs/agent-prompts/component-implementation.md": ["path:docs/improved-workflow.md"],
   "docs/ci-and-scripts.md": ["path:HJewkes/ci/actions/all-green", "path:tokens.css"],
@@ -14,7 +12,6 @@
     "path:src/dashboard/spa/planner/SessionSummaryPage.tsx",
     "retired:WORKOUT_TOKENS"
   ],
-  "packages/ui/README.md": ["import:lucide-react", "retired:Gluestack", "retired:lucide-react"],
   "packages/ui/REJECTED.md": [
     "path:calibratingNoteFit.ts",
     "path:theme/bar-paper.ts",
