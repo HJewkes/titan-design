@@ -167,6 +167,26 @@ const textSizeStyles: Record<ButtonSize, string> = {
   lg: 'text-base',
 }
 
+// The button's aria-busy announces loading; the indicator's own unnamed progressbar is hidden.
+const hiddenFromAT = {
+  'aria-hidden': true,
+  accessibilityElementsHidden: true,
+  importantForAccessibility: 'no-hide-descendants',
+} as const
+
+function LoadingIndicator({ variant, color }: { variant: ButtonVariant; color: ButtonColor }) {
+  const mode = useSurfaceMode()
+  return (
+    <ActivityIndicator
+      size="small"
+      // A literal hex for the mode, the path Spinner takes for ActivityIndicator (VW-316).
+      color={variant === 'solid' ? getSemanticColors(mode)[solidLabelToken[color]] : undefined}
+      className="mr-2"
+      {...hiddenFromAT}
+    />
+  )
+}
+
 /**
  * Button component following compound component pattern.
  *
@@ -234,18 +254,7 @@ export const Button = forwardRef<View, ButtonProps>(function Button(
       {...props}
     >
       {hitTarget.layerProps && <View {...hitTarget.layerProps} />}
-      {isLoading && (
-        <ActivityIndicator
-          size="small"
-          // A literal hex for the mode, the path Spinner takes for ActivityIndicator (VW-316).
-          color={variant === 'solid' ? getSemanticColors(mode)[solidLabelToken[color]] : undefined}
-          className="mr-2"
-          // The button's busy state announces loading; the indicator's own unnamed progressbar would not.
-          aria-hidden
-          accessibilityElementsHidden
-          importantForAccessibility="no-hide-descendants"
-        />
-      )}
+      {isLoading && <LoadingIndicator variant={variant} color={color} />}
       {isLoading && loadingText ? (
         <Text
           className={cn('font-semibold', textSizeStyles[size], textStyles(variant, color))}
@@ -297,12 +306,6 @@ export interface ButtonSpinnerProps {
  */
 export function ButtonSpinner({ className }: ButtonSpinnerProps) {
   return (
-    <ActivityIndicator
-      size="small"
-      className={cn('text-inherit', className)}
-      aria-hidden
-      accessibilityElementsHidden
-      importantForAccessibility="no-hide-descendants"
-    />
+    <ActivityIndicator size="small" className={cn('text-inherit', className)} {...hiddenFromAT} />
   )
 }
