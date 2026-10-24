@@ -2311,11 +2311,9 @@
     "#424140|#373635": 3
   },
   "lab-explorations-full-rail--next-to-nav dark": {
-    "#605d5b|#100d0a": 2,
     "#888684|#252321": 4
   },
   "lab-explorations-full-rail--next-to-nav light": {
-    "#605d5b|#100d0a": 2,
     "#888684|#252321": 4
   },
   "lab-explorations-session-pace--states dark": {
@@ -2323,12 +2321,6 @@
   },
   "lab-explorations-session-pace--states light": {
     "#888684|#252321": 6
-  },
-  "lab-explorations-session-rail-heading--states dark": {
-    "#605d5b|#100d0a": 1
-  },
-  "lab-explorations-session-rail-heading--states light": {
-    "#605d5b|#100d0a": 1
   },
   "lab-explorations-unified-exercise-card--unified dark": {
     "#888684|#2c2a28": 5
