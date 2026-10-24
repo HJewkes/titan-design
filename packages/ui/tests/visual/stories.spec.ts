@@ -1,7 +1,13 @@
 import fs from 'node:fs'
 import { test as base, expect, type Browser, type Page, type TestInfo } from '@playwright/test'
-import { blankRenderReason, type RootMetrics } from '../../src/test/blank-render'
-import { STORY_INDEX_ENV } from './story-index.global-setup'
+import {
+  FIXED_TIME,
+  advancesClock,
+  blankAfter,
+  installPausedClock,
+  loadStory,
+  readStoryIds,
+} from './render-story'
 
 /**
  * Storybook story visual-regression baselines.
@@ -52,59 +58,15 @@ const CHAT_STORIES = new Set([
 
 const inScope = (id: string) => SCOPE.test(id) || CHAT_STORIES.has(id)
 
-const FIXED_TIME = new Date('2024-01-01T16:12:07')
-// Far more than any install-to-pauseAt delay, so pauseAt only ever moves forward.
-const CLOCK_START = new Date(FIXED_TIME.getTime() - 60_000)
 const SHOT_OPTIONS = { animations: 'disabled', caret: 'hide' } as const
 
-interface IndexEntry {
-  id: string
-  type: string
-}
-
-// Read at collect time; empty when globalSetup did not run, which the first test reports.
-function readInScopeStoryIds(): string[] {
-  const file = process.env[STORY_INDEX_ENV]
-  if (!file) return []
-  const index = JSON.parse(fs.readFileSync(file, 'utf8')) as {
-    entries: Record<string, IndexEntry>
-  }
-  return Object.values(index.entries)
-    .filter((entry) => entry.type === 'story' && inScope(entry.id))
-    .map((entry) => entry.id)
-}
-
-const storyIds = readInScopeStoryIds()
-
-async function readRootMetrics(page: Page): Promise<RootMetrics | null> {
-  return page.evaluate(() => {
-    const root = document.querySelector('#storybook-root')
-    if (!root) return null
-    const { width, height } = root.getBoundingClientRect()
-    return { width, height, childElementCount: root.childElementCount }
-  })
-}
+// Empty when globalSetup did not run, which the first test reports.
+const storyIds = readStoryIds().filter(inScope)
 
 // A stale-cache blank story must fail here rather than be frozen as its own baseline.
 async function expectRendered(page: Page, label: string, timeout = 5000) {
-  await expect
-    .poll(async () => blankRenderReason(await readRootMetrics(page)), {
-      message: `blank render guard for ${label}`,
-      timeout,
-    })
-    .toBeNull()
+  expect(await blankAfter(page, timeout), `blank render guard for ${label}`).toBeNull()
 }
-
-// GoalTrajectoryChart plays an entrance that the paused clock freezes at frame 0, so its
-// baselines would show the band with no actuals; `animate` off renders the settled final frame.
-const SETTLED_ARGS_PREFIX = 'custom-workout-dataviz-goaltrajectorychart--'
-const storyUrl = (id: string) =>
-  `/iframe.html?id=${id}&viewMode=story${id.startsWith(SETTLED_ARGS_PREFIX) ? '&args=animate:!false' : ''}`
-
-// StrengthTrendChart's 600 ms mount draw also freezes at frame 0, and its Interactive story
-// renders without args, so this prefix runs the paused clock past the draw instead.
-const SETTLED_CLOCK_PREFIX = 'custom-workout-dataviz-strengthtrendchart--'
-const SETTLE_MS = 1000
 
 // A blank root says nothing about why, so a failed guard reports what the page logged and what its
 // root and body held at that moment (TD-636: a zero-height root with no trace to explain it).
@@ -140,27 +102,14 @@ async function describeBlankPage(page: Page, events: string[]): Promise<string> 
   return JSON.stringify({ state, events }, null, 2)
 }
 
-interface InjectedClock {
-  __pwClock?: { controller: { pauseAt(time: number): Promise<number> } }
-}
-
-// Playwright 1.58 arms a one-shot real-time timer when it injects the clock into a new document,
-// and replaying `pauseAt` there does not cancel it. About 100 ms after load it fires every timer
-// already queued, so a fast load ran react-native-web's onLayout measurement and a slow one did not
-// (TD-729). Pausing again at document start cancels it, so no timer fires before the screenshot.
-function repauseClock(time: number) {
-  void (globalThis as InjectedClock).__pwClock?.controller.pauseAt(time)
-}
-
 const VIEWPORT = { width: 1280, height: 720 }
 
 // install() alone keeps ticking from FIXED_TIME in real time, so a story rendered late in the run
 // showed 16:13 instead of 16:12 (#250); it starts early so pauseAt never rewinds.
 async function openClockedPage(browser: Browser) {
   const context = await browser.newContext({ viewport: VIEWPORT })
-  await context.clock.install({ time: CLOCK_START })
-  await context.addInitScript(repauseClock, FIXED_TIME.getTime())
   const page = await context.newPage()
+  await installPausedClock(page)
   recordPageEvents(page)
   return { context, page }
 }
@@ -188,8 +137,6 @@ const test = base.extend<{ isolatedPage: () => Promise<Page> }, { storyPage: Pag
   },
 })
 
-const advancesClock = (id: string) => id.startsWith(SETTLED_CLOCK_PREFIX)
-
 // The VelocityStrip family draws its SVG labels differently on a page that already loaded another
 // story (13 baselines drifted by a few hundred pixels, same Chromium, same machine), so each takes a
 // cold page like the pre-TD-730 runs did. The cause is retained browser state; it is not pinned down.
@@ -204,14 +151,11 @@ async function renderStory(page: Page, id: string) {
   const events = pageEvents.get(page) ?? []
   events.length = 0
   await page.clock.pauseAt(FIXED_TIME)
-  await page.goto(storyUrl(id))
-  await page.waitForLoadState('networkidle')
-  await page.evaluate(() => document.fonts.ready)
-  await expectRendered(page, id).catch(async (e: Error) => {
-    e.message += `\nblank page state: ${await describeBlankPage(page, events)}`
-    throw e
-  })
-  if (advancesClock(id)) await page.clock.runFor(SETTLE_MS)
+  const blank = await loadStory(page, id)
+  if (blank) {
+    const state = await describeBlankPage(page, events)
+    expect(blank, `blank render guard for ${id}\nblank page state: ${state}`).toBeNull()
+  }
   return page.locator('#storybook-root')
 }
 
