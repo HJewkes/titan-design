@@ -15,7 +15,7 @@ import { VelocityStrip } from '../../components/custom/Workout/VelocityStrip'
 import { type SetRowProps } from '../../components/custom/Workout/SetRow'
 import { type SetStripSet } from '../../components/custom/Workout/SetStrip'
 import { StorySpecimens } from '../story-canvas'
-import { INSET, BORDER_SUBTLE, T_PRIMARY, T_SECONDARY, Page, monoTag } from './setHeadingKit'
+import { INSET, BORDER_SUBTLE, PAGE_TEXT, PAGE_TEXT_MUTED, Page, monoTag } from './setHeadingKit'
 
 const INTER = 'Inter, sans-serif'
 
@@ -83,9 +83,7 @@ export const Unified: Story = {
     >
       <StorySpecimens direction="row" gap="md">
         <View style={{ gap: 8 }}>
-          <Text style={{ ...monoTag, color: T_SECONDARY }}>
-            collapsed · rail item (ExerciseCardHeading)
-          </Text>
+          <Text style={monoTag}>collapsed · rail item (ExerciseCardHeading)</Text>
           <Surface>
             <ExerciseCardHeading
               name={CARD_PROPS.name}
@@ -101,9 +99,7 @@ export const Unified: Story = {
         </View>
 
         <View style={{ gap: 8 }}>
-          <Text style={{ ...monoTag, color: T_SECONDARY }}>
-            expanded · same header + revealed body
-          </Text>
+          <Text style={monoTag}>expanded · same header + revealed body</Text>
           <Surface>
             <ExerciseCard {...CARD_PROPS} defaultExpanded />
           </Surface>
@@ -113,7 +109,7 @@ export const Unified: Story = {
       <View style={{ height: 1, backgroundColor: BORDER_SUBTLE }} />
 
       <View style={{ gap: 10, maxWidth: 320 }}>
-        <Text style={{ ...monoTag, color: T_SECONDARY }}>
+        <Text style={monoTag}>
           the locked active-set spotlight · VelocityStrip variant=&quot;expanded&quot; (bare)
         </Text>
         <View style={{ backgroundColor: INSET, borderRadius: 8, padding: 12 }}>
@@ -126,7 +122,7 @@ export const Unified: Story = {
             set={{ type: 'straight', velocities: ACTIVE, planned: 10 }}
           />
         </View>
-        <Text style={{ fontFamily: INTER, fontSize: 12.5, color: T_SECONDARY, lineHeight: 19 }}>
+        <Text style={{ fontFamily: INTER, fontSize: 12.5, color: PAGE_TEXT_MUTED, lineHeight: 19 }}>
           A small fixed-height (~24px) velocity-HEIGHT strip: bar height ∝ velocity against a fixed
           1.15 m/s ceiling, planned reps as grey stubs, set-type aware — none of the full
           variant&apos;s labels, info row, or mount animation. It reads as the same object as the
@@ -138,7 +134,7 @@ export const Unified: Story = {
         style={{
           fontFamily: INTER,
           fontSize: 12.5,
-          color: T_PRIMARY,
+          color: PAGE_TEXT,
           lineHeight: 19,
           maxWidth: 780,
         }}

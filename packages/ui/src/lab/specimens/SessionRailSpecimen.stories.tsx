@@ -681,7 +681,9 @@ export const Directions: Story = {
             <ReferenceCard />
           </div>
           <div>
-            <div className="speclabel">the rail modifications</div>
+            <div className="speclabel" style={{ paddingTop: 0 }}>
+              the rail modifications
+            </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12, paddingRight: 8 }}>
               {RAIL_DELTAS.map(([k, v], i) => (
                 <div key={i} style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>

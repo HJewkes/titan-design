@@ -179,7 +179,7 @@ function EmbedBody() {
 function ExpandedItem({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <View style={{ gap: 8 }}>
-      <Text style={{ ...monoTag, color: T_SECONDARY }}>{label}</Text>
+      <Text style={monoTag}>{label}</Text>
       <View
         style={
           {

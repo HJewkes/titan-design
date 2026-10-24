@@ -15,13 +15,13 @@ import {
   RAIL_W,
   SET_GAP,
   T_PRIMARY,
-  T_SECONDARY,
   T_TERTIARY,
   INSET,
   velColor,
   reps,
   Page,
   sectionTitle,
+  PAGE_TEXT_MUTED,
 } from './setHeadingKit'
 
 // ---- variable-zone (floor→max) upcoming color — real ramp candidates (no invented hex)
@@ -161,7 +161,7 @@ function Row({ name, meta, children }: { name: string; meta: string; children: R
 function Col({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-      <span style={{ ...sectionTitle, color: T_SECONDARY }}>{label}</span>
+      <span style={{ ...sectionTitle, color: PAGE_TEXT_MUTED }}>{label}</span>
       {children}
     </div>
   )
@@ -197,7 +197,7 @@ function Sheet() {
               </div>
             </Row>
           ))}
-          <span style={{ fontSize: 10, color: T_TERTIARY, maxWidth: RAIL_W }}>
+          <span style={{ fontSize: 10, color: PAGE_TEXT_MUTED, maxWidth: RAIL_W }}>
             Each block: todo · 12 done (committed) · 17 done (into the variable zone). Variable-todo
             = the swatch; committed-todo = grey.
           </span>
@@ -214,7 +214,7 @@ function Sheet() {
               h={H}
             />
           </Row>
-          <span style={{ fontSize: 10, color: T_TERTIARY, maxWidth: RAIL_W }}>
+          <span style={{ fontSize: 10, color: PAGE_TEXT_MUTED, maxWidth: RAIL_W }}>
             One set, no rest; notches mark each load drop. Notch (2px) &lt; set gap (5px) so drops
             read as sub-structure of a single set.
           </span>
@@ -232,11 +232,11 @@ function Sheet() {
           <Row name="Triceps Pushdown" meta="myo · done · 12 + 4 + 4">
             <MyoBar activation={reps(12, 0.7)} clusters={[reps(4, 0.55), reps(4, 0.5)]} h={H} />
           </Row>
-          <span style={{ fontSize: 10, color: T_TERTIARY, maxWidth: RAIL_W }}>
+          <span style={{ fontSize: 10, color: PAGE_TEXT_MUTED, maxWidth: RAIL_W }}>
             Done: activation to near-failure, then rest-pause clusters. Cluster gap (3px) between
             notch and set gap.
           </span>
-          <span style={{ ...sectionTitle, color: T_SECONDARY, marginTop: 6 }}>
+          <span style={{ ...sectionTitle, color: PAGE_TEXT_MUTED, marginTop: 6 }}>
             upcoming · length unknown
           </span>
           <Row name="Cable Curl" meta="myo · ~15 + clusters to failure">
@@ -245,7 +245,7 @@ function Sheet() {
           <Row name="Triceps Pushdown" meta="myo · ~12 + clusters to failure">
             <MyoUpcomingBar activationLen={12} blue={VAR_CYAN_900} h={H} />
           </Row>
-          <span style={{ fontSize: 10, color: T_TERTIARY, maxWidth: RAIL_W }}>
+          <span style={{ fontSize: 10, color: PAGE_TEXT_MUTED, maxWidth: RAIL_W }}>
             {
               'Grey activation (expected) + blue "clusters-to-failure" trail that fades and leaves the right edge open — reuses the variable/opportunity blue, signalling "more coming, count unknown."'
             }

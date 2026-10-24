@@ -31,6 +31,11 @@ export const INSET = greyRamp[975] // sunk exercise-list column
 export const INSET_SHADOW =
   'inset 0 9px 12px -6px rgba(0,0,0,0.85), inset 7px 0 10px -6px rgba(0,0,0,0.7), inset 0 -1px 0 rgba(255,255,255,0.02)'
 
+// Text set straight on the story page follows the theme; the rail panels keep the dark hexes above.
+export const PAGE_TEXT = 'var(--color-text-primary)'
+export const PAGE_TEXT_MUTED = 'var(--color-text-secondary)'
+export const PAGE_TEXT_BRAND = 'var(--color-text-brand)'
+
 // ---- zone colors = real titan ramp pins (primitiveRamps)
 export const RED = primitiveRamps.red[600]
 export const ORANGE = primitiveRamps.orange[400]
@@ -357,6 +362,6 @@ export const sectionTitle = {
   fontWeight: 800,
   letterSpacing: 1.2,
   textTransform: 'uppercase',
-  color: ORANGE,
+  color: PAGE_TEXT_BRAND,
 } as const
-export const monoTag = { fontFamily: 'monospace', fontSize: 11, color: T_SECONDARY } as const
+export const monoTag = { fontFamily: 'monospace', fontSize: 11, color: PAGE_TEXT_MUTED } as const

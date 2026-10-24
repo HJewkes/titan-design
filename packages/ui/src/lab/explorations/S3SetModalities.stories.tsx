@@ -19,6 +19,7 @@ import {
   BORDER_SUBTLE,
   Page,
   monoTag,
+  PAGE_TEXT_MUTED,
 } from './setHeadingKit'
 
 const INTER = 'Inter, sans-serif'
@@ -277,7 +278,7 @@ function Swatch({ color, label, outlined }: { color: string; label: string; outl
           ...(outlined ? { borderWidth: 1, borderColor: VAR_EDGE } : {}),
         }}
       />
-      <Text style={{ fontFamily: INTER, fontSize: 12, color: T_SECONDARY }}>{label}</Text>
+      <Text style={{ fontFamily: INTER, fontSize: 12, color: PAGE_TEXT_MUTED }}>{label}</Text>
     </View>
   )
 }
@@ -343,7 +344,7 @@ export const StripVocabulary: Story = {
         style={{
           fontFamily: INTER,
           fontSize: 12.5,
-          color: T_TERTIARY,
+          color: PAGE_TEXT_MUTED,
           maxWidth: 820,
         }}
       >
