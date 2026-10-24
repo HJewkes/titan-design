@@ -35,9 +35,10 @@ import { getSemanticColors } from '../../theme/tokens/semantic'
 import { greyRamp, primitiveRamps } from '../../theme/tokens/primitives'
 import { alpha } from '../../utils/colors'
 import { paperSheet, insetWell, debossLabel } from '../../theme/materials'
+import { useOnSurfaceColor } from '../../components/ui/surface'
+import { StoryPage, StorySpecimens } from '../story-canvas'
 
 const C = getSemanticColors('dark')
-const PAGE_BG = greyRamp[975]
 const PANEL_BG = greyRamp[975]
 const FONT_HEAD = '"Space Grotesk", sans-serif'
 const FONT_UI = '"Nunito Sans", sans-serif'
@@ -600,9 +601,9 @@ function OptionColumn({ rule, title, note }: { rule: RuleKey; title: string; not
 // --- Scaffolding -----------------------------------------------------------------
 function Page({ children }: { children: ReactNode }) {
   return (
-    <View style={{ padding: 28, backgroundColor: PAGE_BG, minHeight: '100%', gap: 22 }}>
-      {children}
-    </View>
+    <StoryPage>
+      <StorySpecimens>{children}</StorySpecimens>
+    </StoryPage>
   )
 }
 
@@ -617,52 +618,59 @@ type Story = StoryObj
 /** The head-to-head: the same reps, two tint rules — B now a two-stage green-intensity scale. */
 export const DeviationVsControlAware: Story = {
   name: 'Deviation vs control-aware',
-  render: () => (
-    <Page>
-      <View style={{ gap: 6, maxWidth: 900 }}>
-        <Text
-          style={[
-            { fontSize: 9, letterSpacing: 1.4, fontFamily: FONT_MONO, color: C['text-tertiary'] },
-            debossLabel,
-          ]}
-        >
-          GHOST-SPARK LINE-TINT · OPEN DECISION
-        </Text>
-        <Text
-          style={{
-            fontSize: 22,
-            fontWeight: '900',
-            fontFamily: FONT_HEAD,
-            color: C['text-primary'],
-          }}
-        >
-          Green intensity for tempo, hue reserved for breakdown
-        </Text>
-        <Text
-          style={{ fontSize: 13, fontFamily: FONT_UI, color: C['text-secondary'], lineHeight: 19 }}
-        >
-          The current line tints by tempo-deviation MAGNITUDE, so any slow concentric warms toward
-          amber — including deliberate tempo work. Below, the SAME reps (identical controlled
-          eccentric; only the concentric differs) under two rules. Option B is refined: a controlled
-          rep STAYS green, but its green INTENSITY tracks tempo deviation (on-tempo = brightest →
-          more off-tempo = deeper green, hue held); the HUE only warms to amber → red when the grind
-          signature (velocity collapse) appears. So the three controlled reps read as three green
-          depths — bright → mid → deep — and only the grind goes amber. The phase-colored zero-axis
-          (ecc magenta · con cyan · pauses grey) is shared and unaffected.
-        </Text>
-      </View>
-      <View style={{ flexDirection: 'row', gap: 24, alignItems: 'flex-start' }}>
-        <OptionColumn
-          rule="deviation"
-          title="Deviation"
-          note="Tint by how far the concentric duration departs from the prescribed tempo. Slow → warm to amber, regardless of why."
-        />
-        <OptionColumn
-          rule="grind"
-          title="Control-aware"
-          note="Green INTENSITY encodes tempo adherence (hue stays green); the hue only warms to amber/red on the grind signature — velocity collapse within the concentric."
-        />
-      </View>
-    </Page>
-  ),
+  render: function Render() {
+    const onPage = {
+      primary: useOnSurfaceColor('primary'),
+      secondary: useOnSurfaceColor('secondary'),
+      tertiary: useOnSurfaceColor('tertiary'),
+    }
+    return (
+      <Page>
+        <View style={{ gap: 6, maxWidth: 900 }}>
+          <Text
+            style={[
+              { fontSize: 9, letterSpacing: 1.4, fontFamily: FONT_MONO, color: onPage.tertiary },
+              debossLabel,
+            ]}
+          >
+            GHOST-SPARK LINE-TINT · OPEN DECISION
+          </Text>
+          <Text
+            style={{
+              fontSize: 22,
+              fontWeight: '900',
+              fontFamily: FONT_HEAD,
+              color: onPage.primary,
+            }}
+          >
+            Green intensity for tempo, hue reserved for breakdown
+          </Text>
+          <Text
+            style={{ fontSize: 13, fontFamily: FONT_UI, color: onPage.secondary, lineHeight: 19 }}
+          >
+            The current line tints by tempo-deviation MAGNITUDE, so any slow concentric warms toward
+            amber — including deliberate tempo work. Below, the SAME reps (identical controlled
+            eccentric; only the concentric differs) under two rules. Option B is refined: a
+            controlled rep STAYS green, but its green INTENSITY tracks tempo deviation (on-tempo =
+            brightest → more off-tempo = deeper green, hue held); the HUE only warms to amber → red
+            when the grind signature (velocity collapse) appears. So the three controlled reps read
+            as three green depths — bright → mid → deep — and only the grind goes amber. The
+            phase-colored zero-axis (ecc magenta · con cyan · pauses grey) is shared and unaffected.
+          </Text>
+        </View>
+        <View style={{ flexDirection: 'row', gap: 24, alignItems: 'flex-start' }}>
+          <OptionColumn
+            rule="deviation"
+            title="Deviation"
+            note="Tint by how far the concentric duration departs from the prescribed tempo. Slow → warm to amber, regardless of why."
+          />
+          <OptionColumn
+            rule="grind"
+            title="Control-aware"
+            note="Green INTENSITY encodes tempo adherence (hue stays green); the hue only warms to amber/red on the grind signature — velocity collapse within the concentric."
+          />
+        </View>
+      </Page>
+    )
+  },
 }

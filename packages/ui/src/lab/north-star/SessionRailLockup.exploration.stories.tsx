@@ -41,6 +41,7 @@ import {
 } from '../../components/custom/Workout/SegmentedBar'
 import { VelocityStrip } from '../../components/custom/Workout/VelocityStrip'
 import { DualVelocityStrip } from '../../components/custom/Workout/DualVelocityStrip'
+import { StoryPage } from '../story-canvas'
 
 const C = getSemanticColors('dark')
 
@@ -54,7 +55,6 @@ function velocityHex(v: number): string {
   if (v >= 0.5) return VEL.orange
   return VEL.red
 }
-const PAGE_BG = greyRamp[975]
 const PANEL_BG = greyRamp[950]
 const ROW_BG = greyRamp[850]
 const FONT_HEAD = '"Space Grotesk", sans-serif'
@@ -366,9 +366,7 @@ export default meta
 type Story = StoryObj
 
 function Stage({ children }: { children: ReactNode }) {
-  return (
-    <View style={{ backgroundColor: PAGE_BG, padding: 24, minHeight: '100%' }}>{children}</View>
-  )
+  return <StoryPage>{children}</StoryPage>
 }
 
 /** The full lockup: rail + expanded table + dual, side by side, one language. */

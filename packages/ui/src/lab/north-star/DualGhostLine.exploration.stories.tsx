@@ -29,9 +29,10 @@ import { alpha } from '../../utils/colors'
 import { GRIND_THRESHOLD, ghostLineColor } from '../../components/custom/Fatigue/fatigue-tokens'
 import { GhostBand, GhostBloom, BAND_H, BAND_GAP, type Pt } from '../../components/custom/Fatigue'
 import type { PhaseSegment } from '../../components/custom/Fatigue'
+import { useOnSurfaceColor } from '../../components/ui/surface'
+import { StoryPage, StorySpecimens } from '../story-canvas'
 
 const C = getSemanticColors('dark')
-const PAGE_BG = greyRamp[975]
 const PANEL_BG = greyRamp[950]
 const FONT_HEAD = '"Space Grotesk", sans-serif'
 const FONT_UI = '"Nunito Sans", sans-serif'
@@ -432,9 +433,9 @@ function DualGhostCard() {
 // --- Scaffolding -----------------------------------------------------------------
 function Page({ children }: { children: ReactNode }) {
   return (
-    <View style={{ padding: 28, backgroundColor: PAGE_BG, minHeight: '100%', gap: 22 }}>
-      {children}
-    </View>
+    <StoryPage>
+      <StorySpecimens>{children}</StorySpecimens>
+    </StoryPage>
   )
 }
 
@@ -450,39 +451,46 @@ type Story = StoryObj
  *  (the ghost analogue of the diverging VelocityStrip = two composed VelocityStrips). */
 export const MirroredDual: Story = {
   name: 'Mirrored dual (GhostBand + 2×GhostBloom)',
-  render: () => (
-    <Page>
-      <View style={{ gap: 6, maxWidth: 920 }}>
-        <Text
-          style={[
-            { fontSize: 9, letterSpacing: 1.4, fontFamily: FONT_MONO, color: C['text-tertiary'] },
-            debossLabel,
-          ]}
-        >
-          DUAL-VOLTRA GHOST-SPARK · COMPOSED ON SHARED PRIMITIVES
-        </Text>
-        <Text
-          style={{
-            fontSize: 22,
-            fontWeight: '900',
-            fontFamily: FONT_HEAD,
-            color: C['text-primary'],
-          }}
-        >
-          One axis, two blooms — the dual is a flip of the single
-        </Text>
-        <Text
-          style={{ fontSize: 13, fontFamily: FONT_UI, color: C['text-secondary'], lineHeight: 19 }}
-        >
-          Mock dual set: Left Arm on-tempo (silver), Right Arm fatiguing — concentric drifting long
-          and sticking through a mid-rep collapse (grind signature crosses the red threshold). Built
-          exactly like the single GhostSpark: a shared `GhostBand` for phase + two `GhostBloom`s for
-          the lines, the bottom one flipped `orientation=&quot;down&quot;`.
-        </Text>
-      </View>
-      <View style={{ flexDirection: 'row', gap: 24, alignItems: 'flex-start', flexWrap: 'wrap' }}>
-        <DualGhostCard />
-      </View>
-    </Page>
-  ),
+  render: function Render() {
+    const onPage = {
+      primary: useOnSurfaceColor('primary'),
+      secondary: useOnSurfaceColor('secondary'),
+      tertiary: useOnSurfaceColor('tertiary'),
+    }
+    return (
+      <Page>
+        <View style={{ gap: 6, maxWidth: 920 }}>
+          <Text
+            style={[
+              { fontSize: 9, letterSpacing: 1.4, fontFamily: FONT_MONO, color: onPage.tertiary },
+              debossLabel,
+            ]}
+          >
+            DUAL-VOLTRA GHOST-SPARK · COMPOSED ON SHARED PRIMITIVES
+          </Text>
+          <Text
+            style={{
+              fontSize: 22,
+              fontWeight: '900',
+              fontFamily: FONT_HEAD,
+              color: onPage.primary,
+            }}
+          >
+            One axis, two blooms — the dual is a flip of the single
+          </Text>
+          <Text
+            style={{ fontSize: 13, fontFamily: FONT_UI, color: onPage.secondary, lineHeight: 19 }}
+          >
+            Mock dual set: Left Arm on-tempo (silver), Right Arm fatiguing — concentric drifting
+            long and sticking through a mid-rep collapse (grind signature crosses the red
+            threshold). Built exactly like the single GhostSpark: a shared `GhostBand` for phase +
+            two `GhostBloom`s for the lines, the bottom one flipped `orientation=&quot;down&quot;`.
+          </Text>
+        </View>
+        <View style={{ flexDirection: 'row', gap: 24, alignItems: 'flex-start', flexWrap: 'wrap' }}>
+          <DualGhostCard />
+        </View>
+      </Page>
+    )
+  },
 }
