@@ -108,8 +108,8 @@ titan-design/
 │   └── ui/                     # Component library
 │       ├── src/
 │       │   ├── components/     # UI components
-│       │   │   ├── ui/         # Gluestack-based
-│       │   │   └── custom/     # Hand-built
+│       │   │   ├── ui/         # Domain-free components
+│       │   │   └── custom/     # Domain families
 │       │   ├── theme/          # Design tokens & CSS
 │       │   └── utils/          # Utilities
 │       └── .storybook/         # Storybook config
@@ -143,7 +143,6 @@ titan-design/
 |------------|---------|
 | React Native | Cross-platform primitives |
 | NativeWind v4 | Tailwind CSS for React Native |
-| Gluestack UI | Accessible component foundation |
 | Storybook 10 | Component documentation |
 | Vitest | Unit testing |
 | TypeScript | Type safety |
@@ -161,7 +160,7 @@ Design for dark mode first, add explicit light mode styles.
 
 ### 3. Compound Components
 
-Complex components follow the Gluestack pattern:
+Complex components use an explicit compound structure:
 
 ```tsx fragment
 <Button variant="solid" color="primary">
@@ -186,7 +185,7 @@ All components include proper ARIA attributes and accessibility labels.
 
 ## Components
 
-### Core UI (Gluestack-based)
+### Core UI
 
 - Button, Input, Card, Badge
 - Checkbox, Switch, Radio
