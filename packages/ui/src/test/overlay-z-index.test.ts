@@ -33,7 +33,7 @@ const OVERLAY_STEPS: Array<[string, string[]]> = [
   ['select/SelectPopover.tsx', ['z-overlay', 'z-popover']],
   ['toolbar-button/ToolbarButtonParts.tsx', ['z-overlay', 'z-popover']],
   ['autocomplete/AutocompleteParts.tsx', ['z-popover']],
-  ['toast/Toast.tsx', ["bodyOverlayZIndex('toast')"]],
+  ['toast/toastViewport.ts', ["bodyOverlayZIndex('toast')"]],
   ['tooltip/Tooltip.tsx', ['z-tooltip']],
   ['tooltip/TooltipParts.tsx', ["bodyOverlayZIndex('tooltip')"]],
 ]
