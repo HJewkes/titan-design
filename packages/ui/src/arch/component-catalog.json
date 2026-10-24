@@ -12512,6 +12512,114 @@
       "tier": "organism"
     },
     {
+      "composes": [
+        "DependencyFocusPanel",
+        "NetworkGraph"
+      ],
+      "family": "ui/charts",
+      "file": "packages/ui/src/components/ui/charts/dependency-graph/DependencyGraph.tsx",
+      "name": "DependencyGraph",
+      "props": [
+        {
+          "default": null,
+          "description": "The root is named `\"<label>.",
+          "name": "accessibilityLabel",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Tailwind classes for the outer view.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Initial focus when uncontrolled.",
+          "name": "defaultFocusedId",
+          "required": false,
+          "type": "string | null"
+        },
+        {
+          "default": null,
+          "description": "Ego mode, for a page about one node: draws this node with only what it depends on and what depends on it, on a layout computed for that subgraph (`egoSubgraph`).",
+          "name": "egoId",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Shown when no node is drawn.",
+          "name": "emptyState",
+          "required": false,
+          "type": "ReactNode"
+        },
+        {
+          "default": null,
+          "description": "Controlled focus: the node whose dependencies and dependents stay lit.",
+          "name": "focusedId",
+          "required": false,
+          "type": "string | null"
+        },
+        {
+          "default": null,
+          "description": "The nodes, edges, tiers and layout; with `egoId` set, only that node's neighbourhood is drawn.",
+          "name": "graph",
+          "required": true,
+          "type": "DependencyGraphInput"
+        },
+        {
+          "default": null,
+          "description": "Viewport height in px; a larger layout scrolls.",
+          "name": "height",
+          "required": true,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Renders a skeleton of `width` by `height` instead of the graph.",
+          "name": "isLoading",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "Called with the newly focused node id, or `null` when focus clears.",
+          "name": "onFocusedIdChange",
+          "required": false,
+          "type": "((id: string | null) => void)"
+        },
+        {
+          "default": null,
+          "description": "A link to the node's own page, shown in the focus panel, e.g. `(node) => <Link href={`/reference/${node.id}`}>Open reference</Link>`.",
+          "name": "renderNodeLink",
+          "required": false,
+          "type": "((node: DependencyNode) => ReactNode)"
+        },
+        {
+          "default": null,
+          "description": "Viewport width in px; a larger layout scrolls.",
+          "name": "width",
+          "required": true,
+          "type": "number"
+        }
+      ],
+      "purpose": "A system's units boxed by tier, with their dependencies as routed edges, on a layout computed before render.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/charts/dependency-graph/DependencyGraph.tsx",
+        "status": "packages/ui/src/components/ui/charts/dependency-graph/DependencyGraph.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-organisms-dependencygraph--default",
+        "components-organisms-dependencygraph--ego",
+        "components-organisms-dependencygraph--empty",
+        "components-organisms-dependencygraph--focused"
+      ],
+      "tier": "organism"
+    },
+    {
       "composes": [],
       "family": "ui/charts",
       "file": "packages/ui/src/components/ui/charts/gauge/Gauge.tsx",

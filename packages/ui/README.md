@@ -186,6 +186,12 @@ their heavier runtime dependencies or the code of a domain it does not need:
   It also carries the video-only components and utils (`EvidenceChip`,
   `elideSource`), which never shipped on the root.
 
+- **`@titan-design/react-ui/dependency-graph`** — `DependencyGraph`, a system's
+  units boxed by tier with routed dependency edges on a layout computed at build
+  time, with `egoSubgraph`, `neighbourhood`, `cleanDependencies`,
+  `dependencyEdgeId`, `fromCompoundLayout` and their types. It never shipped on
+  the root, which keeps the root bundle's budget.
+
 ## Component API
 
 ### Button

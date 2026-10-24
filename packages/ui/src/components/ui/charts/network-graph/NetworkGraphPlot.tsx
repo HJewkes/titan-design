@@ -61,7 +61,13 @@ interface EdgeMarkProps {
   isDimmed: boolean
 }
 
+/** The arrowhead for a rest colour: the shared one, or one per edge-kind colour. */
+const restMarkerId = (prefix: string, color: ColorToken | undefined) =>
+  color ? `${prefix}-rest-${color}` : `${prefix}-rest`
+
 function EdgeMark({ geometry, markerPrefix, isStrong, isDimmed }: EdgeMarkProps) {
+  const marker = isStrong ? `${markerPrefix}-strong` : restMarkerId(markerPrefix, geometry.color)
+  const stroke = isStrong ? EDGE_STRONG_COLOR : (geometry.color ?? EDGE_REST_COLOR)
   return (
     // eslint-disable-next-line titan/no-html-element -- DOM svg, web and React Native Web only (contract C9)
     <path
@@ -69,9 +75,9 @@ function EdgeMark({ geometry, markerPrefix, isStrong, isDimmed }: EdgeMarkProps)
       fill="none"
       strokeWidth={EDGE_STROKE_WIDTHS[geometry.step]}
       strokeDasharray={geometry.isDashed ? EDGE_DASH : undefined}
-      markerEnd={`url(#${markerPrefix}-${isStrong ? 'strong' : 'rest'})`}
+      markerEnd={`url(#${marker})`}
       opacity={isDimmed ? DIM_OPACITY : 1}
-      style={{ stroke: resolveColor(isStrong ? EDGE_STRONG_COLOR : EDGE_REST_COLOR) }}
+      style={{ stroke: resolveColor(stroke) }}
       data-edge={geometry.id}
       data-emphasis={isStrong ? 'strong' : 'rest'}
     />
@@ -130,6 +136,11 @@ export interface NetworkGraphPlotProps {
   markerPrefix: string
 }
 
+/** Each distinct edge-kind colour, once, for its arrowhead. */
+const kindColorsOf = (geometries: readonly EdgeGeometry[]) => [
+  ...new Set(geometries.flatMap((g) => (g.color ? [g.color] : []))),
+]
+
 /** The painted layer: edges, arrowheads, pulses and node marks. Hidden from assistive tech. */
 export function NetworkGraphPlot(props: NetworkGraphPlotProps) {
   const { model, geometries, nodeColors, emphasis, active, selection, pulsing, animate } = props
@@ -148,6 +159,14 @@ export function NetworkGraphPlot(props: NetworkGraphPlotProps) {
       <defs>
         <ArrowMarker id={`${markerPrefix}-rest`} color={EDGE_REST_COLOR} refX={refX} />
         <ArrowMarker id={`${markerPrefix}-strong`} color={EDGE_STRONG_COLOR} refX={refX} />
+        {kindColorsOf(geometries).map((color) => (
+          <ArrowMarker
+            key={color}
+            id={restMarkerId(markerPrefix, color)}
+            color={color}
+            refX={refX}
+          />
+        ))}
       </defs>
       {geometries.map((geometry) => (
         <EdgeMark

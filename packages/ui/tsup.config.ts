@@ -13,6 +13,7 @@ export default defineConfig({
     motion: 'src/motion.ts',
     diagram: 'src/diagram.ts',
     'visual-router': 'src/visual-router.ts',
+    'dependency-graph': 'src/dependency-graph.ts',
     'theme/index': 'src/theme/index.ts',
     'theme/tokens': 'src/theme/tokens/index.ts',
     'theme/tokens-css': 'src/theme/tokens-css.ts',
@@ -28,12 +29,7 @@ export default defineConfig({
   // bundles what it imports, so the root stays nativewind-free (as CJS already
   // was) and ThemeProvider's nativewind chain is confined to the /theme entry.
   splitting: false,
-  external: [
-    'react',
-    'react-dom',
-    'react-native',
-    'react-native-web',
-  ],
+  external: ['react', 'react-dom', 'react-native', 'react-native-web'],
   treeshake: true,
   esbuildOptions(options) {
     options.jsx = 'automatic'

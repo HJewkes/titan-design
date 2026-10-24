@@ -3047,6 +3047,7 @@ export interface GraphEdge {
 
 // @public
 export interface GraphEdgeKind {
+    color?: ColorToken;
     id: string;
     label: string;
     stroke?: 'solid' | 'dashed';
@@ -3067,6 +3068,7 @@ export interface GraphGroupRegion {
     label: string;
     nodeIds: readonly string[];
     radius: number;
+    stroke?: ColorToken;
     variant: 'region' | 'ring' | 'box';
 }
 

@@ -22,7 +22,7 @@ const objectEntries = Object.entries(pkg.exports).filter(
 )
 
 describe('package.json exports', () => {
-  it('has the ten TypeScript subpaths as object entries', () => {
+  it('has the eleven TypeScript subpaths as object entries', () => {
     expect(objectEntries.map(([subpath]) => subpath)).toEqual([
       '.',
       './bodymap',
@@ -31,6 +31,7 @@ describe('package.json exports', () => {
       './motion',
       './diagram',
       './visual-router',
+      './dependency-graph',
       './theme',
       './theme/tokens',
       './theme/tokens-css',
@@ -66,6 +67,22 @@ describe('package.json exports', () => {
   it('resolves routeVisual through the ./visual-router subpath', async () => {
     const entry = await import('@titan-design/react-ui/visual-router')
     expect(entry.routeVisual).toBeTypeOf('function')
+  })
+
+  it('resolves DependencyGraph through the ./dependency-graph subpath', async () => {
+    const entry = await import('@titan-design/react-ui/dependency-graph')
+    expect(entry.DependencyGraph).toBeTypeOf('function')
+    expect(entry.fromCompoundLayout).toBeTypeOf('function')
+  })
+})
+
+// DependencyGraph exports from /dependency-graph alone; the root keeps its budget.
+describe('dependency-graph-only exports', () => {
+  const SUBPATH_ONLY_VALUES = ['DependencyGraph', 'fromCompoundLayout', 'egoSubgraph']
+
+  it.each(SUBPATH_ONLY_VALUES)('%s is absent from the root entry', async (name) => {
+    const root: Record<string, unknown> = await import('./index')
+    expect(root).not.toHaveProperty(name)
   })
 })
 

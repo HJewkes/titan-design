@@ -1,0 +1,12 @@
+{
+  "v": 1,
+  "mutations": [
+    {
+      "name": "a centred layout box is passed through as if it were top-left",
+      "file": "packages/ui/src/components/ui/charts/dependency-graph/compound-layout-adapter.ts",
+      "find": "  x: x - width / 2,\n  y: y - height / 2,\n",
+      "replace": "  x,\n  y,\n",
+      "kills": ["turns centred node boxes into top-left boxes"]
+    }
+  ]
+}

@@ -66,6 +66,8 @@ export interface EdgeGeometry {
   /** Stroke step from `binWeight`, 0 lowest. */
   step: 0 | 1 | 2
   isDashed: boolean
+  /** The edge kind's colour at rest; unset paints `EDGE_REST_COLOR`. */
+  color?: ColorToken
 }
 
 /** Edges joining the same pair of nodes, in either direction, spread about the centre line. */
@@ -177,6 +179,7 @@ export function edgeGeometries(
 ): EdgeGeometry[] {
   const range = weightRange(model.drawnEdges)
   const dashed = new Set(edgeKinds.filter((kind) => kind.stroke === 'dashed').map((k) => k.id))
+  const colors = new Map(edgeKinds.flatMap((k) => (k.color ? [[k.id, k.color] as const] : [])))
   const spread = edgeSpread(model)
   return model.drawnEdges.flatMap((edge) => {
     const id = edgeId(edge)
@@ -189,6 +192,9 @@ export function edgeGeometries(
         ...curve,
         step: binWeight(edge.weight, range),
         isDashed: edge.kind !== undefined && dashed.has(edge.kind),
+        ...(edge.kind !== undefined && colors.has(edge.kind)
+          ? { color: colors.get(edge.kind) }
+          : {}),
       },
     ]
   })
