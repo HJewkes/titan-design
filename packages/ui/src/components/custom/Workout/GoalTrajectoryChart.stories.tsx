@@ -3,6 +3,7 @@ import { useCallback, useState } from 'react'
 import { View } from 'react-native'
 import { Surface } from '../../ui/surface'
 import { Typography } from '../../ui/typography'
+import { StorySpecimen, StorySpecimens } from '../../../lab/story-canvas'
 import {
   GoalTrajectoryChart,
   GoalTrajectoryTreatment,
@@ -495,15 +496,19 @@ const TREATMENTS: Array<{ caption: string; args: Partial<Story['args']> }> = [
 export const ExploreAllTreatments: Story = {
   args: { ...NoMotion.args },
   render: (args) => (
-    <View style={{ gap: 20 }}>
+    <StorySpecimens>
       {TREATMENTS.map((treatment) => (
-        <View key={treatment.caption} style={{ gap: 6 }}>
-          <Typography variant="caption" color="secondary">
-            {treatment.caption}
-          </Typography>
+        <StorySpecimen
+          key={treatment.caption}
+          label={
+            <Typography variant="caption" color="secondary">
+              {treatment.caption}
+            </Typography>
+          }
+        >
           {renderWithTreatment({ ...args, ...treatment.args })}
-        </View>
+        </StorySpecimen>
       ))}
-    </View>
+    </StorySpecimens>
   ),
 }

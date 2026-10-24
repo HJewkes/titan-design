@@ -11,6 +11,7 @@ import { View, Text } from 'react-native'
 import { primitiveColors, greyRamp } from '../../../theme/tokens/primitives'
 import { alpha } from '../../../utils/colors'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { StorySpecimens } from '../../../lab/story-canvas'
 import {
   SILVER,
   DRIFT_GREY,
@@ -23,7 +24,8 @@ import {
   MONO_TEXT,
 } from './fatigue-tokens'
 
-const PAGE_BG = greyRamp[975]
+// The swatches are judged on the dark wall plane they are drawn on, so their panel and its ink
+// stay dark in both themes while the page around it follows the toolbar.
 const PANEL_BG = greyRamp[950]
 const t = getSemanticColors('dark')
 
@@ -31,6 +33,7 @@ const meta: Meta = {
   title: 'Foundations/Color/Silver-Red Scheme',
   tags: ['autodocs', 'status:candidate', '!status:review'],
   parameters: {
+    canvas: 'page',
     layout: 'fullscreen',
     docs: {
       description: {
@@ -169,30 +172,23 @@ const PHASE_AXIS: SwatchDef[] = [
 export const Palette: Story = {
   name: 'Silver-Red Palette',
   render: () => (
-    <View style={{ padding: 32, backgroundColor: PAGE_BG, minHeight: '100%', gap: 28 }}>
+    <StorySpecimens>
       <View style={{ gap: 8, maxWidth: 720 }}>
         <Text
-          style={{
-            fontSize: 9,
-            letterSpacing: 1.4,
-            ...MONO_TEXT,
-            color: t['text-tertiary'],
-          }}
+          className="text-text-secondary"
+          style={{ fontSize: 9, letterSpacing: 1.4, ...MONO_TEXT }}
         >
           LIVE-FATIGUE · QUALITY COLOUR LANGUAGE
         </Text>
         <Text
-          style={{
-            fontSize: 24,
-            fontWeight: '900',
-            fontFamily: FONT_HEAD,
-            color: t['text-primary'],
-          }}
+          className="text-text-primary"
+          style={{ fontSize: 24, fontWeight: '900', fontFamily: FONT_HEAD }}
         >
           Silver → Red
         </Text>
         <Text
-          style={{ fontSize: 13, fontFamily: FONT_UI, color: t['text-secondary'], lineHeight: 19 }}
+          className="text-text-secondary"
+          style={{ fontSize: 13, fontFamily: FONT_UI, lineHeight: 19 }}
         >
           One language for every quality readout in the family: SILVER when the rep is right
           (dimming toward DRIFT_GREY with tempo drift), SHADES OF RED when something&apos;s wrong —
@@ -202,24 +198,25 @@ export const Palette: Story = {
         </Text>
       </View>
 
-      <View style={[{ borderRadius: 14, padding: 24, gap: 24, backgroundColor: PANEL_BG }]}>
-        <SwatchGroup label="CONTROLLED — SILVER" defs={CONTROL} />
-        <SwatchGroup label="COLLAPSE — SHADES OF RED (light → deep by severity)" defs={COLLAPSE} />
-        <SwatchGroup label="PHASE AXIS — ghost band tones" defs={PHASE_AXIS} />
+      <View style={{ borderRadius: 14, padding: 24, backgroundColor: PANEL_BG }}>
+        <StorySpecimens>
+          <SwatchGroup label="CONTROLLED — SILVER" defs={CONTROL} />
+          <SwatchGroup
+            label="COLLAPSE — SHADES OF RED (light → deep by severity)"
+            defs={COLLAPSE}
+          />
+          <SwatchGroup label="PHASE AXIS — ghost band tones" defs={PHASE_AXIS} />
+        </StorySpecimens>
       </View>
 
       <Text
-        style={{
-          fontSize: 11,
-          fontFamily: FONT_UI,
-          color: t['text-tertiary'],
-          fontStyle: 'italic',
-        }}
+        className="text-text-secondary"
+        style={{ fontSize: 11, fontFamily: FONT_UI, fontStyle: 'italic' }}
       >
         Used by: RomProgressionChart, GhostSpark, DualGhostLine (dual ghost-line). Source of truth:
         `fatigue-tokens.ts` (SILVER, DRIFT_GREY, RED_LIGHT/MID/DEEP, PHASE_AXIS_COLOR,
         `ghostLineColor`).
       </Text>
-    </View>
+    </StorySpecimens>
   ),
 }
