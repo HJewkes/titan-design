@@ -3039,7 +3039,6 @@ export interface GraphBox {
 export interface GraphEdge {
     activityAt?: number;
     id?: string;
-    isMuted?: boolean;
     kind?: string;
     source: string;
     target: string;
@@ -3048,6 +3047,7 @@ export interface GraphEdge {
 
 // @public
 export interface GraphEdgeKind {
+    color?: ColorToken;
     id: string;
     label: string;
     stroke?: 'solid' | 'dashed';
@@ -3068,6 +3068,7 @@ export interface GraphGroupRegion {
     label: string;
     nodeIds: readonly string[];
     radius: number;
+    stroke?: ColorToken;
     variant: 'region' | 'ring' | 'box';
 }
 

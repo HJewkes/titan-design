@@ -4,8 +4,8 @@ import { hydrateRoot } from 'react-dom/client'
 import { renderToString } from 'react-dom/server'
 import { Text } from 'react-native'
 import { describe, expect, it, vi } from 'vitest'
-import { MUTED_OPACITY } from '../network-graph/NetworkGraphNodeMarks'
 import { DependencyGraph } from './DependencyGraph'
+import { LIT_MARK } from './dependency-graph-model'
 import { architectureGraph, EGO_FOCUS, egoGraph } from './fixtures'
 import type { DependencyGraphProps } from './types'
 
@@ -23,10 +23,16 @@ const graph = (props: Partial<DependencyGraphProps> = {}) => (
 const root = () => screen.getByTestId('network-graph-root')
 const nodeButton = (id: string) => screen.getByTestId(`network-graph-node-${id}`)
 const panel = () => screen.getByTestId('dependency-graph-focus')
-const isMuted = (container: HTMLElement, id: string) =>
-  container.querySelector(`g[data-node="${id}"]`)?.getAttribute('opacity') === String(MUTED_OPACITY)
-const edgeOpacity = (container: HTMLElement, id: string) =>
-  container.querySelector(`path[data-edge="${id}"]`)?.getAttribute('opacity')
+const LIT = `--color-${LIT_MARK}`
+/** Whether a node box is outlined in the lit colour (its selection ring aside). */
+const isLit = (container: HTMLElement, id: string) =>
+  [...container.querySelectorAll(`g[data-node="${id}"] > rect:not([data-ring])`)].some((rect) =>
+    (rect as SVGElement).style.stroke.includes(LIT)
+  )
+const isEdgeLit = (container: HTMLElement, id: string) =>
+  (container.querySelector(`path[data-edge="${id}"]`) as SVGElement | null)?.style.stroke.includes(
+    LIT
+  )
 const drawnNodes = (container: HTMLElement) =>
   [...container.querySelectorAll('g[data-node]')].map((g) => g.getAttribute('data-node'))
 
@@ -52,13 +58,13 @@ describe('DependencyGraph', () => {
     focusAndLeave(EGO_FOCUS)
 
     for (const id of ['api', 'schema', 'logger', 'config', 'console', 'mobile', 'studio']) {
-      expect(isMuted(container, id)).toBe(false)
+      expect(isLit(container, id)).toBe(true)
     }
     for (const id of ['kernel', 'billing', 'docs', 'search']) {
-      expect(isMuted(container, id)).toBe(true)
+      expect(isLit(container, id)).toBe(false)
     }
-    expect(edgeOpacity(container, 'console->api')).toBe('1')
-    expect(edgeOpacity(container, 'schema->kernel')).toBe(String(MUTED_OPACITY))
+    expect(isEdgeLit(container, 'console->api')).toBe(true)
+    expect(isEdgeLit(container, 'schema->kernel')).toBe(false)
   })
 
   it('names the focused node, what it depends on and what uses it, with the link slot', () => {
@@ -90,7 +96,7 @@ describe('DependencyGraph', () => {
     fireEvent.click(nodeButton('api'))
     act(() => root().blur())
 
-    expect(isMuted(container, 'kernel')).toBe(false)
+    expect(isLit(container, 'schema')).toBe(false)
     expect(panel()).toHaveTextContent('Select a box')
   })
 
@@ -101,8 +107,8 @@ describe('DependencyGraph', () => {
     focusAndLeave('docs')
 
     expect(onFocusedIdChange).toHaveBeenCalledWith('docs')
-    expect(isMuted(container, 'schema')).toBe(false)
-    expect(isMuted(container, 'api')).toBe(true)
+    expect(isLit(container, 'schema')).toBe(true)
+    expect(isLit(container, 'api')).toBe(false)
   })
 
   it('ego mode draws only the node, its dependencies and its dependents', () => {

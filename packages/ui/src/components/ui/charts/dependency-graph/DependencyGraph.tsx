@@ -4,12 +4,7 @@ import { useControllableState } from '../../../../hooks/useControllableState'
 import { cn } from '../../../../utils/cn'
 import { NetworkGraph } from '../network-graph/NetworkGraph'
 import type { GraphItemRef } from '../network-graph/types'
-import {
-  egoSubgraph,
-  muteOutsideFocus,
-  neighbourhood,
-  toNetworkGraph,
-} from './dependency-graph-model'
+import { egoSubgraph, lightFocus, neighbourhood, toNetworkGraph } from './dependency-graph-model'
 import { DependencyFocusPanel } from './DependencyFocusPanel'
 import type { DependencyGraphProps } from './types'
 
@@ -35,7 +30,7 @@ function useDependencyGraph({ graph, egoId, ...focusOptions }: GraphOptions) {
   const network = useMemo(() => toNetworkGraph(data), [data])
   const focused = data.nodes.find((node) => node.id === focus) ?? null
   const focusedId = focused?.id ?? null
-  const lit = useMemo(() => muteOutsideFocus(network, focusedId), [network, focusedId])
+  const lit = useMemo(() => lightFocus(network, focusedId), [network, focusedId])
   const onSelectionChange = useCallback(
     (selection: GraphItemRef | null) => setFocus(selection?.type === 'node' ? selection.id : null),
     [setFocus]
@@ -46,7 +41,7 @@ function useDependencyGraph({ graph, egoId, ...focusOptions }: GraphOptions) {
 /**
  * A system's units boxed by tier, with their dependencies as routed edges, on a layout computed
  * before render. Pressing a unit, or Enter on it, focuses it: its dependencies, its dependents and
- * the edges to them stay at full strength while the rest mutes, and the panel below names them,
+ * the edges to them brighten to the lit colour while the rest stays at rest, and the panel names them,
  * with the consumer's link to the unit's page. `egoId` draws one unit's neighbourhood only. No
  * layout runs at render and nothing reads `window` or `document`, so it server-renders and
  * hydrates. There is no error state: the consumer renders the failure.

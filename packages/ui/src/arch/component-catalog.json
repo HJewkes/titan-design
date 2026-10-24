@@ -12614,8 +12614,8 @@
       "storyIds": [
         "components-organisms-dependencygraph--default",
         "components-organisms-dependencygraph--ego",
-        "components-organisms-dependencygraph--focused",
-        "components-organisms-dependencygraph--light"
+        "components-organisms-dependencygraph--empty",
+        "components-organisms-dependencygraph--focused"
       ],
       "tier": "organism"
     },

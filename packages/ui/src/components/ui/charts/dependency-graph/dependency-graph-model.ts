@@ -1,6 +1,13 @@
 // Pure: a dependency graph's neighbourhoods, its ego subgraph and its NetworkGraph props.
+import type { ColorToken } from '../../../../theme/resolve-color'
 import { boxLayout } from '../network-graph/layouts/box-layout-model'
-import type { GraphEdge, GraphKind, GraphLayout, GraphNode } from '../network-graph/types'
+import type {
+  GraphEdge,
+  GraphEdgeKind,
+  GraphKind,
+  GraphLayout,
+  GraphNode,
+} from '../network-graph/types'
 import type {
   DependencyGraphData,
   DependencyGraphInput,
@@ -50,11 +57,19 @@ export function egoSubgraph(data: DependencyGraphData, id: string): DependencyGr
   return { nodes: clean.nodes.filter((node) => kept.has(node.id)), edges }
 }
 
+/** Marks at rest: the boundary token that clears 3:1 on every plane the graph sits on. */
+export const REST_MARK: ColorToken = 'border-input'
+/** The focus, its neighbours and the edges between them. */
+export const LIT_MARK: ColorToken = 'text-primary'
+export const DEPENDENCY_KIND = 'dependency'
+export const LIT_PREFIX = 'lit:'
+
 /**
- * Mutes every node and edge outside `focusId`'s direct neighbourhood, so the focus, its
- * dependencies, its dependents and the edges between them stand out. Unchanged without a focus.
+ * Lights `focusId`'s direct neighbourhood: the focus, its dependencies, its dependents and the
+ * edges between them move to their lit kinds, painted in `LIT_MARK`; the rest stays at rest.
+ * Brightening rather than fading keeps every mark above 3:1. Unchanged without a focus.
  */
-export function muteOutsideFocus(
+export function lightFocus(
   graph: { nodes: readonly GraphNode[]; edges: readonly GraphEdge[] },
   focusId: string | null
 ): { nodes: GraphNode[]; edges: GraphEdge[] } {
@@ -64,20 +79,34 @@ export function muteOutsideFocus(
     focusId,
     ...graph.edges.filter(touches).flatMap((edge) => [edge.source, edge.target]),
   ])
+  const lightKind = (kind: string | undefined) => `${LIT_PREFIX}${kind ?? ''}`
   return {
-    nodes: graph.nodes.map((node) => ({ ...node, isMuted: !lit.has(node.id) })),
-    edges: graph.edges.map((edge) => ({ ...edge, isMuted: !touches(edge) })),
+    nodes: graph.nodes.map((node) =>
+      lit.has(node.id) ? { ...node, kind: lightKind(node.kind) } : node
+    ),
+    edges: graph.edges.map((edge) =>
+      touches(edge) ? { ...edge, kind: lightKind(edge.kind) } : edge
+    ),
   }
+}
+
+/** Each kind at rest and lit, under one label, so names and the summary read the same. */
+function withLitKinds<K extends { id: string; label: string }>(kinds: readonly K[]) {
+  return kinds.flatMap((kind) => [
+    { ...kind, color: REST_MARK },
+    { ...kind, id: `${LIT_PREFIX}${kind.id}`, color: LIT_MARK },
+  ])
 }
 
 export interface DependencyNetwork {
   nodes: GraphNode[]
   edges: GraphEdge[]
   nodeKinds: GraphKind[]
+  edgeKinds: GraphEdgeKind[]
   layout: GraphLayout
 }
 
-/** NetworkGraph props: one box per node, coloured by tier, inside its tier's box, on its routes. */
+/** NetworkGraph props: one box per node inside its tier's box, on its routes, every mark at rest. */
 export function toNetworkGraph({
   tiers,
   layout,
@@ -97,14 +126,16 @@ export function toNetworkGraph({
       id: dependencyEdgeId(source, target),
       source,
       target,
+      kind: DEPENDENCY_KIND,
     })),
-    nodeKinds: tiers.map(({ id, label }) => ({ id, label })),
+    nodeKinds: withLitKinds(tiers.map(({ id, label }) => ({ id, label }))),
+    edgeKinds: withLitKinds([{ id: DEPENDENCY_KIND, label: 'depends on' }]),
     layout: boxLayout({
       boxes: layout.nodes,
       routes: layout.routes,
       groups: tiers.flatMap(({ id, label }) => {
         const box = tierBoxes[id]
-        return box && used.has(id) ? [{ id: `tier:${id}`, label, box }] : []
+        return box && used.has(id) ? [{ id: `tier:${id}`, label, box, stroke: REST_MARK }] : []
       }),
     }),
   }

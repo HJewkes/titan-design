@@ -13,6 +13,7 @@ import {
   smallFixture,
   type GraphFixture,
 } from './fixtures'
+import { boxLayout } from './layouts/box-layout-model'
 import { clusteredLayout } from './layouts/clustered-layout-model'
 import { egoLayout } from './layouts/ego-layout-model'
 import { forceLayout } from './layouts/force-layout-model'
@@ -21,7 +22,7 @@ import { labelBox, RING_LABEL_CLEARANCE } from './network-graph-labels'
 import { buildGraphModel, GRAPH_NODE_RADIUS } from './network-graph-model'
 import { ARROW_LENGTH } from './network-graph-plot-model'
 import { NetworkGraph } from './NetworkGraph'
-import { DIM_OPACITY, MUTED_OPACITY } from './NetworkGraphPlot'
+import { DIM_OPACITY } from './NetworkGraphPlot'
 import type { GraphLayout, GraphLayoutInput, GraphPoint, NetworkGraphProps } from './types'
 import { PULSE_MS } from './useNetworkGraph'
 
@@ -438,17 +439,45 @@ describe('NetworkGraph active item (R1: aria-activedescendant)', () => {
   })
 })
 
-describe('NetworkGraph muted edges', () => {
-  it('a muted edge paints at half opacity and an unmuted one at full', () => {
-    const edges = smallFixture.edges.map((e) =>
-      e.kind === 'message' ? { ...e, isMuted: true } : e
+describe('NetworkGraph kind and box colours', () => {
+  const strokeOf = (el: Element | null) => (el as SVGElement | null)?.style.stroke
+
+  it('an edge kind colour paints its edges and their arrowhead; other edges keep the rest colour', () => {
+    const edgeKinds = smallFixture.edgeKinds.map((k) =>
+      k.id === 'message' ? { ...k, color: 'border-input' as const } : k
     )
-    const { container } = renderGraph({ edges })
-    expect(edgeMark(container, MESSAGE_TO_WORKER_01)).toHaveAttribute(
-      'opacity',
-      String(MUTED_OPACITY)
+    const { container } = renderGraph({ edgeKinds })
+    const message = edgeMark(container, MESSAGE_TO_WORKER_01)
+    expect(strokeOf(message)).toContain('--color-border-input')
+    expect(message?.getAttribute('marker-end')).toMatch(/-rest-border-input\)$/)
+    expect(strokeOf(edgeMark(container, SPAWN_TO_WORKER_01))).toContain('--color-hairline-strong')
+  })
+
+  it('a box group stroke outlines its box; a group without one keeps the hairline', () => {
+    const box = (x: number) => ({ x, y: 20, width: 80, height: 40 })
+    const layout = boxLayout({
+      boxes: { a: box(20), b: box(200) },
+      groups: [
+        {
+          id: 'left',
+          label: 'Left',
+          box: { x: 0, y: 0, width: 140, height: 80 },
+          stroke: 'border-input',
+        },
+        { id: 'right', label: 'Right', box: { x: 180, y: 0, width: 140, height: 80 } },
+      ],
+    })
+    const nodes = [
+      { id: 'a', label: 'A' },
+      { id: 'b', label: 'B' },
+    ]
+    const { container } = renderGraph({ nodes, edges: [], layout })
+    expect(strokeOf(container.querySelector('rect[data-group="left"]'))).toContain(
+      '--color-border-input'
     )
-    expect(edgeMark(container, SPAWN_TO_WORKER_01)).toHaveAttribute('opacity', '1')
+    expect(strokeOf(container.querySelector('rect[data-group="right"]'))).toContain(
+      '--color-hairline-default'
+    )
   })
 })
 

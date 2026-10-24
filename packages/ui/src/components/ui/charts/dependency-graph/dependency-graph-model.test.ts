@@ -4,7 +4,10 @@ import {
   cleanDependencies,
   dependencyEdgeId,
   egoSubgraph,
-  muteOutsideFocus,
+  LIT_MARK,
+  LIT_PREFIX,
+  lightFocus,
+  REST_MARK,
   neighbourhood,
   toNetworkGraph,
 } from './dependency-graph-model'
@@ -87,11 +90,16 @@ describe('toNetworkGraph', () => {
     })
 
     expect(network.edges).toHaveLength(architectureFixture.edges.length)
-    expect(network.edges[0]).toEqual({ id: 'console->api', source: 'console', target: 'api' })
+    expect(network.edges[0]).toEqual({
+      id: 'console->api',
+      source: 'console',
+      target: 'api',
+      kind: 'dependency',
+    })
     expect(dependencyEdgeId('console', 'api')).toBe('console->api')
   })
 
-  it('colours each node by its tier and lists the tiers as kinds', () => {
+  it('gives each node its tier as kind and lists each tier at rest and lit', () => {
     const network = toNetworkGraph({
       ...architectureFixture,
       tiers: TIERS,
@@ -99,10 +107,13 @@ describe('toNetworkGraph', () => {
     })
 
     expect(network.nodes.find((n) => n.id === 'kernel')?.kind).toBe('core')
-    expect(network.nodeKinds).toEqual([
-      { id: 'app', label: 'Apps' },
-      { id: 'service', label: 'Services' },
-      { id: 'core', label: 'Core' },
+    expect(network.nodeKinds.map((k) => `${k.id}=${k.label}`)).toEqual([
+      'app=Apps',
+      'lit:app=Apps',
+      'service=Services',
+      'lit:service=Services',
+      'core=Core',
+      'lit:core=Core',
     ])
   })
 
@@ -156,20 +167,20 @@ describe('toNetworkGraph', () => {
   })
 })
 
-describe('muteOutsideFocus', () => {
+describe('lightFocus', () => {
   const network = toNetworkGraph({
     ...architectureFixture,
     tiers: TIERS,
     layout: architectureLayout,
   })
-  const mutedIds = (items: readonly { id?: string; isMuted?: boolean }[]) =>
-    items.filter((item) => item.isMuted).map((item) => item.id)
+  const litIds = (items: readonly { id?: string; kind?: string }[]) =>
+    items.filter((item) => item.kind?.startsWith(LIT_PREFIX)).map((item) => item.id)
 
-  it('mutes every node and edge outside the focus and its direct neighbours', () => {
-    const lit = muteOutsideFocus(network, 'auth')
+  it('lights the focus, its direct neighbours and the edges between them, and nothing else', () => {
+    const lit = lightFocus(network, 'auth')
 
-    expect(mutedIds(lit.nodes)).toEqual(['docs', 'studio', 'api', 'search', 'schema', 'kernel'])
-    expect(lit.edges.filter((e) => !e.isMuted).map((e) => e.id)).toEqual([
+    expect(litIds(lit.nodes)).toEqual(['console', 'mobile', 'auth', 'billing', 'logger', 'config'])
+    expect(litIds(lit.edges)).toEqual([
       'console->auth',
       'mobile->auth',
       'auth->config',
@@ -178,10 +189,44 @@ describe('muteOutsideFocus', () => {
     ])
   })
 
-  it('mutes nothing without a focus', () => {
-    const lit = muteOutsideFocus(network, null)
+  it('keeps a lit node in its tier, under the same label', () => {
+    const lit = lightFocus(network, 'auth')
+    const kind = lit.nodes.find((n) => n.id === 'logger')?.kind
+    const label = (id: string | undefined) => network.nodeKinds.find((k) => k.id === id)?.label
 
-    expect(mutedIds(lit.nodes)).toEqual([])
-    expect(mutedIds(lit.edges)).toEqual([])
+    expect(kind).toBe('lit:core')
+    expect(label(kind)).toBe('Core')
+  })
+
+  it('lights nothing without a focus', () => {
+    const lit = lightFocus(network, null)
+
+    expect(litIds(lit.nodes)).toEqual([])
+    expect(litIds(lit.edges)).toEqual([])
+  })
+})
+
+describe('mark colours', () => {
+  const network = toNetworkGraph({
+    ...architectureFixture,
+    tiers: TIERS,
+    layout: architectureLayout,
+  })
+
+  it('paints every mark at rest in REST_MARK and every lit kind in LIT_MARK', () => {
+    const kinds = [...network.nodeKinds, ...network.edgeKinds]
+
+    expect(
+      kinds.filter((k) => !k.id.startsWith(LIT_PREFIX)).every((k) => k.color === REST_MARK)
+    ).toBe(true)
+    expect(
+      kinds.filter((k) => k.id.startsWith(LIT_PREFIX)).every((k) => k.color === LIT_MARK)
+    ).toBe(true)
+  })
+
+  it('outlines every tier box in REST_MARK', () => {
+    const groups = network.layout.compute(input(network.nodes)).groups ?? []
+
+    expect(groups.map((g) => g.stroke)).toEqual([REST_MARK, REST_MARK, REST_MARK])
   })
 })
