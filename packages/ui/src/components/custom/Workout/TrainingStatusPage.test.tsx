@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
-import { siblingSource, resolveAll } from '../../../test/spacing-resolver'
+import { spacingClassesOf, spacingClassesAt, resolveAll } from '../../../test/spacing-resolver'
 import { render, screen, fireEvent } from '@testing-library/react'
+import { axe } from 'jest-axe'
 import {
   TrainingStatusPage,
   deriveTrainingSummary,
@@ -177,15 +178,42 @@ describe('TrainingStatusPage', () => {
 
 /** TrainingStatusPage's geometry, pinned (AW-142); pixels unchanged. */
 describe('TrainingStatusPage geometry resolves to the spacing tokens', () => {
-  const source = siblingSource(import.meta.url, 'TrainingStatusPage.tsx')
-
   it('keeps the page gutter and its section rhythm', () => {
-    expect(source).toContain('p-gutter-sm gap-stack-lg')
-    expect(resolveAll(['p-gutter-sm', 'gap-stack-lg'])).toEqual(['16px', '16px'])
+    render(<TrainingStatusPage meso={meso} muscles={muscles} />)
+    const classes = spacingClassesOf('training-status-page-content')
+    expect(classes).toEqual(['p-gutter-sm', 'gap-stack-lg'])
+    expect(resolveAll(classes)).toEqual(['16px', '16px'])
   })
 
-  it('keeps the summary and body-map card insets', () => {
-    expect(source).toContain('p-inset-md gap-3')
-    expect(resolveAll(['p-inset-md', 'gap-3', 'gap-inline-md'])).toEqual(['12px', '12px', '8px'])
+  it('keeps the summary card inset and its row gap', () => {
+    render(<TrainingStatusPage meso={meso} muscles={muscles} />)
+    const card = screen.getByTestId('training-status-page-summary-total')
+    expect(resolveAll(spacingClassesAt(card))).toEqual(['12px'])
+    const row = spacingClassesOf('training-status-page-summary')
+    expect(row).toEqual(['gap-inline-md'])
+    expect(resolveAll(row)).toEqual(['8px'])
   })
+
+  it('keeps the body-map card inset and the gap between its figures', () => {
+    render(<TrainingStatusPage meso={meso} muscles={muscles} />)
+    const card = spacingClassesOf('training-status-page-bodymaps')
+    expect(card).toEqual(['p-inset-md', 'gap-3'])
+    expect(resolveAll(card)).toEqual(['12px', '12px'])
+    const figures = screen.getByTestId('training-status-page-bodymap-front').parentElement
+    expect(resolveAll(spacingClassesAt(figures))).toEqual(['8px'])
+  })
+})
+
+describe('TrainingStatusPage accessibility', () => {
+  it('has no accessibility violations with the detail panel closed', async () => {
+    const { container } = render(<TrainingStatusPage meso={meso} muscles={muscles} />)
+    expect(await axe(container)).toHaveNoViolations()
+  }, 30_000)
+
+  it('has no accessibility violations with the chest panel open', async () => {
+    const { container } = render(<TrainingStatusPage meso={meso} muscles={muscles} />)
+    fireEvent.click(screen.getByTestId('body-map-muscle-chest'))
+    expect(screen.getByTestId('body-map-detail-panel')).toBeInTheDocument()
+    expect(await axe(container)).toHaveNoViolations()
+  }, 30_000)
 })
