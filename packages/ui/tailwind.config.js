@@ -389,7 +389,7 @@ module.exports = {
         normal: '0em',
         wide: '0.025em',
         wider: '0.05em',
-        widest: '0.5px',
+        widest: '0.1em',
       },
       boxShadow: {
         sm: '0px 1px 2px rgba(100, 116, 139, 0.12)',
