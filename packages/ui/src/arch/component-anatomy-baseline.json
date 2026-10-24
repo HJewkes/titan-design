@@ -36,9 +36,6 @@
   "custom/Workout/PrimaryGoalCard": [
     "status"
   ],
-  "custom/Workout/TrainingStatusPage": [
-    "a11y"
-  ],
   "shell/workout/DualPinnedLiveStrip": [
     "status"
   ],

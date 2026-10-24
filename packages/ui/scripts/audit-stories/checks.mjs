@@ -549,7 +549,10 @@ export function axeWarnings(violations) {
 }
 
 // Every opaque --color-* token in the current theme, as lowercase #rrggbb mapped to token names.
+// A value the canvas cannot parse (the bare channel triple of a `-rgb` token) is skipped: canvas
+// would keep the previous fill and the token would be filed under a colour it never paints.
 export function tokenColours() {
+  const UNPARSED_SENTINEL = '#010203'
   const names = new Set()
   for (const sheet of document.styleSheets) {
     let rules
@@ -571,8 +574,9 @@ export function tokenColours() {
     const value = rootStyle.getPropertyValue(name).trim()
     if (!value) continue
     ctx.clearRect(0, 0, 1, 1)
-    ctx.fillStyle = '#000'
+    ctx.fillStyle = UNPARSED_SENTINEL
     ctx.fillStyle = value
+    if (ctx.fillStyle === UNPARSED_SENTINEL) continue
     ctx.fillRect(0, 0, 1, 1)
     const [r, g, b, a] = ctx.getImageData(0, 0, 1, 1).data
     if (a !== 255) continue
