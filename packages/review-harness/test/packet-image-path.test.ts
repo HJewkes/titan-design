@@ -1,6 +1,7 @@
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { CiPacketSchema, writePacketDir } from '../src/packet.ts'
+import { ReviewError } from '../src/review.ts'
 import { collected, layer, png, tempDir } from './packet-fake.ts'
 import { editPacket, lint, packetDir, readPacket } from './packet-lint-fake.ts'
 
@@ -70,7 +71,10 @@ describe('packet images[].path', () => {
       layer({ layer: 'component', shown: [{ ...shown, change: 'new', after: png(4, 4) }] }),
     ])
 
-    await expect(writePacketDir(c, out)).rejects.toThrow(reason)
+    const refused = await writePacketDir(c, out).catch((err: unknown) => err)
+
+    expect(refused).toBeInstanceOf(ReviewError)
+    expect((refused as ReviewError).message).toContain(reason)
   })
 
   it.each(ACCEPTED)('the schema accepts the component path %s', async (path) => {

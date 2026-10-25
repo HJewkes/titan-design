@@ -1,6 +1,7 @@
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { CiPacketSchema, writePacketDir, type CiPacket } from '../src/packet.ts'
+import { ReviewError } from '../src/review.ts'
 import { collected, layer, png, tempDir } from './packet-fake.ts'
 import { editPacket, lint, packetDir, readPacket } from './packet-lint-fake.ts'
 
@@ -42,6 +43,9 @@ describe('packet images are unique', () => {
     const added = { ...shown, change: 'new' as const, after: png(4, 4) }
     const c = collected([layer({ layer: 'component', shown: [added, added] })])
 
-    await expect(writePacketDir(c, out)).rejects.toThrow(`${PATH} is shown twice`)
+    const refused = await writePacketDir(c, out).catch((err: unknown) => err)
+
+    expect(refused).toBeInstanceOf(ReviewError)
+    expect((refused as ReviewError).message).toContain(`${PATH} is shown twice`)
   })
 })

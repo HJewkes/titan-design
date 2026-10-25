@@ -4,51 +4,40 @@
     {
       "name": "the schema stops refining images[].path",
       "file": "packages/review-harness/src/packet.ts",
-      "find": "    path: BaselinePathSchema,",
-      "replace": "    path: z.string(),",
+      "find": "      ctx.addIssue({ code: 'custom', path: ['path'], message: `the baseline path ${problem}` })",
+      "replace": "      void ctx",
       "kills": ["the schema refuses a .. traversal", "the packet lint refuses an absolute path"]
     },
     {
-      "name": "from-ci stops checking the paths it stages",
+      "name": "from-ci checks the path but not its layer's prefix",
       "file": "packages/review-harness/src/packet.ts",
-      "find": "    if (problem) throw new ReviewError(`${g.layer} baseline",
-      "replace": "    if (problem && false) throw new ReviewError(`${g.layer} baseline",
-      "kills": ["from-ci refuses to write a packet for a .. traversal"]
+      "find": "    const problem = imagePathProblem(g.layer, g.path)",
+      "replace": "    const problem = baselinePathProblem(g.path)",
+      "kills": ["from-ci refuses to write a packet for a path outside every baseline prefix"]
     },
     {
-      "name": "control characters are allowed",
+      "name": "any file name is allowed, not only a .png in the safe alphabet",
       "file": "packages/review-harness/src/packet.ts",
-      "find": "  if ([...path].some(isControl)) return 'contains a control character'",
+      "find": "  if (!BASELINE_PATH.test(path)) return 'is not a .png named in A-Z a-z 0-9 . _ / -'",
       "replace": "",
-      "kills": ["the schema refuses a NUL byte", "the schema refuses an injected newline"]
+      "kills": ["the schema refuses a non-.png file", "the schema refuses a space in the name"]
     },
     {
-      "name": "backslashes are allowed",
+      "name": "the layer's baseline prefix is not required",
       "file": "packages/review-harness/src/packet.ts",
-      "find": "  if (path.includes('\\\\')) return 'contains a backslash'",
-      "replace": "",
-      "kills": ["the schema refuses a backslash traversal"]
-    },
-    {
-      "name": "absolute paths are allowed",
-      "file": "packages/review-harness/src/packet.ts",
-      "find": "  if (path.startsWith('/') || /^[A-Za-z]:/.test(path)) return 'is absolute'",
-      "replace": "",
-      "kills": ["the schema refuses a Windows drive path"]
+      "find": "path.startsWith(prefix) ? null",
+      "replace": "true ? null",
+      "kills": [
+        "the schema refuses a path outside every baseline prefix",
+        "the schema refuses the story layer's prefix"
+      ]
     },
     {
       "name": "dot-dot segments are allowed",
       "file": "packages/review-harness/src/packet.ts",
       "find": "s === '' || s === '.' || s === '..'",
       "replace": "s === '' || s === '.'",
-      "kills": ["the schema refuses a .. traversal", "the schema refuses a .. segment mid-path"]
-    },
-    {
-      "name": "the segment check refuses a substring .. too",
-      "file": "packages/review-harness/src/packet.ts",
-      "find": "s === '' || s === '.' || s === '..'",
-      "replace": "s === '' || s === '.' || s.includes('..')",
-      "kills": ["the schema accepts the relative path a..b-chromium-linux.png"]
+      "kills": ["the schema refuses a .. segment under the prefix"]
     }
   ]
 }
