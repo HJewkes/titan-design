@@ -1,0 +1,54 @@
+{
+  "v": 1,
+  "mutations": [
+    {
+      "name": "the schema stops refining images[].path",
+      "file": "packages/review-harness/src/packet.ts",
+      "find": "    path: BaselinePathSchema,",
+      "replace": "    path: z.string(),",
+      "kills": ["the schema refuses a .. traversal", "the packet lint refuses an absolute path"]
+    },
+    {
+      "name": "from-ci stops checking the paths it stages",
+      "file": "packages/review-harness/src/packet.ts",
+      "find": "    if (problem) throw new ReviewError(`${g.layer} baseline",
+      "replace": "    if (problem && false) throw new ReviewError(`${g.layer} baseline",
+      "kills": ["from-ci refuses to write a packet for a .. traversal"]
+    },
+    {
+      "name": "control characters are allowed",
+      "file": "packages/review-harness/src/packet.ts",
+      "find": "  if ([...path].some(isControl)) return 'contains a control character'",
+      "replace": "",
+      "kills": ["the schema refuses a NUL byte", "the schema refuses an injected newline"]
+    },
+    {
+      "name": "backslashes are allowed",
+      "file": "packages/review-harness/src/packet.ts",
+      "find": "  if (path.includes('\\\\')) return 'contains a backslash'",
+      "replace": "",
+      "kills": ["the schema refuses a backslash traversal"]
+    },
+    {
+      "name": "absolute paths are allowed",
+      "file": "packages/review-harness/src/packet.ts",
+      "find": "  if (path.startsWith('/') || /^[A-Za-z]:/.test(path)) return 'is absolute'",
+      "replace": "",
+      "kills": ["the schema refuses a Windows drive path"]
+    },
+    {
+      "name": "dot-dot segments are allowed",
+      "file": "packages/review-harness/src/packet.ts",
+      "find": "s === '' || s === '.' || s === '..'",
+      "replace": "s === '' || s === '.'",
+      "kills": ["the schema refuses a .. traversal", "the schema refuses a .. segment mid-path"]
+    },
+    {
+      "name": "the segment check refuses a substring .. too",
+      "file": "packages/review-harness/src/packet.ts",
+      "find": "s === '' || s === '.' || s === '..'",
+      "replace": "s === '' || s === '.' || s.includes('..')",
+      "kills": ["the schema accepts the relative path a..b-chromium-linux.png"]
+    }
+  ]
+}

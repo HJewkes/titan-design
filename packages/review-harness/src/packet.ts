@@ -52,11 +52,13 @@ const DiffSchema = z.object({
 })
 const SizeSchema = z.object({ w: count, h: count })
 
+const isControl = (c: string) => c.charCodeAt(0) < 0x20 || c.charCodeAt(0) === 0x7f
+
 /** Why `path` is not a relative POSIX path that stays inside the repo, or null when it is. The path
  * comes from a CI artifact that code at the PR head can shape, so the packet refuses it here. */
 export function baselinePathProblem(path: string): string | null {
   if (path === '') return 'is empty'
-  if (/[\u0000-\u001f\u007f]/.test(path)) return 'contains a control character'
+  if ([...path].some(isControl)) return 'contains a control character'
   if (path.includes('\\')) return 'contains a backslash'
   if (path.startsWith('/') || /^[A-Za-z]:/.test(path)) return 'is absolute'
   if (path.split('/').some((s) => s === '' || s === '.' || s === '..'))
