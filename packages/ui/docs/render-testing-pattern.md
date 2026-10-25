@@ -82,7 +82,7 @@ always runs every layer. If a layer starts reading a new path, add it to `RENDER
 ## Where a new component's test goes, and its minimal shape
 
 `Component.test.tsx` sits beside `Component.tsx` in `src/components/ui/<name>/` (or
-`custom/<Family>/`), per the file-structure convention in the repo's `CLAUDE.md`.
+`custom/<Family>/`), per the file-structure convention in `docs/component-development.md`.
 Minimal shape, following `Button.test.tsx`:
 
 ```tsx fragment

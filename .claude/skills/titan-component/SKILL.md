@@ -6,7 +6,7 @@ description: "Builds or extends a titan-design component: file, story and token 
 # titan-component
 
 The process for one titan-design component. Library facts have one owner each and this
-skill links them: `CLAUDE.md`, `packages/ui/TOKENS.md`, `packages/ui/MATURITY.md`,
+skill links them: `CLAUDE.md`, `docs/component-development.md`, `docs/design-tokens.md`, `packages/ui/TOKENS.md`, `packages/ui/MATURITY.md`,
 `docs/test-layers.md`, `docs/component-states.md`. Where this file and an owner disagree,
 the owner wins; fix this file.
 
@@ -28,7 +28,7 @@ provisional, and it never counts toward done.
 Decided by the operator before any brief or specimen work. It is the anti-duplication gate:
 it stops a second component from being built beside one that exists.
 
-1. Refresh `packages/ui/src/arch/arch-graph.json` if it is stale (`CLAUDE.md` > Gotchas,
+1. Refresh `packages/ui/src/arch/arch-graph.json` if it is stale (`docs/package-reference.md` > Gotchas,
    arch graph).
 2. Write an overlap survey: what else, stable or in `lab` and `candidate`, does similar work
    or shares an element (a bar, track, needle, pill), even in a very different concept.
@@ -40,7 +40,7 @@ it stops a second component from being built beside one that exists.
 One unit at a time. Each step names its checklist.
 
 1. Brief: what it is, where the idea came from, the primitives it should compose, open
-   questions. Place it with `CLAUDE.md` > Component Development > Placement.
+   questions. Place it with docs/component-development.md > Placement.
 2. Align: render it in Storybook and iterate with the operator. An answer to a design
    question is a direction to render next, never a lock. A decision locks only when the
    operator approves its rendered confirmation.
@@ -59,7 +59,7 @@ Before asking for Gate 2 the agent has finished:
 
 - Decomposition: every reusable element is a shared primitive, not only composed. A new
   primitive is justified by two consumers or an explicit note.
-- Prop API and naming follow `CLAUDE.md` > Component Development > Props Conventions.
+- Prop API and naming follow docs/component-development.md > Props Conventions.
 - A written data plan: how the component gets its data, each store gap as a ticket, and
   how it avoids re-render storms. A plan, not a built drill-down.
 
@@ -97,6 +97,6 @@ tested and exported looks like finished work to the next reader.
 - `references/round0-contract.md`: the Round 0 contract, the functional gate and the evidence rules.
 - `references/review-rounds.md`: one review round step by step, and the show-not-describe rule.
 - `references/coordinator-checklist.md`: the coordinator's showing, asking, merging and release steps.
-- `references/gotchas.md`: code and tooling traps that CLAUDE.md > Gotchas does not cover.
-- `templates/`: starter component, test, story and family README, repaired to match `CLAUDE.md`.
+- `references/gotchas.md`: code and tooling traps that docs/package-reference.md > Gotchas does not cover.
+- `templates/`: starter component, test, story and family README, repaired to match `docs/component-development.md`.
 - `tools/`: `measure-render.mjs` (measure a story against a reference) and `round-capture.mjs` (named screenshots for a review round); each prints usage with `--help`.

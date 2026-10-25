@@ -218,7 +218,7 @@ export const Default: Story = {}
 ```
 
 The title groups, status tags, the "Composes" line and the lint rules that apply to stories are
-listed in `CLAUDE.md` under _Storybook Pattern_.
+listed in `docs/component-development.md` under _Storybook Pattern_.
 
 ## Global CSS Structure
 
@@ -361,7 +361,7 @@ src/
 1. **Use `tags: ['autodocs']`** - Enables automatic documentation generation
 2. **Define argTypes** - Provides controls for all configurable props
 3. **Create render functions** - For compound components, explicit render functions work better
-4. **Group related stories** - Use the six title groups in `CLAUDE.md`, for example
+4. **Group related stories** - Use the six title groups in `docs/component-development.md`, for example
    `Components/Molecules/Popover`, `Custom/Workout/SetRow`, `Foundations/Typography`
 5. **One `Default` story** - Show variants through controls, not one story per variant
 6. **Show composition** - Create stories that show components working together

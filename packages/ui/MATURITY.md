@@ -102,7 +102,7 @@ Consequences worth stating out loud:
 - **Adding a `ui/*` primitive without a row in the family README leaves it
   `candidate`.** The README is load-bearing, not decoration.
 - **`custom/*` and `shell/*` cannot reach `stable` under this rule. Placement
-  follows the rule in `CLAUDE.md` (Placement): `ui/` is the domain-free tier, so
+  follows the rule in `docs/component-development.md` (Placement): `ui/` is the domain-free tier, so
   eligibility follows from what a component knows.** They are `candidate` by
   construction until the rule grows a clause for them, which is a deliberate
   deferral: the Voltras-workout review pass (below) is where that clause gets
