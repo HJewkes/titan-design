@@ -1,13 +1,15 @@
 {
-  "CLAUDE.md": ["path:stories-smoke.test.tsx", "path:tokens.css", "retired:Gluestack"],
+  "CLAUDE.md": ["retired:Gluestack"],
   "docs/STORYBOOK_SETUP.md": ["import:@storybook/react"],
   "docs/agent-prompts/component-implementation.md": ["path:docs/improved-workflow.md"],
   "docs/ci-and-scripts.md": ["path:HJewkes/ci/actions/all-green", "path:tokens.css"],
+  "docs/component-development.md": ["retired:Gluestack"],
   "docs/component-implementation-checklist.md": [
     "path:ComponentName.stories.tsx",
     "path:ComponentName.test.tsx"
   ],
   "docs/design-freeze-workflow.md": ["path:docs/improved-workflow.md"],
+  "docs/package-reference.md": ["path:stories-smoke.test.tsx"],
   "packages/ui/DEPRECATIONS.md": [
     "path:src/dashboard/spa/planner/SessionSummaryPage.tsx",
     "retired:WORKOUT_TOKENS"
