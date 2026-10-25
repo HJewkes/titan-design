@@ -1,0 +1,33 @@
+{
+  "v": 1,
+  "mutations": [
+    {
+      "name": "two images may share a path",
+      "file": "packages/review-harness/src/packet.ts",
+      "find": "for (const field of ['path', 'key'] as const)",
+      "replace": "for (const field of ['key'] as const)",
+      "kills": ["the schema refuses two images with one path"]
+    },
+    {
+      "name": "two images may share a key",
+      "file": "packages/review-harness/src/packet.ts",
+      "find": "for (const field of ['path', 'key'] as const)",
+      "replace": "for (const field of ['path'] as const)",
+      "kills": ["the schema refuses two images with one key"]
+    },
+    {
+      "name": "from-ci stages a baseline shown twice",
+      "file": "packages/review-harness/src/packet.ts",
+      "find": "  if (twice !== undefined)",
+      "replace": "  if (twice === -1)",
+      "kills": ["from-ci refuses to write a packet that shows one baseline twice"]
+    },
+    {
+      "name": "the repeat check flags the first holder of a value too",
+      "file": "packages/review-harness/src/packet.ts",
+      "find": "values.indexOf(v) < i",
+      "replace": "values.indexOf(v) <= i",
+      "kills": ["the schema refuses two images with one path"]
+    }
+  ]
+}

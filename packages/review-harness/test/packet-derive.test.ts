@@ -10,7 +10,8 @@ import { RED, editPacket, readPacket, sha256 } from './packet-lint-fake.ts'
 
 const BLUE = [0, 0, 255, 255]
 const BLACK = [0, 0, 0, 255]
-const path = (name: string) => `snapshots/${name}-chromium-linux.png`
+const path = (name: string) =>
+  `packages/ui/specimen/baseline/x.test.ts-snapshots/${name}-chromium-linux.png`
 
 /** The repo the fake clone holds: main's baselines and the ones the PR head commits. */
 const GIT = {
