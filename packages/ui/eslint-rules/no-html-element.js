@@ -1,7 +1,7 @@
 /**
  * ESLint rule: no-html-element
  *
- * Components render on web and native, so they compose react-native primitives (CLAUDE.md,
+ * Components render on web and native, so they compose react-native primitives (docs/component-development.md,
  * Cross-Platform First): View, Text, Pressable, TextInput, Image and ScrollView. A lowercase
  * JSX element (`<div>`, `<path>`) is a DOM intrinsic that only react-native-web can mount, and
  * jsdom renders it fine, so no unit test notices (TD-689).
@@ -142,11 +142,11 @@ module.exports = {
       html:
         'Lowercase <{{element}}> is an HTML element, so it mounts on web only and never on native. ' +
         'Components compose the react-native primitives: View, Text, Pressable, TextInput, Image and ScrollView ' +
-        '(CLAUDE.md, Cross-Platform First). Use {{primitive}} here, or compose `Typography`, `Button` or `Input`. ' +
+        '(docs/component-development.md, Cross-Platform First). Use {{primitive}} here, or compose `Typography`, `Button` or `Input`. ' +
         'A web-only site that must stay keeps `// eslint-disable-next-line titan/no-html-element -- <why>`.',
       anchor:
         'Lowercase <{{element}}> is an HTML element, so it mounts on web only and never on native. ' +
-        'Components compose the react-native primitives (CLAUDE.md, Cross-Platform First), and the navigation ' +
+        'Components compose the react-native primitives (docs/component-development.md, Cross-Platform First), and the navigation ' +
         'link is already one of them: `Link` (`ui/link`) wraps Pressable and Text with href, isExternal and ' +
         'isDisabled. Use `Link` here. ' +
         'A web-only site that must stay keeps `// eslint-disable-next-line titan/no-html-element -- <why>`.',
