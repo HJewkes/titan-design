@@ -4,398 +4,43 @@ Cross-platform React + React Native design system built on Gluestack UI, NativeW
 
 ## Quick Reference
 
-- **Package**: `@titan-design/react-ui` (in `packages/ui/`)
-- **Monorepo**: pnpm workspaces + Turborepo
-- **Node**: Use `pnpm` (v9.15.0) for all package management
-- **Build**: `pnpm build` (tsup, outputs ESM + CJS + DTS to `dist/`)
-- **Test**: `pnpm test` (Vitest + Testing Library + jest-axe, jsdom only). Inside `packages/ui` the script is
-  `vitest --project threads --project local-time --project types --project stories-axe`, which watches; for one
-  run use `pnpm exec vitest run --project threads [path]` there, or `pnpm test -- -- --run` from the root (see
-  _CI and scripts_). `pnpm test:unit` skips `stories-axe`; `pnpm test:axe` runs only it. Bare `vitest` also starts
-  the `storybook` browser project. `pnpm test:storybook` runs the Storybook play functions (stories tagged `play`)
-  in headless Chromium, then checks the play count.
-- **Storybook**: `pnpm storybook` (Storybook 10, locked to port 6006 — see below)
-- **Lint**: `pnpm lint` (ESLint 9)
-
-### Storybook ports — read this before screenshotting anything
-
-`storybook dev` **auto-increments off a busy port**. A launch on a port you believed was
-free silently lands on a _different worktree's_ server, and every screenshot taken
-afterwards is plausible and wrong. This has already invalidated a VW-85 evidence set, and
-verifying `index.json` does not catch it — `importPath` is relative and identical across
-worktrees.
-
-Port 6006 is **locked**. `pnpm storybook` runs a launcher that owns the policy:
-
-| command                   | behaviour                                                                                                 |
-| ------------------------- | --------------------------------------------------------------------------------------------------------- |
-| `pnpm storybook`          | Locked port. Reuses ours; **kills a foreign server squatting 6006**; refuses if a non-Storybook holds it. |
-| `pnpm storybook:isolated` | A private port from 6100–6199. Use when you _expect_ to run beside another instance.                      |
-| `pnpm storybook:ports`    | Inventory only — every server, categorised, with the flag that would clear it.                            |
-| `pnpm storybook:reap`     | Kill **orphans** (the default scope), then re-list.                                                       |
-| `pnpm storybook:reap:all` | Kill orphans + foreign + dupes.                                                                           |
-| `--restart`               | Replace our own server on the locked port.                                                                |
-
-`pnpm storybook:ports` categorises every server, and the categories **are** the reap
-scopes — so the inventory doubles as a menu of what each option would kill:
-
-| category  | meaning                               | cleared by         |
-| --------- | ------------------------------------- | ------------------ |
-| `locked`  | ours, on 6006                         | `--restart`        |
-| `orphan`  | its worktree no longer exists on disk | `--reap` (default) |
-| `foreign` | a live server rooted in another tree  | `--reap=foreign`   |
-| `dupe`    | ours, off the locked port             | `--reap=dupes`     |
-| `other`   | not identifiable as Storybook         | never touched      |
-
-Scopes combine: `--reap=foreign,dupes`. `--reap=all` is everything reapable.
-
-**Orphans are the default because they are the only category that is unambiguously
-dead** — nobody can be using a server whose tree has been deleted. A live `foreign`
-server may belong to a parallel agent, and a `dupe` may be a deliberate `--isolated`
-instance, so both are opt-in.
-
-Every launch passes `--exact-port`, so a port conflict is a **loud failure** instead of a
-silent move. Proof: on a busy port, `--exact-port` refuses to start; without it, Storybook
-quietly comes up one port over.
-
-**Verify provenance by something unique to the tree you meant to shoot** — a story that
-only exists there, or a rendered detail only that commit produces. Never by story IDs alone.
-
-**Stop only the servers you started, by PID.** Record the PID of any server you start (Storybook,
-Vite, `pnpm review`) and stop that PID when you are done. Never kill by name pattern
-(`pkill -f storybook`, `killall node`): other sessions run servers in this repo at the same time,
-and in September 2026 a name-pattern kill took down the Storybook behind a live review round. To
-list what is running, use `pnpm storybook:ports`; `pnpm storybook:reap` stops orphans only. Plain
-`pnpm storybook` replaces a foreign server on 6006, so use `pnpm storybook:isolated` when another
-session may be using 6006.
-
-## Architecture
-
-### Cross-Platform First
-
-All components use React Native primitives - never HTML elements directly:
-
-| Use          | Not              |
-| ------------ | ---------------- |
-| `View`       | `div`            |
-| `Text`       | `span`, `p`      |
-| `Pressable`  | `button`         |
-| `TextInput`  | `input`          |
-| `Image`      | `img`            |
-| `ScrollView` | scrollable `div` |
-
-### Styling: NativeWind v4 + Tailwind CSS
-
-- Style with Tailwind classes via `className` prop (compiled by NativeWind)
-- Use the `cn()` utility from `@/utils/cn` for all class merging (clsx + tailwind-merge)
-- Never use inline styles except for dynamic values that can't be expressed in Tailwind
-- Use semantic token classes (e.g., `bg-surface-elevated`) not raw colors (`bg-gray-800`)
-- Platform modifiers: `web:`, `native:`, `ios:`, `android:` for platform-specific styles
-- Tailwind is **v3** (`tailwindcss ^3.4`, configured in `tailwind.config.js`). Guidance written for
-  Tailwind v4 (CSS-first `@theme`, `@import "tailwindcss"`) does not apply here.
-- Inside titan, composing the existing tokens and primitives outranks any general design guidance
-  to make a component look distinctive. A component that needs a new colour, hue or primitive
-  raises it with the owner; it does not add one inline.
-
-### Dark Mode
-
-- Dark mode is the **default** (`:root` styles)
-- Light mode activated via `.light` class on `<html>`
-- Always declare styles explicitly for both modes - don't rely on inheritance
-- Light mode base is `#F3F4F6` (not pure white) to allow elevation system to work
-
-### Compound Components (Gluestack Pattern)
-
-Complex components use explicit compound structure:
-
-```tsx
-<Button variant="solid" color="primary" size="md">
-  <ButtonIcon as={PlusIcon} />
-  <ButtonText>Add Item</ButtonText>
-</Button>
-```
-
-## Component Development
-
-### File Structure
-
-```
-src/components/ui/{component-name}/
-  ComponentName.tsx           # Implementation
-  ComponentName.test.tsx      # Tests (Vitest + jest-axe)
-  ComponentName.stories.tsx   # Storybook stories
-  index.ts                    # Barrel export
-```
-
-### Placement: which directory a component belongs in
-
-A tier is decided by what the component knows, not by how much it composes.
-
-| Directory                          | Holds                                                                                                                              |
-| ---------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| `src/components/ui/<name>/`        | Domain-free components of any size. Any product could render one without knowing another product's vocabulary.                     |
-| `src/components/ui/charts/<name>/` | Domain-free charts. `d3-*` imports are legal only here. Shared scales, geometry and motion live in `ui/charts/kit/`.               |
-| `src/components/custom/<Family>/`  | A domain family (`Workout`, `Fatigue`, `ActiveWork`, workout bar marks in `charts`). A prop, type or label names a domain concept. |
-| `src/components/shell/`            | The domain-free application frame. `shell/<app>/` is one app's chrome and composes it.                                             |
-| `src/lab/`                         | Unpublished exploration.                                                                                                           |
-| `src/hooks/`, `src/utils/`         | Hooks and pure functions with no JSX. They never import `components/`.                                                             |
-
-Deciding a new component's home, top to bottom, first match wins:
-
-| Question                                                                                       | Home                                                                                                                                        |
-| ---------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| Is it an exploration that must not publish?                                                    | `src/lab/<family>/`                                                                                                                         |
-| Does any prop, type or label name a domain concept (set, rep, mesocycle, initiative, fatigue)? | `custom/<Family>/` of that domain                                                                                                           |
-| Does it know the app's own chrome (its routes, its brand, its page regions)?                   | `shell/`, or `shell/<app>/` if it names an app. A generic sidebar, rail, or band that takes its content as props (e.g. `Sidebar`) is `ui/`. |
-| Does it paint data marks from a scale?                                                         | `ui/charts/<name>/`                                                                                                                         |
-| Is it a hook or pure function with no JSX?                                                     | `src/hooks/` or `src/utils/`                                                                                                                |
-| Otherwise                                                                                      | `ui/<name>/`                                                                                                                                |
-
-If the component you want to compose sits in a higher tier, run the table on that component. If it
-lands lower, move it first.
-
-Import order is theme, utils and hooks, icons, ui, custom, shell, pages; a lower tier never imports a
-higher one (`titan/no-upward-tier-import`). The rule enforces the ui/, custom/, shell/ order today;
-hooks and utils join it in the placement lint task (roadmap decision of 2026-09-19, appendix E).
-`ui/` components may compose `ui/` siblings. If the component you need sits in a higher tier and is
-domain-free, move it down first; do not copy it and do not replace it with a slot. Generic directories
-still in `custom/` are listed in `custom-families.baseline.json`, which only shrinks.
-
-Slots: import what is fixed anatomy (Typography, Skeleton, Tooltip, Surface); take a named `ReactNode`
-slot for consumer vocabulary (wording, headers, actions); give every state slot (`emptyState`, ...) a
-default built from `ui/`. Controlled state is named `x`, `defaultX`, `onXChange`.
-
-Add the export to the family barrel (`ui/index.ts` or `custom/index.ts`) and, for `ui/`, a row in
-`ui/README.md`; without the row the component stays `status:candidate`.
-
-### Props Conventions
-
-| Prop         | Type                                                                      | Notes                                   |
-| ------------ | ------------------------------------------------------------------------- | --------------------------------------- |
-| `variant`    | `'solid' \| 'outline' \| 'ghost' \| 'link'`                               | Visual style                            |
-| `size`       | `'sm' \| 'md' \| 'lg'`                                                    | Size variant                            |
-| `color`      | `'primary' \| 'secondary' \| 'success' \| 'error' \| 'warning' \| 'info'` | Color scheme                            |
-| `isDisabled` | `boolean`                                                                 | Not `disabled`                          |
-| `isLoading`  | `boolean`                                                                 | Not `loading`                           |
-| `isSelected` | `boolean`                                                                 | Not `selected`                          |
-| `onPress`    | `() => void`                                                              | Not `onClick` (React Native convention) |
-| `className`  | `string`                                                                  | Tailwind overrides via cn()             |
-
-### Accessibility Requirements
-
-- All components must pass WCAG 2.1 AA (tested with jest-axe)
-- Use `accessibilityRole`, `accessibilityLabel`, `accessibilityState` on custom components
-- Gluestack components have accessibility built in - don't remove ARIA attributes
-- Every component test file must include an accessibility test
-
-### State Coverage
-
-Every component documents and stories its loading, empty, error and disabled states, or says why a
-state does not apply. The checklist is `docs/component-states.md`. A new line chart follows the
-structure described under _Line charts_ in `src/components/custom/charts/README.md`.
-
-### Testing Pattern
-
-```tsx
-import { render, screen } from "@testing-library/react";
-import { axe, toHaveNoViolations } from "jest-axe";
-
-expect.extend(toHaveNoViolations);
-
-describe("ComponentName", () => {
-  it("renders correctly", () => {
-    /* ... */
-  });
-  it("has no accessibility violations", async () => {
-    const { container } = render(<Component />);
-    expect(await axe(container)).toHaveNoViolations();
-  });
-});
-```
-
-### Storybook Pattern
-
-One `Default` story per component, driven by `args` and `argTypes`. Variants, colours, sizes and
-states are controls on that story, not separate `AllVariants` / `AllColors` / `AllSizes` stories
-(roadmap E4, `packages/ui/docs/library-roadmap.md`). Many older `ui/*` stories (Button, Input,
-Chip, …) still export `AllVariants`-style stories until E4 thins them; do not copy them. From
-`src/components/shell/workout/SessionStatePill.stories.tsx`:
-
-```tsx
-import type { Meta, StoryObj } from "@storybook/react-vite"; // NOT @storybook/react
-import { SessionStatePill } from "./SessionStatePill";
-
-const meta: Meta<typeof SessionStatePill> = {
-  title: "Shell/Workout/SessionStatePill",
-  component: SessionStatePill,
-  tags: ["autodocs", "status:candidate", "!status:review"],
-  args: { state: "live" },
-  argTypes: {
-    state: { control: "select", options: ["live", "rest", "idle"] },
-    label: { control: "text" },
-  },
-  parameters: {
-    docs: {
-      description: {
-        component:
-          "**Molecule** (= the ledger’s reusable StatusPill — also used by the Live-view header). Composes " +
-          "[Indicator](?path=/docs/components-atoms-indicator--docs) (pulse `ping` + vivid color for live) + " +
-          "[Typography](?path=/docs/foundations-typography--docs) (`monoLabel`). Use the `state` control to switch.",
-      },
-    },
-  },
-};
-export default meta;
-type Story = StoryObj<typeof SessionStatePill>;
-
-export const Default: Story = {};
-```
-
-`shell/workout/DeviceMenu.stories.tsx` shows the same shape for a component that takes data and
-callbacks: an `object` control for the fixture, `control: false` for handlers, and a decorator on
-`meta` that gives the component room to open.
-
-- **Title** follows the six groups of roadmap decision 14: `Foundations/`,
-  `Components/Atoms|Molecules|Organisms/` (`ui/*` only), `Custom/<Family>/`, `Shell/`, `Pages/`,
-  and `Lab/<Family>/` (`src/lab` only).
-- **Tags**: `autodocs`, plus a status tag derived by the rule in `packages/ui/MATURITY.md`. A
-  story that sets a status also negates the inherited default with `!status:review`.
-- **Composes line**: `parameters.docs.description.component` names the tier and links each story
-  the component composes, so the docs pages navigate down the tree.
-- **Hooks in `render`** need a named PascalCase function (`render: function Render(args) { … }`).
-  An anonymous arrow fails `react-hooks/rules-of-hooks`.
-- **JSX text** escapes quotes (`&apos;`, `&quot;`); `react/no-unescaped-entities` is on.
-
-**Critical**: Storybook uses `@storybook/react-native-web-vite` with `jsxImportSource: 'nativewind'`. Without this NativeWind classes won't work.
-
-## Design Tokens
-
-### Two-Tier System (DTCG Standard)
-
-1. **Primitives** (`src/theme/tokens/primitives.ts`) - Raw color scales, no semantic meaning
-2. **Semantic** (`src/theme/tokens/semantic.ts`) - Meaningful names referencing primitives
-
-### Token Categories
-
-| Category    | Pattern               | Example Classes                                              |
-| ----------- | --------------------- | ------------------------------------------------------------ |
-| Brand       | `brand-{role}`        | `bg-brand-primary`, `text-brand-secondary`                   |
-| Status      | `status-{type}`       | `bg-status-success`, `text-status-error`                     |
-| Text        | `text-{role}`         | `text-text-primary`, `text-text-secondary`                   |
-| Surface     | `surface-{level}`     | `bg-surface-base`, `bg-surface-elevated`                     |
-| Background  | `background-{role}`   | `bg-background-base`, `bg-background-default`                |
-| Border      | `border-{strength}`   | `border-border-default`, `border-border-subtle`              |
-| Interactive | `interactive-{state}` | `hover:bg-interactive-hover`, `focus:ring-interactive-focus` |
-| Result      | `result-{outcome}`    | `text-result-improve`, `text-result-degrade`                 |
-| Data        | `data-{n}`            | `bg-data-1` through `bg-data-10`                             |
-| Spacing     | `{situation}-{level}` | `p-inset-md`, `gap-stack-md`, `px-control-x-md`              |
-| Sizing      | `control-{level}`     | `h-control-md`, `min-h-control-md`                           |
-
-The 4px numeric scale (`p-3`, `gap-2`) stays legal everywhere. Spacing situations are `inset`,
-`squish`, `stack`, `inline`, `control`, `section` and `gutter` — see `Foundations/Spacing` in
-Storybook and TOKENS.md §5. `squish` and `control` carry an explicit axis (`squish-x-md`,
-`control-y-md`) because `px-` and `py-` share one Tailwind namespace.
-
-### Adding New Tokens
-
-Four files must be updated in order:
-
-1. `primitives.ts` - Add raw value (if new)
-2. `semantic.ts` - Add semantic mapping (both dark and light)
-3. `global.css` - Add CSS custom property (both `:root` and `.light`)
-4. `tailwind.config.js` - Add Tailwind color reference
-
-Colour properties are named `--color-{category}-{name}`, and the Tailwind entry is
-`'var(--color-{category}-{name})'`. `theme/config.ts` lists every colour property by hand in
-`darkThemeCSSVars` and `lightThemeCSSVars`; `config.completeness.test.ts` fails until the new
-property is added there too. If `Foundations/Color/Palettes` lists the category's swatches by hand,
-add the new one.
-
-**Spacing and sizing tokens skip step 3's hand-editing.** Their numbers live once, in `space` /
-`size` in `semantic.ts`; `tokens/spacing-vars.ts` derives the `--space-*` / `--size-*` properties,
-`theme/config.ts` spreads them into both theme maps, and `tailwind.config.js` references the property
-by name only. Add the number in `semantic.ts`, mirror the derived line into both `global.css` blocks,
-and add the key name to `SEMANTIC_SPACING_KEYS`. `spacing-tokens.test.ts` and
-`config.completeness.test.ts` fail if any of the three drifts.
-
-### Elevation System
-
-Levels -2 to +5 with calculated surface colors and shadows:
-
-- **-2, -1**: Inset (inputs, pressed states)
-- **0**: Base level
-- **1-3**: Cards, panels
-- **4-5**: Modals, overlays
-
-## CI and scripts
-
-`.github/workflows/ci.yml` runs one job on Node 22: install, `pnpm lint`, `pnpm type-check`,
-`pnpm format:check`, the arch-graph freshness test, `pnpm build`, then
-`pnpm test -- -- --run --coverage`. Every step blocks; none is `continue-on-error`. The `contrast`
-job (three shards) runs axe `color-contrast` in Chromium on every story in both themes (on a PR,
-only the stories its diff reaches; `scripts/contrast-stories.mjs`) against the shrink-only `packages/ui/tests/visual/contrast-stories-baseline.json`; `pnpm contrast:baseline`
-regenerates it, preferably from the job's `contrast-report-*` artifacts (`docs/ci-and-scripts.md`).
-
-- **Argument passthrough.** Root scripts are `turbo run <task>`, so arguments need a second `--`:
-  the first passes through pnpm, the second through Turbo (`pnpm test -- -- --run --coverage`).
-- **Registering a script CI runs.** Add it to the package's `package.json`, add a
-  `turbo run <task>` passthrough to the root `package.json`, and register the task in `turbo.json`.
-  Without the `turbo.json` entry, the root script fails. `arch:graph` and `review` are deliberate
-  exceptions: both call `node` directly and CI never runs them.
-- **Coverage thresholds** live in `packages/ui/vitest.config.ts` (80% across the board, scoped to
-  `src/components/**`). Set them from measured coverage (`pnpm exec vitest run --coverage` in
-  `packages/ui`), not from a target, and raise them as coverage grows.
-- **API reports.** `pnpm api:check` (in `verify:unit`, after the build) runs API Extractor on each built entry's d.ts and fails when `packages/ui/api/<entry>.api.md` differs or is missing; after changing an export, run `pnpm --filter @titan-design/react-ui api:update` and commit the reports.
-- **Bundle budget** (`pnpm --filter @titan-design/react-ui size`, after a build) checks the brotli size
-  of each ESM entry and `tokens.css` against `packages/ui/.size-limit.json`. Each limit is the measured
-  size plus 5%, rounded up to the next whole kB; a PR that shrinks an entry by more than 10% lowers its
-  limit, and a PR that raises one states why in its body.
-
-## Key Files
-
-| File                                         | Purpose                                     |
-| -------------------------------------------- | ------------------------------------------- |
-| `packages/ui/src/index.ts`                   | Main barrel export                          |
-| `packages/ui/src/theme/global.css`           | CSS custom properties + Tailwind imports    |
-| `packages/ui/src/theme/tokens/primitives.ts` | Raw color/spacing values                    |
-| `packages/ui/src/theme/tokens/semantic.ts`   | Semantic token definitions                  |
-| `packages/ui/src/theme/elevation.ts`         | Elevation system with shadow math           |
-| `packages/ui/src/utils/cn.ts`                | Tailwind class merge utility                |
-| `packages/ui/tailwind.config.js`             | Tailwind + NativeWind configuration         |
-| `packages/ui/tsup.config.ts`                 | Build configuration                         |
-| `packages/ui/vitest.config.ts`               | Test configuration                          |
-| `packages/ui/.storybook/main.ts`             | Storybook config (jsxImportSource critical) |
-
-## Exports
-
-```tsx
-// Components + theme + utils
-import {
-  Button,
-  ButtonText,
-  Card,
-  Typography,
-  cn,
-} from "@titan-design/react-ui";
-
-// Theme only (subpath export)
-import { semanticColorsDark, elevation } from "@titan-design/react-ui/theme";
-
-// CSS (required by consumers)
-import "@titan-design/react-ui/theme/global.css";
-
-// Tailwind config (for extending in consuming apps)
-const tailwindConfig = require("@titan-design/react-ui/tailwind.config.js");
-```
-
-## Gotchas
-
-- Check `packages/ui/REJECTED.md` before treating a component as a reference; a rejected exploration can still sit on `main`, tested and exported.
-- `src/lab/` is excluded from the published package (`"!src/lab"` in `files`), so a change there never reaches consumers.
-- Releases publish from CI on a `v*` tag push (`publish.yml`, OIDC provenance). Never run `npm publish` locally, and push the release commit to `main` before the tag.
-- `resolveColor` returns `var(--color-…)` on web, and tests alias `react-native` to `react-native-web`, so a test asserting a literal hex breaks; use `getSemanticColors('dark')[token]` where the value must be a hex.
-- `tsconfig.json` excludes `*.stories.tsx`, and `stories-smoke.test.tsx` globs only `components/**`, so a broken story (especially under `src/theme/`) passes every gate. An unchanged test count after adding stories is the tell.
-- Layer-1 visual baselines exist only as `*-chromium-linux.png`. Run that suite only in the pinned Playwright container, and refresh baselines from the `visual` workflow's `component-visual-baselines` artifact, not local Docker.
-- `global.css` is prettier-ignored (its hex case mirrors `config.ts`), but `semantic.ts` is format-checked: edit token files additively with single-space `// ` trailing comments, and never run prettier over a whole token file.
-- `titan/no-raw-color` also flags bare CSS colour keywords such as `'white'`, not only hex.
-- When a barrel exports a new component file, run `pnpm arch:graph -- --add <file>` from the root, then `pnpm catalog`; it rewrites only that node's block in `src/arch/arch-graph.json`. When a component file is deleted, delete its node block by hand. Never run `arch-graph.mjs --reindex` in a feature PR: it rewrites metrics for untouched components. The graph stores no edge list, totals or barrel hash (`arch-graph-derived.ts` derives them), so two component PRs merge in either order.
+- **Package**: `@titan-design/react-ui` (in `packages/ui/`); pnpm (v9.15.0) workspaces + Turborepo
+- **Build**: `pnpm build` (tsup, ESM + CJS + DTS to `dist/`). **Lint**: `pnpm lint`
+- **Test**: `pnpm test` (Vitest + Testing Library + jest-axe, jsdom). In `packages/ui` it watches; for one
+  run use `pnpm exec vitest run --project threads [path]` there, or `pnpm test -- -- --run` from the root
+  (second `--` passes through Turbo). `pnpm test:unit` skips `stories-axe`; `pnpm test:axe` runs only it;
+  `pnpm test:storybook` runs play functions in headless Chromium. Bare `vitest` also starts the browser project.
+- **Storybook**: `pnpm storybook` (Storybook 10, port 6006 locked)
+
+## Hard constraints
+
+- **Storybook ports**: `storybook dev` silently moves off a busy port, so screenshots can come from another
+  worktree's server. Verify provenance by something unique to your tree, never by story IDs. Stop only
+  servers you started, by PID; never `pkill -f storybook` / `killall node`. Use `pnpm storybook:isolated`
+  beside other sessions. Details: `docs/storybook-ports.md`.
+- **Cross-platform**: React Native primitives only (`View`, `Text`, `Pressable`, `TextInput`, `Image`,
+  `ScrollView`), never `div`/`span`/`button`/`input`/`img`.
+- **Styling**: Tailwind via `className` + `cn()` from `@/utils/cn`; semantic token classes, not raw
+  colours; no inline styles except dynamic values. Tailwind is **v3**. Never add a colour, hue or primitive
+  inline; raise it with the owner.
+- **Dark mode** is default (`:root`), light via `.light`; declare both explicitly.
+- **Props**: `isDisabled`/`isLoading`/`isSelected`, `onPress` (not `onClick`), `variant`, `size`, `color`.
+- **A11y**: WCAG 2.1 AA; every component test file includes a jest-axe test.
+- **One `Default` story** per component, driven by `args`/`argTypes`; Storybook needs
+  `jsxImportSource: 'nativewind'`.
+- **Releases** publish from CI on a `v*` tag; never `npm publish` locally.
+- **Tier imports**: a lower tier never imports a higher one (`titan/no-upward-tier-import`).
+- **Token edits**: never run prettier over a whole token file; edit `semantic.ts` additively.
+- **Exports/barrels**: after changing an export run `pnpm --filter @titan-design/react-ui api:update`; after
+  a barrel exports a new component run `pnpm arch:graph -- --add <file>` then `pnpm catalog`; never
+  `arch-graph.mjs --reindex` in a feature PR.
+
+## Moved to docs (read when the task touches it)
+
+- Storybook port policy, reap scopes, PID rules → `docs/storybook-ports.md`
+- Architecture (cross-platform table, styling, dark mode, compound components) → `docs/component-development.md`
+- Component file structure, placement tiers and decision table, slots, props table, accessibility, state
+  coverage, testing pattern, Storybook pattern → `docs/component-development.md`
+- Design tokens (two tiers, categories, adding tokens, spacing/sizing tokens, elevation) → `docs/design-tokens.md`
+- CI jobs, argument passthrough, registering scripts, coverage, API reports, bundle budget → `docs/ci-and-scripts.md`
+- Key files, exports, gotchas → `docs/package-reference.md`
