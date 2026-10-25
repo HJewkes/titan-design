@@ -52,12 +52,29 @@ const DiffSchema = z.object({
 })
 const SizeSchema = z.object({ w: count, h: count })
 
+/** Why `path` is not a relative POSIX path that stays inside the repo, or null when it is. The path
+ * comes from a CI artifact that code at the PR head can shape, so the packet refuses it here. */
+export function baselinePathProblem(path: string): string | null {
+  if (path === '') return 'is empty'
+  if (/[\u0000-\u001f\u007f]/.test(path)) return 'contains a control character'
+  if (path.includes('\\')) return 'contains a backslash'
+  if (path.startsWith('/') || /^[A-Za-z]:/.test(path)) return 'is absolute'
+  if (path.split('/').some((s) => s === '' || s === '.' || s === '..'))
+    return 'has an empty, . or .. segment'
+  return null
+}
+
+const BaselinePathSchema = z.string().superRefine((path, ctx) => {
+  const problem = baselinePathProblem(path)
+  if (problem) ctx.addIssue({ code: 'custom', message: `the baseline path ${problem}` })
+})
+
 /** One shown baseline: frames@1-shaped (`key`, `file`, `sha256`, `viewport`), plus both sides. */
 const PacketImageSchema = z
   .object({
     key: z.string().regex(/^[A-Za-z0-9_-]{1,32}$/),
     layer: z.enum(LAYERS),
-    path: z.string(),
+    path: BaselinePathSchema,
     change: z.enum(['changed', 'new', 'removed']),
     source: z.enum(['artifact', 'git']),
     label: z.string().min(1),
@@ -260,6 +277,10 @@ function layerFlags<T>(layers: LayerSources[], pick: (l: LayerSources) => T) {
 async function stageImages(layers: LayerSources[], staging: string): Promise<PacketImage[]> {
   await Promise.all(SUBDIRS.map((d) => mkdir(join(staging, d))))
   const shown = layers.flatMap((l) => l.shown)
+  for (const g of shown) {
+    const problem = baselinePathProblem(g.path)
+    if (problem) throw new ReviewError(`${g.layer} baseline ${JSON.stringify(g.path)} ${problem}`)
+  }
   const images: PacketImage[] = []
   for (const [i, g] of shown.entries())
     images.push(await stageImage(g, `img-${String(i + 1).padStart(3, '0')}`, staging))
