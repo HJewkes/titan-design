@@ -31,6 +31,7 @@ export type { JsonSchema, SchemaFormValue } from './schemaFormModel'
 /** Errors keyed by dotted path under the root value, such as `title` or `rows.1.left`. */
 export type SchemaFormErrors = Readonly<Record<string, string | readonly string[]>>
 
+/** Props for {@link SchemaForm}. */
 export interface SchemaFormProps {
   /** An object JSON Schema; each of its `properties` renders as one field. */
   schema: JsonSchema
@@ -50,6 +51,7 @@ export interface SchemaFormProps {
   emptyState?: React.ReactNode
   /** Root test id; each field's is `<testID>-<path with dots as dashes>`. */
   testID?: string
+  /** Additional className for the root stack. */
   className?: string
 }
 
