@@ -93,7 +93,7 @@ describe('laneLayout', () => {
   it('puts a node whose group is not a lane in a trailing Other band', () => {
     const nodes = [n('a', 'x'), n('b', 'w'), n('c'), n('d', ''), n('e', 'y')]
     const result = run(nodes, [e('a', 'b')], LANES)
-    const other = result.groups?.at(-1)
+    const other = result.groups?.[(result.groups?.length ?? 0) - 1]
     expect(other).toMatchObject({ id: '', label: 'Other', nodeIds: ['c', 'd', 'b'] })
     expect(result.groups?.map((group) => group.id)).toEqual(['x', 'y', 'z', ''])
   })
