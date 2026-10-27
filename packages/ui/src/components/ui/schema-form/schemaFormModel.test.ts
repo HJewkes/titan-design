@@ -93,7 +93,8 @@ describe('array rows', () => {
   })
 
   it('gives a new row a kebab id no element already has, and only its required fields', () => {
-    const added = addRow(ROWS, rowsControl(), new Set(['row-1', 'row-2'])).at(-1)
+    const rows = addRow(ROWS, rowsControl(), new Set(['row-1', 'row-2']))
+    const added = rows[rows.length - 1]
 
     expect(added).toEqual({ id: 'row-3', left: '', right: '' })
     expect(uniqueId(new Set())).toBe('row-1')
