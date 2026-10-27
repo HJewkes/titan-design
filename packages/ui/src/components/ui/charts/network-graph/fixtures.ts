@@ -422,5 +422,5 @@ export const networkGraphFixtures = {
   }),
   'One group': fixture(inGroup(series('alpha', 10), 'alpha'), chainSpawns(series('alpha', 10))),
   'Many groups': buildManyGroups(),
-  'Lanes (3)': buildLanes(),
+  'Three lanes': buildLanes(),
 } satisfies Record<string, GraphFixture>

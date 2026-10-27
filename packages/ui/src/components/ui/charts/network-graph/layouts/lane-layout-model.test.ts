@@ -7,7 +7,7 @@ import type { GraphBox, GraphEdge, GraphGroup, GraphLayoutResult, GraphNode } fr
 import { laneLayout } from './lane-layout-model'
 import { layeredLayout } from './layered-layout-model'
 
-const lanesFixture = networkGraphFixtures['Lanes (3)']
+const lanesFixture = networkGraphFixtures['Three lanes']
 const VIEWPORT = { width: 4000, height: 600 }
 
 const n = (id: string, group?: string): GraphNode => ({ id, label: id, group })

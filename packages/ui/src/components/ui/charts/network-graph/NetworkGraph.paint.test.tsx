@@ -51,7 +51,6 @@ describe('NetworkGraph paint', () => {
         "Grouped (40)": "852aa973",
         "Hostile": "c67b190e",
         "Hub and spokes": "f09a710e",
-        "Lanes (3)": "98158892",
         "Large (150)": "49698ff7",
         "Long label": "c7878624",
         "Many groups": "9be8e761",
@@ -65,6 +64,7 @@ describe('NetworkGraph paint', () => {
         "Pulse": "5d5805f4",
         "Small (5)": "5d5805f4",
         "Supplied": "fe851967",
+        "Three lanes": "98158892",
         "Two components": "a92e826b",
         "Wide fan-out": "bc8b8d99",
       }

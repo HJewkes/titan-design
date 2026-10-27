@@ -690,7 +690,7 @@ describe('NetworkGraph free-form layouts', () => {
   })
 
   it('lane paints one labelled box per lane and names each node with its lane', () => {
-    const { container } = renderGraph({ layout: lanes() }, networkGraphFixtures['Lanes (3)'])
+    const { container } = renderGraph({ layout: lanes() }, networkGraphFixtures['Three lanes'])
     expect(container.querySelectorAll('rect[data-variant="box"]')).toHaveLength(3)
     for (const lane of laneFixtureLanes) {
       expect(screen.getByTestId(`network-graph-group-${lane.id}`)).toHaveTextContent(lane.label)
@@ -878,7 +878,7 @@ describe('NetworkGraph free-form layouts', () => {
     ['ego', { layout: ego() }, grouped],
     ['clustered', { layout: clustered(), showLegend: true }, grouped],
     ['the ego empty state', { layout: egoLayout({ focusId: null }) }, grouped],
-    ['lane', { layout: lanes() }, networkGraphFixtures['Lanes (3)']],
+    ['lane', { layout: lanes() }, networkGraphFixtures['Three lanes']],
   ] as [string, Partial<NetworkGraphProps>, GraphFixture][])(
     'has no axe violations for %s',
     { timeout: AXE_TIMEOUT },

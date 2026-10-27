@@ -168,7 +168,7 @@ const meta: Meta<StoryArgs> = {
           '- [clustered](?path=/story/components-organisms-networkgraph--default&args=layout:clustered): ' +
           'a labelled region per `group`, ungrouped nodes last; `Grouped (40)` passes its region ' +
           'order and labels.\n\n' +
-          'The [lane](?path=/story/components-organisms-networkgraph--default&args=fixture:Lanes+(3);layout:lane) ' +
+          'The [lane](?path=/story/components-organisms-networkgraph--default&args=fixture:Three+lanes;layout:lane) ' +
           'mode is a swimlane: one box per lane in the fixture’s `groups` order, columns as the ' +
           'layered layout gives them, and a trailing `Other` band for nodes in no lane.\n\n' +
           'The `map` control paints a precomputed map (the [box](?path=/story/components-organisms-networkgraph--default&args=map:Level+3) ' +

@@ -207,7 +207,6 @@ describe('edgePath', () => {
         "Grouped (40)": "53:2b349dfa",
         "Hostile": "5:f5ce052",
         "Hub and spokes": "51:f75ff33e",
-        "Lanes (3)": "15:e76a8545",
         "Large (150)": "295:d2ba57ad",
         "Long label": "3:a9dc3874",
         "Many groups": "13:7c0c6890",
@@ -221,6 +220,7 @@ describe('edgePath', () => {
         "Pulse": "7:e77ac5ad",
         "Small (5)": "7:e77ac5ad",
         "Supplied": "7:e77ac5ad",
+        "Three lanes": "15:e76a8545",
         "Two components": "12:30a45071",
         "Wide fan-out": "60:5d4d50d5",
       }

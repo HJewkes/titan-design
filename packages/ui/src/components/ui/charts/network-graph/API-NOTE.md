@@ -343,8 +343,8 @@ Names are invented (`lead-01`, `worker-07`, `human-01`, `alpha-03`). Large graph
 so every import gives the same data. `networkGraphFixtures` holds Small (5), Medium (30), Large (150),
 Wide fan-out, Deep chain, Supplied, Empty, One item, No edges, All equal, Missing values, Many kinds,
 Pulse, Long label, Hostile, Two components, Mutual pair, Grouped (40), Hub and spokes, Directed chain,
-One group, Many groups and Lanes (3). `Large (150)` gives every node the group of its root. A fixture may carry
-the `focusId` an ego view centres on and the `groups` a clustered view orders by; `Lanes (3)` passes
+One group, Many groups and Three lanes. `Large (150)` gives every node the group of its root. A fixture may carry
+the `focusId` an ego view centres on and the `groups` a clustered view orders by; `Three lanes` passes
 `laneFixtureLanes` as its `groups`, the lanes of a lane view. `hostilePositions`
 holds the supplied positions for the Hostile case, two nodes missing and one non-finite, for use with
 `suppliedLayout`. `hostileLayoutOptions` holds hostile seeds, iterations, focus ids, hops and groups.
