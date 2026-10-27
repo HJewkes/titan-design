@@ -193,17 +193,6 @@ export function getHoverColors(
 }
 
 /**
- * Check if a color is considered "dark" (for choosing text color).
- * Uses HSV Value component for simplicity.
- */
-export function isDark(hex: string): boolean {
-  const rgb = hexToRgb(hex)
-  if (!rgb) return true
-  const hsv = rgbToHsv(rgb.r, rgb.g, rgb.b)
-  return hsv.v < 0.6
-}
-
-/**
  * Shadow strength tiers. Retained because `elevation.ts` keys its level table on
  * them; the neumorphic shadow BUILDERS that used to live here are gone.
  */

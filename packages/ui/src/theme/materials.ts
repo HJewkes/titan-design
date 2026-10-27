@@ -238,23 +238,6 @@ export function paperFill(tone: string): ViewStyle {
 }
 
 /**
- * A POST-IT card: a matte tinted sheet with a crisp rim, a defined contact
- * shadow, and a deliberate CANT (`deg`) so it reads as a stuck note — where a
- * small unit of data wants to feel pinned to the surface (alerts, next-set). A
- * degree or two, not a fraction, so the tilt is intentional rather than a bug.
- * Defaults to `surface-raised` in `mode`.
- */
-export function postIt(tone?: string, deg = -1.5, mode: ThemeMode = 'dark'): ViewStyle {
-  tone ??= getSemanticColors(mode)['surface-raised']
-  return {
-    backgroundColor: tone,
-    backgroundImage: grainForTone(tone),
-    boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.12), 0 6px 14px rgba(0,0,0,0.45)',
-    transform: [{ rotate: `${deg}deg` }],
-  } as unknown as ViewStyle
-}
-
-/**
  * DEBOSSED (engraved) text: a 1px light highlight dropped just below the glyphs
  * so a label reads as pressed INTO the surface. Deliberate, for section eyebrows
  * on a matte plane — not body copy. Pair with a tertiary/dim text colour.

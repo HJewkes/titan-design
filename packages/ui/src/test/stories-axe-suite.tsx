@@ -32,7 +32,7 @@ export type AxeRun = (element: Element) => Promise<{ violations: unknown[] }>
 // A timed-out test abandons its run without stopping it, so every run queues behind the last.
 let lastRun: Promise<unknown> = Promise.resolve()
 
-export function axeIdle(): Promise<unknown> {
+function axeIdle(): Promise<unknown> {
   return lastRun
 }
 
