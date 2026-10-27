@@ -791,12 +791,6 @@
   "custom-chat-messagelist-unreadbadge--jump-to-newest light": {
     "#ffffff|#da5f00": 1
   },
-  "custom-fatigue-fatigue-lights--across-states light": {
-    "#424140|#100d0a": 15
-  },
-  "custom-fatigue-fatigue-lights--spread light": {
-    "#424140|#100d0a": 3
-  },
   "custom-fatigue-live-fatigue-card--states light": {
     "#888684|#d4d1ce": 4
   },
@@ -1069,24 +1063,6 @@
     "#424140|#1c1916": 46,
     "#5a5958|#1c1916": 12,
     "#824d06|#1c1916": 1
-  },
-  "custom-workout-dataviz-volumelandmarkbar--all-zones light": {
-    "#ff7900|#d4d1ce": 5
-  },
-  "custom-workout-dataviz-volumelandmarkbar--approaching-mrv light": {
-    "#ff7900|#d4d1ce": 1
-  },
-  "custom-workout-dataviz-volumelandmarkbar--maintenance light": {
-    "#ff7900|#d4d1ce": 1
-  },
-  "custom-workout-dataviz-volumelandmarkbar--optimal light": {
-    "#ff7900|#d4d1ce": 1
-  },
-  "custom-workout-dataviz-volumelandmarkbar--over-mrv light": {
-    "#ff7900|#d4d1ce": 1
-  },
-  "custom-workout-dataviz-volumelandmarkbar--under-mev light": {
-    "#ff7900|#d4d1ce": 1
   },
   "custom-workout-dataviz-zonetrack--band-with-marker dark": {
     "#888684|#252321": 1
@@ -1445,71 +1421,18 @@
     "#a29f9d|#3d3c3b": 1,
     "#ff7900|#4a3929": 1
   },
-  "custom-workout-resttimer--default light": {
-    "#ff7900|#ffefe0": 1
-  },
   "custom-workout-resttimer--just-started dark": {
     "#a29f9d|#3d3c3b": 1,
     "#ff7900|#4a3929": 1
-  },
-  "custom-workout-resttimer--just-started light": {
-    "#ff7900|#ffefe0": 1
   },
   "custom-workout-resttimer--nearly-complete dark": {
     "#a29f9d|#3d3c3b": 1,
     "#ff7900|#4a3929": 1
   },
-  "custom-workout-resttimer--nearly-complete light": {
-    "#ff7900|#ffefe0": 1
-  },
-  "custom-workout-resttimer--ring-almost-done dark": {
-    "#5a5958|#100d0a": 1
-  },
-  "custom-workout-resttimer--ring-almost-done light": {
-    "#424140|#0f0c09": 1,
-    "#5a5958|#100d0a": 2
-  },
-  "custom-workout-resttimer--ring-display-only dark": {
-    "#5a5958|#100d0a": 1
-  },
-  "custom-workout-resttimer--ring-display-only light": {
-    "#5a5958|#100d0a": 2
-  },
-  "custom-workout-resttimer--ring-done dark": {
-    "#5a5958|#100d0a": 1
-  },
-  "custom-workout-resttimer--ring-done light": {
-    "#424140|#0f0c09": 1,
-    "#5a5958|#100d0a": 2
-  },
-  "custom-workout-resttimer--ring-just-started dark": {
-    "#5a5958|#100d0a": 1
-  },
-  "custom-workout-resttimer--ring-just-started light": {
-    "#424140|#0f0c09": 1,
-    "#5a5958|#100d0a": 2
-  },
-  "custom-workout-resttimer--ring-midway dark": {
-    "#5a5958|#100d0a": 1
-  },
-  "custom-workout-resttimer--ring-midway light": {
-    "#424140|#0f0c09": 1,
-    "#5a5958|#100d0a": 2
-  },
-  "custom-workout-resttimer--ring-playground dark": {
-    "#5a5958|#100d0a": 1
-  },
-  "custom-workout-resttimer--ring-playground light": {
-    "#424140|#0f0c09": 1,
-    "#5a5958|#100d0a": 2
-  },
   "custom-workout-resttimer--with-next-set-info dark": {
     "#888684|#31302f": 1,
     "#a29f9d|#3d3c3b": 1,
     "#ff7900|#4a3929": 1
-  },
-  "custom-workout-resttimer--with-next-set-info light": {
-    "#ff7900|#ffefe0": 1
   },
   "custom-workout-scheduletiles--soon-under-a-day light": {
     "#ff7900|#ffffff": 1
@@ -1525,18 +1448,6 @@
   },
   "custom-workout-setsrepsload--rep-range dark": {
     "#888684|#252321": 1
-  },
-  "custom-workout-setstrip--expected-range-long-label dark": {
-    "#888684|#252321": 2
-  },
-  "custom-workout-setstrip--expected-range-only dark": {
-    "#888684|#252321": 2
-  },
-  "custom-workout-setstrip--prescribed-and-expected dark": {
-    "#888684|#252321": 2
-  },
-  "custom-workout-setstrip--set-types dark": {
-    "#888684|#252321": 2
   },
   "custom-workout-settableheader--kg dark": {
     "#888684|#252321": 5
@@ -2393,12 +2304,11 @@
     "#01b5d1|#d4d1ce": 1
   },
   "lab-north-star-live-wall-dashboard--rest dark": {
-    "#888684|#252321": 11,
+    "#888684|#252321": 10,
     "#888684|#2c2a28": 5
   },
   "lab-north-star-live-wall-dashboard--rest light": {
-    "#a45e00|#d4d1ce": 1,
-    "#ff7900|#efdccb": 1
+    "#a45e00|#d4d1ce": 1
   },
   "lab-north-star-live-wall-dashboard--session-ready dark": {
     "#888684|#252321": 1
@@ -2544,7 +2454,6 @@
   },
   "pages-active-workout--resting light": {
     "#ff7900|#d4d1ce": 1,
-    "#ff7900|#ffefe0": 1,
     "#ffffff|#22d3ee": 1
   },
   "pages-appshell--audiobook-app light": {
