@@ -16405,6 +16405,98 @@
       "tier": "atom"
     },
     {
+      "composes": [
+        "EmptyState",
+        "SchemaFormNodes",
+        "Stack"
+      ],
+      "family": "ui/schema-form",
+      "file": "packages/ui/src/components/ui/schema-form/SchemaForm.tsx",
+      "name": "SchemaForm",
+      "props": [
+        {
+          "default": null,
+          "description": "Additional className for the root stack.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Shown when the schema has no properties.",
+          "name": "emptyState",
+          "required": false,
+          "type": "ReactNode"
+        },
+        {
+          "default": "{}",
+          "description": "Per-field errors by dotted path; an array's own path carries its row-count error.",
+          "name": "errors",
+          "required": false,
+          "type": "Readonly<Record<string, string | readonly string[]>>"
+        },
+        {
+          "default": "false",
+          "description": "Disables every control, including the row buttons.",
+          "name": "isDisabled",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": "This id is locked",
+          "description": "Helper text under a locked id.",
+          "name": "lockedIdHint",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": "[]",
+          "description": "Ids that must not change: an object whose `id` is listed shows it read-only, and its row cannot be removed.",
+          "name": "lockedIds",
+          "required": false,
+          "type": "readonly string[]"
+        },
+        {
+          "default": null,
+          "description": "Called with the whole next value on every edit.",
+          "name": "onChange",
+          "required": true,
+          "type": "(value: SchemaFormValue) => void"
+        },
+        {
+          "default": null,
+          "description": "An object JSON Schema; each of its `properties` renders as one field.",
+          "name": "schema",
+          "required": true,
+          "type": "Readonly<Record<string, unknown>>"
+        },
+        {
+          "default": "schema-form",
+          "description": "Root test id; each field's is `<testID>-<path with dots as dashes>`.",
+          "name": "testID",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "The current value.",
+          "name": "value",
+          "required": true,
+          "type": "SchemaFormValue"
+        }
+      ],
+      "purpose": "A form rendered from a JSON Schema: strings (with a `maxLength` counter), string enums as a select, numbers, booleans, nested objects and arrays whose rows add, remove and reorder inside `minItems` / `maxItems`.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/schema-form/SchemaForm.tsx",
+        "status": "packages/ui/src/components/ui/schema-form/SchemaForm.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-organisms-schemaform--default"
+      ],
+      "tier": "organism"
+    },
+    {
       "composes": [],
       "family": "ui/section",
       "file": "packages/ui/src/components/ui/section/Section.tsx",
