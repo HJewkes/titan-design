@@ -7,6 +7,15 @@ import { contrast, compositeOver } from '../../../theme/color-checks'
 import { capturedClassNames } from '../../../test/classname-capture'
 import { chipLightContrastExceptions } from '../../../test/chip-contrast'
 import { resolveAll, siblingSource, sizeClasses } from '../../../test/spacing-resolver'
+import { Pill } from '../pill'
+
+// A passthrough spy, so every chip still renders the real Pill.
+vi.mock('../pill', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../pill')>()
+  return { ...actual, Pill: vi.fn(actual.Pill) }
+})
+
+const lastPillProps = () => vi.mocked(Pill).mock.lastCall?.[0]
 
 describe('Chip', () => {
   it('renders children correctly', () => {
@@ -143,6 +152,38 @@ describe('Chip', () => {
  * moved no pixels. That is exactly what this test is for: it fails the day the
  * ramp moves under Chip without anyone editing Chip.
  */
+describe('Chip tone', () => {
+  it('passes tone through to the inner Pill', () => {
+    render(<Chip tone="success">Saved</Chip>)
+    expect(lastPillProps()).toMatchObject({ tone: 'success' })
+  })
+
+  it('still maps the deprecated color onto a tone', () => {
+    render(<Chip color="primary">Saved</Chip>)
+    expect(lastPillProps()).toMatchObject({ tone: 'brand' })
+  })
+
+  it('prefers tone over color when both are set', () => {
+    render(
+      <Chip tone="warning" color="info">
+        Saved
+      </Chip>
+    )
+    expect(lastPillProps()).toMatchObject({ tone: 'warning' })
+  })
+
+  it('a selected neutral tone paints the selected solid fill even when color names another', () => {
+    render(
+      <Chip testID="neutral" tone="neutral" color="primary" onPress={() => {}} isSelected>
+        Saved
+      </Chip>
+    )
+    expect(capturedClassNames.get('neutral')?.split(/\s+/)).toContain(
+      'bg-interactive-selected-solid'
+    )
+  })
+})
+
 describe('Chip geometry resolves to the squish tokens', () => {
   const source = siblingSource(import.meta.url, 'Chip.tsx')
   const classes = (level: string) => sizeClasses(source, 'sizeStyles', level, 'container')
