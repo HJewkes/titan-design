@@ -13557,7 +13557,7 @@
         },
         {
           "default": "default",
-          "description": "Color scheme",
+          "description": "Legacy colour scheme, mapped onto `tone`.",
           "name": "color",
           "required": false,
           "type": "ChipColor"
@@ -13610,6 +13610,13 @@
           "name": "size",
           "required": false,
           "type": "ChipSize"
+        },
+        {
+          "default": null,
+          "description": "Semantic tone, as on `Pill`.",
+          "name": "tone",
+          "required": false,
+          "type": "PillTone"
         },
         {
           "default": "subtle",
