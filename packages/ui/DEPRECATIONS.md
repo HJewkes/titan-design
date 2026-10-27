@@ -57,6 +57,12 @@ is no longer in its tree (TD-57).
 `@deprecated` tags but keep working; they are the compatibility surface for
 existing call sites and for `voltras-mcp`, which imports `Pill` directly.
 
+`ChipProps.color` (use `tone`, TD-274) follows the same pattern. `Chip` takes the
+`PillTone` names directly; `color` keeps working through the same mapping
+(`default` → `neutral`, `primary` → `brand`, `secondary` → `brand-secondary`, the
+status names unchanged), and `tone` wins when both are set. `ChipGroup` still
+takes `color`.
+
 ## Shell family — generic shell + a workout shell that composes it (AW-132)
 
 `shell/` is now generic and `shell/workout/` holds the workout app's chrome. All

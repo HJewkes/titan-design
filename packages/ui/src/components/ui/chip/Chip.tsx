@@ -19,7 +19,12 @@ export type ChipSize = 'sm' | 'md' | 'lg'
 export interface ChipProps extends ViewProps {
   /** Visual variant */
   variant?: ChipVariant
-  /** Color scheme */
+  /** Semantic tone, as on `Pill`. Wins over `color` when both are set. */
+  tone?: PillTone
+  /**
+   * Legacy colour scheme, mapped onto `tone`.
+   * @deprecated Use `tone` — `color` maps onto it and is kept for call-site compatibility.
+   */
   color?: ChipColor
   /** Size */
   size?: ChipSize
@@ -110,12 +115,13 @@ function DeleteButton({
  *
  * @example
  * <Chip>Default</Chip>
- * <Chip color="primary" variant="subtle">Primary Subtle</Chip>
+ * <Chip tone="brand" variant="subtle">Brand Subtle</Chip>
  * <Chip onDelete={() => {}}>Dismissible</Chip>
  * <Chip onPress={() => {}}>Clickable</Chip>
  */
 export function Chip({
   variant = 'subtle',
+  tone,
   color = 'default',
   size = 'md',
   leftElement,
@@ -130,6 +136,7 @@ export function Chip({
   ...props
 }: ChipProps) {
   const sizes = sizeStyles[size]
+  const resolvedTone = tone ?? colorToTone[color]
   const groupLimit = useContext(ChipGroupContext)
   const inGroup = groupLimit !== undefined
   // Every chip face is under 44px, so a chip a group presses carries a hit box (TD-10).
@@ -142,7 +149,7 @@ export function Chip({
   return (
     <Pill
       variant={chipFace(variant, isSelected)}
-      tone={colorToTone[color]}
+      tone={resolvedTone}
       rounded={false}
       onPress={onPress}
       isDisabled={isDisabled}
@@ -166,7 +173,7 @@ export function Chip({
         onPress && 'web:cursor-pointer web:hover:opacity-80 active:opacity-70',
         isDisabled && 'cursor-not-allowed',
         // Pill's neutral solid is text-primary, near-black in light; a selected toggle reads grey[700] there.
-        isSelected && color === 'default' && 'bg-interactive-selected-solid',
+        isSelected && resolvedTone === 'neutral' && 'bg-interactive-selected-solid',
         className
       )}
       textClassName={cn('font-sans font-medium', sizes.text)}
