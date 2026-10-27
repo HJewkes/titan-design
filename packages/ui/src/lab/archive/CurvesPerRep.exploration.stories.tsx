@@ -26,9 +26,10 @@ import { greyRamp } from '../../theme/tokens/primitives'
 import { WORKOUT_TOKENS } from '../../theme/workout-tokens'
 import { alpha } from '../../utils/colors'
 import { insetWell } from '../../theme/materials'
+import { useOnSurfaceColor } from '../../components/ui/surface'
+import { StoryPage, StorySpecimens } from '../story-canvas'
 
 const C = getSemanticColors('dark')
-const PAGE_BG = greyRamp[975]
 const PANEL_BG = greyRamp[975]
 const FONT_HEAD = '"Space Grotesk", sans-serif'
 const FONT_UI = '"Nunito Sans", sans-serif'
@@ -741,11 +742,15 @@ function LegendSwatch({
   color,
   label,
   dashed,
+  onPage,
 }: {
   color: string
   label: string
   dashed?: boolean
+  /** On the story page rather than a Lab panel: the label follows the page plane. */
+  onPage?: boolean
 }) {
+  const pageColor = useOnSurfaceColor('secondary')
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
       <View
@@ -758,7 +763,12 @@ function LegendSwatch({
         }}
       />
       <Text
-        style={{ color: C['text-secondary'], fontSize: 11, fontWeight: '700', fontFamily: FONT_UI }}
+        style={{
+          color: onPage ? pageColor : C['text-secondary'],
+          fontSize: 11,
+          fontWeight: '700',
+          fontFamily: FONT_UI,
+        }}
       >
         {label}
       </Text>
@@ -768,16 +778,26 @@ function LegendSwatch({
 function ChannelLegend() {
   return (
     <View style={{ flexDirection: 'row', gap: 16, flexWrap: 'wrap', alignItems: 'center' }}>
-      <LegendSwatch color={S.orange} label="VELOCITY — zone hue (concentric)" />
-      <LegendSwatch color={alpha(PARCH, 0.7)} dashed label="eccentric / position — parchment" />
-      <LegendSwatch color={alpha(PARCH, 0.6)} label="force (lb) — steel, neutral" />
+      <LegendSwatch onPage color={S.orange} label="VELOCITY — zone hue (concentric)" />
+      <LegendSwatch
+        onPage
+        color={alpha(PARCH, 0.7)}
+        dashed
+        label="eccentric / position — parchment"
+      />
+      <LegendSwatch onPage color={alpha(PARCH, 0.6)} label="force (lb) — steel, neutral" />
     </View>
   )
 }
 function SectionTitle({ children }: { children: ReactNode }) {
   return (
     <Text
-      style={{ fontSize: 16, fontWeight: '800', fontFamily: FONT_HEAD, color: C['text-primary'] }}
+      style={{
+        fontSize: 16,
+        fontWeight: '800',
+        fontFamily: FONT_HEAD,
+        color: useOnSurfaceColor('primary'),
+      }}
     >
       {children}
     </Text>
@@ -789,7 +809,7 @@ function Caption({ children }: { children: ReactNode }) {
       style={{
         fontSize: 12,
         fontFamily: FONT_UI,
-        color: C['text-secondary'],
+        color: useOnSurfaceColor('secondary'),
         maxWidth: 820,
         lineHeight: 18,
       }}
@@ -817,9 +837,9 @@ function Panel({ children, width }: { children: ReactNode; width?: number }) {
 }
 function Page({ children }: { children: ReactNode }) {
   return (
-    <View style={{ padding: 28, backgroundColor: PAGE_BG, minHeight: '100%', gap: 24 }}>
-      {children}
-    </View>
+    <StoryPage>
+      <StorySpecimens>{children}</StorySpecimens>
+    </StoryPage>
   )
 }
 
@@ -968,7 +988,7 @@ export const Overview: Story = {
         </Caption>
         <ChannelLegend />
       </View>
-      <View style={{ flexDirection: 'column', gap: 20 }}>
+      <StorySpecimens>
         <Panel width={1180}>
           <Kicker>1 · VELOCITY-TIME — whole-set small multiples</Kicker>
           <View
@@ -1001,7 +1021,7 @@ export const Overview: Story = {
             <EccConcPanel rep={6} title="Rep 7 — cheat" />
           </View>
         </Panel>
-      </View>
+      </StorySpecimens>
     </Page>
   ),
 }

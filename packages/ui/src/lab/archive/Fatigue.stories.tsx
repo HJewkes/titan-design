@@ -24,6 +24,7 @@ import {
   Kicker,
   insetWell,
 } from '../north-star/fatigue-lab-shared'
+import { StorySpecimen } from '../story-canvas'
 
 const meta: Meta = {
   title: 'Lab/Archive/Fatigue',
@@ -99,14 +100,12 @@ export const FatigueCard_: Story = {
         </Caption>
       </View>
       <View style={{ flexDirection: 'row', gap: 20, alignItems: 'flex-start' }}>
-        <View style={{ gap: 6 }}>
-          <Kicker>REP 3 — good (all three ok)</Kicker>
+        <StorySpecimen label="REP 3 — good (all three ok)">
           <FatigueCard width={324} current={2} />
-        </View>
-        <View style={{ gap: 6 }}>
-          <Kicker>REP 8 — form breaking down (all three alarm)</Kicker>
+        </StorySpecimen>
+        <StorySpecimen label="REP 8 — form breaking down (all three alarm)">
           <FatigueCard width={324} current={7} />
-        </View>
+        </StorySpecimen>
       </View>
     </Page>
   ),
@@ -138,10 +137,9 @@ export const Overview: Story = {
             <HeroWithVlBands width={660} height={470} current={7} />
           </View>
         </Panel>
-        <View style={{ gap: 6 }}>
-          <Kicker>P2 · FATIGUE CARD (secondary)</Kicker>
+        <StorySpecimen label="P2 · FATIGUE CARD (secondary)">
           <FatigueCard width={318} current={7} />
-        </View>
+        </StorySpecimen>
       </View>
     </Page>
   ),

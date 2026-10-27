@@ -24,14 +24,8 @@
  */
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View } from 'react-native'
-import {
-  PAGE_BG,
-  FATIGUE_STATES,
-  LivePanelV2,
-  SectionTitle,
-  Caption,
-  Kicker,
-} from './fatigue-lab-shared'
+import { StorySpecimen } from '../story-canvas'
+import { FATIGUE_STATES, LivePanelV2, Page, SectionTitle, Caption } from './fatigue-lab-shared'
 
 const meta: Meta = {
   title: 'Lab/North Star/4 - Fatigue System',
@@ -51,8 +45,8 @@ export const LivePanelV2_: Story = {
 export const LiveStates: Story = {
   name: 'Live states (Good → Breaking down)',
   render: () => (
-    <View style={{ backgroundColor: PAGE_BG }}>
-      <View style={{ padding: 28, paddingBottom: 8, gap: 4 }}>
+    <Page>
+      <View style={{ gap: 4 }}>
         <SectionTitle>Live-view states — the system across the fatigue spectrum</SectionTitle>
         <Caption>
           The live panel (velocity hero + fatigue card) rendered per verdict state, with plausible
@@ -64,11 +58,10 @@ export const LiveStates: Story = {
         </Caption>
       </View>
       {FATIGUE_STATES.map((s) => (
-        <View key={s.name} style={{ gap: 6, paddingHorizontal: 28, paddingBottom: 22 }}>
-          <Kicker>{s.name}</Kicker>
+        <StorySpecimen key={s.name} label={s.name}>
           <LivePanelV2 current={s.current} fatigue={s.read} aura={s.aura} />
-        </View>
+        </StorySpecimen>
       ))}
-    </View>
+    </Page>
   ),
 }

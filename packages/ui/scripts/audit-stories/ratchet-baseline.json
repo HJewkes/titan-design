@@ -9,7 +9,7 @@
     ]
   },
   "ceiling": {
-    "text-floor": 1713
+    "text-floor": 1700
   },
   "kinds": {
     "text-floor": {
@@ -1286,7 +1286,7 @@
         "div:nth-of-type(4) > div:nth-of-type(3) > div:nth-of-type(2) > div"
       ],
       "lab-archive-curves-per-rep--ecc-conc-split": [
-        "div > div > div:nth-of-type(2) > div:nth-of-type(1)",
+        "[data-testid=\"story-specimens\"] > div:nth-of-type(2) > div:nth-of-type(1)",
         "div:nth-of-type(2) > div:nth-of-type(1) > svg > text:nth-of-type(1)",
         "div:nth-of-type(2) > div:nth-of-type(1) > svg > text:nth-of-type(2)",
         "div:nth-of-type(2) > div:nth-of-type(1) > svg > text:nth-of-type(4)",
@@ -1295,13 +1295,13 @@
         "div:nth-of-type(2) > div:nth-of-type(2) > svg > text:nth-of-type(4)"
       ],
       "lab-archive-curves-per-rep--ghost-trail-set": [
-        "div > div > div:nth-of-type(2) > div:nth-of-type(1)"
+        "[data-testid=\"story-specimens\"] > div:nth-of-type(2) > div:nth-of-type(1)"
       ],
       "lab-archive-curves-per-rep--overview": [
-        "div > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1)",
-        "div > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(1)",
-        "div > div:nth-of-type(2) > div:nth-of-type(3) > div:nth-of-type(1)",
-        "div > div:nth-of-type(2) > div:nth-of-type(4) > div:nth-of-type(1)",
+        "[data-testid=\"story-specimens\"] > div:nth-of-type(1) > div:nth-of-type(1)",
+        "[data-testid=\"story-specimens\"] > div:nth-of-type(2) > div:nth-of-type(1)",
+        "[data-testid=\"story-specimens\"] > div:nth-of-type(3) > div:nth-of-type(1)",
+        "[data-testid=\"story-specimens\"] > div:nth-of-type(4) > div:nth-of-type(1)",
         "div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(2)",
         "div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(2)",
         "div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(3) > div:nth-of-type(2)",
@@ -1332,7 +1332,7 @@
         "div:nth-of-type(3) > div:nth-of-type(2) > svg > text:nth-of-type(3)"
       ],
       "lab-archive-curves-per-rep--phase-annotated-curve": [
-        "div > div > div:nth-of-type(2) > div:nth-of-type(1)",
+        "[data-testid=\"story-specimens\"] > div:nth-of-type(2) > div:nth-of-type(1)",
         "div:nth-of-type(2) > div:nth-of-type(2) > svg > text:nth-of-type(2)",
         "div:nth-of-type(2) > div:nth-of-type(2) > svg > text:nth-of-type(3)",
         "div:nth-of-type(2) > svg > g:nth-of-type(1) > text",
@@ -1341,7 +1341,7 @@
         "div:nth-of-type(2) > svg > g:nth-of-type(4) > text"
       ],
       "lab-archive-curves-per-rep--velocity-time-curve": [
-        "div > div > div:nth-of-type(2) > div:nth-of-type(1)",
+        "[data-testid=\"story-specimens\"] > div:nth-of-type(2) > div:nth-of-type(1)",
         "div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1) > span",
         "div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(2)",
         "div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(1) > span",
@@ -1360,11 +1360,11 @@
         "div:nth-of-type(2) > div:nth-of-type(8) > div:nth-of-type(1) > span"
       ],
       "lab-archive-curves-set-level--analysis-layout": [
-        "div > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1)",
-        "div > div:nth-of-type(3) > div:nth-of-type(1) > div:nth-of-type(1)",
-        "div > div:nth-of-type(3) > div:nth-of-type(2) > div:nth-of-type(1)",
-        "div > div:nth-of-type(4) > div:nth-of-type(1) > div:nth-of-type(1)",
-        "div > div:nth-of-type(4) > div:nth-of-type(2) > div:nth-of-type(5)",
+        "[data-testid=\"story-specimens\"] > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1)",
+        "[data-testid=\"story-specimens\"] > div:nth-of-type(3) > div:nth-of-type(1) > div:nth-of-type(1)",
+        "[data-testid=\"story-specimens\"] > div:nth-of-type(3) > div:nth-of-type(2) > div:nth-of-type(1)",
+        "[data-testid=\"story-specimens\"] > div:nth-of-type(4) > div:nth-of-type(1) > div:nth-of-type(1)",
+        "[data-testid=\"story-specimens\"] > div:nth-of-type(4) > div:nth-of-type(2) > div:nth-of-type(5)",
         "div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(4) > div",
         "div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(4) > div:nth-of-type(2)",
         "div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(5) > div:nth-of-type(2)",
@@ -1383,7 +1383,7 @@
         "div:nth-of-type(2) > svg > g:nth-of-type(9) > text"
       ],
       "lab-archive-curves-set-level--force-velocity-scatter": [
-        "div > div > div:nth-of-type(2) > div:nth-of-type(1)",
+        "[data-testid=\"story-specimens\"] > div:nth-of-type(2) > div:nth-of-type(1)",
         "div:nth-of-type(1) > svg > g:nth-of-type(1) > text",
         "div:nth-of-type(1) > svg > g:nth-of-type(10) > text",
         "div:nth-of-type(1) > svg > g:nth-of-type(2) > text",
@@ -1396,7 +1396,7 @@
         "div:nth-of-type(1) > svg > g:nth-of-type(9) > text"
       ],
       "lab-archive-curves-set-level--load-velocity-profile": [
-        "div > div > div:nth-of-type(2) > div:nth-of-type(1)",
+        "[data-testid=\"story-specimens\"] > div:nth-of-type(2) > div:nth-of-type(1)",
         "div:nth-of-type(1) > svg > g:nth-of-type(1) > text",
         "div:nth-of-type(1) > svg > g:nth-of-type(2) > text",
         "div:nth-of-type(1) > svg > g:nth-of-type(3) > text",
@@ -1407,9 +1407,9 @@
         "div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(5)"
       ],
       "lab-archive-curves-set-level--overview": [
-        "div > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1)",
-        "div > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(1)",
-        "div > div:nth-of-type(2) > div:nth-of-type(3) > div:nth-of-type(1)",
+        "[data-testid=\"story-specimens\"] > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1)",
+        "[data-testid=\"story-specimens\"] > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(1)",
+        "[data-testid=\"story-specimens\"] > div:nth-of-type(2) > div:nth-of-type(3) > div:nth-of-type(1)",
         "div:nth-of-type(1) > div:nth-of-type(3) > div:nth-of-type(4) > div",
         "div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(4) > div:nth-of-type(2)",
         "div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(5) > div:nth-of-type(2)",
@@ -1429,15 +1429,15 @@
         "div:nth-of-type(3) > div:nth-of-type(2) > svg > text:nth-of-type(1)"
       ],
       "lab-archive-curves-set-level--velocity-loss-in-set": [
-        "div > div > div:nth-of-type(2) > div:nth-of-type(1)",
+        "[data-testid=\"story-specimens\"] > div:nth-of-type(2) > div:nth-of-type(1)",
         "div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(4) > div:nth-of-type(2)",
         "div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(5) > div:nth-of-type(2)",
         "div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(6) > div:nth-of-type(2)",
         "div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(4) > div"
       ],
       "lab-archive-fatigue--combined-chart": [
-        "div > div > div:nth-of-type(2) > div:nth-of-type(1)",
-        "div > div > div:nth-of-type(3) > div:nth-of-type(1)",
+        "[data-testid=\"story-specimens\"] > div:nth-of-type(2) > div:nth-of-type(1)",
+        "[data-testid=\"story-specimens\"] > div:nth-of-type(3) > div:nth-of-type(1)",
         "div:nth-of-type(1) > svg > g:nth-of-type(1) > text",
         "div:nth-of-type(1) > svg > g:nth-of-type(2) > text",
         "div:nth-of-type(1) > svg > g:nth-of-type(3) > text",
@@ -1456,8 +1456,6 @@
         "div:nth-of-type(2) > svg > g:nth-of-type(4) > text"
       ],
       "lab-archive-fatigue--fatigue-card": [
-        "div > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1)",
-        "div > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(1)",
         "div:nth-of-type(1) > div > div[aria-label=\"Velocity loss 16%, ok\"] > div:nth-of-type(2)",
         "div:nth-of-type(1) > div > div[aria-label=\"Velocity loss 72%, alarm\"] > div:nth-of-type(2)",
         "div:nth-of-type(2) > div > div[aria-label=\"ROM depth 67%, alarm\"] > div:nth-of-type(2)",
@@ -1469,12 +1467,11 @@
         "div:nth-of-type(3) > div > div[aria-label=\"Tempo on tempo, ok\"] > div:nth-of-type(2)"
       ],
       "lab-archive-fatigue--overview": [
+        "[data-testid=\"story-specimens\"] > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1)",
         "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(3) > div:nth-of-type(2)",
         "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(4) > div:nth-of-type(2)",
         "div > div:nth-of-type(1) > div:nth-of-type(3) > div:nth-of-type(2)",
         "div > div:nth-of-type(1) > div:nth-of-type(4) > div:nth-of-type(2)",
-        "div > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1)",
-        "div > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(1)",
         "div:nth-of-type(1) > div > div[aria-label=\"Velocity loss 72%, alarm\"] > div:nth-of-type(2)",
         "div:nth-of-type(2) > div > div[aria-label=\"ROM depth 67%, alarm\"] > div:nth-of-type(2)",
         "div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1)",
@@ -1483,7 +1480,7 @@
         "div:nth-of-type(3) > div > div[aria-label=\"Tempo ecc rushed, alarm\"] > div:nth-of-type(2)"
       ],
       "lab-archive-grinding-line--deviation-vs-control-aware": [
-        "div > div > div:nth-of-type(1) > div:nth-of-type(1)",
+        "[data-testid=\"story-specimens\"] > div:nth-of-type(1) > div:nth-of-type(1)",
         "div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(2)",
         "div:nth-of-type(1) > div:nth-of-type(3) > div:nth-of-type(1) > div:nth-of-type(2)",
         "div:nth-of-type(1) > div:nth-of-type(4) > div:nth-of-type(1) > div:nth-of-type(2)",
@@ -1501,53 +1498,51 @@
         "div:nth-of-type(3) > svg > g:nth-of-type(3) > text"
       ],
       "lab-archive-hero-tempo--ambient-clock": [
+        "[data-testid=\"story-specimens\"] > div:nth-of-type(2) > div:nth-of-type(1)",
         "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(3) > div:nth-of-type(2)",
-        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(4) > div:nth-of-type(2)",
-        "div > div > div:nth-of-type(2) > div:nth-of-type(1)"
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(4) > div:nth-of-type(2)"
       ],
       "lab-archive-hero-tempo--ambient-clock-smaller-story": [
+        "[data-testid=\"story-specimens\"] > div:nth-of-type(2) > div:nth-of-type(1)",
         "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(3) > div:nth-of-type(2)",
-        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(4) > div:nth-of-type(2)",
-        "div > div > div:nth-of-type(2) > div:nth-of-type(1)"
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(4) > div:nth-of-type(2)"
       ],
       "lab-archive-hero-tempo--cadence-bar": [
+        "[data-testid=\"story-specimens\"] > div:nth-of-type(2) > div:nth-of-type(1)",
         "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(3) > div:nth-of-type(2)",
-        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(4) > div:nth-of-type(2)",
-        "div > div > div:nth-of-type(2) > div:nth-of-type(1)"
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(4) > div:nth-of-type(2)"
       ],
       "lab-archive-hero-tempo--cadence-bar-refined-story": [
+        "[data-testid=\"story-specimens\"] > div:nth-of-type(2) > div:nth-of-type(1)",
         "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(3) > div:nth-of-type(2)",
-        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(4) > div:nth-of-type(2)",
-        "div > div > div:nth-of-type(2) > div:nth-of-type(1)"
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(4) > div:nth-of-type(2)"
       ],
       "lab-archive-hero-tempo--hero-numerals": [
+        "[data-testid=\"story-specimens\"] > div:nth-of-type(2) > div:nth-of-type(1)",
         "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(3) > div:nth-of-type(2)",
-        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(4) > div:nth-of-type(2)",
-        "div > div > div:nth-of-type(2) > div:nth-of-type(1)"
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(4) > div:nth-of-type(2)"
       ],
       "lab-archive-hero-tempo--hero-numerals-refined-story": [
+        "[data-testid=\"story-specimens\"] > div:nth-of-type(2) > div:nth-of-type(1)",
         "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(3) > div:nth-of-type(2)",
-        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(4) > div:nth-of-type(2)",
-        "div > div > div:nth-of-type(2) > div:nth-of-type(1)"
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(4) > div:nth-of-type(2)"
       ],
       "lab-archive-hero-tempo--overview": [
+        "[data-testid=\"story-specimens\"] > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1)",
+        "[data-testid=\"story-specimens\"] > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(1)",
+        "[data-testid=\"story-specimens\"] > div:nth-of-type(2) > div:nth-of-type(3) > div:nth-of-type(1)",
         "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(3) > div:nth-of-type(2)",
-        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(4) > div:nth-of-type(2)",
-        "div > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1)",
-        "div > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(1)",
-        "div > div:nth-of-type(2) > div:nth-of-type(3) > div:nth-of-type(1)"
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(4) > div:nth-of-type(2)"
       ],
       "lab-archive-hero-tempo--refined-overview": [
+        "[data-testid=\"story-specimens\"] > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1)",
+        "[data-testid=\"story-specimens\"] > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(1)",
+        "[data-testid=\"story-specimens\"] > div:nth-of-type(2) > div:nth-of-type(3) > div:nth-of-type(1)",
         "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(3) > div:nth-of-type(2)",
-        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(4) > div:nth-of-type(2)",
-        "div > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1)",
-        "div > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(1)",
-        "div > div:nth-of-type(2) > div:nth-of-type(3) > div:nth-of-type(1)"
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(4) > div:nth-of-type(2)"
       ],
       "lab-archive-rep-breakdown--composite-columns": [
-        "div > div > div:nth-of-type(2) > div:nth-of-type(1)",
-        "div:nth-of-type(2) > div:nth-of-type(4) > div:nth-of-type(1) > div:nth-of-type(1)",
-        "div:nth-of-type(2) > div:nth-of-type(4) > div:nth-of-type(1) > div:nth-of-type(2)",
+        "[data-testid=\"story-specimens\"] > div:nth-of-type(2) > div:nth-of-type(1)",
         "div:nth-of-type(4) > div:nth-of-type(1) > div > div:nth-of-type(1)",
         "div:nth-of-type(4) > div:nth-of-type(1) > div > div:nth-of-type(2)",
         "div:nth-of-type(6) > div:nth-of-type(1) > div > div:nth-of-type(1)",
@@ -1558,9 +1553,7 @@
         "div:nth-of-type(8) > div:nth-of-type(1) > div > div:nth-of-type(2)"
       ],
       "lab-archive-rep-breakdown--filled-reps": [
-        "div > div > div:nth-of-type(2) > div:nth-of-type(1)",
-        "div:nth-of-type(2) > div:nth-of-type(4) > div:nth-of-type(1) > div:nth-of-type(1)",
-        "div:nth-of-type(2) > div:nth-of-type(4) > div:nth-of-type(1) > div:nth-of-type(2)",
+        "[data-testid=\"story-specimens\"] > div:nth-of-type(2) > div:nth-of-type(1)",
         "div:nth-of-type(4) > div:nth-of-type(1) > div > div:nth-of-type(1)",
         "div:nth-of-type(4) > div:nth-of-type(1) > div > div:nth-of-type(2)",
         "div:nth-of-type(6) > div:nth-of-type(1) > div > div:nth-of-type(1)",
@@ -1571,12 +1564,10 @@
         "div:nth-of-type(8) > div:nth-of-type(1) > div > div:nth-of-type(2)"
       ],
       "lab-archive-rep-breakdown--overview": [
-        "div > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1)",
-        "div > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(1)",
-        "div > div:nth-of-type(2) > div:nth-of-type(3) > div:nth-of-type(1)",
-        "div > div:nth-of-type(2) > div:nth-of-type(4) > div:nth-of-type(1)",
-        "div:nth-of-type(3) > div:nth-of-type(4) > div:nth-of-type(1) > div:nth-of-type(1)",
-        "div:nth-of-type(3) > div:nth-of-type(4) > div:nth-of-type(1) > div:nth-of-type(2)",
+        "[data-testid=\"story-specimens\"] > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1)",
+        "[data-testid=\"story-specimens\"] > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(1)",
+        "[data-testid=\"story-specimens\"] > div:nth-of-type(2) > div:nth-of-type(3) > div:nth-of-type(1)",
+        "[data-testid=\"story-specimens\"] > div:nth-of-type(2) > div:nth-of-type(4) > div:nth-of-type(1)",
         "div:nth-of-type(4) > div:nth-of-type(1) > div > div:nth-of-type(1)",
         "div:nth-of-type(4) > div:nth-of-type(1) > div > div:nth-of-type(2)",
         "div:nth-of-type(6) > div:nth-of-type(1) > div > div:nth-of-type(1)",
@@ -1587,9 +1578,9 @@
         "div:nth-of-type(8) > div:nth-of-type(1) > div > div:nth-of-type(2)"
       ],
       "lab-archive-rep-breakdown--overview-r-2": [
-        "div > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1)",
-        "div > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(1)",
-        "div > div:nth-of-type(2) > div:nth-of-type(3) > div:nth-of-type(1)",
+        "[data-testid=\"story-specimens\"] > div:nth-of-type(1) > div:nth-of-type(1)",
+        "[data-testid=\"story-specimens\"] > div:nth-of-type(2) > div:nth-of-type(1)",
+        "[data-testid=\"story-specimens\"] > div:nth-of-type(3) > div:nth-of-type(1)",
         "div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(4)",
         "div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(4)",
         "div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(3) > div:nth-of-type(4)",
@@ -1627,7 +1618,7 @@
         "div:nth-of-type(3) > div:nth-of-type(3) > div:nth-of-type(1) > div"
       ],
       "lab-archive-rep-breakdown--refined-composite": [
-        "div > div > div:nth-of-type(2) > div:nth-of-type(1)",
+        "[data-testid=\"story-specimens\"] > div:nth-of-type(2) > div:nth-of-type(1)",
         "div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(4)",
         "div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(4)",
         "div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(3) > div:nth-of-type(4)",
@@ -1641,25 +1632,25 @@
         "div:nth-of-type(3) > div:nth-of-type(3) > div:nth-of-type(1) > div"
       ],
       "lab-archive-rep-breakdown--rep-dials": [
-        "div > div > div:nth-of-type(2) > div:nth-of-type(1)",
+        "[data-testid=\"story-specimens\"] > div:nth-of-type(2) > div:nth-of-type(1)",
         "div:nth-of-type(1) > div:nth-of-type(1) > div > div:nth-of-type(1)",
         "div:nth-of-type(1) > div:nth-of-type(1) > div > div:nth-of-type(2)",
-        "div:nth-of-type(2) > div:nth-of-type(4) > div:nth-of-type(1) > div:nth-of-type(1)",
-        "div:nth-of-type(2) > div:nth-of-type(4) > div:nth-of-type(1) > div:nth-of-type(2)"
+        "div:nth-of-type(4) > div:nth-of-type(1) > div > div:nth-of-type(1)",
+        "div:nth-of-type(4) > div:nth-of-type(1) > div > div:nth-of-type(2)"
       ],
       "lab-archive-rep-breakdown--three-track-strip": [
-        "div > div > div:nth-of-type(2) > div:nth-of-type(1)",
-        "div:nth-of-type(2) > div:nth-of-type(4) > div:nth-of-type(1) > div:nth-of-type(1)",
-        "div:nth-of-type(2) > div:nth-of-type(4) > div:nth-of-type(1) > div:nth-of-type(2)"
+        "[data-testid=\"story-specimens\"] > div:nth-of-type(2) > div:nth-of-type(1)",
+        "div:nth-of-type(4) > div:nth-of-type(1) > div > div:nth-of-type(1)",
+        "div:nth-of-type(4) > div:nth-of-type(1) > div > div:nth-of-type(2)"
       ],
       "lab-archive-rep-breakdown--velocity-curves": [
-        "div > div > div:nth-of-type(2) > div:nth-of-type(1)",
+        "[data-testid=\"story-specimens\"] > div:nth-of-type(2) > div:nth-of-type(1)",
         "div:nth-of-type(3) > div:nth-of-type(1) > div:nth-of-type(1) > div",
         "div:nth-of-type(3) > div:nth-of-type(2) > div:nth-of-type(1) > div",
         "div:nth-of-type(3) > div:nth-of-type(3) > div:nth-of-type(1) > div"
       ],
       "lab-archive-rep-breakdown--warnings-depth-hybrid": [
-        "div > div > div:nth-of-type(2) > div:nth-of-type(1)",
+        "[data-testid=\"story-specimens\"] > div:nth-of-type(2) > div:nth-of-type(1)",
         "div:nth-of-type(1) > div:nth-of-type(3) > div:nth-of-type(2) > div:nth-of-type(1)",
         "div:nth-of-type(2) > div:nth-of-type(3) > div:nth-of-type(2) > div:nth-of-type(1)",
         "div:nth-of-type(3) > div:nth-of-type(3) > div:nth-of-type(2) > div:nth-of-type(1)",
@@ -1682,7 +1673,7 @@
         "div:nth-of-type(8) > div:nth-of-type(3) > div:nth-of-type(2) > div:nth-of-type(1)"
       ],
       "lab-archive-rep-breakdown--warnings-model": [
-        "div > div > div:nth-of-type(2) > div:nth-of-type(1)",
+        "[data-testid=\"story-specimens\"] > div:nth-of-type(2) > div:nth-of-type(1)",
         "div:nth-of-type(2) > div:nth-of-type(4) > div:nth-of-type(1) > div:nth-of-type(1)",
         "div:nth-of-type(2) > div:nth-of-type(4) > div:nth-of-type(1) > div:nth-of-type(2)",
         "div:nth-of-type(2) > div:nth-of-type(4) > div:nth-of-type(2) > div:nth-of-type(1)",
@@ -1893,35 +1884,35 @@
         "div > div:nth-of-type(3) > div:nth-of-type(3) > div:nth-of-type(1)"
       ],
       "lab-north-star-3-diverging-bars--comparison": [
+        "[data-testid=\"story-specimens\"] > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1)",
+        "[data-testid=\"story-specimens\"] > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(1)",
         "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(3) > div:nth-of-type(2)",
-        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(4) > div:nth-of-type(2)",
-        "div > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1)",
-        "div > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(1)"
+        "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(4) > div:nth-of-type(2)"
       ],
       "lab-north-star-3-diverging-bars--hero-dual": [
-        "div > div > div:nth-of-type(2) > div:nth-of-type(1)"
+        "[data-testid=\"story-specimens\"] > div:nth-of-type(2) > div:nth-of-type(1)"
       ],
       "lab-north-star-3-diverging-bars--overview": [
+        "[data-testid=\"story-specimens\"] > div:nth-of-type(1) > div:nth-of-type(1)",
+        "[data-testid=\"story-specimens\"] > div:nth-of-type(2) > div:nth-of-type(1)",
+        "[data-testid=\"story-specimens\"] > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1)",
+        "[data-testid=\"story-specimens\"] > div:nth-of-type(3) > div:nth-of-type(1)",
         "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(3) > div:nth-of-type(2)",
         "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(4) > div:nth-of-type(2)",
-        "div > div > div:nth-of-type(3) > div:nth-of-type(1)",
-        "div > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1)",
         "div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(2) > div",
         "div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1)",
         "div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1)",
         "div:nth-of-type(2) > div:nth-of-type(2) > div > div:nth-of-type(2)",
-        "div:nth-of-type(2) > div:nth-of-type(2) > div > div:nth-of-type(3)",
-        "div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1)",
-        "div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(1)"
+        "div:nth-of-type(2) > div:nth-of-type(2) > div > div:nth-of-type(3)"
       ],
       "lab-north-star-3-diverging-bars--rail-collapsed-stacked": [
-        "div > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1)",
-        "div > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(1)",
+        "[data-testid=\"story-specimens\"] > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1)",
+        "[data-testid=\"story-specimens\"] > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(1)",
         "div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(2) > div"
       ],
       "lab-north-star-3-diverging-bars--rail-expanded-dual": [
-        "div > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1)",
-        "div > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(1)",
+        "[data-testid=\"story-specimens\"] > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1)",
+        "[data-testid=\"story-specimens\"] > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(1)",
         "div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(2) > div",
         "div:nth-of-type(2) > div:nth-of-type(2) > div > div:nth-of-type(2)",
         "div:nth-of-type(2) > div:nth-of-type(2) > div > div:nth-of-type(3)",
@@ -1944,10 +1935,6 @@
       "lab-north-star-4-fatigue-system--live-states": [
         "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(3) > div:nth-of-type(2)",
         "[data-testid=\"velocity-loss-bands\"] > div:nth-of-type(4) > div:nth-of-type(2)",
-        "div > div > div:nth-of-type(2) > div:nth-of-type(1)",
-        "div > div > div:nth-of-type(3) > div:nth-of-type(1)",
-        "div > div > div:nth-of-type(4) > div:nth-of-type(1)",
-        "div > div > div:nth-of-type(5) > div:nth-of-type(1)",
         "div > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1)",
         "div:nth-of-type(1) > div > div[aria-label=\"Velocity loss 24%, watch\"] > div:nth-of-type(2)",
         "div:nth-of-type(1) > div > div[aria-label=\"Velocity loss 38%, alarm\"] > div:nth-of-type(2)",
@@ -1968,8 +1955,8 @@
         "div:nth-of-type(3) > div > div[aria-label=\"Tempo on tempo, ok\"] > div:nth-of-type(2)"
       ],
       "lab-north-star-dual-ghost-line--mirrored-dual": [
-        "div > div > div:nth-of-type(1) > div:nth-of-type(1)",
-        "div > div:nth-of-type(2) > div > div:nth-of-type(1)",
+        "[data-testid=\"story-specimens\"] > div:nth-of-type(1) > div:nth-of-type(1)",
+        "[data-testid=\"story-specimens\"] > div:nth-of-type(2) > div > div:nth-of-type(1)",
         "div > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(2)",
         "div > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(2)",
         "div > div:nth-of-type(3) > svg > text:nth-of-type(1)",

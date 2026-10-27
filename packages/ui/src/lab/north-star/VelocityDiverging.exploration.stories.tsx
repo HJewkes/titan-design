@@ -29,10 +29,11 @@ import { SetBar, velocityZoneColor, type SetStripSet } from '../../components/cu
 import { getSemanticColors } from '../../theme/tokens/semantic'
 import { greyRamp } from '../../theme/tokens/primitives'
 import { formatVelocity } from '../../utils/workout-format'
+import { useOnSurfaceColor } from '../../components/ui/surface'
+import { StoryPage, StorySpecimens } from '../story-canvas'
 
 const T = getSemanticColors('dark')
 
-const PAGE_BG = greyRamp[975]
 const PANEL_BG = greyRamp[975]
 const LIST_BG = greyRamp[950]
 const HEADER_BG = greyRamp[975]
@@ -349,7 +350,12 @@ function StackedHalvesStrip({ sets, height = 4 }: { sets: DualSet[]; height?: nu
 function SectionTitle({ children }: { children: ReactNode }) {
   return (
     <Text
-      style={{ fontSize: 16, fontWeight: '800', fontFamily: FONT_HEAD, color: T['text-primary'] }}
+      style={{
+        fontSize: 16,
+        fontWeight: '800',
+        fontFamily: FONT_HEAD,
+        color: useOnSurfaceColor('primary'),
+      }}
     >
       {children}
     </Text>
@@ -362,7 +368,7 @@ function Caption({ children }: { children: ReactNode }) {
       style={{
         fontSize: 12,
         fontFamily: FONT_UI,
-        color: T['text-secondary'],
+        color: useOnSurfaceColor('secondary'),
         maxWidth: 560,
         lineHeight: 17,
       }}
@@ -392,9 +398,9 @@ function Panel({ children, width }: { children: ReactNode; width?: number }) {
 
 function Page({ children }: { children: ReactNode }) {
   return (
-    <View style={{ padding: 28, backgroundColor: PAGE_BG, minHeight: '100%', gap: 26 }}>
-      {children}
-    </View>
+    <StoryPage>
+      <StorySpecimens>{children}</StorySpecimens>
+    </StoryPage>
   )
 }
 
@@ -670,7 +676,7 @@ export const Overview: Story = {
           <DivergingChart set={ACTIVE_SET} height={240} scale="hero" />
         </Panel>
 
-        <View style={{ gap: 20 }}>
+        <StorySpecimens>
           <Panel width={RAIL_WIDTH + 40}>
             <Kicker>2 · RAIL EXPANDED — same language</Kicker>
             <View style={{ backgroundColor: LIST_BG, borderRadius: 8, padding: 12, gap: 8 }}>
@@ -690,7 +696,7 @@ export const Overview: Story = {
               </View>
             </View>
           </Panel>
-        </View>
+        </StorySpecimens>
       </View>
 
       <Panel width={860}>
