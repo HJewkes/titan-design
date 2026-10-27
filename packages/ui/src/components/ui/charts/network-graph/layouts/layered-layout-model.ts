@@ -1,6 +1,7 @@
 import { compareText } from '../../kit/compareText'
-import { GRAPH_LABEL_ROOM, GRAPH_NODE_PADDING, edgeId } from '../network-graph-model'
+import { GRAPH_LABEL_ROOM, GRAPH_NODE_PADDING } from '../network-graph-model'
 import type { GraphEdge, GraphLayout, GraphLayoutInput, GraphLayoutResult } from '../types'
+import { rankKindsKey, rankLayers } from './layout-geometry'
 
 export const LAYER_COLUMN_WIDTH = 186
 export const LAYER_ROW_HEIGHT = 30
@@ -8,53 +9,6 @@ export const LAYER_ROW_HEIGHT = 30
 export interface LayeredLayoutOptions {
   /** Edge kinds that rank the layers; every edge ranks when unset. */
   rankEdgeKinds?: readonly string[]
-}
-
-function reaches(successors: Map<string, string[]>, from: string, to: string): boolean {
-  const seen = new Set<string>()
-  const stack = [from]
-  while (stack.length > 0) {
-    const id = stack.pop() as string
-    if (id === to) return true
-    if (seen.has(id)) continue
-    seen.add(id)
-    stack.push(...(successors.get(id) ?? []))
-  }
-  return false
-}
-
-/** Keeps ranking edges in id order, dropping each one that would close a cycle. */
-function acyclicEdges(ids: readonly string[], ranking: readonly GraphEdge[]): GraphEdge[] {
-  const successors = new Map<string, string[]>(ids.map((id) => [id, []]))
-  const kept: GraphEdge[] = []
-  const sorted = [...ranking].sort((a, b) => compareText(edgeId(a), edgeId(b)))
-  for (const edge of sorted) {
-    if (reaches(successors, edge.target, edge.source)) continue
-    successors.get(edge.source)?.push(edge.target)
-    kept.push(edge)
-  }
-  return kept
-}
-
-/** Each node's longest path from a root, over an acyclic edge set. */
-function longestPathLayers(ids: readonly string[], edges: readonly GraphEdge[]) {
-  const layers = new Map(ids.map((id) => [id, 0]))
-  const pending = new Map(ids.map((id) => [id, 0]))
-  const successors = new Map<string, string[]>(ids.map((id) => [id, []]))
-  for (const { source, target } of edges) {
-    successors.get(source)?.push(target)
-    pending.set(target, (pending.get(target) ?? 0) + 1)
-  }
-  const ready = ids.filter((id) => pending.get(id) === 0)
-  while (ready.length > 0) {
-    const id = ready.pop() as string
-    for (const next of successors.get(id) ?? []) {
-      layers.set(next, Math.max(layers.get(next) ?? 0, (layers.get(id) ?? 0) + 1))
-      pending.set(next, (pending.get(next) ?? 0) - 1)
-      if (pending.get(next) === 0) ready.push(next)
-    }
-  }
-  return layers
 }
 
 /** A node's primary parent is its first ranking predecessor by id. */
@@ -93,23 +47,18 @@ function assignRows(roots: readonly string[], children: Map<string, string[]>) {
   return { rows, rowCount: nextRow }
 }
 
+/** Each node's layered row: depth-first from the roots, a parent centred on its children. */
+export function treeRows(ids: readonly string[], kept: readonly GraphEdge[]) {
+  const { roots, children } = childrenByParent(ids, kept)
+  return assignRows(roots, children)
+}
+
 function computeLayered(
-  { nodes, edges }: GraphLayoutInput,
+  input: GraphLayoutInput,
   rankEdgeKinds: readonly string[] | undefined
 ): GraphLayoutResult {
-  const ids = nodes.map((node) => node.id).sort(compareText)
-  const known = new Set(ids)
-  const ranking = edges.filter(
-    (edge) =>
-      known.has(edge.source) &&
-      known.has(edge.target) &&
-      edge.source !== edge.target &&
-      (rankEdgeKinds === undefined || rankEdgeKinds.includes(edge.kind ?? ''))
-  )
-  const kept = acyclicEdges(ids, ranking)
-  const layers = longestPathLayers(ids, kept)
-  const { roots, children } = childrenByParent(ids, kept)
-  const { rows, rowCount } = assignRows(roots, children)
+  const { ids, kept, layers } = rankLayers(input, rankEdgeKinds)
+  const { rows, rowCount } = treeRows(ids, kept)
   const layerOf = (id: string) => layers.get(id) ?? 0
   const rowOf = (id: string) => rows.get(id) ?? 0
   const order = [...ids].sort(
@@ -138,6 +87,6 @@ function computeLayered(
  */
 export function layeredLayout(options: LayeredLayoutOptions = {}): GraphLayout {
   const { rankEdgeKinds } = options
-  const key = `layered:${rankEdgeKinds === undefined ? '*' : [...rankEdgeKinds].sort(compareText).join(',')}`
+  const key = `layered:${rankKindsKey(rankEdgeKinds)}`
   return { key, compute: (input) => computeLayered(input, rankEdgeKinds) }
 }

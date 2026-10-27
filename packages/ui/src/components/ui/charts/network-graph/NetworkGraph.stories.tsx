@@ -5,6 +5,7 @@ import { networkGraphFixtures, smallFixture, suppliedFixture, type GraphFixture 
 import { clusteredLayout } from './layouts/clustered-layout-model'
 import { egoLayout, type EgoDirection } from './layouts/ego-layout-model'
 import { forceLayout } from './layouts/force-layout-model'
+import { laneLayout } from './layouts/lane-layout-model'
 import { layeredLayout } from './layouts/layered-layout-model'
 import { mapLayoutFixture, straightMapFixture } from './map/fixtures'
 import { MAP_EDGE_KINDS, mapGraph } from './map/map-graph'
@@ -12,7 +13,7 @@ import { NetworkGraph } from './NetworkGraph'
 import type { GraphItemRef, GraphLayout, NetworkGraphProps } from './types'
 
 type FixtureName = keyof typeof networkGraphFixtures
-type Mode = 'force' | 'ego' | 'clustered'
+type Mode = 'force' | 'ego' | 'clustered' | 'lane'
 
 /** Precomputed maps painted with box nodes, compound boxes and routed edges; each replaces the fixture and layout. */
 const MAPS = {
@@ -65,6 +66,7 @@ const LAYOUTS: Record<string, GraphLayout | undefined> = {
   force: modeLayout('force'),
   ego: modeLayout('ego'),
   clustered: modeLayout('clustered'),
+  lane: modeLayout('lane'),
 }
 
 /** The layout value for the args; ego takes its focus from state so a press can move it. */
@@ -79,6 +81,7 @@ function buildLayout(
   if (mode === 'force') return forceLayout({ seed, iterations })
   if (mode === 'ego') return egoLayout({ focusId, hops, direction })
   if (mode === 'clustered') return clusteredLayout({ seed, iterations, groups: data.groups })
+  if (mode === 'lane') return laneLayout({ lanes: data.groups ?? [] })
   return layout ?? data.layout
 }
 
@@ -147,8 +150,8 @@ const meta: Meta<StoryArgs> = {
           '[Typography](?path=/docs/foundations-typography--docs), ' +
           '[Skeleton](?path=/docs/components-atoms-skeleton--docs) and ' +
           '[EmptyState](?path=/docs/components-molecules-emptystate--docs). Layouts are values: ' +
-          '`layeredLayout()`, `suppliedLayout(positions)`, `forceLayout`, `egoLayout` or ' +
-          '`clusteredLayout`. No error state: the consumer renders the failure. The `fixture` ' +
+          '`layeredLayout()`, `suppliedLayout(positions)`, `forceLayout`, `egoLayout`, ' +
+          '`clusteredLayout` or `laneLayout`. No error state: the consumer renders the failure. The `fixture` ' +
           'control replaces `nodes`, `edges` and the kinds; it holds the 5, 30 and 150 node graphs ' +
           'and the edge cases. Toggle `pulse` to send traffic down one edge; `animate` off paints ' +
           'no pulse, and reduced motion gets a still one. The graph is one tab stop: arrow keys ' +
@@ -165,6 +168,9 @@ const meta: Meta<StoryArgs> = {
           '- [clustered](?path=/story/components-organisms-networkgraph--default&args=layout:clustered): ' +
           'a labelled region per `group`, ungrouped nodes last; `Grouped (40)` passes its region ' +
           'order and labels.\n\n' +
+          'The [lane](?path=/story/components-organisms-networkgraph--default&args=fixture:Three+lanes;layout:lane) ' +
+          'mode is a swimlane: one box per lane in the fixture’s `groups` order, columns as the ' +
+          'layered layout gives them, and a trailing `Other` band for nodes in no lane.\n\n' +
           'The `map` control paints a precomputed map (the [box](?path=/story/components-organisms-networkgraph--default&args=map:Level+3) ' +
           'painter): each node is its box, parents are compound boxes under their children, and ' +
           'each edge follows its route through every bend. `No routes` shows the ' +

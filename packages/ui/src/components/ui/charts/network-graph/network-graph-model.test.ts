@@ -220,6 +220,7 @@ describe('edgePath', () => {
         "Pulse": "7:e77ac5ad",
         "Small (5)": "7:e77ac5ad",
         "Supplied": "7:e77ac5ad",
+        "Three lanes": "15:e76a8545",
         "Two components": "12:30a45071",
         "Wide fan-out": "60:5d4d50d5",
       }
