@@ -39,6 +39,7 @@ const meta: Meta<typeof SchemaForm> = {
     ),
   ],
   parameters: {
+    layout: 'padded',
     docs: {
       description: {
         component:
