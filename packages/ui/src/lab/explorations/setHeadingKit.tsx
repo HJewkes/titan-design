@@ -7,31 +7,30 @@ import type { ReactNode } from 'react'
 import { View } from 'react-native'
 import { TempoDisplay } from '../../components/custom/Workout/TempoDisplay'
 import { Typography } from '../../components/ui/typography'
-import { greyRamp, primitiveRamps } from '../../theme/tokens/primitives'
-import { getSemanticColors } from '../../theme/tokens/semantic'
+import { primitiveRamps } from '../../theme/tokens/primitives'
 import { StoryPage, StorySpecimens } from '../story-canvas'
 
 // ---- geometry
 export const RAIL_W = 232
 export const SET_GAP = 5
 
-// ---- surface + text tokens (dark theme)
-// These were hand-copied hexes labelled with their grey/neutral steps, which
-// is exactly how they silently stopped matching the ramps they named. They read
-// from the tokens now, so a retune reaches them.
-const T = getSemanticColors('dark')
-export const GREY = greyRamp[900] // upcoming/placeholder
-export const BORDER_SUBTLE = greyRamp[950] // row dividers
-export const T_PRIMARY = T['text-primary']
-export const T_SECONDARY = T['text-secondary']
-export const T_TERTIARY = T['text-tertiary']
-export const RAISED = greyRamp[925] // nav + heading raised plane
-export const INSET = greyRamp[975] // sunk exercise-list column
+// ---- surface + text tokens
+// The sheets sit on the theme-following story page, so the rail resolves its planes and text
+// from the theme's custom properties: a literal dark hex painted dark rails inside the light
+// page. In dark each property is the ramp step the rail was drawn on (base = grey-925, ...).
+export const GREY = 'var(--color-surface-elevated)' // upcoming/placeholder
+export const BORDER_SUBTLE = 'var(--color-background-base)' // row dividers
+export const T_PRIMARY = 'var(--color-text-primary)'
+export const T_SECONDARY = 'var(--color-text-secondary)'
+export const T_TERTIARY = 'var(--color-text-tertiary)'
+export const RAISED = 'var(--color-surface-base)' // nav + heading raised plane
+export const INSET = 'var(--color-background-frame)' // sunk exercise-list column
+const STATUS_INFO = 'var(--color-status-info)'
 // depth lives on the sunk list: inner shadow from the heading (top) + nav (left). Raised plane is flat.
 export const INSET_SHADOW =
   'inset 0 9px 12px -6px rgba(0,0,0,0.85), inset 7px 0 10px -6px rgba(0,0,0,0.7), inset 0 -1px 0 rgba(255,255,255,0.02)'
 
-// Text set straight on the story page follows the theme; the rail panels keep the dark hexes above.
+// Text set straight on the story page, outside the rail.
 export const PAGE_TEXT = 'var(--color-text-primary)'
 export const PAGE_TEXT_MUTED = 'var(--color-text-secondary)'
 export const PAGE_TEXT_BRAND = 'var(--color-text-brand)'
@@ -66,7 +65,7 @@ export const pulseAnim = (c: string): string | undefined => {
 
 // ---- sets/reps/load in the TempoDisplay visual language (Inter · 600 · letter-spacing 1 · gray separators)
 const INTER = 'Inter, sans-serif'
-const SRL_SEP = T['text-secondary']
+const SRL_SEP = T_SECONDARY
 function SRLCell({ children, color = T_PRIMARY }: { children: ReactNode; color?: string }) {
   return (
     <span style={{ fontFamily: INTER, fontSize: 11, fontWeight: 600, letterSpacing: 1, color }}>
@@ -144,7 +143,7 @@ export function SetStrip({ sets, h }: { sets: SetState[]; h: number }) {
 }
 
 export function Indicator({ kind }: { kind: 'pr' | 'issue' | 'info' }) {
-  const map = { pr: ['★', ORANGE], issue: ['!', RED], info: ['i', T['status-info']] } as const
+  const map = { pr: ['★', ORANGE], issue: ['!', RED], info: ['i', STATUS_INFO] } as const
   const [glyph, color] = map[kind]
   return (
     <span

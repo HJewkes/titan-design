@@ -21,10 +21,7 @@ import { PrBadge } from '../../components/custom/Workout/PrBadge'
 import { PlaceholderStrip } from '../../components/custom/Workout/PlaceholderStrip'
 import { SupersetWrapper } from '../../components/custom/Workout/SupersetWrapper'
 import { Typography } from '../../components/ui/typography'
-import { getSemanticColors } from '../../theme/tokens/semantic'
 import { StoryPage, StorySpecimens } from '../story-canvas'
-
-const t = getSemanticColors('dark')
 
 // ----------------------------------------------------------------------------- gallery scaffold
 class Boundary extends Component<{ children: ReactNode }, { err: string | null }> {
@@ -340,11 +337,11 @@ export const AllRows: Story = {
           </Cell>
           <Cell name="SupersetWrapper" entity="grouping bracket" expand="no">
             <SupersetWrapper label="SS1" color="#FF7900">
-              <View style={{ padding: 10, backgroundColor: t['surface-raised'], borderRadius: 8 }}>
-                <Text style={{ color: '#F3F4F6' }}>Exercise A</Text>
+              <View className="bg-surface-raised" style={{ padding: 10, borderRadius: 8 }}>
+                <Text className="text-text-primary">Exercise A</Text>
               </View>
-              <View style={{ padding: 10, backgroundColor: t['surface-raised'], borderRadius: 8 }}>
-                <Text style={{ color: '#F3F4F6' }}>Exercise B</Text>
+              <View className="bg-surface-raised" style={{ padding: 10, borderRadius: 8 }}>
+                <Text className="text-text-primary">Exercise B</Text>
               </View>
             </SupersetWrapper>
           </Cell>
