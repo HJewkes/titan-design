@@ -1822,6 +1822,9 @@
         "nav[role=\"navigation\"][aria-label=\"Primary\"] > button[role=\"button\"][aria-label=\"Review\"]:nth-of-type(2) > div > div"
       ],
       "lab-explorations-full-rail--next-to-nav": [
+        "[data-testid=\"story-specimens\"] > div > div:nth-of-type(1) > span:nth-of-type(1)",
+        "[data-testid=\"story-specimens\"] > div > div:nth-of-type(1) > span:nth-of-type(2)",
+        "[data-testid=\"story-specimens\"] > div > div:nth-of-type(1) > span:nth-of-type(3)",
         "[data-testid=\"tempo-value\"] > div:nth-of-type(1)",
         "[data-testid=\"tempo-value\"] > div:nth-of-type(2)",
         "[data-testid=\"tempo-value\"] > div:nth-of-type(3)",
@@ -1829,10 +1832,7 @@
         "[data-testid=\"tempo-value\"] > div:nth-of-type(5)",
         "[data-testid=\"tempo-value\"] > div:nth-of-type(6)",
         "[data-testid=\"tempo-value\"] > div:nth-of-type(7)",
-        "div > div:nth-of-type(2) > div:nth-of-type(1) > span:nth-of-type(1)",
-        "div > div:nth-of-type(2) > div:nth-of-type(1) > span:nth-of-type(2)",
-        "div > div:nth-of-type(2) > div:nth-of-type(1) > span:nth-of-type(3)",
-        "div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1)"
+        "div > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1)"
       ],
       "lab-explorations-session-pace--states": [
         "div > div:nth-of-type(4) > div:nth-of-type(1) > div:nth-of-type(1)",
@@ -1851,10 +1851,10 @@
         "[data-testid=\"tempo-value\"] > div:nth-of-type(7)"
       ],
       "lab-explorations-set-types--encodings": [
-        "div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1) > span",
-        "div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(2) > span",
-        "div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(3) > span",
-        "div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(4) > span"
+        "div > div:nth-of-type(1) > div:nth-of-type(1) > span",
+        "div > div:nth-of-type(1) > div:nth-of-type(2) > span",
+        "div > div:nth-of-type(1) > div:nth-of-type(3) > span",
+        "div > div:nth-of-type(1) > div:nth-of-type(4) > span"
       ],
       "lab-explorations-unified-exercise-card--unified": [
         "[data-testid=\"tempo-value\"] > div:nth-of-type(1)",

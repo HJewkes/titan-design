@@ -44,8 +44,8 @@ function Frame({
 }) {
   return (
     <View
-      className={cn('bg-background-base', light && 'light')}
-      style={{ width: 1920, height: 1080, padding: 60, gap: 36 }}
+      className={cn('bg-background-base gap-section-md', light && 'light')}
+      style={{ width: 1920, height: 1080, padding: 60 }}
     >
       <Text className="font-heading font-semibold text-text-primary" style={{ fontSize: 72 }}>
         {title}

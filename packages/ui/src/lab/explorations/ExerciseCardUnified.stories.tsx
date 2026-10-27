@@ -14,7 +14,8 @@ import { ExerciseCardHeading } from '../../components/custom/Workout/ExerciseCar
 import { VelocityStrip } from '../../components/custom/Workout/VelocityStrip'
 import { type SetRowProps } from '../../components/custom/Workout/SetRow'
 import { type SetStripSet } from '../../components/custom/Workout/SetStrip'
-import { INSET, BORDER_SUBTLE, T_PRIMARY, T_SECONDARY, Page, monoTag } from './setHeadingKit'
+import { StorySpecimens } from '../story-canvas'
+import { INSET, BORDER_SUBTLE, PAGE_TEXT, PAGE_TEXT_MUTED, Page, monoTag } from './setHeadingKit'
 
 const INTER = 'Inter, sans-serif'
 
@@ -80,11 +81,9 @@ export const Unified: Story = {
       title="Unified exercise card — the rail heading IS the header"
       note="The LOCKED rail-expansion, hardened onto the real ExerciseCard. Collapsed, it's the rail item (the real ExerciseCardHeading); expanded, the SAME surface reveals the table body — PREV dropped, done + upcoming sets share ONE muted treatment, the ACTIVE set stands out by brightness. Every per-row strip is the real VelocityStrip: `mini` for done/upcoming, the `compact` velocity-height variant as the active-set spotlight (B, locked). No hand-built prototype strip remains."
     >
-      <View style={{ flexDirection: 'row', gap: 40, alignItems: 'flex-start', flexWrap: 'wrap' }}>
+      <StorySpecimens direction="row" gap="md">
         <View style={{ gap: 8 }}>
-          <Text style={{ ...monoTag, color: T_SECONDARY }}>
-            collapsed · rail item (ExerciseCardHeading)
-          </Text>
+          <Text style={monoTag}>collapsed · rail item (ExerciseCardHeading)</Text>
           <Surface>
             <ExerciseCardHeading
               name={CARD_PROPS.name}
@@ -100,19 +99,17 @@ export const Unified: Story = {
         </View>
 
         <View style={{ gap: 8 }}>
-          <Text style={{ ...monoTag, color: T_SECONDARY }}>
-            expanded · same header + revealed body
-          </Text>
+          <Text style={monoTag}>expanded · same header + revealed body</Text>
           <Surface>
             <ExerciseCard {...CARD_PROPS} defaultExpanded />
           </Surface>
         </View>
-      </View>
+      </StorySpecimens>
 
-      <View style={{ height: 1, backgroundColor: BORDER_SUBTLE, marginVertical: 8 }} />
+      <View style={{ height: 1, backgroundColor: BORDER_SUBTLE }} />
 
       <View style={{ gap: 10, maxWidth: 320 }}>
-        <Text style={{ ...monoTag, color: T_SECONDARY }}>
+        <Text style={monoTag}>
           the locked active-set spotlight · VelocityStrip variant=&quot;expanded&quot; (bare)
         </Text>
         <View style={{ backgroundColor: INSET, borderRadius: 8, padding: 12 }}>
@@ -125,7 +122,7 @@ export const Unified: Story = {
             set={{ type: 'straight', velocities: ACTIVE, planned: 10 }}
           />
         </View>
-        <Text style={{ fontFamily: INTER, fontSize: 12.5, color: T_SECONDARY, lineHeight: 19 }}>
+        <Text style={{ fontFamily: INTER, fontSize: 12.5, color: PAGE_TEXT_MUTED, lineHeight: 19 }}>
           A small fixed-height (~24px) velocity-HEIGHT strip: bar height ∝ velocity against a fixed
           1.15 m/s ceiling, planned reps as grey stubs, set-type aware — none of the full
           variant&apos;s labels, info row, or mount animation. It reads as the same object as the
@@ -137,10 +134,9 @@ export const Unified: Story = {
         style={{
           fontFamily: INTER,
           fontSize: 12.5,
-          color: T_PRIMARY,
+          color: PAGE_TEXT,
           lineHeight: 19,
           maxWidth: 780,
-          marginTop: 6,
         }}
       >
         The header is the same molecule collapsed and expanded — the card reads as one object, the

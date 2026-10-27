@@ -105,9 +105,10 @@ export const SurfaceRampSystem: Story = {
 
 // A stacked collage (warm sheets + a brand-orange accent) + a matte paper-tone
 // palette. FINAL: paper as a hero-surface accent treatment, not the whole shell.
+// DESK_BG stays as the canvas here: the desk is the subject the sheets are read against.
 export const LayeredPaper: Story = {
   render: () => (
-    <View style={{ ...DESK_BG, padding: 40, gap: 44 }}>
+    <View className="gap-section-lg" style={{ ...DESK_BG, padding: 40 }}>
       {/* hero collage — overlapping matte sheets, slight offset + rotation */}
       <View style={{ height: 260, width: 560, position: 'relative' }}>
         <PaperSheet tone={PAPER.base} w={250} h={170} left={0} top={44} rotate={-3} />
@@ -164,7 +165,7 @@ export const PaperWithBrand: Story = {
   render: () => {
     const dark = categoricalPalette.dark
     return (
-      <View style={{ ...DESK_BG, padding: 40, gap: 34 }}>
+      <View className="gap-section-md" style={{ ...DESK_BG, padding: 40 }}>
         <PaperSwatchRow
           label="CATEGORICAL · DEFAULT (vivid — too neon for matte paper)"
           tones={categoricalPalette.default}
