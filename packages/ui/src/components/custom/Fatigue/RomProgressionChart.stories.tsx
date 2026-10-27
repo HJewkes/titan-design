@@ -1,18 +1,17 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { View, Text } from 'react-native'
+import { View } from 'react-native'
 import { RomProgressionChart } from './RomProgressionChart'
-import { greyRamp } from '../../../theme/tokens/primitives'
-import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { StorySpecimen, StorySpecimens } from '../../../lab/story-canvas'
 import { FATIGUE_STATES, WARMING_UP_MODEL } from './fatigue-mock'
-
-const PAGE_BG = greyRamp[975]
-const t = getSemanticColors('dark')
 
 const meta: Meta<typeof RomProgressionChart> = {
   title: 'Custom/Fatigue/ROM Progression',
   component: RomProgressionChart,
   tags: ['autodocs', 'status:candidate', '!status:review'],
   parameters: {
+    // The chart lives in LiveFatigueCard, so it is shown in a panel on the page plane.
+    canvas: 'panel',
+    layout: 'fullscreen',
     docs: {
       description: {
         component:
@@ -36,59 +35,43 @@ type Story = StoryObj<typeof RomProgressionChart>
  */
 export const PlannedToDo: Story = {
   render: () => (
-    <View style={{ backgroundColor: PAGE_BG, padding: 28, gap: 22 }}>
+    <StorySpecimens>
       {[
         { name: 'MID-SET · 4 OF 10', done: 4 },
         { name: 'FIRST REP · 1 OF 10', done: 1 },
         { name: 'PLANNED · 0 OF 10', done: 0 },
       ].map((s) => (
-        <View key={s.name} style={{ gap: 6, width: 320 }}>
-          <Text
-            style={{
-              fontSize: 9,
-              letterSpacing: 1,
-              fontFamily: 'monospace',
-              color: t['text-tertiary'],
-            }}
-          >
-            {s.name}
-          </Text>
-          <RomProgressionChart
-            points={[0.92, 0.9, 0.86, 0.81, 0.77, 0.72]
-              .slice(0, s.done)
-              .map((romM, i) => ({ repNumber: i + 1, romM }))}
-            workingStandardM={0.88}
-            shortThresholdM={0.66}
-            plannedReps={10}
-          />
-        </View>
+        <StorySpecimen key={s.name} label={s.name}>
+          <View style={{ width: 320 }}>
+            <RomProgressionChart
+              points={[0.92, 0.9, 0.86, 0.81, 0.77, 0.72]
+                .slice(0, s.done)
+                .map((romM, i) => ({ repNumber: i + 1, romM }))}
+              workingStandardM={0.88}
+              shortThresholdM={0.66}
+              plannedReps={10}
+            />
+          </View>
+        </StorySpecimen>
       ))}
-    </View>
+    </StorySpecimens>
   ),
 }
 
 export const AcrossStates: Story = {
   render: () => (
-    <View style={{ backgroundColor: PAGE_BG, padding: 28, gap: 22 }}>
+    <StorySpecimens>
       {[...FATIGUE_STATES, { name: 'WARMING UP', current: 0, model: WARMING_UP_MODEL }].map((s) => (
-        <View key={s.name} style={{ gap: 6, width: 300 }}>
-          <Text
-            style={{
-              fontSize: 9,
-              letterSpacing: 1,
-              fontFamily: 'monospace',
-              color: t['text-tertiary'],
-            }}
-          >
-            {s.name}
-          </Text>
-          <RomProgressionChart
-            points={s.model.romProgression}
-            workingStandardM={s.model.romWorkingStandardM}
-            shortThresholdM={s.model.romShortThresholdM}
-          />
-        </View>
+        <StorySpecimen key={s.name} label={s.name}>
+          <View style={{ width: 300 }}>
+            <RomProgressionChart
+              points={s.model.romProgression}
+              workingStandardM={s.model.romWorkingStandardM}
+              shortThresholdM={s.model.romShortThresholdM}
+            />
+          </View>
+        </StorySpecimen>
       ))}
-    </View>
+    </StorySpecimens>
   ),
 }
