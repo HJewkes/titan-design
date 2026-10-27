@@ -623,7 +623,7 @@ export const primitiveSizing: {
 // @public (undocumented)
 export const primitiveSpacing: Readonly<Record<SpacingStep, string>>;
 
-// @public
+// @public (undocumented)
 export const primitiveTypography: {
     readonly fontFamilies: {
         readonly sans: readonly ["Inter", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Helvetica", "Arial", "sans-serif"];

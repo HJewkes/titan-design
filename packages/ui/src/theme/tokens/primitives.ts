@@ -391,10 +391,6 @@ export const discreteRainbow = [
   '#42150A',
 ] as const
 
-/**
- * Palette indices for discrete rainbow colors at different palette sizes.
- * For a given palette size (index + 1), returns the indices of colors to use.
- */
 export const primitiveTypography = {
   fontFamilies: {
     sans: [
