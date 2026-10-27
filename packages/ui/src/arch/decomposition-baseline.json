@@ -243,7 +243,7 @@
     "complexity": 16
   },
   "components/ui/input/Input.tsx#Input": {
-    "complexity": 31,
+    "complexity": 27,
     "props": 15
   },
   "components/ui/input/Input.tsx#PasswordInput": {
@@ -260,9 +260,6 @@
   },
   "components/ui/progress/Progress.tsx#Progress": {
     "complexity": 22
-  },
-  "components/ui/select/Select.tsx#Select": {
-    "complexity": 19
   },
   "components/ui/stat-card/StatCard.tsx#StatCard": {
     "props": 20

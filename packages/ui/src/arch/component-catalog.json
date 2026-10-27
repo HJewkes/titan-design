@@ -16599,6 +16599,13 @@
         },
         {
           "default": null,
+          "description": "Control height, matching Input's sizes.",
+          "name": "size",
+          "required": false,
+          "type": "SelectSize"
+        },
+        {
+          "default": null,
           "description": "Selected value (single mode)",
           "name": "value",
           "required": false,
@@ -16629,6 +16636,8 @@
         "components-molecules-select--controlled",
         "components-molecules-select--default",
         "components-molecules-select--disabled",
+        "components-molecules-select--field-family",
+        "components-molecules-select--filled",
         "components-molecules-select--in-form-layout",
         "components-molecules-select--invalid",
         "components-molecules-select--many-options",

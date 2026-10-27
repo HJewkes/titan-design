@@ -183,12 +183,6 @@
   "components-molecules-formfield--with-error dark": {
     "#e05254|#252321": 1
   },
-  "components-molecules-input--disabled dark": {
-    "#7a7775|#252321": 1
-  },
-  "components-molecules-input--disabled light": {
-    "#95969b|#edeae7": 1
-  },
   "components-molecules-input--password-with-error dark": {
     "#e05254|#252321": 1
   },
@@ -213,27 +207,8 @@
   "components-molecules-select--controlled light": {
     "#ff7900|#edeae7": 5
   },
-  "components-molecules-select--default dark": {
-    "#888684|#252321": 1
-  },
-  "components-molecules-select--in-form-layout dark": {
-    "#888684|#252321": 2
-  },
   "components-molecules-select--invalid dark": {
-    "#888684|#252321": 1,
     "#e05254|#252321": 1
-  },
-  "components-molecules-select--many-options dark": {
-    "#888684|#252321": 1
-  },
-  "components-molecules-select--multi-select dark": {
-    "#888684|#252321": 1
-  },
-  "components-molecules-select--with-disabled-options dark": {
-    "#888684|#252321": 1
-  },
-  "components-molecules-select--with-placeholder dark": {
-    "#888684|#252321": 1
   },
   "components-molecules-stepper--active-step-progression light": {
     "#ff7900|#edeae7": 6
@@ -763,12 +738,6 @@
   },
   "custom-chat-coachpreset--wall-drawer dark": {
     "#ff7900|#4a3929": 1
-  },
-  "custom-chat-composer--disabled dark": {
-    "#7e7c79|#2c2a28": 1
-  },
-  "custom-chat-composer--disabled light": {
-    "#9d9da2|#f9f6f3": 1
   },
   "custom-chat-messagelist--default dark": {
     "#ff7900|#4a3929": 1
