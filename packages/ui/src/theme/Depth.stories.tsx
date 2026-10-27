@@ -154,12 +154,7 @@ export const Mechanisms: StoryObj = {
           </Note>
           <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10 }}>
             {PLANE_ORDER.map((level) => (
-              <Swatch
-                key={level}
-                label={level}
-                note={plane(level)}
-                style={{ backgroundColor: plane(level) }}
-              />
+              <Swatch key={level} label={level} note="" style={{ backgroundColor: plane(level) }} />
             ))}
           </View>
         </DepthSection>

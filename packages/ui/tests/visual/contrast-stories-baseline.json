@@ -1745,23 +1745,8 @@
   "foundations-depth--elevation dark": {
     "#888684|#252321": 9
   },
-  "foundations-depth--elevation light": {
-    "#121828|#100d0a": 1,
-    "#121828|#1c1916": 1,
-    "#121828|#2c2a28": 1,
-    "#121828|#31302f": 1,
-    "#121828|#373635": 3
-  },
   "foundations-depth--mechanisms dark": {
     "#888684|#252321": 10
-  },
-  "foundations-depth--mechanisms light": {
-    "#121828|#100d0a": 1,
-    "#121828|#1c1916": 2,
-    "#121828|#252321": 4,
-    "#121828|#2c2a28": 1,
-    "#121828|#31302f": 4,
-    "#121828|#373635": 1
   },
   "foundations-depth--why-not-neumorphism dark": {
     "#888684|#252321": 1

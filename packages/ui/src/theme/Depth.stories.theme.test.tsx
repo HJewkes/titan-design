@@ -40,9 +40,7 @@ describe.each(['Mechanisms', 'Elevation'] as const)('Depth %s specimens', (name)
   ] as const)('draw %s planes and no %s-only plane under that theme', (theme, other) => {
     const backgrounds = renderedBackgrounds(name, theme)
 
-    expect(backgrounds.filter((bg) => planesOnlyIn(theme, other).has(bg)).length).toBeGreaterThan(
-      1
-    )
+    expect(backgrounds.filter((bg) => planesOnlyIn(theme, other).has(bg)).length).toBeGreaterThan(1)
     expect(backgrounds.filter((bg) => planesOnlyIn(other, theme).has(bg))).toEqual([])
   })
 })
