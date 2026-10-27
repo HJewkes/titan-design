@@ -13,6 +13,7 @@ import { cleanGroups } from './clustered-layout-model'
 import { LAYER_COLUMN_WIDTH, LAYER_ROW_HEIGHT, treeRows } from './layered-layout-model'
 import { LAYOUT_DEFAULTS, rankKindsKey, rankLayers } from './layout-geometry'
 
+/** Options of `laneLayout`; both are part of the layout's `key`. */
 export interface LaneLayoutOptions {
   /** Band order and labels, top to bottom; the first entry wins on a repeated id. */
   lanes: readonly GraphGroup[]
