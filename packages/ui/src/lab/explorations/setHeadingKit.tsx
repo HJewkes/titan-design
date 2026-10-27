@@ -3,11 +3,13 @@
  * `Custom/Workout/Explorations/*`). Throwaway CSS R&D at the real 232px rail width, on real titan tokens.
  * When these decisions harden they move into the real `ExerciseCard` + a titan `SessionRail` organism.
  */
-import type { ReactNode } from 'react'
+import type { CSSProperties, ReactNode } from 'react'
 import { View } from 'react-native'
 import { TempoDisplay } from '../../components/custom/Workout/TempoDisplay'
 import { Typography } from '../../components/ui/typography'
+import { useSurfaceMode } from '../../theme/surface-context'
 import { primitiveRamps } from '../../theme/tokens/primitives'
+import type { ThemeMode } from '../../theme/tokens/semantic'
 import { StoryPage, StorySpecimens } from '../story-canvas'
 
 // ---- geometry
@@ -19,13 +21,26 @@ export const SET_GAP = 5
 // from the theme's custom properties: a literal dark hex painted dark rails inside the light
 // page. In dark each property is the ramp step the rail was drawn on (base = grey-925, ...).
 export const GREY = 'var(--color-surface-elevated)' // upcoming/placeholder
-export const BORDER_SUBTLE = 'var(--color-background-base)' // row dividers
+export const BORDER_SUBTLE = 'var(--s3-divider, var(--color-background-base))' // row dividers
 export const T_PRIMARY = 'var(--color-text-primary)'
 export const T_SECONDARY = 'var(--color-text-secondary)'
 export const T_TERTIARY = 'var(--color-text-tertiary)'
 export const RAISED = 'var(--color-surface-base)' // nav + heading raised plane
-export const INSET = 'var(--color-background-frame)' // sunk exercise-list column
+export const INSET = 'var(--s3-inset, var(--color-background-frame))' // sunk exercise-list column
 const STATUS_INFO = 'var(--color-status-info)'
+
+// The sunk column sits on the frame plane in dark. Light's frame is a mid grey that tertiary text
+// fails AA on, so in light the column sinks one plane less and its dividers take the frame.
+const RAIL_PLANES: Record<ThemeMode, CSSProperties> = {
+  dark: {
+    '--s3-inset': 'var(--color-background-frame)',
+    '--s3-divider': 'var(--color-background-base)',
+  } as CSSProperties,
+  light: {
+    '--s3-inset': 'var(--color-background-base)',
+    '--s3-divider': 'var(--color-background-frame)',
+  } as CSSProperties,
+}
 // depth lives on the sunk list: inner shadow from the heading (top) + nav (left). Raised plane is flat.
 export const INSET_SHADOW =
   'inset 0 9px 12px -6px rgba(0,0,0,0.85), inset 7px 0 10px -6px rgba(0,0,0,0.7), inset 0 -1px 0 rgba(255,255,255,0.02)'
@@ -339,21 +354,24 @@ export function Page({
   note: string
   children: ReactNode
 }) {
+  const mode = useSurfaceMode()
   return (
-    <StoryPage
-      className="min-h-screen"
-      header={
-        <View className="gap-stack-sm">
-          <Typography variant="h5">{title}</Typography>
-          <Typography variant="body2" color="secondary" className="max-w-[820px]">
-            {note}
-          </Typography>
-        </View>
-      }
-    >
-      <style>{PULSE_CSS}</style>
-      <StorySpecimens>{children}</StorySpecimens>
-    </StoryPage>
+    <div style={{ display: 'contents', ...RAIL_PLANES[mode] }}>
+      <StoryPage
+        className="min-h-screen"
+        header={
+          <View className="gap-stack-sm">
+            <Typography variant="h5">{title}</Typography>
+            <Typography variant="body2" color="secondary" className="max-w-[820px]">
+              {note}
+            </Typography>
+          </View>
+        }
+      >
+        <style>{PULSE_CSS}</style>
+        <StorySpecimens>{children}</StorySpecimens>
+      </StoryPage>
+    </div>
   )
 }
 export const sectionTitle = {

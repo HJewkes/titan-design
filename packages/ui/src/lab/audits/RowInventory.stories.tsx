@@ -62,14 +62,21 @@ function Cell({
         gap: 8,
         padding: 14,
         borderRadius: 12,
-        border: '1px solid #24262d',
-        background: '#131418',
+        border: '1px solid var(--color-hairline-default)',
+        background: 'var(--color-background-base)',
       }}
     >
       <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-        <span style={{ fontSize: 13, fontWeight: 800, color: '#E8EAED' }}>{name}</span>
+        <span style={{ fontSize: 13, fontWeight: 800, color: 'var(--color-text-primary)' }}>
+          {name}
+        </span>
         <span
-          style={{ fontFamily: 'monospace', fontSize: 10, color: '#5b616d', letterSpacing: 0.3 }}
+          style={{
+            fontFamily: 'monospace',
+            fontSize: 10,
+            color: 'var(--color-text-tertiary)',
+            letterSpacing: 0.3,
+          }}
         >
           {entity} · {expand}
         </span>
