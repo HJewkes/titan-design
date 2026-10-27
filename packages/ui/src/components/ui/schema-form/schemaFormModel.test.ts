@@ -40,6 +40,19 @@ describe('a JSON Schema as form controls', () => {
     })
   })
 
+  it('names an array entry by its item title, else Row for objects and Item otherwise', () => {
+    const titled = controlOf({
+      type: 'array',
+      items: { type: 'object', title: 'Pair', properties: {} },
+    })
+    const objects = controlOf({ type: 'array', items: { type: 'object', properties: {} } })
+    const strings = controlOf({ type: 'array', items: { type: 'string' } })
+
+    expect(
+      [titled, objects, strings].map((control) => 'itemLabel' in control && control.itemLabel)
+    ).toEqual(['Pair', 'Row', 'Item'])
+  })
+
   it('labels a field by its title, falls back to its name and marks required ones', () => {
     const fields = fieldsOf({
       type: 'object',
@@ -99,7 +112,13 @@ describe('array rows', () => {
   it('states the row bounds, open-ended when there is no maxItems', () => {
     expect(rowBounds(2, rowsControl())).toBe('2 of 1–3 rows')
     expect(
-      rowBounds(0, { kind: 'array', item: { kind: 'raw' }, minItems: 0, maxItems: Infinity })
+      rowBounds(0, {
+        kind: 'array',
+        item: { kind: 'raw' },
+        itemLabel: 'Item',
+        minItems: 0,
+        maxItems: Infinity,
+      })
     ).toBe('0 rows, at least 0')
   })
 })

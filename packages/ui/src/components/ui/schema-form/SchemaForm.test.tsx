@@ -24,10 +24,10 @@ function Harness({ initial = compareValue, onValue, ...props }: HarnessProps) {
 }
 
 const textbox = (name: string) => screen.getByRole('textbox', { name })
-const row = (n: number) => screen.getByRole('group', { name: `Rows row ${n}` })
+const row = (n: number) => screen.getByRole('group', { name: `Row ${n}` })
 const rowLefts = () =>
   [1, 2, 3]
-    .flatMap((n) => screen.queryAllByRole('group', { name: `Rows row ${n}` }))
+    .flatMap((n) => screen.queryAllByRole('group', { name: `Row ${n}` }))
     .map((each) => within(each).getByRole('textbox', { name: 'Left' }))
 
 describe('SchemaForm', () => {
@@ -44,7 +44,25 @@ describe('SchemaForm', () => {
     expect(
       within(screen.getByRole('group', { name: 'Footer' })).getByRole('textbox', { name: 'Note' })
     ).toHaveValue('Synthetic sample')
-    expect(screen.getByText('[0,10]')).toBeInTheDocument()
+  })
+
+  it('shows a shape it cannot edit as a labelled read-only field that says so', () => {
+    render(<Harness />)
+    const range = textbox('Range')
+
+    expect(range).toHaveValue('[0,10]')
+    expect(range).toHaveAttribute('readonly')
+    expect(range).toHaveAccessibleDescription('Read-only: this form cannot edit this value')
+  })
+
+  it('names each row by its item, not by repeating the array label', () => {
+    render(<Harness />)
+
+    expect(
+      within(screen.getByRole('group', { name: 'Rows' })).getByText('Row 1')
+    ).toBeInTheDocument()
+    expect(screen.queryByText(/Rows row/)).not.toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Add row to Rows' })).toHaveTextContent('Add row')
   })
 
   it('hands onChange the whole next value when a nested field changes', () => {
@@ -110,28 +128,28 @@ describe('SchemaForm', () => {
     const onValue = vi.fn()
     render(<Harness onValue={onValue} />)
 
-    fireEvent.click(screen.getByRole('button', { name: 'Add Rows row' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Add row to Rows' }))
 
     expect(onValue.mock.lastCall?.[0].rows[2]).toEqual({ id: 'row-1', left: '', right: '' })
     expect(screen.getByText('3 of 1–3 rows')).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Add Rows row' })).toBeDisabled()
+    expect(screen.getByRole('button', { name: 'Add row to Rows' })).toBeDisabled()
   })
 
   it('removes rows down to minItems and then disables Remove', () => {
     render(<Harness />)
 
-    fireEvent.click(screen.getByRole('button', { name: 'Remove Rows row 2' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Remove Row 2' }))
 
     expect(rowLefts().map((input) => (input as HTMLInputElement).value)).toEqual(['Fast'])
-    expect(screen.getByRole('button', { name: 'Remove Rows row 1' })).toBeDisabled()
+    expect(screen.getByRole('button', { name: 'Remove Row 1' })).toBeDisabled()
   })
 
   it('reorders rows and disables the moves past either end', () => {
     render(<Harness />)
-    expect(screen.getByRole('button', { name: 'Move Rows row 1 up' })).toBeDisabled()
-    expect(screen.getByRole('button', { name: 'Move Rows row 2 down' })).toBeDisabled()
+    expect(screen.getByRole('button', { name: 'Move Row 1 up' })).toBeDisabled()
+    expect(screen.getByRole('button', { name: 'Move Row 2 down' })).toBeDisabled()
 
-    fireEvent.click(screen.getByRole('button', { name: 'Move Rows row 2 up' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Move Row 2 up' }))
 
     expect(rowLefts().map((input) => (input as HTMLInputElement).value)).toEqual(['Low', 'Fast'])
   })
@@ -146,8 +164,8 @@ describe('SchemaForm', () => {
       id.getAttribute('aria-describedby')
     )
     expect(within(row(1)).getByRole('textbox', { name: 'Id' })).not.toHaveAttribute('readonly')
-    expect(screen.getByRole('button', { name: 'Remove Rows row 2' })).toBeDisabled()
-    expect(screen.getByRole('button', { name: 'Remove Rows row 1' })).toBeEnabled()
+    expect(screen.getByRole('button', { name: 'Remove Row 2' })).toBeDisabled()
+    expect(screen.getByRole('button', { name: 'Remove Row 1' })).toBeEnabled()
   })
 
   it('places each error at its path and names it from the control', () => {
@@ -187,8 +205,8 @@ describe('SchemaForm', () => {
       'aria-disabled',
       'true'
     )
-    expect(screen.getByRole('button', { name: 'Add Rows row' })).toBeDisabled()
-    expect(screen.getByRole('button', { name: 'Move Rows row 1 down' })).toBeDisabled()
+    expect(screen.getByRole('button', { name: 'Add row to Rows' })).toBeDisabled()
+    expect(screen.getByRole('button', { name: 'Move Row 1 down' })).toBeDisabled()
   })
 
   it('renders the empty state when the schema has no properties', () => {

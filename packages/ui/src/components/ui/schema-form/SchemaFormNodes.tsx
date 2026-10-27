@@ -128,7 +128,6 @@ function ArrayField({
         <ArrayRow
           key={index}
           path={`${path}.${index}`}
-          label={label}
           index={index}
           rows={rows}
           control={control}
@@ -140,11 +139,11 @@ function ArrayField({
         variant="outline"
         onPress={() => onChange(addRow(rows, control, form.taken))}
         isDisabled={form.isDisabled || !canAddRow(rows, control)}
-        accessibilityLabel={`Add ${label} row`}
+        accessibilityLabel={`Add ${control.itemLabel.toLowerCase()} to ${label}`}
         className="max-w-full self-start"
         testID={`${testIdOf(form, path)}-add`}
       >
-        <ButtonText>Add row</ButtonText>
+        <ButtonText>{`Add ${control.itemLabel.toLowerCase()}`}</ButtonText>
       </Button>
     </VStack>
   )
@@ -152,15 +151,15 @@ function ArrayField({
 
 interface ArrayRowProps {
   path: string
-  label: string
   index: number
   rows: readonly unknown[]
   control: ArrayControl
   onChange: (rows: unknown[]) => void
 }
 
-function ArrayRow({ path, label, index, rows, control, onChange }: ArrayRowProps) {
-  const rowLabel = `${label} row ${index + 1}`
+/** A row is named by its item label alone ("Row 2"); the array's own group already names the list. */
+function ArrayRow({ path, index, rows, control, onChange }: ArrayRowProps) {
+  const rowLabel = `${control.itemLabel} ${index + 1}`
   const setRow = (next: unknown) => onChange(rows.map((each, i) => (i === index ? next : each)))
   return (
     <VStack gap={2} className="w-full min-w-0 rounded-md border border-hairline p-inset-sm">
@@ -183,7 +182,7 @@ function ArrayRow({ path, label, index, rows, control, onChange }: ArrayRowProps
   )
 }
 
-type RowButtonsProps = Omit<ArrayRowProps, 'label'> & { rowLabel: string }
+type RowButtonsProps = ArrayRowProps & { rowLabel: string }
 
 function RowButtons({ path, rowLabel, index, rows, control, onChange }: RowButtonsProps) {
   const form = useForm()

@@ -16,7 +16,7 @@ export type Control =
   | { kind: 'number'; integer: boolean }
   | { kind: 'boolean' }
   | { kind: 'object'; fields: readonly Field[] }
-  | { kind: 'array'; item: Control; minItems: number; maxItems: number }
+  | { kind: 'array'; item: Control; itemLabel: string; minItems: number; maxItems: number }
   | { kind: 'raw' }
 
 export type ArrayControl = Extract<Control, { kind: 'array' }>
@@ -55,11 +55,19 @@ export function fieldsOf(schema: unknown): readonly Field[] | null {
   }))
 }
 
+/** What one entry of an array is called: the item schema's `title`, else "Row" for objects and "Item" otherwise. */
+function itemLabelOf(items: JsonSchema, item: Control): string {
+  if (typeof items.title === 'string') return items.title
+  return item.kind === 'object' ? 'Row' : 'Item'
+}
+
 function arrayControl(schema: JsonSchema): Control {
   if (!isRecord(schema.items) || 'prefixItems' in schema) return { kind: 'raw' }
+  const item = controlOf(schema.items)
   return {
     kind: 'array',
-    item: controlOf(schema.items),
+    item,
+    itemLabel: itemLabelOf(schema.items, item),
     minItems: numberOr(schema.minItems, 0),
     maxItems: numberOr(schema.maxItems, Number.POSITIVE_INFINITY),
   }

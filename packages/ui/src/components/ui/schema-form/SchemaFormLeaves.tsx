@@ -1,10 +1,10 @@
-import { View } from 'react-native'
+import { Text } from 'react-native'
 import { Checkbox } from '../checkbox'
 import { Input } from '../input'
 import { Select } from '../select'
 import { VStack } from '../stack'
 import { Typography } from '../typography'
-import { describedBy, testIdOf, useForm, useLeaf, type NodeProps } from './schemaFormContext'
+import { describedBy, testIdOf, useLeaf, type NodeProps } from './schemaFormContext'
 import type { Control } from './schemaFormModel'
 
 interface FieldMessageProps {
@@ -90,11 +90,22 @@ export function NumberField({ path, label, value, onChange, isRequired }: NodePr
   )
 }
 
+/** The label Input draws for itself, for the controls that do not draw one (Select). */
+function FieldLabel({ label, isRequired }: { label: string; isRequired?: boolean }) {
+  return (
+    <Text className="font-heading text-sm font-medium text-text-primary">
+      {label}
+      {isRequired ? <Text className="text-text-error ml-0.5">*</Text> : null}
+    </Text>
+  )
+}
+
 export function SelectField({
   path,
   label,
   value,
   onChange,
+  isRequired,
   options,
 }: NodeProps & { options: readonly string[] }) {
   const { form, error, messageId, isInvalid } = useLeaf(path)
@@ -107,9 +118,7 @@ export function SelectField({
       aria-describedby={groupDescribedBy}
       className="w-full min-w-0"
     >
-      <Typography variant="caption" color="secondary">
-        {label}
-      </Typography>
+      <FieldLabel label={label} isRequired={isRequired} />
       <Select<string>
         accessibilityLabel={label}
         value={typeof value === 'string' ? value : null}
@@ -143,17 +152,29 @@ export function BooleanField({ path, label, value, onChange }: NodeProps) {
   )
 }
 
-/** A node the form has no control for shows its value; the consumer edits it elsewhere. */
-export function RawField({ path, label, value }: NodeProps) {
-  const form = useForm()
+const RAW_HINT = 'Read-only: this form cannot edit this value'
+
+/**
+ * A node the form has no control for (a tuple, a record, a union) shows its value in a labelled
+ * read-only field, so it reads as a field that cannot be edited here, not as loose text.
+ */
+export function RawField({ path, label, value, isRequired }: NodeProps) {
+  const { form, error, messageId, isInvalid } = useLeaf(path)
+  const message = error ?? RAW_HINT
   return (
-    <View className="w-full min-w-0 gap-1" testID={testIdOf(form, path)}>
-      <Typography variant="caption" color="secondary">
-        {label}
-      </Typography>
-      <Typography variant="mono" className="break-all">
-        {value === undefined ? '—' : JSON.stringify(value)}
-      </Typography>
-    </View>
+    <VStack gap={1} className="w-full min-w-0">
+      <Input
+        label={label}
+        value={value === undefined ? '' : JSON.stringify(value)}
+        isReadOnly
+        isRequired={isRequired}
+        isInvalid={isInvalid}
+        {...describedBy(messageId, message, isInvalid)}
+        className="w-full min-w-0"
+        inputClassName="font-mono"
+        testID={testIdOf(form, path)}
+      />
+      <FieldMessage id={messageId} text={message} isError={isInvalid} />
+    </VStack>
   )
 }
