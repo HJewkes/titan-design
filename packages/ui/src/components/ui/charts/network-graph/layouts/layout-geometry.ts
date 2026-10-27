@@ -1,6 +1,6 @@
 import { compareText } from '../../kit/compareText'
-import { GRAPH_LABEL_ROOM, GRAPH_NODE_PADDING } from '../network-graph-model'
-import type { GraphPoint } from '../types'
+import { GRAPH_LABEL_ROOM, GRAPH_NODE_PADDING, edgeId } from '../network-graph-model'
+import type { GraphEdge, GraphLayoutInput, GraphPoint } from '../types'
 
 /** Pixel geometry shared by the free-form layouts; these are px numbers, not tokens. */
 export const LAYOUT_DEFAULTS = {
@@ -119,6 +119,78 @@ export function readingOrder(positions: Readonly<Record<string, GraphPoint>>): s
     (a, b) => band(a) - band(b) || at(a).x - at(b).x || compareText(a, b)
   )
 }
+
+function reaches(successors: Map<string, string[]>, from: string, to: string): boolean {
+  const seen = new Set<string>()
+  const stack = [from]
+  while (stack.length > 0) {
+    const id = stack.pop() as string
+    if (id === to) return true
+    if (seen.has(id)) continue
+    seen.add(id)
+    stack.push(...(successors.get(id) ?? []))
+  }
+  return false
+}
+
+/** Keeps ranking edges in id order, dropping each one that would close a cycle. */
+function acyclicEdges(ids: readonly string[], ranking: readonly GraphEdge[]): GraphEdge[] {
+  const successors = new Map<string, string[]>(ids.map((id) => [id, []]))
+  const kept: GraphEdge[] = []
+  const sorted = [...ranking].sort((a, b) => compareText(edgeId(a), edgeId(b)))
+  for (const edge of sorted) {
+    if (reaches(successors, edge.target, edge.source)) continue
+    successors.get(edge.source)?.push(edge.target)
+    kept.push(edge)
+  }
+  return kept
+}
+
+/** Each node's longest path from a root, over an acyclic edge set. */
+function longestPathLayers(ids: readonly string[], edges: readonly GraphEdge[]) {
+  const layers = new Map(ids.map((id) => [id, 0]))
+  const pending = new Map(ids.map((id) => [id, 0]))
+  const successors = new Map<string, string[]>(ids.map((id) => [id, []]))
+  for (const { source, target } of edges) {
+    successors.get(source)?.push(target)
+    pending.set(target, (pending.get(target) ?? 0) + 1)
+  }
+  const ready = ids.filter((id) => pending.get(id) === 0)
+  while (ready.length > 0) {
+    const id = ready.pop() as string
+    for (const next of successors.get(id) ?? []) {
+      layers.set(next, Math.max(layers.get(next) ?? 0, (layers.get(id) ?? 0) + 1))
+      pending.set(next, (pending.get(next) ?? 0) - 1)
+      if (pending.get(next) === 0) ready.push(next)
+    }
+  }
+  return layers
+}
+
+/**
+ * The layered ranking: node ids sorted, the ranking edges (kind in `rankEdgeKinds`, every edge when
+ * unset) with each cycle-closing edge dropped in id order, and each node's longest-path layer.
+ */
+export function rankLayers(
+  { nodes, edges }: Pick<GraphLayoutInput, 'nodes' | 'edges'>,
+  rankEdgeKinds: readonly string[] | undefined
+) {
+  const ids = nodes.map((node) => node.id).sort(compareText)
+  const known = new Set(ids)
+  const ranking = edges.filter(
+    (edge) =>
+      known.has(edge.source) &&
+      known.has(edge.target) &&
+      edge.source !== edge.target &&
+      (rankEdgeKinds === undefined || rankEdgeKinds.includes(edge.kind ?? ''))
+  )
+  const kept = acyclicEdges(ids, ranking)
+  return { ids, kept, layers: longestPathLayers(ids, kept) }
+}
+
+/** The part of a layout's `key` that names its ranking edge kinds. */
+export const rankKindsKey = (rankEdgeKinds: readonly string[] | undefined) =>
+  rankEdgeKinds === undefined ? '*' : [...rankEdgeKinds].sort(compareText).join(',')
 
 /**
  * Packs circles in rows, left to right in the order given. A row wraps when the next circle would

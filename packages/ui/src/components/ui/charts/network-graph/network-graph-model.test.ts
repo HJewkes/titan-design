@@ -207,6 +207,7 @@ describe('edgePath', () => {
         "Grouped (40)": "53:2b349dfa",
         "Hostile": "5:f5ce052",
         "Hub and spokes": "51:f75ff33e",
+        "Lanes (3)": "15:e76a8545",
         "Large (150)": "295:d2ba57ad",
         "Long label": "3:a9dc3874",
         "Many groups": "13:7c0c6890",

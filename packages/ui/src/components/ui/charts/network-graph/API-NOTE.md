@@ -29,6 +29,7 @@ no other meaning. Nodes, edges and kinds name no domain concept, so the unit sit
 | `layouts/force-layout-model.ts`     | `forceLayout(options)` and `simulateForces`; the only `d3-force` importer.              |
 | `layouts/ego-layout-model.ts`       | `egoLayout(options)`: rings by hop around a focus, no random source.                    |
 | `layouts/clustered-layout-model.ts` | `clusteredLayout(options)`: force per group, regions packed in rows.                    |
+| `layouts/lane-layout-model.ts`      | `laneLayout(options)`: a box band per lane, columns from the layered ranking.           |
 | `fixtures.ts`                       | Synthetic graphs at 5, 30 and 150 nodes, and the edge-case set.                         |
 | `network-graph-plot-model.ts`       | Edge geometry, parallel-edge offsets, kind colours, emphasis, label truncation.         |
 | `network-graph-items-model.ts`      | Accessible names and DOM ids of the drawn items.                                        |
@@ -181,6 +182,32 @@ has no `seed`, because it draws no random number.
 
 `key` is `JSON.stringify(['clustered', seed, iterations, groups, ungroupedLabel])` after sanitising.
 
+## The lane layout
+
+`laneLayout({ lanes, rankEdgeKinds })` draws swimlanes: one full-width band per lane, so a band
+means a goal and a column means a dependency step. It draws no random number and asks for nothing
+beyond the defaults: horizontal edges, every label.
+
+1. Columns are the layered layout's. `rankLayers` in `layout-geometry.ts` holds the ranking both
+   layouts share: ids sorted, ranking edges by `rankEdgeKinds` (every edge by default), each
+   cycle-closing edge dropped in id order, a node's column its longest path from a root. A node's x
+   is the one `layeredLayout` with the same `rankEdgeKinds` gives it.
+2. A node's band is its `node.group`. `lanes` are cleaned as the clustered layout's `groups` are: a
+   non-string or `''` id is dropped and the first entry wins on a repeated id. Bands run top to
+   bottom in the order given, and a listed lane with no member still gets a band, one row tall.
+   Nodes with no group, `''`, or a group that is not a lane share a trailing band with id `''` and
+   label `Other`, present only when it has a member.
+3. Inside a band each column stacks its members from the first row in layered row order, then id.
+   Rows are 30 px apart under a 24 px label band, and a band is as tall as its fullest column.
+4. Each band is a `GraphGroupRegion` with `variant: 'box'` and radius 0, painted by the box group
+   painter with its label inside the top-left corner. Boxes start 8 px from the top and left, sit
+   8 px apart, and span the natural width, or the viewport's when that is wider.
+5. `order` runs band by band, then by column, then by row.
+
+`key` is `JSON.stringify(['lane', lanes, kinds])` with the cleaned lanes and the sorted rank kinds
+(`*` when unset). Milestone markers across lanes are not drawn; a consumer puts them in the lane
+labels.
+
 ## Plot model for free-form layouts
 
 `GraphModel` carries three more fields, read from the layout result: `edgeShape` (`'horizontal'` or
@@ -316,7 +343,8 @@ Names are invented (`lead-01`, `worker-07`, `human-01`, `alpha-03`). Large graph
 so every import gives the same data. `networkGraphFixtures` holds Small (5), Medium (30), Large (150),
 Wide fan-out, Deep chain, Supplied, Empty, One item, No edges, All equal, Missing values, Many kinds,
 Pulse, Long label, Hostile, Two components, Mutual pair, Grouped (40), Hub and spokes, Directed chain,
-One group and Many groups. `Large (150)` gives every node the group of its root. A fixture may carry
-the `focusId` an ego view centres on and the `groups` a clustered view orders by. `hostilePositions`
+One group, Many groups and Lanes (3). `Large (150)` gives every node the group of its root. A fixture may carry
+the `focusId` an ego view centres on and the `groups` a clustered view orders by; `Lanes (3)` passes
+`laneFixtureLanes` as its `groups`, the lanes of a lane view. `hostilePositions`
 holds the supplied positions for the Hostile case, two nodes missing and one non-finite, for use with
 `suppliedLayout`. `hostileLayoutOptions` holds hostile seeds, iterations, focus ids, hops and groups.

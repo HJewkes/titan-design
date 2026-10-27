@@ -51,6 +51,7 @@ describe('NetworkGraph paint', () => {
         "Grouped (40)": "852aa973",
         "Hostile": "c67b190e",
         "Hub and spokes": "f09a710e",
+        "Lanes (3)": "98158892",
         "Large (150)": "49698ff7",
         "Long label": "c7878624",
         "Many groups": "9be8e761",
