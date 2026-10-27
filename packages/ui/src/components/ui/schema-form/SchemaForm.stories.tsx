@@ -12,7 +12,7 @@ const meta: Meta<typeof SchemaForm> = {
   args: {
     schema: compareSchema,
     value: compareValue,
-    errors: { 'rows.1.left': 'Too short' },
+    errors: {},
     lockedIds: ['speed'],
     lockedIdHint: 'This id is locked',
     isDisabled: false,
