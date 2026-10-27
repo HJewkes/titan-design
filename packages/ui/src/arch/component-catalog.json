@@ -16406,13 +16406,9 @@
     },
     {
       "composes": [
-        "Button",
-        "Checkbox",
         "EmptyState",
-        "Input",
-        "Select",
-        "Stack",
-        "Typography"
+        "SchemaFormNodes",
+        "Stack"
       ],
       "family": "ui/schema-form",
       "file": "packages/ui/src/components/ui/schema-form/SchemaForm.tsx",
@@ -16420,7 +16416,7 @@
       "props": [
         {
           "default": null,
-          "description": "",
+          "description": "Additional className for the root stack.",
           "name": "className",
           "required": false,
           "type": "string"

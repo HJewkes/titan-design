@@ -6857,29 +6857,7 @@
       "family": "ui/schema-form",
       "exports": [
         "SchemaForm",
-        "SchemaFormErrors",
-        "SchemaFormProps",
-        "useForm",
-        "pathKey",
-        "errorAt",
-        "messageIdOf",
-        "FieldNode",
-        "SchemaNode",
-        "FieldMessage",
-        "useLeaf",
-        "describedBy",
-        "textMessage",
-        "TextField",
-        "parseNumber",
-        "NumberField",
-        "SelectField",
-        "BooleanField",
-        "ObjectField",
-        "ArrayField",
-        "ArrayRow",
-        "ArrayRow.setRow",
-        "RowButtons",
-        "RawField"
+        "SchemaFormProps"
       ],
       "libDependents": 0,
       "storyRefs": 1,
@@ -6891,21 +6869,17 @@
         "total": 0
       },
       "dependsOn": [
-        "Button",
-        "Checkbox",
         "EmptyState",
-        "Input",
-        "Select",
-        "Stack",
-        "Typography"
+        "SchemaFormNodes",
+        "Stack"
       ],
       "leak": {
-        "rawView": 1,
+        "rawView": 0,
         "rawText": 0,
         "inlineStyle": 0,
         "rawHex": 0,
-        "loc": 515,
-        "score": 1
+        "loc": 81,
+        "score": 0
       },
       "tier": "organism",
       "verdict": "dead",
