@@ -12,9 +12,23 @@ import {
 } from './elevation'
 import { liftStyle, LIFT_RIM_ALPHA } from './lift'
 import { paperSheet, insetWell, barPaper } from './materials'
+import { useSurfaceMode } from './surface-context'
+import { PLANE_ORDER, surfaceBackground, type SurfaceLevel } from './surface-planes'
 import { StoryPage, StorySpecimen, StorySpecimens } from '../lab/story-canvas'
 
-const t = getSemanticColors('dark')
+/**
+ * The toolbar theme, read from the canvas's SurfaceContext. Specimens sit on a page that
+ * follows the theme, so they resolve their planes, lift and hairlines in the same mode;
+ * a literal `'dark'` here painted dark specimens inside the light page.
+ */
+function useDepthTheme() {
+  const mode = useSurfaceMode()
+  return {
+    mode,
+    t: getSemanticColors(mode),
+    plane: (level: SurfaceLevel) => surfaceBackground(level, mode),
+  }
+}
 
 /**
  * Foundations/Depth — how a surface says how far away it is.
@@ -119,216 +133,223 @@ function Note({ children }: { children: ReactNode }) {
 
 export const Mechanisms: StoryObj = {
   name: '1. The four mechanisms',
-  render: () => (
-    <DepthPage
-      title="Depth"
-      intro={
-        <Intro>
-          Four mechanisms, in the order you should reach for them. A surface that sits higher takes
-          a TONE and, with it, a LIFT; one that only needs an edge takes a HAIRLINE; one that needs
-          to feel physical takes a MATERIAL. Tone is the only cue that works identically on web and
-          native, so it is never optional; the others sit on top of it.
-        </Intro>
-      }
-    >
-      <DepthSection title="Tone — the grey ramp">
-        <Note>
-          Every plane is a ramp step. Nothing derives a colour between two steps: the elevation
-          levels in section 2 index this list, they do not lighten a base.
-        </Note>
-        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10 }}>
-          {[975, 950, 925, 900, 875, 850].map((step) => (
+  render: function Render() {
+    const { mode, t, plane } = useDepthTheme()
+    return (
+      <DepthPage
+        title="Depth"
+        intro={
+          <Intro>
+            Four mechanisms, in the order you should reach for them. A surface that sits higher
+            takes a TONE and, with it, a LIFT; one that only needs an edge takes a HAIRLINE; one
+            that needs to feel physical takes a MATERIAL. Tone is the only cue that works
+            identically on web and native, so it is never optional; the others sit on top of it.
+          </Intro>
+        }
+      >
+        <DepthSection title="Tone — the grey ramp">
+          <Note>
+            Every plane is a ramp step. Nothing derives a colour between two steps: the elevation
+            levels in section 2 index this list, they do not lighten a base.
+          </Note>
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10 }}>
+            {PLANE_ORDER.map((level) => (
+              <Swatch
+                key={level}
+                label={level}
+                note={plane(level)}
+                style={{ backgroundColor: plane(level) }}
+              />
+            ))}
+          </View>
+        </DepthSection>
+
+        <DepthSection title="Lift — resting on the plane below">
+          <Note>
+            A crisp 1px top rim-light at {LIFT_RIM_ALPHA[mode]} in this theme (in dark, one grade
+            under paperSheet&apos;s 0.20 hero rim, chosen side by side in Lab/Depth) plus a soft
+            ambient shadow that grows with the planes crossed. Both are lit from above. This is what
+            separates a card from the page when the tone step alone is ΔL* 3. It is not a hairline
+            ring: a ring is an edge, and stays the divider&apos;s job.
+          </Note>
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10 }}>
             <Swatch
-              key={step}
-              label={`grey-${step}`}
-              note=""
-              style={{ backgroundColor: greyRamp[step as keyof typeof greyRamp] }}
+              label="tone only"
+              note="raised on base: the step is there, but the card is not resting on anything."
+              style={{ backgroundColor: plane('raised') }}
             />
-          ))}
-        </View>
-      </DepthSection>
-
-      <DepthSection title="Lift — resting on the plane below">
-        <Note>
-          A crisp 1px top rim-light at {LIFT_RIM_ALPHA.dark} (one grade under paperSheet&apos;s 0.20
-          hero rim, chosen side by side in Lab/Depth) plus a soft ambient shadow that grows with the
-          planes crossed. Both are lit from above. This is what separates a card from the page when
-          the tone step alone is ΔL* 3. It is not a hairline ring: a ring is an edge, and stays the
-          divider&apos;s job.
-        </Note>
-        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10 }}>
-          <Swatch
-            label="tone only"
-            note="grey-875 on grey-925: the step is there, but the card is not resting on anything."
-            style={{ backgroundColor: greyRamp[875] }}
-          />
-          <Swatch
-            label="tone + rim"
-            note="the rim gives the top edge a lit lip."
-            style={{
-              backgroundColor: greyRamp[875],
-              boxShadow: `inset 0 1px 0 rgba(255,255,255,${LIFT_RIM_ALPHA.dark})`,
-            }}
-          />
-          <Swatch
-            label="tone + rim + shadow"
-            note="the default for any lifted plane: liftStyle(2)."
-            style={{
-              backgroundColor: greyRamp[875],
-              ...(liftStyle(2, 'dark') as Record<string, unknown>),
-            }}
-          />
-        </View>
-      </DepthSection>
-
-      <DepthSection title="Hairline — where a plane ends">
-        <Note>
-          Alpha-white, so it composites toward white by the same amount on any background and holds
-          a near-constant ΔL* wherever it lands. It is the divider, the table rule, and the opt-in
-          edge of an `outline` card. It is not the default edge of a lifted card.
-        </Note>
-        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10 }}>
-          {(['hairline-subtle', 'hairline-default', 'hairline-strong'] as const).map((token) => (
             <Swatch
-              key={token}
-              label={token.replace('hairline-', '')}
-              note={t[token]}
+              label="tone + rim"
+              note="the rim gives the top edge a lit lip."
               style={{
-                backgroundColor: greyRamp[925],
-                borderWidth: 1,
-                borderColor: t[token],
+                backgroundColor: plane('raised'),
+                boxShadow: `inset 0 1px 0 rgba(255,255,255,${LIFT_RIM_ALPHA[mode]})`,
               }}
             />
-          ))}
-        </View>
-      </DepthSection>
+            <Swatch
+              label="tone + rim + shadow"
+              note="the default for any lifted plane: liftStyle(2)."
+              style={{
+                backgroundColor: plane('raised'),
+                ...(liftStyle(2, mode) as Record<string, unknown>),
+              }}
+            />
+          </View>
+        </DepthSection>
 
-      <DepthSection title="Material — what a plane is made of">
-        <Note>
-          Used sparingly. Paper is for HERO surfaces only and takes muted tones only; vivid colour
-          is ink ON paper, never the paper itself. There are no levels of paper. The lift above is
-          paper&apos;s rim and contact shadow without the grain: the same light, one grade quieter.
-        </Note>
-        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10 }}>
-          <Swatch
-            label="paperSheet"
-            note="grain + rim + contact shadow. Hero surfaces."
-            style={paperSheet(greyRamp[875]) as Record<string, unknown>}
-          />
-          <Swatch
-            label="insetWell"
-            note="inner top cut + a light line on the floor. Also the recess of every pressed surface."
-            style={insetWell(greyRamp[950]) as Record<string, unknown>}
-          />
-          <Swatch
-            label="barPaper"
-            note="the same grain curve, tuned for a small saturated element."
-            style={{
-              ...(barPaper(t['status-info']) as Record<string, unknown>),
-              backgroundColor: t['status-info'],
-            }}
-          />
-        </View>
-        <Text className="text-text-tertiary text-xs">
-          Lift and materials are web/RNW only — `backgroundImage` and multi-layer `boxShadow` are
-          ignored on native, which gets one shadow. Every treatment keeps a solid `backgroundColor`
-          underneath, so a surface never depends on one, and a treatment is never the only thing
-          carrying meaning.
-        </Text>
-      </DepthSection>
-    </DepthPage>
-  ),
+        <DepthSection title="Hairline — where a plane ends">
+          <Note>
+            Alpha-white, so it composites toward white by the same amount on any background and
+            holds a near-constant ΔL* wherever it lands. It is the divider, the table rule, and the
+            opt-in edge of an `outline` card. It is not the default edge of a lifted card.
+          </Note>
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10 }}>
+            {(['hairline-subtle', 'hairline-default', 'hairline-strong'] as const).map((token) => (
+              <Swatch
+                key={token}
+                label={token.replace('hairline-', '')}
+                note={t[token]}
+                style={{
+                  backgroundColor: plane('base'),
+                  borderWidth: 1,
+                  borderColor: t[token],
+                }}
+              />
+            ))}
+          </View>
+        </DepthSection>
+
+        <DepthSection title="Material — what a plane is made of">
+          <Note>
+            Used sparingly. Paper is for HERO surfaces only and takes muted tones only; vivid colour
+            is ink ON paper, never the paper itself. There are no levels of paper. The lift above is
+            paper&apos;s rim and contact shadow without the grain: the same light, one grade
+            quieter.
+          </Note>
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10 }}>
+            <Swatch
+              label="paperSheet"
+              note="grain + rim + contact shadow. Hero surfaces."
+              style={paperSheet(plane('raised'), mode) as Record<string, unknown>}
+            />
+            <Swatch
+              label="insetWell"
+              note="inner top cut + a light line on the floor. Also the recess of every pressed surface."
+              style={insetWell(plane('background'), mode) as Record<string, unknown>}
+            />
+            <Swatch
+              label="barPaper"
+              note="the same grain curve, tuned for a small saturated element."
+              style={{
+                ...(barPaper(t['status-info']) as Record<string, unknown>),
+                backgroundColor: t['status-info'],
+              }}
+            />
+          </View>
+          <Text className="text-text-tertiary text-xs">
+            Lift and materials are web/RNW only — `backgroundImage` and multi-layer `boxShadow` are
+            ignored on native, which gets one shadow. Every treatment keeps a solid
+            `backgroundColor` underneath, so a surface never depends on one, and a treatment is
+            never the only thing carrying meaning.
+          </Text>
+        </DepthSection>
+      </DepthPage>
+    )
+  },
 }
 
 export const Elevation: StoryObj = {
   name: '2. Elevation — planes on the ramp, lifted',
-  render: () => (
-    <DepthPage
-      title="Elevation"
-      intro={
-        <>
-          <Intro>
-            A level is a ramp plane plus the lift that plane wears. Level 0 is the page. Levels 1–3
-            climb one plane each and lift; from {FLOATING_ELEVATION_MIN} up the element is floating
-            over a backdrop, so it stays on the overlay plane and the shadow does the separating. In
-            a component the numbers are RELATIVE to the enclosing Surface, clamped at overlay, so a
-            card inside a card cannot leave the ramp.
-          </Intro>
-          <Note>
-            Lift sparingly, and only over something much larger. A card lifts off the page; a small
-            card lifted off a small card reads as clutter, not depth. Inside a lifted surface,
-            organise with an inset well (`CardInset`, `Surface pressed`), a tone-only `filled` tile,
-            or a hairline divider, and save a second lift for a surface that genuinely floats over
-            the first.
-          </Note>
-        </>
-      }
-    >
-      <DepthSection title="Content levels — tone + lift">
-        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10 }}>
-          {CONTENT_LEVELS.map((lv) => (
-            <Swatch
-              key={lv}
-              label={`elevation ${lv}`}
-              note={`${ELEVATION_PLANE[lv]} · ${getElevationSurface(lv, 'dark')}${lv > 0 ? ` · liftStyle(${lv})` : ' · the page'}`}
-              // Level 0 IS the page, so a solid swatch on the page would be an
-              // invisible rectangle. A dashed outline gives the row a fourth slot
-              // and says why it has nothing to draw.
-              style={
-                lv === 0
-                  ? {
-                      borderWidth: 1,
-                      borderStyle: 'dashed',
-                      borderColor: t['hairline-default'],
-                    }
-                  : {
-                      backgroundColor: getElevationSurface(lv, 'dark'),
-                      ...(getElevationShadow(lv, 'dark') as Record<string, unknown>),
-                    }
-              }
-            />
-          ))}
-        </View>
-      </DepthSection>
+  render: function Render() {
+    const { mode, t } = useDepthTheme()
+    return (
+      <DepthPage
+        title="Elevation"
+        intro={
+          <>
+            <Intro>
+              A level is a ramp plane plus the lift that plane wears. Level 0 is the page. Levels
+              1–3 climb one plane each and lift; from {FLOATING_ELEVATION_MIN} up the element is
+              floating over a backdrop, so it stays on the overlay plane and the shadow does the
+              separating. In a component the numbers are RELATIVE to the enclosing Surface, clamped
+              at overlay, so a card inside a card cannot leave the ramp.
+            </Intro>
+            <Note>
+              Lift sparingly, and only over something much larger. A card lifts off the page; a
+              small card lifted off a small card reads as clutter, not depth. Inside a lifted
+              surface, organise with an inset well (`CardInset`, `Surface pressed`), a tone-only
+              `filled` tile, or a hairline divider, and save a second lift for a surface that
+              genuinely floats over the first.
+            </Note>
+          </>
+        }
+      >
+        <DepthSection title="Content levels — tone + lift">
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10 }}>
+            {CONTENT_LEVELS.map((lv) => (
+              <Swatch
+                key={lv}
+                label={`elevation ${lv}`}
+                note={`${ELEVATION_PLANE[lv]} · ${getElevationSurface(lv, mode)}${lv > 0 ? ` · liftStyle(${lv})` : ' · the page'}`}
+                // Level 0 IS the page, so a solid swatch on the page would be an
+                // invisible rectangle. A dashed outline gives the row a fourth slot
+                // and says why it has nothing to draw.
+                style={
+                  lv === 0
+                    ? {
+                        borderWidth: 1,
+                        borderStyle: 'dashed',
+                        borderColor: t['hairline-default'],
+                      }
+                    : {
+                        backgroundColor: getElevationSurface(lv, mode),
+                        ...(getElevationShadow(lv, mode) as Record<string, unknown>),
+                      }
+                }
+              />
+            ))}
+          </View>
+        </DepthSection>
 
-      <DepthSection title="Floating levels — overlay plane, larger shadow, no ring">
-        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 24 }}>
-          {FLOATING_LEVELS.map((lv) => (
-            <Swatch
-              key={lv}
-              label={`elevation ${lv}`}
-              note={`${ELEVATION_PLANE[lv]} · ${getElevationSurface(lv, 'dark')} · three ambient layers`}
-              style={{
-                backgroundColor: getElevationSurface(lv, 'dark'),
-                ...(getElevationShadow(lv, 'dark') as Record<string, unknown>),
-              }}
-            />
-          ))}
-        </View>
-        <Text className="text-text-tertiary text-xs">
-          A floating surface carries the same rim as a card, not a hairline ring. The rim is the
-          edge that survives glare; a ring on top of it would be a second edge saying the same
-          thing.
-        </Text>
-      </DepthSection>
+        <DepthSection title="Floating levels — overlay plane, larger shadow, no ring">
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 24 }}>
+            {FLOATING_LEVELS.map((lv) => (
+              <Swatch
+                key={lv}
+                label={`elevation ${lv}`}
+                note={`${ELEVATION_PLANE[lv]} · ${getElevationSurface(lv, mode)} · three ambient layers`}
+                style={{
+                  backgroundColor: getElevationSurface(lv, mode),
+                  ...(getElevationShadow(lv, mode) as Record<string, unknown>),
+                }}
+              />
+            ))}
+          </View>
+          <Text className="text-text-tertiary text-xs">
+            A floating surface carries the same rim as a card, not a hairline ring. The rim is the
+            edge that survives glare; a ring on top of it would be a second edge saying the same
+            thing.
+          </Text>
+        </DepthSection>
 
-      <DepthSection title="Recessed levels — one and two planes down">
-        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10 }}>
-          {([-1, -2] as ElevationLevel[]).map((lv) => (
-            <Swatch
-              key={lv}
-              label={`elevation ${lv}`}
-              note={`${ELEVATION_PLANE[lv]} · ${getElevationSurface(lv, 'dark')} · insetWell recess`}
-              style={{
-                backgroundColor: getElevationSurface(lv, 'dark'),
-                ...(getElevationShadow(lv, 'dark') as Record<string, unknown>),
-              }}
-            />
-          ))}
-        </View>
-      </DepthSection>
-    </DepthPage>
-  ),
+        <DepthSection title="Recessed levels — one and two planes down">
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10 }}>
+            {([-1, -2] as ElevationLevel[]).map((lv) => (
+              <Swatch
+                key={lv}
+                label={`elevation ${lv}`}
+                note={`${ELEVATION_PLANE[lv]} · ${getElevationSurface(lv, mode)} · insetWell recess`}
+                style={{
+                  backgroundColor: getElevationSurface(lv, mode),
+                  ...(getElevationShadow(lv, mode) as Record<string, unknown>),
+                }}
+              />
+            ))}
+          </View>
+        </DepthSection>
+      </DepthPage>
+    )
+  },
 }
 
 export const WhyNotNeumorphism: StoryObj = {
