@@ -11,6 +11,8 @@ export const LAYOUT_DEFAULTS = {
   ROW_BAND: 30,
   /** Distance between two ego rings. */
   RING_GAP: 120,
+  /** The closest two ego rings come when fitting shrinks them; past it the layout scrolls. */
+  MIN_RING_GAP: 80,
   /** Arc length each node of a crowded ego ring keeps. */
   MIN_ARC: 40,
   /** Space between a cluster's outermost member and its region's edge. */

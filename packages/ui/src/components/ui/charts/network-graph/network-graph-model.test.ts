@@ -203,6 +203,7 @@ describe('edgePath', () => {
         "All equal": "8:852e277c",
         "Deep chain": "11:d86c6b9a",
         "Directed chain": "5:7eb8c9b7",
+        "Ego (20)": "19:d5a5ae42",
         "Empty": "0:811c9dc5",
         "Grouped (40)": "53:2b349dfa",
         "Hostile": "5:f5ce052",

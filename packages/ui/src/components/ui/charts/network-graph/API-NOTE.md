@@ -149,7 +149,9 @@ has no `seed`, because it draws no random number.
    crowded ring grows and keeps 40 px of arc per node. When the outer ring would overflow a sized
    viewport, every radius is scaled by one factor so the outer ring fits inside the padding and label
    room. The factor never goes below the one that keeps 40 px of arc per node on every ring, so marks
-   and press targets never meet; past that floor the layout is larger than the viewport and scrolls.
+   and press targets never meet, nor below the one that keeps every ring 80 px past the one inside
+   it, so a phone-width viewport keeps readable rings and labels; past either floor the layout is
+   larger than the viewport and scrolls.
    A zero-sized viewport keeps the natural radii. Node `i` of `count` sits at angle
    `-PI / 2 + 2 * PI * i / count`.
 5. `order` is the focus, then ring by ring in angular order. `groups` holds one `'ring'` per populated

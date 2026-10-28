@@ -1,0 +1,42 @@
+{
+  "v": 1,
+  "mutations": [
+    {
+      "name": "the ring-gap floor is dropped from the minimum scale",
+      "file": "packages/ui/src/components/ui/charts/network-graph/layouts/ego-layout-model.ts",
+      "find": "return Math.max(floor, arc, gap)",
+      "replace": "return Math.max(floor, arc)",
+      "kills": [
+        "Ego (20) at 375 px: every ring sits at least MIN_RING_GAP past the one inside it, and the layout scrolls",
+        "Ego (20) at 375 px: no two shown labels meet, and the focus and every first-hop node keep theirs"
+      ]
+    },
+    {
+      "name": "the centre ring, radius 0, takes part in the floor",
+      "file": "packages/ui/src/components/ui/charts/network-graph/layouts/ego-layout-model.ts",
+      "find": "    if (radius <= 0) return floor\n",
+      "replace": "",
+      "kills": [
+        "Ego (20) in the desktop story viewport: the ring-gap floor leaves the positions unchanged"
+      ]
+    },
+    {
+      "name": "the floor binds above the gap a desktop viewport already has",
+      "file": "packages/ui/src/components/ui/charts/network-graph/layouts/layout-geometry.ts",
+      "find": "MIN_RING_GAP: 80,",
+      "replace": "MIN_RING_GAP: 100,",
+      "kills": [
+        "Ego (20) in the desktop story viewport: the ring-gap floor leaves the positions unchanged"
+      ]
+    },
+    {
+      "name": "the floor is too low to keep the first-hop labels",
+      "file": "packages/ui/src/components/ui/charts/network-graph/layouts/layout-geometry.ts",
+      "find": "MIN_RING_GAP: 80,",
+      "replace": "MIN_RING_GAP: 72,",
+      "kills": [
+        "Ego (20) at 375 px: no two shown labels meet, and the focus and every first-hop node keep theirs"
+      ]
+    }
+  ]
+}
