@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest'
-import { hasSelection, isValueSelected, selectDisplayLabel, toggleValue } from './selectModel'
+import {
+  hasSelection,
+  isValueSelected,
+  selectDisplayLabel,
+  toggleValue,
+  triggerClassName,
+} from './selectModel'
 
 const options = [
   { value: 'a', label: 'Alpha' },
@@ -57,5 +63,31 @@ describe('selectDisplayLabel', () => {
   })
   it('counts several multi values', () => {
     expect(selectDisplayLabel(multi(['a', 'b', 'c']), options, 'Pick')).toBe('3 selected')
+  })
+})
+
+describe('triggerClassName', () => {
+  const closed = { variant: 'default', isInvalid: false, isDisabled: false, isOpen: false } as const
+
+  it('gives the default variant a surface and the input border', () => {
+    const classes = triggerClassName(closed)
+    expect(classes).toContain('bg-surface-base')
+    expect(classes).toContain('border-border-input')
+  })
+
+  it('drops the surface and uses a hairline border for the filled variant', () => {
+    const classes = triggerClassName({ ...closed, variant: 'filled' })
+    expect(classes).not.toContain('bg-surface-base')
+    expect(classes).toContain('border-hairline-subtle')
+  })
+
+  it('shows the error border and no hover border when invalid', () => {
+    const classes = triggerClassName({ ...closed, isInvalid: true })
+    expect(classes).toContain('border-border-input-error')
+    expect(classes).not.toContain('web:hover:border-border-input-hover')
+  })
+
+  it('dims a disabled trigger', () => {
+    expect(triggerClassName({ ...closed, isDisabled: true })).toContain('opacity-50')
   })
 })
