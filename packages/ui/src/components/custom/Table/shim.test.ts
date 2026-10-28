@@ -1,9 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import * as root from '../../../index'
 import * as moved from '../../ui/table'
-import * as movedColumnFit from '../../ui/table/column-fit'
 import * as legacy from '.'
-import * as legacyColumnFit from './column-fit'
 
 const TABLE_VALUES = [
   'Table',
@@ -25,11 +23,6 @@ describe('custom/Table migration shim (M4)', () => {
       expect(legacy[name]).toBe(moved[name])
     }
   )
-
-  it.each(COLUMN_FIT_VALUES)('keeps the custom/Table/column-fit deep path for %s', (name) => {
-    expect(legacyColumnFit[name]).toBeDefined()
-    expect(legacyColumnFit[name]).toBe(movedColumnFit[name])
-  })
 
   it.each([...TABLE_VALUES, ...COLUMN_FIT_VALUES])(
     'still exports %s from the package root',

@@ -155,10 +155,10 @@ in 0.23.0.
 `ui/table` (scheduled as M4 by the 2026-09-19 decision, gated on TD-29). The family's
 components, hooks, tests, README and story are unchanged; only their home moved.
 
-| Export                                                                                          | Replacement                    | Known consumers                  | Task   |
-| ----------------------------------------------------------------------------------------------- | ------------------------------ | -------------------------------- | ------ |
-| Every `Table*` component, `useTable` and their types from `custom/Table`                        | the same names from `ui/table` | none in-repo                     | TD-37  |
-| `fitColumns`, `useColumnFit`, `useMeasuredWidth` and their types from `custom/Table/column-fit` | `ui/table/column-fit`          | five `custom/Workout` goal cards | TD-170 |
+| Export                                                                                                             | Replacement                    | Known consumers                  | Task   |
+| ------------------------------------------------------------------------------------------------------------------ | ------------------------------ | -------------------------------- | ------ |
+| Every `Table*` component, `useTable` and their types from `custom/Table`                                           | the same names from `ui/table` | none in-repo                     | TD-37  |
+| `fitColumns`, `useColumnFit`, `useMeasuredWidth` and their types from the `column-fit` deep path of `custom/Table` | `ui/table/column-fit`          | none (five goal cards repointed) | TD-170 |
 
 **No published API change.** Every name still comes off the package root barrel, just
 through `components/ui` instead of `components/custom`; a consumer importing from
@@ -167,9 +167,8 @@ through `components/ui` instead of `components/custom`; a consumer importing fro
 release and **disappears in 0.23.0**; `ActiveWork`'s `TaskTable` and `TaskRow` now
 import from `ui/table`.
 
-`custom/Table/column-fit.ts` is a plain re-export, not tagged `@deprecated`, because
-five `custom/Workout` components still deep-import `useMeasuredWidth` from it. TD-170
-repoints them to `hooks/useMeasuredWidth`; the file goes with the shim in 0.23.0.
+The `column-fit` deep-path shim in `custom/Table` is deleted (TD-170): the five `custom/Workout` components
+that deep-imported `useMeasuredWidth` from it now import `hooks/useMeasuredWidth`.
 
 While this row exists, `MATURITY.md` clause 2's fourth condition keeps `table` at
 `status:candidate`; it becomes promotable when the shim is deleted in 0.23.0.
