@@ -227,6 +227,12 @@
   "components/ui/charts/bar-list/BarList.tsx#BarList": {
     "props": 15
   },
+  "components/ui/charts/dependency-matrix/DependencyMatrix.tsx#DependencyMatrix": {
+    "props": 20
+  },
+  "components/ui/charts/dependency-matrix/DependencyMatrix.tsx#MatrixGrid": {
+    "props": 18
+  },
   "components/ui/charts/line-chart/LineChart.tsx#LineChart": {
     "props": 24
   },

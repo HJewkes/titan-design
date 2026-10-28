@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { nextCell } from '../../../../utils/grid-navigation'
 import { positionOf, refAt } from './matrix-model'
@@ -17,7 +17,10 @@ export interface UseMatrixNavigationOptions {
 }
 
 export interface MatrixNavigation {
-  /** The active cell, falling back to the first cell when the requested one is not displayed. */
+  /**
+   * The active cell. When the requested one is no longer displayed it is the nearest cell to where
+   * the active cell last was, and `onActiveCellChange` reports the replacement.
+   */
   activeCell: MatrixCellRef | null
   position: MatrixPosition | null
   /** Moves for an APG grid key. Returns `true` when the key is a grid key, so the caller prevents default. */
@@ -26,13 +29,43 @@ export interface MatrixNavigation {
   setActiveCell: (cell: MatrixCellRef) => void
 }
 
-function resolvePosition(
+const FIRST_CELL: MatrixPosition = { row: 0, col: 0 }
+
+function nearestPosition(last: MatrixPosition | null, count: number): MatrixPosition {
+  if (!last) return FIRST_CELL
+  return { row: Math.min(last.row, count - 1), col: Math.min(last.col, count - 1) }
+}
+
+interface ResolvedPosition {
+  position: MatrixPosition | null
+  /** The requested cell is not displayed, so `position` is its nearest replacement. */
+  isStale: boolean
+}
+
+function resolveActive(
   items: MatrixItem[],
   requested: MatrixCellRef | null | undefined,
-  direction: MatrixDirection
-): MatrixPosition | null {
-  if (items.length === 0) return null
-  return (requested && positionOf(items, requested, direction)) ?? { row: 0, col: 0 }
+  direction: MatrixDirection,
+  last: MatrixPosition | null
+): ResolvedPosition {
+  if (items.length === 0) return { position: null, isStale: false }
+  if (!requested) return { position: FIRST_CELL, isStale: false }
+  const found = positionOf(items, requested, direction)
+  if (found) return { position: found, isStale: false }
+  return { position: nearestPosition(last, items.length), isStale: true }
+}
+
+/** Tells the owner which cell replaced a stale one, once per replacement. */
+function useStaleReport(replacement: MatrixCellRef | null, report: (cell: MatrixCellRef) => void) {
+  const latest = useRef(report)
+  useEffect(() => {
+    latest.current = report
+  })
+  const from = replacement?.from
+  const to = replacement?.to
+  useEffect(() => {
+    if (from !== undefined && to !== undefined) latest.current({ from, to })
+  }, [from, to])
 }
 
 /** Owns the active cell of a DependencyMatrix and maps grid keys to moves. */
@@ -40,8 +73,15 @@ export function useMatrixNavigation(options: UseMatrixNavigationOptions): Matrix
   const { items, direction, activeCell, defaultActiveCell, onActiveCellChange, pageRows } = options
   const isControlled = activeCell !== undefined
   const [internal, setInternal] = useState<MatrixCellRef | null>(defaultActiveCell ?? null)
-  const position = resolvePosition(items, isControlled ? activeCell : internal, direction)
+  const [lastPosition, setLastPosition] = useState<MatrixPosition | null>(null)
+  const requested = isControlled ? activeCell : internal
+  const { position, isStale } = resolveActive(items, requested, direction, lastPosition)
   const current = position ? refAt(items, position, direction) : null
+  const row = position?.row ?? -1
+  const col = position?.col ?? -1
+  if (row >= 0 && (lastPosition?.row !== row || lastPosition?.col !== col)) {
+    setLastPosition({ row, col })
+  }
 
   const setActiveCell = useCallback(
     (cell: MatrixCellRef) => {
@@ -51,8 +91,8 @@ export function useMatrixNavigation(options: UseMatrixNavigationOptions): Matrix
     [isControlled, onActiveCellChange]
   )
 
-  const row = position?.row ?? -1
-  const col = position?.col ?? -1
+  useStaleReport(isStale ? current : null, setActiveCell)
+
   const handleKey = useCallback(
     (key: string, ctrlKey = false): boolean => {
       if (row < 0) return false
