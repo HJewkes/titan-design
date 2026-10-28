@@ -382,6 +382,15 @@ module.exports = {
         '4xl': ['3rem', { lineHeight: '3.5rem' }],
         '5xl': ['3.5rem', { lineHeight: '4rem' }],
       },
+      // Literals mirror primitiveTypography.letterSpacing; letter-spacing-tokens.test.ts guards drift.
+      letterSpacing: {
+        tighter: '-0.05em',
+        tight: '-0.025em',
+        normal: '0em',
+        wide: '0.025em',
+        wider: '0.05em',
+        widest: '0.1em',
+      },
       boxShadow: {
         sm: '0px 1px 2px rgba(100, 116, 139, 0.12)',
         DEFAULT: '0px 1px 3px rgba(100, 116, 139, 0.12), 0px 1px 2px rgba(100, 116, 139, 0.24)',

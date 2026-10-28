@@ -486,7 +486,7 @@ export const primitiveTypography = {
     normal: '0em',
     wide: '0.025em',
     wider: '0.05em',
-    widest: '0.5px',
+    widest: '0.1em',
   },
 } as const
 
