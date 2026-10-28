@@ -6,11 +6,11 @@ merging, releasing and baselines. Commands run from `packages/ui` unless stated.
 ## Storybook
 
 - Every agent launches its own isolated Storybook and stops only the PID it started:
-  CLAUDE.md > Quick Reference > Storybook ports.
+  docs/storybook-ports.md.
 - Never restart the operator's server on the locked port, and never pass the launcher a flag
   you have not verified (`gotchas.md` > The Storybook launcher and unverified flags).
 - The agent's report names its port. Before trusting a capture, confirm that port serves the
-  agent's tree by something unique to it (the same CLAUDE.md section).
+  agent's tree by something unique to it (the same `docs/storybook-ports.md`).
 
 ## Showing the operator
 
@@ -41,7 +41,7 @@ harness). A question is for decisions that are not about renders:
 
 ## Releasing titan
 
-Publishing and the tag order belong to CLAUDE.md > Gotchas (releases). The steps around them:
+Publishing and the tag order belong to docs/package-reference.md > Gotchas (releases). The steps around them:
 
 1. Cut a release worktree from `origin/main`, never from the main checkout.
 2. Run `pnpm changelog:compile` in `packages/ui` to fold `changelog.d/` fragments into

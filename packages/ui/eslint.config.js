@@ -578,7 +578,7 @@ module.exports = tseslint.config(
     },
   },
 
-  // TD-690: every component takes the same prop vocabulary (CLAUDE.md, Props Conventions):
+  // TD-690: every component takes the same prop vocabulary (docs/component-development.md, Props Conventions):
   // `isDisabled`, `isLoading`, `isSelected` and `onPress`, never `disabled`, `loading`,
   // `selected` or `onClick`. RATCHETED: today's sites are in props-naming-baseline.json,
   // keyed by file and property name, which must stay exact (an unspent allowance is reported

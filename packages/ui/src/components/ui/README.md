@@ -2,7 +2,7 @@
 
 The domain-free tier: components of any size, atom to organism, that know nothing about workouts,
 sessions or initiatives. `ui/*` may import `theme`, `utils`, `hooks`, `icons` and `ui/*` siblings,
-and never `custom/*` or `shell/*`. Placement rule: `CLAUDE.md`, Placement.
+and never `custom/*` or `shell/*`. Placement rule: `docs/component-development.md`, Placement.
 
 This README is the **index**. It maps each primitive's dependencies
 (**composes ↓**) and its consumers (**used-by ↑**) so the tree navigates in both
@@ -108,7 +108,7 @@ from the barrel and without a story, that `Menu`, `Popover` and `Tooltip` use to
 hand interaction to a composed child instead of nesting a second `Pressable`.
 
 `typography` keeps the story title `Foundations/Typography` rather than moving under
-`Components/`. It is a foundation in the six-group taxonomy (`CLAUDE.md`, Storybook
+`Components/`. It is a foundation in the six-group taxonomy (`docs/component-development.md`, Storybook
 Pattern), and seven in-repo autodocs links already point at `foundations-typography--docs`.
 `eyebrow` was already titled `Components/Molecules/Eyebrow` before the move.
 

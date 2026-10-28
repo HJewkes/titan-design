@@ -2,7 +2,7 @@
 
 A directory here knows one domain's vocabulary and is shared by that domain's products. It composes
 `ui/*` and may never be imported by it. A component with no domain concept in its props, types or
-labels belongs in `ui/` (`CLAUDE.md`, Placement). Status here is `candidate` by rule (`MATURITY.md`).
+labels belongs in `ui/` (`docs/component-development.md`, Placement). Status here is `candidate` by rule (`MATURITY.md`).
 
 | Family       | Domain                                                                                           | Products                                | Index                  |
 | ------------ | ------------------------------------------------------------------------------------------------ | --------------------------------------- | ---------------------- |

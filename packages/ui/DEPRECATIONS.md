@@ -105,7 +105,7 @@ barrel by this move either (see the PR for why). The re-export on
 
 ## Migration M2 — `Typography` and `Eyebrow` moved to `ui/`
 
-Both are domain-free, so by the placement rule (`CLAUDE.md`, Placement) their home
+Both are domain-free, so by the placement rule (`docs/component-development.md`, Placement) their home
 is `ui/`: `Typography` in `ui/typography`, `Eyebrow` in `ui/eyebrow` (roadmap
 decision 9, scheduled as M2 by the 2026-09-19 decision). `ui/*` may not import
 `custom/*`, which is why the 79 raw `<Text>` runs in `ui/` could not compose
@@ -130,7 +130,7 @@ They become promotable when the shims are deleted in 0.23.0.
 
 ## Migration M3 — `EmptyState` moved to `ui/`
 
-`EmptyState` is domain-free, so by the placement rule (`CLAUDE.md`, Placement) its
+`EmptyState` is domain-free, so by the placement rule (`docs/component-development.md`, Placement) its
 home is `ui/empty-state` (scheduled as M3 by the 2026-09-19 decision). The component
 body, test and story are unchanged; only their home moved.
 
@@ -151,7 +151,7 @@ in 0.23.0.
 
 ## Migration M4 — `Table` moved to `ui/`
 
-`Table` is domain-free, so by the placement rule (`CLAUDE.md`, Placement) its home is
+`Table` is domain-free, so by the placement rule (`docs/component-development.md`, Placement) its home is
 `ui/table` (scheduled as M4 by the 2026-09-19 decision, gated on TD-29). The family's
 components, hooks, tests, README and story are unchanged; only their home moved.
 
@@ -177,7 +177,7 @@ While this row exists, `MATURITY.md` clause 2's fourth condition keeps `table` a
 ## Migration M5 — `SparkBars` moved to `ui/charts/`
 
 `SparkBars` is domain-free and paints data marks from values, so by the placement rule
-(`CLAUDE.md`, Placement) its home is `ui/charts/spark-bars`. The component, test and story are
+(`docs/component-development.md`, Placement) its home is `ui/charts/spark-bars`. The component, test and story are
 unchanged except for the story title, which is now `Components/Atoms/SparkBars`.
 
 | Export                                             | Replacement                                | Known consumers                                  | Task   |
@@ -194,7 +194,7 @@ While this row exists, `MATURITY.md` clause 2's fourth condition keeps `spark-ba
 ## Migration M6 — `FilePathLabel` moved to `ui/file-path-label`
 
 `FilePathLabel` is domain-free (a file path is not an active-work concept) and the console session
-sidebar and the Codewatch family need it, so by the placement rule (`CLAUDE.md`, Placement) its home
+sidebar and the Codewatch family need it, so by the placement rule (`docs/component-development.md`, Placement) its home
 is `ui/file-path-label`. Component, test and story are unchanged except for the story title, which is
 now `Components/Atoms/FilePathLabel`.
 
@@ -213,7 +213,7 @@ While this row exists, `MATURITY.md` clause 2's fourth condition keeps `file-pat
 
 `DateTime` is domain-free (a formatted date or clock is not an active-work, chat or workout
 concept) and ten files across `ActiveWork`, `Chat`, `Workout` and `shell` use it, so by the placement
-rule (`CLAUDE.md`, Placement) its home is `ui/date-time`. Markup and class names are unchanged. The
+rule (`docs/component-development.md`, Placement) its home is `ui/date-time`. Markup and class names are unchanged. The
 story title was already `Components/Molecules/DateTime`, so story ids do not change.
 
 | Export                                                                                 | Replacement                        | Known consumers                                   | Task   |
@@ -233,7 +233,7 @@ While this row exists, `MATURITY.md` clause 2's fourth condition keeps `date-tim
 ## Migration M8 — `Scatter`, `Treemap` and `Gauge` moved to `ui/charts/`
 
 The three charts are domain-free and paint data marks from a scale, so by the placement rule
-(`CLAUDE.md`, Placement) their homes are `ui/charts/scatter`, `ui/charts/treemap` and
+(`docs/component-development.md`, Placement) their homes are `ui/charts/scatter`, `ui/charts/treemap` and
 `ui/charts/gauge`. Components, tests and the Scatter characterisation snapshot are unchanged; class
 names are byte-identical (`scripts/compare-classnames.mjs`). The story titles are now
 `Components/Atoms/Scatter`, `Components/Atoms/Treemap` and `Components/Atoms/Gauge`, so their story
@@ -265,7 +265,7 @@ While these rows exist, `MATURITY.md` clause 2's fourth condition keeps `scatter
 ## Migration M9 — `Metric` moved to `ui/metric`
 
 `Metric` is domain-free (a figure, a label, a unit and a trend arrow), and the `ui/` stat presets
-must compose it, which `ui/*` may not do from `custom/*`. By the placement rule (`CLAUDE.md`,
+must compose it, which `ui/*` may not do from `custom/*`. By the placement rule (`docs/component-development.md`,
 Placement) its home is `ui/metric`. It gains `align` (`start` | `center` | `end`) and `tone` (the
 `PillTone`s bar `brand-secondary`, coloured from semantic tokens). Both are optional and the
 defaults (`center`, no tone) render byte-identical markup and class names
@@ -287,7 +287,7 @@ While this row exists, `MATURITY.md` clause 2's fourth condition keeps `metric` 
 ## Tabs selection props — `index` / `defaultIndex` / `onChange` renamed
 
 `Tabs` now names its controlled state `value` / `defaultValue` / `onValueChange`, the repo convention
-(`CLAUDE.md`, "Controlled state is named `x`, `defaultX`, `onXChange`"), typed by the new
+(`docs/component-development.md`, "Controlled state is named `x`, `defaultX`, `onXChange`"), typed by the new
 `ControlledProps<T>` in `src/utils`. The value is still the tab index.
 
 | Export                | Replacement            | Known consumers                                 | Task   |

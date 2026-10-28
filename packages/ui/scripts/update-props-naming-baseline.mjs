@@ -28,6 +28,6 @@ await runBaselineUpdater({
   keysOf: (m, readLines) => (m.messageId === 'stale' ? [] : [reportedText(readLines(), m)]),
   hint:
     'These files declared an off-convention prop on a *Props type. Name it isDisabled, isLoading,\n' +
-    'isSelected or onPress (CLAUDE.md, Props Conventions) instead;\n' +
+    'isSelected or onPress (docs/component-development.md, Props Conventions) instead;\n' +
     're-run with --allow-increase only if the increase is intended.',
 })

@@ -24,7 +24,7 @@ it. It is a text decision, so it goes through a question, not the review harness
 
 **A generic component adds an API design note** (one page, same PR). A generic component is one
 built for more than one consumer. The note covers the props; controlled against uncontrolled
-state (named by CLAUDE.md > Component Development > Placement, Slots paragraph); composition
+state (named by docs/component-development.md > Placement, Slots paragraph); composition
 slots; the WAI-ARIA pattern it follows, by name; the virtualization approach, if any; where the
 logic lives so it tests as pure hooks and functions (docs/test-layers.md); and the primitives it
 composes.
@@ -86,4 +86,4 @@ Keep one ledger per wave, outside this repo, beside the coordinator's notes. Rec
 component, agent cost, harness friction, the reuse decisions from Round 0 and the defects the
 functional gate found. Its purpose is to compare one wave with the last using numbers.
 
-Taste and new tokens are not process: CLAUDE.md > Architecture > Styling owns both.
+Taste and new tokens are not process: docs/component-development.md > Styling owns both.

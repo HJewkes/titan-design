@@ -37,8 +37,8 @@ Before dispatching, gather:
    usage. This is the markup the React output must match. Class-styled entries carry no CSS of their own: the CSS is `HTML_CSS` in `packages/ui/specimen/comparison.tsx`; some entries are inline-styled.
 4. **Token mapping reference** — `packages/ui/src/theme/tokens/semantic.ts`
    (token → value) and `packages/ui/src/theme/global.css` (token → CSS
-   custom property), plus the "Design Tokens" table in the repo root
-   `CLAUDE.md`.
+   custom property), plus the token categories table in
+   `docs/design-tokens.md`.
 
 ## Batching
 
@@ -80,7 +80,7 @@ Location: packages/ui/src/components/{ui|custom}/{COMPONENT_NAME}/
 Resolve every token referenced above against:
 - packages/ui/src/theme/tokens/semantic.ts (token key → value, dark + light)
 - packages/ui/src/theme/global.css (--color-* custom property → value)
-- CLAUDE.md "Design Tokens" table (semantic class names)
+- docs/design-tokens.md "Token Categories" table (semantic class names)
 
 Do NOT hand-pick a Tailwind color/spacing class that looks close — resolve
 the manifest's token to its actual semantic class (e.g. brand-primary →
@@ -106,7 +106,7 @@ computed value against resolvedValue.
 
 - Copy CSS values directly from the manifest and the HTML ground truth.
 - Use React Native primitives (View, Text, Pressable — never div/span/button)
-  per CLAUDE.md's cross-platform rules, styled so their web output matches
+  per the cross-platform rules in docs/component-development.md, styled so their web output matches
   the ground truth's computed styles.
 - Use inline styles (or NativeWind arbitrary values) for any property the
   manifest pins to a value with no matching semantic token/class, especially

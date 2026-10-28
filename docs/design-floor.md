@@ -4,7 +4,7 @@ Read before writing titan UI. Run every check on your own render before calling 
 
 ## Precedence
 
-Highest first: (1) the brief; (2) titan system facts: `CLAUDE.md`, `packages/ui/TOKENS.md`, and the tokens and ui/ primitives at your commit; (3) this floor; (4) general craft advice. A lower level adds what a higher one does not cover and never overrides it. If a rule seems to need a new token, hue or primitive, use the nearest existing one and record the gap in the PR description or Round 0 contract.
+Highest first: (1) the brief; (2) titan system facts: `CLAUDE.md`, `docs/component-development.md`, `docs/design-tokens.md`, `packages/ui/TOKENS.md`, and the tokens and ui/ primitives at your commit; (3) this floor; (4) general craft advice. A lower level adds what a higher one does not cover and never overrides it. If a rule seems to need a new token, hue or primitive, use the nearest existing one and record the gap in the PR description or Round 0 contract.
 
 ## Compose first
 
@@ -67,7 +67,7 @@ Check: search rendered text for a digit, a space, then `%`, `×` or `s`; no hits
 
 ### F13 Depth comes from Surface and Card elevation, never a hand-written shadow or decorative border; a list row has no own background or lift.
 
-Check: no shadow literal; each plane's level matches the elevation table in `CLAUDE.md`.
+Check: no shadow literal; each plane's level matches the elevation table in `docs/design-tokens.md`.
 
 ### F14 Every state is shown: loading, empty, error, disabled (or say why not), plus one item, longest label, zero, negative, missing value, many items; loading keeps the loaded size.
 
