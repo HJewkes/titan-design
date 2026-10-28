@@ -3852,7 +3852,10 @@ export interface MarkdownProseProps {
     body: string;
     // (undocumented)
     className?: string;
+    highlight?: ProseHighlighter;
+    inline?: boolean;
     linkers?: ProseLinker[];
+    renderLink?: (link: ProseLink) => ReactNode;
     size?: ProseSize;
     // (undocumented)
     testID?: string;
@@ -4508,6 +4511,9 @@ export type PillTone = 'neutral' | 'brand' | 'brand-secondary' | 'success' | 'wa
 export type PillVariant = 'solid' | 'subtle' | 'outline' | 'clear';
 
 // @public
+export function plainInline(text: string): string;
+
+// @public
 export const PLANE_ORDER: readonly ["frame", "background", "base", "elevated", "raised", "overlay"];
 
 // @public
@@ -4872,19 +4878,48 @@ export type ProgressStepsVariant = 'dots' | 'rail';
 // @public (undocumented)
 export type ProgressVariant = 'linear' | 'circular';
 
+// @public
+export function ProseAnchor(input: ProseAnchorProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface ProseAnchorProps extends ProseLink {
+    onPress?: () => void;
+}
+
 // @public (undocumented)
 export interface ProseBlock {
     align?: TableAlign[];
+    children?: ProseBlock[];
     header?: string[];
+    id?: string;
+    kind?: ProseCalloutKind;
     lang?: string;
+    level?: number;
+    n?: number;
+    ordered?: true;
     rows?: string[][];
     text: string;
+    title?: string;
     // (undocumented)
     type: ProseBlockType;
 }
 
 // @public (undocumented)
-export type ProseBlockType = 'h1' | 'h2' | 'h3' | 'li' | 'p' | 'code' | 'table';
+export type ProseBlockType = 'h1' | 'h2' | 'h3' | 'li' | 'p' | 'code' | 'table' | 'callout';
+
+// @public
+export type ProseCalloutKind = 'tip' | 'info' | 'warning' | 'danger';
+
+// @public
+export type ProseHighlighter = (code: string, lang: string) => ReactNode;
+
+// @public
+export interface ProseLink {
+    children: ReactNode;
+    href: string;
+    isExternal: boolean;
+    label: string;
+}
 
 // @public
 export interface ProseLinker {
@@ -5156,6 +5191,9 @@ export function roundWeight(weight: number): number;
 
 // @public
 export function rpeColor(rpe: number): string;
+
+// @public
+export function safeHref(url: string): string | null;
 
 // @public
 export type SamplePhase = 'concentric' | 'eccentric' | 'hold' | 'idle';
@@ -6113,6 +6151,9 @@ export interface SkeletonTextProps {
 
 // @public (undocumented)
 export type SkeletonVariant = 'text' | 'circle' | 'rect' | 'rounded';
+
+// @public
+export function slugify(text: string): string;
 
 // @public
 export function smoothPath(pts: Pt[]): string;

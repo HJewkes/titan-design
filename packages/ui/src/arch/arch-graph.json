@@ -6362,6 +6362,49 @@
       "standard": false
     },
     {
+      "name": "proseInline",
+      "file": "packages/ui/src/components/custom/Prose/proseInline.tsx",
+      "dir": "custom",
+      "family": "custom/Prose",
+      "exports": [
+        "ProseAnchor",
+        "inlineContext",
+        "renderInline",
+        "ProseLinkTone",
+        "ProseLinker",
+        "ProseLink",
+        "ProseAnchorProps",
+        "InlineContext",
+        "LinkedRef",
+        "warnDroppedFlags",
+        "renderLinkPiece",
+        "renderPiece"
+      ],
+      "libDependents": 9,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [],
+      "leak": {
+        "rawView": 0,
+        "rawText": 6,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 184,
+        "score": 6
+      },
+      "tier": "atom",
+      "verdict": "keep-internal",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
       "name": "Radio",
       "file": "packages/ui/src/components/ui/radio/Radio.tsx",
       "dir": "ui",
