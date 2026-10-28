@@ -1,4 +1,15 @@
 import { primitiveRamps as ramp } from '../../../theme/tokens/primitives'
+import { CATEGORICAL_B, CATEGORICAL_B_PRIME } from './DatavizLightPalette.categorical'
+import type { CandidateSet, DatavizPalette, LightCandidate } from './DatavizLightPalette.types'
+
+export type {
+  CandidateSet,
+  CandidateSetId,
+  DatavizKey,
+  DatavizPalette,
+  LabelInk,
+  LightCandidate,
+} from './DatavizLightPalette.types'
 
 /**
  * The VW-371 phase 2 decision record: every light-mode candidate for the three
@@ -22,38 +33,12 @@ import { primitiveRamps as ramp } from '../../../theme/tokens/primitives'
  * 4. Diverging C' (blue[500], black slot-0 label); sequential allows a lift at
  *    step 0→1, as the shipped dark ramp does; full ramps S1 and S4.
  * 5. Chosen: diverging C', sequential S1, categorical B. Landed.
+ *
+ * Categorical revisited (TD-756 plan, Morning 82 round, 2026-10-09): B holds
+ * all-pairs CVD ΔE only 4.9 (red[600]↔green[600]) against the original gate
+ * of 8. The owner picked B' (L-fix-vivid): red[400] and green[700], the
+ * other five slots unchanged. B stays below as the record.
  */
-
-export type DatavizPalette = 'diverging' | 'sequential' | 'categorical'
-
-export type DatavizKey = `dataviz-${DatavizPalette}-${number}`
-
-export type CandidateSetId = 'B' | 'C' | "C'" | 'D' | 'H1' | 'H2' | 'H3' | 'H4' | 'S1' | 'S4'
-
-/** Which ink a label on a fill is forced to; `light` is white, `dark` is black. */
-export type LabelInk = 'light' | 'dark'
-
-export interface LightCandidate {
-  key: DatavizKey
-  /** The ramp step the proposal points at, as it would be written in semantic.ts. */
-  step: string
-  value: string
-  rationale: string
-}
-
-export interface CandidateSet {
-  id: CandidateSetId
-  title: string
-  /** One line: the trade-off this set makes. */
-  rationale: string
-  /** The rules the set satisfies, and any rule it relaxes, printed as stated. */
-  rules: string[]
-  steps: LightCandidate[]
-  /** The set the reviewer picked; its steps are the landed light tokens. */
-  chosen?: boolean
-  /** Per-stop label ink overrides; stops not listed use `bestTextColor`. */
-  forcedLabels?: Partial<Record<number, LabelInk>>
-}
 
 const DIVERGING_C: CandidateSet = {
   id: 'C',
@@ -193,65 +178,6 @@ const DIVERGING_D: CandidateSet = {
   ],
 }
 
-const CATEGORICAL_B: CandidateSet = {
-  id: 'B',
-  title: 'B · vivid, Cardio kept brown',
-  chosen: true,
-  rationale:
-    'Reviewer pick: B with step 6 back on the current amber[600]. Red and green take the darker slots.',
-  rules: [
-    'RELAXED: every slot ≥ 2:1 on all planes (was 3:1 on white); legend and tile labels carry identity',
-    'L in 0.43-0.77; C ≥ 0.12 (cyan) and ≥ 0.15 (other hues, bar Cardio)',
-    'adjacent normal-vision ΔE ≥ 15',
-    'RELAXED: adjacent CVD ΔE ≥ 6 (was 8); green↔orange is 6.9, the validator WARN band',
-    'L in band except the locked brown: amber[600] is L 0.55, C 0.126 (below the 0.15 hue floor, by choice)',
-  ],
-  steps: [
-    {
-      key: 'dataviz-categorical-0',
-      step: 'blue[500]',
-      value: ramp.blue[500],
-      rationale: 'Unchanged from dark. 2.6:1 on raised.',
-    },
-    {
-      key: 'dataviz-categorical-1',
-      step: 'magenta[600]',
-      value: ramp.magenta[600],
-      rationale: 'L 0.55, C 0.209, the most saturated ramp step. ΔE 15.3 from red[600].',
-    },
-    {
-      key: 'dataviz-categorical-2',
-      step: 'red[600]',
-      value: ramp.red[600],
-      rationale: 'The red pin. L 0.59 separates it from orange[400] (ΔE 15.9).',
-    },
-    {
-      key: 'dataviz-categorical-3',
-      step: 'orange[400]',
-      value: ramp.orange[400],
-      rationale: 'Unchanged from dark. L 0.72, C 0.190. 2.2:1 on raised.',
-    },
-    {
-      key: 'dataviz-categorical-4',
-      step: 'green[600]',
-      value: ramp.green[600],
-      rationale: 'L 0.55, C 0.150. Darker than dark mode so it clears 3:1 and parts from cyan.',
-    },
-    {
-      key: 'dataviz-categorical-5',
-      step: 'cyan[400]',
-      value: ramp.cyan[400],
-      rationale: 'L 0.71, C 0.125. The cyan ramp peaks at 0.134.',
-    },
-    {
-      key: 'dataviz-categorical-6',
-      step: 'amber[600]',
-      value: ramp.amber[600],
-      rationale: 'Unchanged from dark, per review. ΔE 24.0 from cyan[400]; adjacent min stays 6.9.',
-    },
-  ],
-}
-
 const headStep = (
   index: number,
   step: string,
@@ -377,7 +303,7 @@ const SEQUENTIAL_S4: CandidateSet = {
 export const LIGHT_CANDIDATE_SETS: Record<DatavizPalette, CandidateSet[]> = {
   diverging: [DIVERGING_C_PRIME, DIVERGING_C, DIVERGING_D],
   sequential: [SEQUENTIAL_S1, SEQUENTIAL_S4],
-  categorical: [CATEGORICAL_B],
+  categorical: [CATEGORICAL_B_PRIME, CATEGORICAL_B],
 }
 
 /** The reviewer's pick for a palette: the values the light token block carries. */
