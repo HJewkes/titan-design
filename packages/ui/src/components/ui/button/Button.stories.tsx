@@ -6,6 +6,17 @@ const meta: Meta<typeof Button> = {
   title: 'Components/Molecules/Button',
   component: Button,
   tags: ['autodocs', 'status:stable', '!status:review'],
+  parameters: {
+    docs: {
+      description: {
+        component:
+          '**Press:** the fill steps down the ramp and the face shrinks to `scale(0.99)` over 100 ms, ' +
+          'the same on every solid, outline and ghost colour and on icon buttons. A link, a disabled ' +
+          'or loading button, and any button under `prefers-reduced-motion` keep the colour step and do ' +
+          'not move. Hold the mouse down on any story to see it.',
+      },
+    },
+  },
   argTypes: {
     variant: {
       control: 'select',
