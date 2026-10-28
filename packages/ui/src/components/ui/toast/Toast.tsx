@@ -5,15 +5,9 @@ import { CheckMark } from '../../icons'
 import { Surface } from '../surface'
 import { statusStyles, iconColors, textGlyphs, toastRole, type ToastStatus } from './toastStatus'
 import { useAutoDismiss } from './useAutoDismiss'
+import { positionStyles, viewportStyle, type ToastPosition } from './toastViewport'
 
-export type { ToastStatus }
-export type ToastPosition =
-  | 'top'
-  | 'top-right'
-  | 'top-left'
-  | 'bottom'
-  | 'bottom-right'
-  | 'bottom-left'
+export type { ToastStatus, ToastPosition }
 
 export interface ToastConfig {
   /** Unique ID for the toast */
@@ -51,15 +45,6 @@ export interface ToastProviderProps {
   /** Maximum number of visible toasts */
   maxToasts?: number
   children?: React.ReactNode
-}
-
-const positionStyles: Record<ToastPosition, string> = {
-  top: 'top-4 left-1/2 -translate-x-1/2',
-  'top-right': 'top-4 right-4',
-  'top-left': 'top-4 left-4',
-  bottom: 'bottom-4 left-1/2 -translate-x-1/2',
-  'bottom-right': 'bottom-4 right-4',
-  'bottom-left': 'bottom-4 left-4',
 }
 
 /**
@@ -117,7 +102,8 @@ export function ToastProvider({
       {children}
       {/* Toast Container */}
       <View
-        className={cn('fixed z-[9999] flex flex-col gap-2', positionStyles[position])}
+        className={cn('fixed flex flex-col gap-2', positionStyles[position])}
+        style={viewportStyle}
         pointerEvents="box-none"
       >
         {toasts.map((toast) => (
