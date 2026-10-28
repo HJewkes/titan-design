@@ -62,6 +62,11 @@ const trackColorStyles: Record<ProgressColor, string> = {
   info: 'bg-status-info-muted',
 }
 
+// A progressbar must have a name (axe aria-progressbar-name); the Spinner's 'Loading' is the precedent.
+function progressName(...candidates: (string | undefined)[]): string {
+  return candidates.find((name) => name !== undefined) ?? 'Progress'
+}
+
 /**
  * Linear progress bar component.
  *
@@ -119,7 +124,7 @@ export function Progress({
         style={trackWidth ? { width: trackWidth } : undefined}
         accessibilityRole="progressbar"
         // The track carries the role, so it carries the name; RNW drops a label on the plain wrapper.
-        accessibilityLabel={accessibilityLabel ?? label}
+        accessibilityLabel={progressName(accessibilityLabel, label)}
         accessibilityValue={{
           min: 0,
           max: max,
@@ -195,6 +200,7 @@ export function CircularProgress({
   children,
   fill = false,
   className,
+  accessibilityLabel,
   ...props
 }: CircularProgressProps) {
   const surfaceMode = useSurfaceMode()
@@ -212,6 +218,7 @@ export function CircularProgress({
       className={cn('items-center justify-center', className)}
       style={boxStyle}
       accessibilityRole="progressbar"
+      accessibilityLabel={progressName(accessibilityLabel)}
       accessibilityValue={{
         min: 0,
         max: max,
