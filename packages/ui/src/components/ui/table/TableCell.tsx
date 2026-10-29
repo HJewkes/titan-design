@@ -1,5 +1,5 @@
-import React, { useContext } from 'react'
-import { View, Text, type ViewProps } from 'react-native'
+import React, { useCallback, useContext } from 'react'
+import { Platform, View, Text, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { CELL_PADDING, FLEX_CELL, TableContext } from './TableContext'
 
@@ -13,8 +13,20 @@ export interface TableCellProps extends ViewProps {
   children?: React.ReactNode
 }
 
+// react-native-web drops a `title` prop on Text, so the hover hint is set on the DOM node directly.
+function useWebTitle(title: string | undefined) {
+  return useCallback(
+    (node: unknown) => {
+      if (Platform.OS !== 'web' || !title || !(node instanceof HTMLElement)) return
+      node.setAttribute('title', title)
+    },
+    [title]
+  )
+}
+
 /**
- * Table data cell.
+ * Table data cell. String content stays on one line and ends in an ellipsis when
+ * the column is too narrow; on web the full value shows on hover.
  */
 export function TableCell({
   align = 'left',
@@ -24,6 +36,7 @@ export function TableCell({
   ...props
 }: TableCellProps) {
   const { density } = useContext(TableContext)
+  const titleRef = useWebTitle(typeof children === 'string' ? children : undefined)
   const alignStyles = {
     left: 'items-start',
     center: 'items-center',
@@ -38,7 +51,11 @@ export function TableCell({
       {...props}
     >
       {typeof children === 'string' ? (
-        <Text className={cn(density === 'dense' ? 'text-xs' : 'text-sm', 'text-text-primary')}>
+        <Text
+          ref={titleRef}
+          numberOfLines={1}
+          className={cn(density === 'dense' ? 'text-xs' : 'text-sm', 'text-text-primary')}
+        >
           {children}
         </Text>
       ) : (
