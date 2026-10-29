@@ -56,8 +56,26 @@ const meta: Meta<Args> = {
 export default meta
 type Story = StoryObj<Args>
 
+const SETTLE_TIMEOUT_MS = 5000
+
 function viewport(canvas: HTMLElement): HTMLElement {
   return within(canvas).getByTestId('shelf-viewport')
+}
+
+/** Resolves once the scroller's offset has held still for several frames (a smooth scroll has landed). */
+async function waitForScrollSettled(canvas: HTMLElement) {
+  const scroller = viewport(canvas)
+  let last = Number.NaN
+  let stillFrames = 0
+  await waitFor(
+    async () => {
+      await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()))
+      stillFrames = scroller.scrollLeft === last ? stillFrames + 1 : 0
+      last = scroller.scrollLeft
+      expect(stillFrames).toBeGreaterThanOrEqual(5)
+    },
+    { timeout: SETTLE_TIMEOUT_MS, interval: 0 }
+  )
 }
 
 /** The named card sits whole inside the shelf's column (the scroller minus its bleed). */
@@ -101,11 +119,14 @@ export const NudgeHidesAtTheEnd: Story = {
     const canvas = within(canvasElement)
     await userEvent.click(await canvas.findByRole('button', { name: 'More from Yesterday' }))
     await expectAtColumnStart(canvasElement, TITLES[3])
+    await waitForScrollSettled(canvasElement)
     // Three more steps would pass the end, so the second nudge stops on the last card.
     await userEvent.click(canvas.getByRole('button', { name: 'More from Yesterday' }))
+    await waitForScrollSettled(canvasElement)
     await expectWhollyInView(canvasElement, TITLES[9])
-    await waitFor(() =>
-      expect(canvas.queryByRole('button', { name: 'More from Yesterday' })).toBeNull()
+    await waitFor(
+      () => expect(canvas.queryByRole('button', { name: 'More from Yesterday' })).toBeNull(),
+      { timeout: SETTLE_TIMEOUT_MS }
     )
   },
 }
