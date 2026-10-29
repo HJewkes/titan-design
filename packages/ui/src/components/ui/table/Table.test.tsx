@@ -56,6 +56,19 @@ describe('Table', () => {
     expect(screen.getByText('Active')).toBeInTheDocument()
   })
 
+  it('keeps long string cell text inside its column with an ellipsis and a hover title', () => {
+    renderBasicTable()
+    const email = screen.getByText('john@example.com')
+    const style = getComputedStyle(email)
+    expect([style.whiteSpace, style.overflowX, style.textOverflow, style.maxWidth]).toEqual([
+      'nowrap',
+      'hidden',
+      'ellipsis',
+      '100%',
+    ])
+    expect(email).toHaveAttribute('title', 'john@example.com')
+  })
+
   it('renders custom children in TableCell', () => {
     render(
       <Table>
