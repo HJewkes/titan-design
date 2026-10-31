@@ -26,6 +26,7 @@ const meta: Meta<typeof VelocityStrip> = {
   title: 'Custom/Workout/DataViz/VelocityStrip/Compact',
   component: VelocityStrip,
   parameters: {
+    layout: 'fullscreen',
     docs: { description: { component: 'Composes **SetBarChart** · **ChartSideRail**.' } },
   },
   tags: ['autodocs', 'status:candidate', '!status:review'],

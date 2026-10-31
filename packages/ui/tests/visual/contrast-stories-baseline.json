@@ -794,22 +794,15 @@
   "custom-fatigue-live-fatigue-card--states light": {
     "#888684|#d4d1ce": 4
   },
-  "custom-fatigue-live-fatigue-panel--live-states light": {
-    "#b07b34|#d4d1ce": 1
-  },
   "custom-fatigue-live-fatigue-panel--on-light-surface dark": {
-    "#a29f9d|#d4d1ce": 2,
-    "#b07b34|#d4d1ce": 1
-  },
-  "custom-fatigue-live-fatigue-panel--on-light-surface light": {
-    "#b07b34|#d4d1ce": 1
+    "#a29f9d|#d4d1ce": 2
   },
   "custom-fatigue-velocity-hero--default light": {
     "#424140|#1c1916": 8
   },
   "custom-fatigue-velocity-hero--mid-set light": {
     "#424140|#1c1916": 4,
-    "#824d06|#1c1916": 1
+    "#814d14|#1c1916": 1
   },
   "custom-workout-basebadge--all-variants light": {
     "#a29f9d|#ffffff": 4,
@@ -942,7 +935,7 @@
   },
   "custom-workout-dataviz-dualvelocitystrip--hero light": {
     "#424140|#1c1916": 12,
-    "#824d06|#1c1916": 1
+    "#814d14|#1c1916": 1
   },
   "custom-workout-dataviz-dualvelocitystrip--range-set light": {
     "#424140|#1c1916": 10
@@ -986,10 +979,6 @@
   "custom-workout-dataviz-strengthtrendchart--interactive light": {
     "#a29f9d|#edeae7": 1
   },
-  "custom-workout-dataviz-velocitystrip--all-views light": {
-    "#424140|#1c1916": 14,
-    "#5a5958|#1c1916": 3
-  },
   "custom-workout-dataviz-velocitystrip--in-context dark": {
     "#888684|#252321": 3,
     "#888684|#2c2a28": 5
@@ -997,72 +986,6 @@
   "custom-workout-dataviz-velocitystrip--in-context light": {
     "#22a444|#d4d1ce": 1,
     "#a45e00|#d4d1ce": 1
-  },
-  "custom-workout-dataviz-velocitystrip-dual--default light": {
-    "#424140|#1c1916": 9,
-    "#5a5958|#1c1916": 2
-  },
-  "custom-workout-dataviz-velocitystrip-dual--in-progress light": {
-    "#424140|#1c1916": 7,
-    "#5a5958|#1c1916": 2
-  },
-  "custom-workout-dataviz-velocitystrip-dual--playground light": {
-    "#424140|#1c1916": 9,
-    "#5a5958|#1c1916": 2
-  },
-  "custom-workout-dataviz-velocitystrip-dual--small-height-labels light": {
-    "#424140|#1c1916": 8
-  },
-  "custom-workout-dataviz-velocitystrip-dual--symmetric-empties light": {
-    "#424140|#1c1916": 8,
-    "#5a5958|#1c1916": 2
-  },
-  "custom-workout-dataviz-velocitystrip-dual--tiny-height light": {
-    "#424140|#1c1916": 8
-  },
-  "custom-workout-dataviz-velocitystrip-expanded--framed-chrome light": {
-    "#424140|#1c1916": 11
-  },
-  "custom-workout-dataviz-velocitystrip-hero--default light": {
-    "#424140|#1c1916": 14,
-    "#5a5958|#1c1916": 3
-  },
-  "custom-workout-dataviz-velocitystrip-hero--dual-lagging-side light": {
-    "#424140|#1c1916": 12,
-    "#5a5958|#1c1916": 3
-  },
-  "custom-workout-dataviz-velocitystrip-hero--edge-cases light": {
-    "#424140|#1c1916": 19,
-    "#5a5958|#1c1916": 4
-  },
-  "custom-workout-dataviz-velocitystrip-hero--empty-cold-boot light": {
-    "#5a5958|#1c1916": 3
-  },
-  "custom-workout-dataviz-velocitystrip-hero--fatigue-decline light": {
-    "#424140|#1c1916": 17,
-    "#5a5958|#1c1916": 3
-  },
-  "custom-workout-dataviz-velocitystrip-hero--fixed-scale-headroom light": {
-    "#424140|#1c1916": 4,
-    "#5a5958|#1c1916": 2
-  },
-  "custom-workout-dataviz-velocitystrip-hero--in-progress light": {
-    "#424140|#1c1916": 11,
-    "#5a5958|#1c1916": 3
-  },
-  "custom-workout-dataviz-velocitystrip-hero--rep-types light": {
-    "#424140|#1c1916": 76,
-    "#5a5958|#1c1916": 21,
-    "#824d06|#1c1916": 3
-  },
-  "custom-workout-dataviz-velocitystrip-hero--responsive light": {
-    "#424140|#1c1916": 90,
-    "#5a5958|#1c1916": 16
-  },
-  "custom-workout-dataviz-velocitystrip-hero--set-types light": {
-    "#424140|#1c1916": 46,
-    "#5a5958|#1c1916": 12,
-    "#824d06|#1c1916": 1
   },
   "custom-workout-dataviz-zonetrack--band-with-marker dark": {
     "#888684|#252321": 1
@@ -2274,7 +2197,6 @@
   "lab-north-star-4-fatigue-system--live-states light": {
     "#888684|#d4d1ce": 2,
     "#a29f9d|#d4d1ce": 1,
-    "#b07b34|#d4d1ce": 1,
     "#f9f6f3|#d4d1ce": 1
   },
   "lab-north-star-live-wall-dashboard--live dark": {

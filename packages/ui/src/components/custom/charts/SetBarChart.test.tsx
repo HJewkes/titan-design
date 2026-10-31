@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { barPaper } from '../../../theme/materials'
+import { capturedClassNames } from '../../../test/classname-capture'
 import { SurfaceContext } from '../../ui/surface/SurfaceContext'
 import { SetBarTreatmentContext, type SetBarTreatment } from './setBarTones'
 import {
@@ -331,6 +332,19 @@ describe('SetBarChart shared side-rail (label gutter)', () => {
     )
     expect(screen.getByTestId('t-side-label')).toHaveTextContent('Left Arm')
     expect(screen.getByTestId('t-side-label')).toHaveStyle({ textTransform: 'uppercase' })
+  })
+
+  it('sets the side label in secondary text, which passes AA on the base plane (TD-971)', () => {
+    render(
+      <SetBarChart
+        slots={reps([0.9, 0.8])}
+        colorFor={silver}
+        height={200}
+        label="Left Arm"
+        testIDPrefix="t"
+      />
+    )
+    expect(capturedClassNames.get('t-side-label')?.split(/\s+/)).toContain('text-text-secondary')
   })
 
   it('omits the gutter when no `label` is given', () => {

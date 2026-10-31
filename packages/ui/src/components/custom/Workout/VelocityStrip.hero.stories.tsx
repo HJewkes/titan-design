@@ -18,6 +18,7 @@ import {
   IN_PROGRESS_LAGGING,
   wallDecorator,
 } from '../../../lab/velocity-story-kit/velocity-story-kit'
+import { StorySpecimen, StorySpecimens } from '../../../lab/story-canvas'
 
 /**
  * `hero` — the across-the-room wall treatment. Tall bars, per-bar value labels,
@@ -36,6 +37,7 @@ const meta: Meta<typeof VelocityStrip> = {
   title: 'Custom/Workout/DataViz/VelocityStrip/Hero',
   component: VelocityStrip,
   parameters: {
+    layout: 'fullscreen',
     docs: { description: { component: 'Composes **SetBarChart** · **ChartSideRail**.' } },
   },
   tags: ['autodocs', 'status:candidate', '!status:review'],
@@ -165,8 +167,10 @@ export const Responsive: Story = {
         survive; only their labels go.
       </Note>
       {[220, 160, 140, 120, 90].map((h) => (
-        <View key={h} style={{ gap: 8 }}>
-          <ViewLabel text={`${h}px · wings ${Math.round((h - 2) / 2)}px each`} />
+        <StorySpecimen
+          key={h}
+          label={<ViewLabel text={`${h}px · wings ${Math.round((h - 2) / 2)}px each`} />}
+        >
           <DualVelocityStrip
             left={{ velocities: REP_SET, label: 'Left' }}
             right={{ velocities: REP_SET_LAGGING, label: 'Right' }}
@@ -174,7 +178,7 @@ export const Responsive: Story = {
             height={h}
             scale="fixed"
           />
-        </View>
+        </StorySpecimen>
       ))}
 
       <Note>
@@ -183,22 +187,23 @@ export const Responsive: Story = {
         longer seat one.
       </Note>
       {[700, 460, 300, 190].map((w) => (
-        <View key={w} style={{ gap: 8, width: w }}>
-          <ViewLabel text={`${w}px`} />
-          <VelocityStrip
-            velocities={REP_SET}
-            variant="hero"
-            label="Set"
-            height={180}
-            scale="fixed"
-          />
-          <DualVelocityStrip
-            left={{ velocities: REP_SET, label: 'Left' }}
-            right={{ velocities: REP_SET_LAGGING, label: 'Right' }}
-            variant="hero"
-            height={200}
-            scale="fixed"
-          />
+        <View key={w} style={{ width: w }}>
+          <StorySpecimen label={<ViewLabel text={`${w}px`} />}>
+            <VelocityStrip
+              velocities={REP_SET}
+              variant="hero"
+              label="Set"
+              height={180}
+              scale="fixed"
+            />
+            <DualVelocityStrip
+              left={{ velocities: REP_SET, label: 'Left' }}
+              right={{ velocities: REP_SET_LAGGING, label: 'Right' }}
+              variant="hero"
+              height={200}
+              scale="fixed"
+            />
+          </StorySpecimen>
         </View>
       ))}
     </Sheet>
@@ -232,9 +237,11 @@ export const FixedScaleHeadroom: Story = {
   name: 'Fixed Scale Headroom (VW-97)',
   decorators: [wallDecorator],
   render: () => (
-    <View style={{ flexDirection: 'row', gap: 24 }}>
-      <View style={{ gap: 8, flex: 1 }}>
-        <ViewLabel text="before · ceiling bar touches the plot top" />
+    <StorySpecimens direction="row">
+      <StorySpecimen
+        className="flex-1"
+        label={<ViewLabel text="before · ceiling bar touches the plot top" />}
+      >
         <VelocityStrip
           velocities={[FIXED_MAX_VALUE, FIXED_MAX_VALUE * 0.6]}
           variant="hero"
@@ -242,9 +249,11 @@ export const FixedScaleHeadroom: Story = {
           height={140}
           scaleMax={FIXED_MAX_VALUE / PEAK_HEADROOM}
         />
-      </View>
-      <View style={{ gap: 8, flex: 1 }}>
-        <ViewLabel text="after · fixed reserves the same headroom peak does" />
+      </StorySpecimen>
+      <StorySpecimen
+        className="flex-1"
+        label={<ViewLabel text="after · fixed reserves the same headroom peak does" />}
+      >
         <VelocityStrip
           velocities={[FIXED_MAX_VALUE, FIXED_MAX_VALUE * 0.6]}
           variant="hero"
@@ -252,8 +261,8 @@ export const FixedScaleHeadroom: Story = {
           height={140}
           scale="fixed"
         />
-      </View>
-    </View>
+      </StorySpecimen>
+    </StorySpecimens>
   ),
 }
 
@@ -261,9 +270,8 @@ export const EdgeCases: Story = {
   name: 'Edge Cases',
   decorators: [wallDecorator],
   render: () => (
-    <View style={{ gap: 26 }}>
-      <View style={{ gap: 8 }}>
-        <ViewLabel text="near complete · 7 of 8" />
+    <StorySpecimens>
+      <StorySpecimen label={<ViewLabel text="near complete · 7 of 8" />}>
         <VelocityStrip
           velocities={[0.82, 0.79, 0.81, 0.76, 0.74, 0.71, 0.68]}
           variant="hero"
@@ -271,20 +279,20 @@ export const EdgeCases: Story = {
           targetReps={8}
           scale="fixed"
         />
-      </View>
+      </StorySpecimen>
 
-      <View style={{ gap: 8 }}>
-        <ViewLabel text="ends on the best rep · reference line sits on the last bar" />
+      <StorySpecimen
+        label={<ViewLabel text="ends on the best rep · reference line sits on the last bar" />}
+      >
         <VelocityStrip
           velocities={[0.7, 0.74, 0.78, 0.86]}
           variant="hero"
           label="Set"
           scale="fixed"
         />
-      </View>
+      </StorySpecimen>
 
-      <View style={{ gap: 8 }}>
-        <ViewLabel text="exceeds target · more reps performed than planned" />
+      <StorySpecimen label={<ViewLabel text="exceeds target · more reps performed than planned" />}>
         <VelocityStrip
           velocities={[0.9, 0.88, 0.85, 0.83, 0.8, 0.78, 0.75]}
           variant="hero"
@@ -292,12 +300,11 @@ export const EdgeCases: Story = {
           targetReps={5}
           scale="fixed"
         />
-      </View>
+      </StorySpecimen>
 
-      <View style={{ gap: 8 }}>
-        <ViewLabel text="single rep · no decline to draw" />
+      <StorySpecimen label={<ViewLabel text="single rep · no decline to draw" />}>
         <VelocityStrip velocities={[0.88]} variant="hero" label="Set" scale="fixed" />
-      </View>
-    </View>
+      </StorySpecimen>
+    </StorySpecimens>
   ),
 }

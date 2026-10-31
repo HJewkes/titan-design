@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { View, Pressable } from 'react-native'
+import { Pressable } from 'react-native'
 import { VelocityStrip } from './VelocityStrip'
 import { DualVelocityStrip } from './DualVelocityStrip'
 import {
@@ -17,6 +17,7 @@ import {
   IN_PROGRESS_SET,
   IN_PROGRESS_LAGGING,
 } from '../../../lab/velocity-story-kit/velocity-story-kit'
+import { StorySpecimen } from '../../../lab/story-canvas'
 
 /**
  * `expanded` — the velocity-HEIGHT bar chart. Bars are scaled to their value,
@@ -36,6 +37,7 @@ const meta: Meta<typeof VelocityStrip> = {
   title: 'Custom/Workout/DataViz/VelocityStrip/Expanded',
   component: VelocityStrip,
   parameters: {
+    layout: 'fullscreen',
     docs: { description: { component: 'Composes **SetBarChart** · **ChartSideRail**.' } },
   },
   tags: ['autodocs', 'status:candidate', '!status:review'],
@@ -187,8 +189,7 @@ export const Responsive: Story = {
         compact↔expanded toggle a morph rather than a swap.
       </Note>
       {[80, 60, 40, 24, 12].map((h) => (
-        <View key={h} style={{ gap: 8 }}>
-          <ViewLabel text={`${h}px`} />
+        <StorySpecimen key={h} label={<ViewLabel text={`${h}px`} />}>
           <VelocityStrip
             velocities={REP_SET}
             variant="expanded"
@@ -204,7 +205,7 @@ export const Responsive: Story = {
             height={h}
             scale="fixed"
           />
-        </View>
+        </StorySpecimen>
       ))}
     </Sheet>
   ),
@@ -221,13 +222,11 @@ export const FramedChrome: Story = {
         the lean rail instead.
       </Note>
 
-      <View style={{ gap: 8 }}>
-        <ViewLabel text="framed · numbers + info" />
+      <StorySpecimen label={<ViewLabel text="framed · numbers + info" />}>
         <VelocityStrip velocities={REP_SET} variant="expanded" expanded showNumbers showInfo />
-      </View>
+      </StorySpecimen>
 
-      <View style={{ gap: 8 }}>
-        <ViewLabel text="numbers only" />
+      <StorySpecimen label={<ViewLabel text="numbers only" />}>
         <VelocityStrip
           velocities={REP_SET}
           variant="expanded"
@@ -235,10 +234,9 @@ export const FramedChrome: Story = {
           showNumbers
           showInfo={false}
         />
-      </View>
+      </StorySpecimen>
 
-      <View style={{ gap: 8 }}>
-        <ViewLabel text="bare spotlight · numbers + info off" />
+      <StorySpecimen label={<ViewLabel text="bare spotlight · numbers + info off" />}>
         <VelocityStrip
           velocities={REP_SET}
           variant="expanded"
@@ -247,7 +245,7 @@ export const FramedChrome: Story = {
           height={24}
           scale="fixed"
         />
-      </View>
+      </StorySpecimen>
     </Sheet>
   ),
 }

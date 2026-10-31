@@ -91,7 +91,10 @@ export function VelocityLossBands({
   thresholds?: VelocityLossThresholds
 }) {
   // Before the early return, so the mode is read on every render.
-  const vl = getSemanticColors(useSurfaceMode())
+  const mode = useSurfaceMode()
+  const vl = getSemanticColors(mode)
+  const amberLine = alpha(vl['status-warning'], 0.75)
+  const redLine = alpha(vl['status-error'], 0.75)
   if (best <= 0 || scaleDenom <= 0 || plotHeight <= 0) return null
   const yOf = (v: number): number => (v / scaleDenom) * plotHeight
   const [, amberPct, redPct] = normalizeLossThresholds(thresholds)
@@ -120,7 +123,11 @@ export function VelocityLossBands({
   // label threshold the line spans full width with no text.
   // Lines closer than one label height would overprint, so only the stop line keeps its label.
   const amberLabelFits = yOf(vl20) - yOf(vl30) >= vlFont
-  const threshold = (v: number, color: string, label: string | null) => (
+  // Light-mode label text takes the status text token: the 75% line colour falls under AA on the
+  // base plane there. Dark keeps the line colour, which passes and which dark `text-error` does not.
+  const labelColor = (line: string, textToken: 'text-warning' | 'text-error') =>
+    mode === 'light' ? vl[textToken] : line
+  const threshold = (v: number, color: string, label: string | null, labelInk: string) => (
     <View
       style={{
         position: 'absolute',
@@ -144,7 +151,7 @@ export function VelocityLossBands({
               fontSize: vlFont,
               fontWeight: '800',
               fontFamily: BAND_LABEL_FONT,
-              color,
+              color: labelInk,
               ...(flip ? { transform: [{ scaleY: -1 as number }] } : null),
             }}
           >
@@ -167,10 +174,11 @@ export function VelocityLossBands({
       {!!hasAmber &&
         threshold(
           vl20,
-          alpha(vl['status-warning'], 0.75),
-          amberLabelFits ? `VL ${Math.round(amberPct)}%` : null
+          amberLine,
+          amberLabelFits ? `VL ${Math.round(amberPct)}%` : null,
+          labelColor(amberLine, 'text-warning')
         )}
-      {threshold(vl30, alpha(vl['status-error'], 0.75), `VL ${Math.round(redPct)}%`)}
+      {threshold(vl30, redLine, `VL ${Math.round(redPct)}%`, labelColor(redLine, 'text-error'))}
     </View>
   )
 }
