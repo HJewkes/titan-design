@@ -14,6 +14,8 @@ import { getSemanticColors, type ThemeMode } from '../../theme/tokens/semantic'
 import { surfaceBackground } from '../../theme/surface-planes'
 import { liftStyle, LIFT_RIM_ALPHA, type LiftStep } from '../../theme/lift'
 import { grainForTone } from '../../theme/materials'
+import { CANDIDATE_KEYS, LIGHT_CANDIDATES, type CandidateKey } from './lightCandidates'
+import { CandidateComposite, CandidateLadder } from './LightDepthSpecimen'
 
 /**
  * Lab/Depth — the Gate 2 specimen for the 2026-09-08 depth correction.
@@ -182,12 +184,49 @@ export const Treatments: StoryObj = {
   ),
 }
 
-export const LightMode: StoryObj = {
+type CandidateArg = 'all' | CandidateKey
+
+interface CandidateArgs {
+  candidate: CandidateArg
+}
+
+const CANDIDATE_ARG_TYPES = {
+  candidate: { control: 'select', options: ['all', ...CANDIDATE_KEYS] },
+} as const
+
+function picked(candidate: CandidateArg) {
+  const keys = candidate === 'all' ? CANDIDATE_KEYS : [candidate]
+  return keys.map((key) => LIGHT_CANDIDATES[key])
+}
+
+/** `candidate: 'all'` sets the TD-4 candidates beside the shipped ladder; one key shows it alone. */
+export const LightMode: StoryObj<CandidateArgs> = {
   name: '2 · The same rows, light',
-  render: () => (
+  args: { candidate: 'all' },
+  argTypes: CANDIDATE_ARG_TYPES,
+  render: ({ candidate }) => (
     <Surface theme="light" level="base" style={{ padding: 28, minHeight: '100vh' as never }}>
+      <View style={{ gap: 20, marginBottom: 28 }}>
+        {picked(candidate).map((c) => (
+          <CandidateLadder key={c.key} c={c} />
+        ))}
+      </View>
       <TreatmentRows mode="light" />
     </Surface>
+  ),
+}
+
+/** TD-4: the candidates on a console-like page (cards, a table, a drawer and a dialog). */
+export const LightComposite: StoryObj<CandidateArgs> = {
+  name: '5 · Light candidates on a page',
+  args: { candidate: 'A' },
+  argTypes: CANDIDATE_ARG_TYPES,
+  render: ({ candidate }) => (
+    <View style={{ gap: 2 }}>
+      {picked(candidate).map((c) => (
+        <CandidateComposite key={c.key} c={c} />
+      ))}
+    </View>
   ),
 }
 
