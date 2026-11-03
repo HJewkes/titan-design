@@ -138,7 +138,7 @@ lines in `global.css`; the light fixture in `semantic-hex-guard.test.ts`; `Butto
 per-mode token path with hover and active on the two stepped tokens; the light solid-label test;
 the story contrast baseline re-keyed for white on orange 500.
 
-Follow on the record: FacetBar's selected face on the same brand cell; the neutral solid (grey 700
+Follow on the record: FacetBar's and ChipGroup's selected faces on the same brand cell; the neutral solid (grey 700
 under white in light, grey 200 under grey 950 in dark) in Alert and Button; the light info solid to
 blue 600; a shared `toneRecipe(tone, emphasis)` helper with a parity test across Badge, Alert,
 Button, IconBox and Toast; the subtle encoding and the colour family, which are their own records.

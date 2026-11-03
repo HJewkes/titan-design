@@ -25,7 +25,7 @@ export interface ContrastPair {
   bg: string
   floor: number
   modes: readonly ThemeMode[]
-  /** Planes a translucent or faded `bg` is composited over; otherwise ignored. */
+  /** Planes a translucent or faded `bg` is composited over (semantic key, `grey-<step>` or a `#hex` frame); otherwise ignored. */
   over?: readonly string[]
   /** A disabled control fades label and fill together to this opacity over the plane under it. */
   opacity?: number
@@ -66,6 +66,9 @@ const PRESSED_FACE_PLANES = [
   'surface-elevated',
   'surface-raised',
 ] as const
+
+/** Arbitrary media under a badge: the lightest, a mid and the darkest frame. */
+const MEDIA_FRAMES = ['#FFFFFF', 'grey-500', '#000000'] as const
 
 const TEXT_FLOORS = {
   'text-primary': 7, // body copy, AAA
@@ -134,6 +137,8 @@ const labelsOnOtherFills: ContrastPair[] = [
   { fg: 'text-inverse', bg: 'text-primary', floor: AA, modes: BOTH },
   // Treemap falls back to on-data-strong on its categorical tiles.
   ...DATAVIZ_CATEGORICAL_ROLES.map((bg) => ({ fg: 'on-data-strong', bg, floor: AA, modes: BOTH })),
+  // A media badge sits on a video frame of any colour (TD-987): white, mid grey and black bound it.
+  { fg: 'on-scrim', bg: 'scrim-strong', floor: AA, modes: BOTH, over: MEDIA_FRAMES },
 ]
 
 /** Floor for a disabled state: WCAG 1.4.3 exempts it, 3:1 keeps it discernible (as `text-disabled`). */
@@ -245,6 +250,7 @@ export const CONTRAST_PAIRS: readonly ContrastPair[] = [
 ]
 
 function resolve(key: string, colors: Colors): string {
+  if (key.startsWith('#')) return key
   const grey = /^grey-(\d+)$/.exec(key)
   const value = grey ? greyRamp[Number(grey[1]) as keyof typeof greyRamp] : colors[key]
   if (!value) throw new Error(`contrast pair names "${key}", which is not a colour`)

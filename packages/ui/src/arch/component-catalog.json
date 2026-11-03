@@ -12898,7 +12898,7 @@
           "description": "",
           "name": "colors",
           "required": true,
-          "type": "{ readonly 'brand-primary': \"#FF7900\"; readonly 'brand-primary-light': \"#FFA063\"; readonly 'brand-primary-dark': \"#DA5F00\"; readonly 'brand-primary-subtle': \"rgba(255, 121, 0, 0.12)\"; ... 151 more ...; readonly 'avatar-text': \"#FFFFFF\"; } | { ...; }"
+          "type": "{ readonly 'brand-primary': \"#FF7900\"; readonly 'brand-primary-light': \"#FFA063\"; readonly 'brand-primary-dark': \"#DA5F00\"; readonly 'brand-primary-subtle': \"rgba(255, 121, 0, 0.12)\"; ... 153 more ...; readonly 'avatar-text': \"#FFFFFF\"; } | { ...; }"
         },
         {
           "default": null,
@@ -12935,7 +12935,7 @@
           "description": "",
           "name": "colors",
           "required": true,
-          "type": "{ readonly 'brand-primary': \"#FF7900\"; readonly 'brand-primary-light': \"#FFA063\"; readonly 'brand-primary-dark': \"#DA5F00\"; readonly 'brand-primary-subtle': \"rgba(255, 121, 0, 0.12)\"; ... 151 more ...; readonly 'avatar-text': \"#FFFFFF\"; } | { ...; }"
+          "type": "{ readonly 'brand-primary': \"#FF7900\"; readonly 'brand-primary-light': \"#FFA063\"; readonly 'brand-primary-dark': \"#DA5F00\"; readonly 'brand-primary-subtle': \"rgba(255, 121, 0, 0.12)\"; ... 153 more ...; readonly 'avatar-text': \"#FFFFFF\"; } | { ...; }"
         },
         {
           "default": null,
@@ -13438,6 +13438,110 @@
     },
     {
       "composes": [
+        "ChipGroupParts"
+      ],
+      "family": "ui/chip-group",
+      "file": "packages/ui/src/components/ui/chip-group/ChipGroup.tsx",
+      "name": "ChipGroup",
+      "props": [
+        {
+          "default": null,
+          "description": "Additional className on the group.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Colour of the selected chip.",
+          "name": "color",
+          "required": false,
+          "type": "ChipColor"
+        },
+        {
+          "default": null,
+          "description": "Uncontrolled starting value.",
+          "name": "defaultValue",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Formats a count for display.",
+          "name": "formatCount",
+          "required": false,
+          "type": "((count: number) => string)"
+        },
+        {
+          "default": null,
+          "description": "Disables every chip.",
+          "name": "isDisabled",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "Placeholder capsules while the choices load.",
+          "name": "isLoading",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "The choices, in order.",
+          "name": "items",
+          "required": true,
+          "type": "readonly ChipGroupItem<T>[]"
+        },
+        {
+          "default": null,
+          "description": "Accessible name of the group.",
+          "name": "label",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Called with the newly selected value; never called for the chip already selected.",
+          "name": "onValueChange",
+          "required": false,
+          "type": "((value: T) => void)"
+        },
+        {
+          "default": null,
+          "description": "`wrap` flows onto more rows; `scroll` keeps one row, pins the first item and scrolls the rest.",
+          "name": "overflow",
+          "required": false,
+          "type": "ChipGroupOverflow"
+        },
+        {
+          "default": null,
+          "description": "Chip size.",
+          "name": "size",
+          "required": false,
+          "type": "ChipSize"
+        },
+        {
+          "default": null,
+          "description": "Controlled selected value.",
+          "name": "value",
+          "required": false,
+          "type": "string"
+        }
+      ],
+      "purpose": "ChipGroup — a single-select filter row of chips, each with an optional count.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/chip-group/ChipGroup.tsx",
+        "status": "packages/ui/src/components/ui/chip-group/ChipGroup.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-molecules-chipgroup--default"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
         "Pill"
       ],
       "family": "ui/chip",
@@ -13453,7 +13557,7 @@
         },
         {
           "default": "default",
-          "description": "Color scheme",
+          "description": "Legacy colour scheme, mapped onto `tone`.",
           "name": "color",
           "required": false,
           "type": "ChipColor"
@@ -13506,6 +13610,13 @@
           "name": "size",
           "required": false,
           "type": "ChipSize"
+        },
+        {
+          "default": null,
+          "description": "Semantic tone, as on `Pill`.",
+          "name": "tone",
+          "required": false,
+          "type": "PillTone"
         },
         {
           "default": "subtle",
@@ -15031,6 +15142,138 @@
     },
     {
       "composes": [
+        "Skeleton",
+        "mediaIcons"
+      ],
+      "family": "ui/media-thumb",
+      "file": "packages/ui/src/components/ui/media-thumb/MediaThumb.tsx",
+      "name": "MediaThumb",
+      "props": [
+        {
+          "default": null,
+          "description": "Names the frame as an image.",
+          "name": "accessibilityLabel",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": "16 / 9",
+          "description": "Width over height.",
+          "name": "aspect",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Corner slot, usually the length `MediaThumbBadge`.",
+          "name": "bottomEnd",
+          "required": false,
+          "type": "ReactNode"
+        },
+        {
+          "default": null,
+          "description": "Corner slot, usually a `MediaThumbBadge` such as \"No sound\".",
+          "name": "bottomStart",
+          "required": false,
+          "type": "ReactNode"
+        },
+        {
+          "default": null,
+          "description": "Tailwind overrides via `cn()`.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": "cover",
+          "description": "`cover` crops the frame to fill the box.",
+          "name": "fit",
+          "required": false,
+          "type": "MediaThumbFit"
+        },
+        {
+          "default": "false",
+          "description": "Shows a Skeleton in place of the frame and hides the badges.",
+          "name": "isLoading",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "The poster frame.",
+          "name": "source",
+          "required": false,
+          "type": "ImageSourcePropType"
+        },
+        {
+          "default": null,
+          "description": "Corner slot, usually a status badge.",
+          "name": "topStart",
+          "required": false,
+          "type": "ReactNode"
+        }
+      ],
+      "purpose": "A media poster frame at a fixed aspect ratio, with three corner badge slots.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/media-thumb/MediaThumb.tsx",
+        "status": "packages/ui/src/components/ui/media-thumb/MediaThumb.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-molecules-mediathumb--default"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "SvgIcon"
+      ],
+      "family": "ui/media-thumb",
+      "file": "packages/ui/src/components/ui/media-thumb/MediaThumbBadge.tsx",
+      "name": "MediaThumbBadge",
+      "props": [
+        {
+          "default": null,
+          "description": "What the badge means, read in place of its glyph or short text (e.g. \"Length 4:12\", \"No sound\").",
+          "name": "accessibilityLabel",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Short visible text, such as a length in `m:ss`.",
+          "name": "children",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Tailwind overrides via `cn()`.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "A glyph drawn before the text, or alone.",
+          "name": "icon",
+          "required": false,
+          "type": "ComponentType<IconProps>"
+        }
+      ],
+      "purpose": "A small dark badge for a `MediaThumb` corner.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/media-thumb/MediaThumbBadge.tsx",
+        "status": "packages/ui/src/components/ui/media-thumb/MediaThumbBadge.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-atoms-mediathumbbadge--default"
+      ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [
         "Surface",
         "TriggerSurface"
       ],
@@ -16169,6 +16412,98 @@
       "tier": "atom"
     },
     {
+      "composes": [
+        "EmptyState",
+        "SchemaFormNodes",
+        "Stack"
+      ],
+      "family": "ui/schema-form",
+      "file": "packages/ui/src/components/ui/schema-form/SchemaForm.tsx",
+      "name": "SchemaForm",
+      "props": [
+        {
+          "default": null,
+          "description": "Additional className for the root stack.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Shown when the schema has no properties.",
+          "name": "emptyState",
+          "required": false,
+          "type": "ReactNode"
+        },
+        {
+          "default": "{}",
+          "description": "Per-field errors by dotted path; an array's own path carries its row-count error.",
+          "name": "errors",
+          "required": false,
+          "type": "Readonly<Record<string, string | readonly string[]>>"
+        },
+        {
+          "default": "false",
+          "description": "Disables every control, including the row buttons.",
+          "name": "isDisabled",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": "This id is locked",
+          "description": "Helper text under a locked id.",
+          "name": "lockedIdHint",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": "[]",
+          "description": "Ids that must not change: an object whose `id` is listed shows it read-only, and its row cannot be removed.",
+          "name": "lockedIds",
+          "required": false,
+          "type": "readonly string[]"
+        },
+        {
+          "default": null,
+          "description": "Called with the whole next value on every edit.",
+          "name": "onChange",
+          "required": true,
+          "type": "(value: SchemaFormValue) => void"
+        },
+        {
+          "default": null,
+          "description": "An object JSON Schema; each of its `properties` renders as one field.",
+          "name": "schema",
+          "required": true,
+          "type": "Readonly<Record<string, unknown>>"
+        },
+        {
+          "default": "schema-form",
+          "description": "Root test id; each field's is `<testID>-<path with dots as dashes>`.",
+          "name": "testID",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "The current value.",
+          "name": "value",
+          "required": true,
+          "type": "SchemaFormValue"
+        }
+      ],
+      "purpose": "A form rendered from a JSON Schema: strings (with a `maxLength` counter), string enums as a select, numbers, booleans, nested objects and arrays whose rows add, remove and reorder inside `minItems` / `maxItems`.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/schema-form/SchemaForm.tsx",
+        "status": "packages/ui/src/components/ui/schema-form/SchemaForm.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-organisms-schemaform--default"
+      ],
+      "tier": "organism"
+    },
+    {
       "composes": [],
       "family": "ui/section",
       "file": "packages/ui/src/components/ui/section/Section.tsx",
@@ -16338,6 +16673,75 @@
       "status": "review",
       "storyIds": [],
       "tier": "molecule"
+    },
+    {
+      "composes": [
+        "ShelfNudges"
+      ],
+      "family": "ui/shelf",
+      "file": "packages/ui/src/components/ui/shelf/Shelf.tsx",
+      "name": "Shelf",
+      "props": [
+        {
+          "default": "none",
+          "description": "How far the row runs past its column into the page gutter on each side, so a card scrolls out at the screen edge rather than the column edge.",
+          "name": "bleed",
+          "required": false,
+          "type": "ShelfBleed"
+        },
+        {
+          "default": null,
+          "description": "One element per item.",
+          "name": "children",
+          "required": false,
+          "type": "ReactNode"
+        },
+        {
+          "default": null,
+          "description": "Tailwind classes for the row's outer view.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Width of every item in px: one number, or a map from breakpoint to width read against the shelf's own column (not the window), widest reached entry first.",
+          "name": "itemWidth",
+          "required": true,
+          "type": "ShelfItemWidth"
+        },
+        {
+          "default": null,
+          "description": "Accessible name of the row, usually the heading above it (\"Yesterday\").",
+          "name": "label",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": "auto",
+          "description": "The round arrow over the row's ends.",
+          "name": "nudge",
+          "required": false,
+          "type": "ShelfNudge"
+        },
+        {
+          "default": "md",
+          "description": "The narrowest column `nudge=\"auto\"` shows the arrows on.",
+          "name": "nudgeFrom",
+          "required": false,
+          "type": "\"sm\" | \"md\" | \"lg\" | \"xs\" | \"xl\""
+        }
+      ],
+      "purpose": "A horizontal row of same-width items that snaps item by item, with the next item peeking at the trailing edge so the reader can see there is more.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/shelf/Shelf.tsx",
+        "status": "packages/ui/src/components/ui/shelf/Shelf.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-molecules-shelf--default"
+      ],
+      "tier": "organism"
     },
     {
       "composes": [],

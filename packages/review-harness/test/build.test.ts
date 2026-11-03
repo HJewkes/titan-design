@@ -1,10 +1,11 @@
 import { createHash } from 'node:crypto'
-import { mkdtemp, readFile, readdir, writeFile } from 'node:fs/promises'
+import { mkdir, mkdtemp, readFile, readdir, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { EXIT_REFUSED, buildRound, contrastProblem, type TreeGit } from '../src/build.ts'
 import { applyRoundRules } from '../src/round-rules.ts'
+import type { StorybookBuildIo } from '../src/storybook-build.ts'
 import { ReviewError, loadRound } from '../src/review.ts'
 import { MANIFEST_SCHEMA_ID, type ManifestInput } from '@titan-design/review-schema'
 import { SECTION_TEXTS, noTreeGit } from './fixtures.ts'
@@ -176,5 +177,56 @@ describe('titan-review build --tree', () => {
     const built = build(path, stubTree(MERGE, []), TREE)
     await expect(built).rejects.toThrow(ReviewError)
     await expect(built).rejects.toThrow('a draft never carries build')
+  })
+})
+
+function storybookIo(sha: string, order: string[]): StorybookBuildIo {
+  return {
+    build: async (_tree, outDir) => {
+      order.push('storybook')
+      await mkdir(outDir, { recursive: true })
+      await writeFile(join(outDir, 'index.json'), '{"entries":{}}')
+    },
+    treeState: async () => ({ sha, dirty: true, repo: 'owner/name' }),
+    storybookVersion: async () => '10.2.0',
+    now: () => 0,
+  }
+}
+
+async function buildWithStorybook(path: string, sha: string, tree: string | undefined) {
+  const lines: string[] = []
+  const order: string[] = []
+  const io = {
+    stderr: (t: string) => lines.push(t),
+    measure: async () => [],
+    git: stubTree(MERGE, [HEADS[7]]),
+    storybook: storybookIo(sha, order),
+  }
+  const code = await buildRound(path, undefined, io, { tree, storybookBuild: true })
+  return { code, lines, order }
+}
+
+describe('titan-review build --storybook-build', () => {
+  it('ships storybook/ beside the round, written before round.json', async () => {
+    const { dir, path } = await setup(draft([7]))
+    const { code, lines } = await buildWithStorybook(path, MERGE, TREE)
+    expect(code).toBe(0)
+    expect((await readJson(join(dir, 'storybook', 'storybook.json'))).sha).toBe(MERGE)
+    const written = lines.filter((l) => l.startsWith('wrote '))
+    expect(written.at(-2)).toMatch(
+      /storybook\.json \(1 files, 14 bytes, 0 stories, built from uncommitted changes\) in 0\.0s$/
+    )
+    expect(written.at(-1)).toBe(`wrote ${join(dir, 'round.json')}`)
+  })
+
+  it('a build of a sha other than the round merge sha writes no round.json', async () => {
+    const { dir, path } = await setup(draft([7]))
+    await expect(buildWithStorybook(path, 'e'.repeat(40), TREE)).rejects.toThrow(ReviewError)
+    expect(await readdir(dir)).not.toContain('round.json')
+  })
+
+  it('needs --tree', async () => {
+    const { path } = await setup(draft([]))
+    await expect(buildWithStorybook(path, MERGE, undefined)).rejects.toThrow(/needs --tree/)
   })
 })

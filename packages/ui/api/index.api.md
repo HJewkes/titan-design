@@ -6,6 +6,7 @@
 
 import { ChatMessage } from '@titan-design/chat-protocol';
 import { ClassValue } from 'clsx';
+import { ComponentType } from 'react';
 import { DataPart } from '@titan-design/chat-protocol';
 import { DeliveryStatus } from '@titan-design/chat-protocol';
 import { ImageSourcePropType } from 'react-native';
@@ -1038,11 +1039,42 @@ export function Chip(input: ChipProps): react_jsx_runtime.JSX.Element;
 // @public (undocumented)
 export type ChipColor = 'default' | 'primary' | 'secondary' | 'success' | 'error' | 'warning' | 'info';
 
+// @public
+export function ChipGroup<T extends string = string>(props: ChipGroupProps<T>): react_jsx_runtime.JSX.Element | null;
+
+// @public
+export interface ChipGroupItem<T extends string = string> {
+    count?: number;
+    isDisabled?: boolean;
+    label: string;
+    value: T;
+}
+
+// @public
+export type ChipGroupOverflow = 'wrap' | 'scroll';
+
+// @public
+export interface ChipGroupProps<T extends string = string> extends ViewProps {
+    className?: string;
+    color?: ChipColor;
+    defaultValue?: T;
+    formatCount?: (count: number) => string;
+    isDisabled?: boolean;
+    isLoading?: boolean;
+    items: ReadonlyArray<ChipGroupItem<T>>;
+    label: string;
+    onValueChange?: (value: T) => void;
+    overflow?: ChipGroupOverflow;
+    size?: ChipSize;
+    value?: T;
+}
+
 // @public (undocumented)
 export interface ChipProps extends ViewProps {
     // (undocumented)
     children?: React__default.ReactNode;
     className?: string;
+    // @deprecated
     color?: ChipColor;
     isDisabled?: boolean;
     isSelected?: boolean;
@@ -1051,6 +1083,7 @@ export interface ChipProps extends ViewProps {
     onPress?: () => void;
     rightElement?: React__default.ReactNode;
     size?: ChipSize;
+    tone?: PillTone;
     variant?: ChipVariant;
 }
 
@@ -1560,6 +1593,8 @@ export const darkThemeCSSVars: {
     readonly '--color-scrim-press-strong': "rgba(0, 0, 0, 0.20)";
     readonly '--color-scrim-subtle': "rgba(0, 0, 0, 0.30)";
     readonly '--color-scrim-default': "rgba(0, 0, 0, 0.50)";
+    readonly '--color-scrim-strong': "rgba(0, 0, 0, 0.78)";
+    readonly '--color-on-scrim': "#FFFFFF";
     readonly '--color-control-face-disabled': "rgba(255, 255, 255, 0.12)";
     readonly '--color-on-control-idle': "#D1D1D1";
     readonly '--color-on-control-active': "#FFFFFF";
@@ -2330,6 +2365,8 @@ export function getSemanticColors(mode: ThemeMode): {
     readonly 'scrim-press-strong': "rgba(0, 0, 0, 0.20)";
     readonly 'scrim-subtle': "rgba(0, 0, 0, 0.30)";
     readonly 'scrim-default': "rgba(0, 0, 0, 0.50)";
+    readonly 'scrim-strong': "rgba(0, 0, 0, 0.78)";
+    readonly 'on-scrim': "#FFFFFF";
     readonly 'control-face-disabled': "rgba(0, 0, 0, 0.06)";
     readonly 'on-control-idle': "#5A5958";
     readonly 'on-control-active': "#1C1916";
@@ -2487,6 +2524,8 @@ export function getSemanticColors(mode: ThemeMode): {
     readonly 'scrim-press-strong': "rgba(0, 0, 0, 0.20)";
     readonly 'scrim-subtle': "rgba(0, 0, 0, 0.30)";
     readonly 'scrim-default': "rgba(0, 0, 0, 0.50)";
+    readonly 'scrim-strong': "rgba(0, 0, 0, 0.78)";
+    readonly 'on-scrim': "#FFFFFF";
     readonly 'control-face-disabled': "rgba(255, 255, 255, 0.12)";
     readonly 'on-control-idle': "#D1D1D1";
     readonly 'on-control-active': "#FFFFFF";
@@ -2673,6 +2712,8 @@ export function getThemeCSSVars(mode: ThemeMode): {
     readonly '--color-scrim-press-strong': "rgba(0, 0, 0, 0.20)";
     readonly '--color-scrim-subtle': "rgba(0, 0, 0, 0.30)";
     readonly '--color-scrim-default': "rgba(0, 0, 0, 0.50)";
+    readonly '--color-scrim-strong': "rgba(0, 0, 0, 0.78)";
+    readonly '--color-on-scrim': "#FFFFFF";
     readonly '--color-control-face-disabled': "rgba(0, 0, 0, 0.06)";
     readonly '--color-on-control-idle': "#5A5958";
     readonly '--color-on-control-active': "#1C1916";
@@ -2849,6 +2890,8 @@ export function getThemeCSSVars(mode: ThemeMode): {
     readonly '--color-scrim-press-strong': "rgba(0, 0, 0, 0.20)";
     readonly '--color-scrim-subtle': "rgba(0, 0, 0, 0.30)";
     readonly '--color-scrim-default': "rgba(0, 0, 0, 0.50)";
+    readonly '--color-scrim-strong': "rgba(0, 0, 0, 0.78)";
+    readonly '--color-on-scrim': "#FFFFFF";
     readonly '--color-control-face-disabled': "rgba(255, 255, 255, 0.12)";
     readonly '--color-on-control-idle': "#D1D1D1";
     readonly '--color-on-control-active': "#FFFFFF";
@@ -3424,6 +3467,9 @@ export function isHistoryOnly(agent: Pick<AgentSummary, 'stateSource'>): boolean
 export function isLiveAgent(state: AgentSummaryState): boolean;
 
 // @public
+export type JsonSchema = Readonly<Record<string, unknown>>;
+
+// @public
 export function KanbanIcon(input: IconProps): react_jsx_runtime.JSX.Element;
 
 // @public
@@ -3643,6 +3689,8 @@ export const lightThemeCSSVars: {
     readonly '--color-scrim-press-strong': "rgba(0, 0, 0, 0.20)";
     readonly '--color-scrim-subtle': "rgba(0, 0, 0, 0.30)";
     readonly '--color-scrim-default': "rgba(0, 0, 0, 0.50)";
+    readonly '--color-scrim-strong': "rgba(0, 0, 0, 0.78)";
+    readonly '--color-on-scrim': "#FFFFFF";
     readonly '--color-control-face-disabled': "rgba(0, 0, 0, 0.06)";
     readonly '--color-on-control-idle': "#5A5958";
     readonly '--color-on-control-active': "#1C1916";
@@ -3808,6 +3856,36 @@ export interface MarkdownProseProps {
     size?: ProseSize;
     // (undocumented)
     testID?: string;
+}
+
+// @public
+export function MediaThumb(input: MediaThumbProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export function MediaThumbBadge(input: MediaThumbBadgeProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface MediaThumbBadgeProps {
+    accessibilityLabel: string;
+    children?: string;
+    className?: string;
+    icon?: ComponentType<IconProps>;
+}
+
+// @public
+export type MediaThumbFit = 'cover' | 'contain-blur';
+
+// @public
+export interface MediaThumbProps extends Omit<ViewProps, 'children'> {
+    accessibilityLabel?: string;
+    aspect?: number;
+    bottomEnd?: ReactNode;
+    bottomStart?: ReactNode;
+    className?: string;
+    fit?: MediaThumbFit;
+    isLoading?: boolean;
+    source?: ImageSourcePropType;
+    topStart?: ReactNode;
 }
 
 // @public
@@ -4431,6 +4509,9 @@ export type PillVariant = 'solid' | 'subtle' | 'outline' | 'clear';
 
 // @public
 export const PLANE_ORDER: readonly ["frame", "background", "base", "elevated", "raised", "overlay"];
+
+// @public
+export function PlayIcon(props: IconProps): react_jsx_runtime.JSX.Element;
 
 // @public
 export function pluralize(count: number, one: string, many: string): string;
@@ -5142,6 +5223,29 @@ export type ScatterReferenceLine = ({
 };
 
 // @public
+export function SchemaForm(input: SchemaFormProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export type SchemaFormErrors = Readonly<Record<string, string | readonly string[]>>;
+
+// @public
+export interface SchemaFormProps {
+    className?: string;
+    emptyState?: React__default.ReactNode;
+    errors?: SchemaFormErrors;
+    isDisabled?: boolean;
+    lockedIdHint?: string;
+    lockedIds?: readonly string[];
+    onChange: (value: SchemaFormValue) => void;
+    schema: JsonSchema;
+    testID?: string;
+    value: SchemaFormValue;
+}
+
+// @public
+export type SchemaFormValue = Record<string, unknown>;
+
+// @public
 export const SCORE_BAND_META: Record<CodeScoreBand, {
     color: ColorToken;
     indicator: IndicatorColor;
@@ -5372,6 +5476,8 @@ export const semanticColorsDark: {
     readonly 'scrim-press-strong': "rgba(0, 0, 0, 0.20)";
     readonly 'scrim-subtle': "rgba(0, 0, 0, 0.30)";
     readonly 'scrim-default': "rgba(0, 0, 0, 0.50)";
+    readonly 'scrim-strong': "rgba(0, 0, 0, 0.78)";
+    readonly 'on-scrim': "#FFFFFF";
     readonly 'control-face-disabled': "rgba(255, 255, 255, 0.12)";
     readonly 'on-control-idle': "#D1D1D1";
     readonly 'on-control-active': "#FFFFFF";
@@ -5532,6 +5638,8 @@ export const semanticColorsLight: {
     readonly 'scrim-press-strong': "rgba(0, 0, 0, 0.20)";
     readonly 'scrim-subtle': "rgba(0, 0, 0, 0.30)";
     readonly 'scrim-default': "rgba(0, 0, 0, 0.50)";
+    readonly 'scrim-strong': "rgba(0, 0, 0, 0.78)";
+    readonly 'on-scrim': "#FFFFFF";
     readonly 'control-face-disabled': "rgba(0, 0, 0, 0.06)";
     readonly 'on-control-idle': "#5A5958";
     readonly 'on-control-active': "#1C1916";
@@ -5779,6 +5887,32 @@ export function severityRank(severity?: TaskSeverity): number;
 
 // @public
 export type ShadowIntensity = 'subtle' | 'medium' | 'strong';
+
+// @public
+export function Shelf(input: ShelfProps): react_jsx_runtime.JSX.Element | null;
+
+// @public
+export type ShelfBleed = 'none' | 'sm' | 'md';
+
+// @public
+export type ShelfBreakpoint = keyof typeof primitiveBreakpoints;
+
+// @public
+export type ShelfItemWidth = number | Partial<Record<ShelfBreakpoint, number>>;
+
+// @public
+export type ShelfNudge = 'auto' | 'always' | 'never';
+
+// @public
+export interface ShelfProps extends ViewProps {
+    bleed?: ShelfBleed;
+    children?: React__default.ReactNode;
+    className?: string;
+    itemWidth: ShelfItemWidth;
+    label: string;
+    nudge?: ShelfNudge;
+    nudgeFrom?: ShelfBreakpoint;
+}
 
 // @public
 export function Sidebar(input: SidebarProps): react_jsx_runtime.JSX.Element;
@@ -7756,6 +7890,9 @@ export interface VerdictHeroWordProps {
 
 // @public
 export function VoltrasMark(input: IconProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export function VolumeOffIcon(props: IconProps): react_jsx_runtime.JSX.Element;
 
 // @public (undocumented)
 export function VStack(props: StackProps): react_jsx_runtime.JSX.Element;

@@ -335,7 +335,10 @@ module.exports = {
           subtle: 'var(--color-scrim-subtle)',
           press: 'var(--color-scrim-press)',
           'press-strong': 'var(--color-scrim-press-strong)',
+          strong: 'var(--color-scrim-strong)',
         },
+        // Ink on scrim-strong: a media badge's label and glyph (TD-987).
+        'on-scrim': 'var(--color-on-scrim)',
         // Toolbar control face (TD-264).
         'control-face': {
           disabled: 'var(--color-control-face-disabled)',

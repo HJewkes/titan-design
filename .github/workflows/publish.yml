@@ -41,7 +41,11 @@ jobs:
       contents: read
       id-token: write
     steps:
+      # npm publish runs prepublishOnly, whose tests read origin/main's merge base and fail in CI
+      # without it; a tag push's default shallow checkout has no origin/main.
       - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v6
         with:

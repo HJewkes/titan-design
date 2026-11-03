@@ -3,9 +3,9 @@ import { SvgIcon, type IconProps } from './SvgIcon'
 /**
  * Draws stroked path data inside an `SvgIcon`. The status glyphs below use it so that three new
  * icons add one web-only `<path>` site, not thirteen. The TD-689 baseline only shrinks, so they
- * live here rather than in `icons.tsx`.
+ * live here rather than in `icons.tsx`; `mediaIcons.tsx` reuses it for the same reason.
  */
-function StrokePaths({ paths }: { paths: readonly string[] }) {
+export function StrokePaths({ paths }: { paths: readonly string[] }) {
   return paths.map((d) => (
     // eslint-disable-next-line titan/no-html-element -- SvgIcon is a web <svg>; its children follow until icons move to react-native-svg
     <path key={d} d={d} />

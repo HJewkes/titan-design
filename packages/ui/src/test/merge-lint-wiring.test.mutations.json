@@ -1,0 +1,40 @@
+{
+  "v": 1,
+  "mutations": [
+    {
+      "name": "the check aggregator stops waiting on merge-lint",
+      "file": ".github/workflows/ci.yml",
+      "find": "    needs: [build, visual, contrast, merge-lint]",
+      "replace": "    needs: [build, visual, contrast]",
+      "kills": ["the required check job waits on merge-lint"]
+    },
+    {
+      "name": "the lint bin floats on a caret range instead of the exact pin",
+      "file": ".github/workflows/ci.yml",
+      "find": "npx --yes -p @titan-design/tool-guard@0.5.3 titan-merge-lint",
+      "replace": "npx --yes -p @titan-design/tool-guard@^0.5.3 titan-merge-lint",
+      "kills": ["CI runs the exact-pinned lint bin in a merge-lint job that cannot be skipped past"]
+    },
+    {
+      "name": "the merge-lint job is allowed to fail",
+      "file": ".github/workflows/ci.yml",
+      "find": "  merge-lint:\n    runs-on: ubuntu-latest\n",
+      "replace": "  merge-lint:\n    runs-on: ubuntu-latest\n    continue-on-error: true\n",
+      "kills": ["CI runs the exact-pinned lint bin in a merge-lint job that cannot be skipped past"]
+    },
+    {
+      "name": "the rule file moves to error level",
+      "file": ".github/merge-lint.json",
+      "find": "\"level\": \"warn\"",
+      "replace": "\"level\": \"error\"",
+      "kills": ["the rule file is a warn-level merge-lint/1 file with an empty allowlist"]
+    },
+    {
+      "name": "the allowlist gains an entry",
+      "file": ".github/merge-lint.json",
+      "find": "\"allow\": []",
+      "replace": "\"allow\": [{ \"path\": \"packages/ui/scripts/**\", \"kind\": \"detector\", \"reason\": \"x\" }]",
+      "kills": ["the rule file is a warn-level merge-lint/1 file with an empty allowlist"]
+    }
+  ]
+}
