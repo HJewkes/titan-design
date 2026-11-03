@@ -154,7 +154,7 @@ export function Autocomplete<T extends string = string>({
             onBlur={state.handleBlur}
             placeholder={placeholder}
             editable={!isDisabled}
-            className={cn('flex-1 px-3 py-2 text-text-primary', 'placeholder:text-text-tertiary')}
+            className={cn('flex-1 px-3 py-2 text-text-primary', 'placeholder:text-text-secondary')}
             accessibilityLabel={label}
             {...inputProps}
           />

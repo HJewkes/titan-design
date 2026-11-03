@@ -659,6 +659,1350 @@ exports[`Select characterisation > on a dark surface > renders the Disabled stor
 </div>
 `;
 
+exports[`Select characterisation > on a dark surface > renders the FieldFamily story closed 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="width: 720px;"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          class="css-view-175oi2r"
+          style="width: 72px;"
+        />
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+        >
+          Input
+        </div>
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+        >
+          TextArea
+        </div>
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+        >
+          Select
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+          style="width: 72px;"
+        >
+          enabled
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-view-175oi2r"
+              style="background-color: rgb(28, 25, 22); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+            >
+              <input
+                aria-label="Input enabled"
+                autocapitalize="sentences"
+                autocomplete="on"
+                autocorrect="on"
+                class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+                dir="auto"
+                placeholder="Enter a name..."
+                rows="1"
+                spellcheck="true"
+                style="--placeholderTextColor: var(--color-text-secondary);"
+                value=""
+                virtualkeyboardpolicy="auto"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-view-175oi2r"
+              style="background-color: rgb(28, 25, 22); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+            >
+              <textarea
+                aria-label="TextArea enabled"
+                autocapitalize="sentences"
+                autocomplete="on"
+                autocorrect="on"
+                class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+                dir="auto"
+                placeholder="Add a note..."
+                rows="2"
+                spellcheck="true"
+                style="--placeholderTextColor: var(--color-text-secondary);"
+                virtualkeyboardpolicy="auto"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              aria-expanded="false"
+              aria-label="Select enabled"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              role="combobox"
+              style="background-color: rgb(28, 25, 22); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+              tabindex="0"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Select a fruit...
+              </div>
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  ▼
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+          style="width: 72px;"
+        >
+          focus
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-view-175oi2r"
+              style="background-color: rgb(28, 25, 22); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+            >
+              <input
+                aria-label="Input focus"
+                autocapitalize="sentences"
+                autocomplete="on"
+                autocorrect="on"
+                class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+                dir="auto"
+                placeholder="Enter a name..."
+                rows="1"
+                spellcheck="true"
+                style="--placeholderTextColor: var(--color-text-secondary);"
+                value=""
+                virtualkeyboardpolicy="auto"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-view-175oi2r"
+              style="background-color: rgb(28, 25, 22); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+            >
+              <textarea
+                aria-label="TextArea focus"
+                autocapitalize="sentences"
+                autocomplete="on"
+                autocorrect="on"
+                class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+                dir="auto"
+                placeholder="Add a note..."
+                rows="2"
+                spellcheck="true"
+                style="--placeholderTextColor: var(--color-text-secondary);"
+                virtualkeyboardpolicy="auto"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              aria-expanded="false"
+              aria-label="Select focus"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              role="combobox"
+              style=""
+              tabindex="0"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Select a fruit...
+              </div>
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  ▼
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+          style="width: 72px;"
+        >
+          filled
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-view-175oi2r"
+              style="background-color: rgb(28, 25, 22); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+            >
+              <input
+                aria-label="Input filled"
+                autocapitalize="sentences"
+                autocomplete="on"
+                autocorrect="on"
+                class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+                dir="auto"
+                placeholder="Enter a name..."
+                rows="1"
+                spellcheck="true"
+                style="--placeholderTextColor: var(--color-text-secondary);"
+                value="Banana"
+                virtualkeyboardpolicy="auto"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-view-175oi2r"
+              style="background-color: rgb(28, 25, 22); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+            >
+              <textarea
+                aria-label="TextArea filled"
+                autocapitalize="sentences"
+                autocomplete="on"
+                autocorrect="on"
+                class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+                dir="auto"
+                placeholder="Add a note..."
+                rows="2"
+                spellcheck="true"
+                style="--placeholderTextColor: var(--color-text-secondary);"
+                virtualkeyboardpolicy="auto"
+              >
+                Banana
+              </textarea>
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              aria-expanded="false"
+              aria-label="Select filled"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              role="combobox"
+              style="background-color: rgb(28, 25, 22); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+              tabindex="0"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Banana
+              </div>
+              <div
+                class="css-view-175oi2r"
+              >
+                <button
+                  aria-label="Clear Select filled"
+                  class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                  role="button"
+                  tabindex="0"
+                  type="button"
+                >
+                  <div
+                    class="css-text-146c3p1"
+                    dir="auto"
+                  >
+                    ×
+                  </div>
+                </button>
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  ▼
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+          style="width: 72px;"
+        >
+          error
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-view-175oi2r"
+              style="background-color: rgb(28, 25, 22); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+            >
+              <input
+                aria-label="Input error"
+                autocapitalize="sentences"
+                autocomplete="on"
+                autocorrect="on"
+                class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+                dir="auto"
+                placeholder="Enter a name..."
+                rows="1"
+                spellcheck="true"
+                style="--placeholderTextColor: var(--color-text-secondary);"
+                value=""
+                virtualkeyboardpolicy="auto"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-view-175oi2r"
+              style="background-color: rgb(28, 25, 22); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+            >
+              <textarea
+                aria-label="TextArea error"
+                autocapitalize="sentences"
+                autocomplete="on"
+                autocorrect="on"
+                class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+                dir="auto"
+                placeholder="Add a note..."
+                rows="2"
+                spellcheck="true"
+                style="--placeholderTextColor: var(--color-text-secondary);"
+                virtualkeyboardpolicy="auto"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              aria-expanded="false"
+              aria-label="Select error"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              role="combobox"
+              style="background-color: rgb(28, 25, 22); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+              tabindex="0"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Select a fruit...
+              </div>
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  ▼
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+          style="width: 72px;"
+        >
+          disabled
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-view-175oi2r"
+              style="background-color: rgb(28, 25, 22); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+            >
+              <input
+                aria-disabled="true"
+                aria-label="Input disabled"
+                autocapitalize="sentences"
+                autocomplete="on"
+                autocorrect="on"
+                class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+                dir="auto"
+                disabled=""
+                placeholder="Enter a name..."
+                readonly=""
+                rows="1"
+                spellcheck="true"
+                style="--placeholderTextColor: var(--color-text-secondary);"
+                value=""
+                virtualkeyboardpolicy="auto"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-view-175oi2r"
+              style="background-color: rgb(28, 25, 22); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+            >
+              <textarea
+                aria-disabled="true"
+                aria-label="TextArea disabled"
+                autocapitalize="sentences"
+                autocomplete="on"
+                autocorrect="on"
+                class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+                dir="auto"
+                disabled=""
+                placeholder="Add a note..."
+                readonly=""
+                rows="2"
+                spellcheck="true"
+                style="--placeholderTextColor: var(--color-text-secondary);"
+                virtualkeyboardpolicy="auto"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              aria-disabled="true"
+              aria-expanded="false"
+              aria-label="Select disabled"
+              class="css-view-175oi2r r-pointerEvents-12vffkv"
+              role="combobox"
+              style="background-color: rgb(28, 25, 22); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+              tabindex="-1"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Select a fruit...
+              </div>
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  ▼
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Select characterisation > on a dark surface > renders the FieldFamily story open 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="width: 720px;"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          class="css-view-175oi2r"
+          style="width: 72px;"
+        />
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+        >
+          Input
+        </div>
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+        >
+          TextArea
+        </div>
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+        >
+          Select
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+          style="width: 72px;"
+        >
+          enabled
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-view-175oi2r"
+              style="background-color: rgb(28, 25, 22); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+            >
+              <input
+                aria-label="Input enabled"
+                autocapitalize="sentences"
+                autocomplete="on"
+                autocorrect="on"
+                class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+                dir="auto"
+                placeholder="Enter a name..."
+                rows="1"
+                spellcheck="true"
+                style="--placeholderTextColor: var(--color-text-secondary);"
+                value=""
+                virtualkeyboardpolicy="auto"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-view-175oi2r"
+              style="background-color: rgb(28, 25, 22); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+            >
+              <textarea
+                aria-label="TextArea enabled"
+                autocapitalize="sentences"
+                autocomplete="on"
+                autocorrect="on"
+                class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+                dir="auto"
+                placeholder="Add a note..."
+                rows="2"
+                spellcheck="true"
+                style="--placeholderTextColor: var(--color-text-secondary);"
+                virtualkeyboardpolicy="auto"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              aria-expanded="true"
+              aria-label="Select enabled"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              role="combobox"
+              style=""
+              tabindex="0"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Select a fruit...
+              </div>
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  ▼
+                </div>
+              </div>
+            </div>
+            <div
+              aria-hidden="true"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              style="position: absolute;"
+              tabindex="-1"
+            />
+            <div
+              class="css-view-175oi2r"
+              style="background-color: rgb(55, 54, 53); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 10px 24px rgba(0,0,0,0.30), 0 24px 48px rgba(0,0,0,0.20);"
+            >
+              <div
+                class="css-view-175oi2r r-WebkitOverflowScrolling-150rngu r-flexDirection-eqz5dr r-flexGrow-16y2uox r-flexShrink-1wbh5a2 r-overflowX-11yh6sk r-overflowY-1rnoaur r-transform-agouwx"
+              >
+                <div
+                  class="css-view-175oi2r"
+                >
+                  <div
+                    class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                    role="option"
+                    tabindex="0"
+                  >
+                    <div
+                      class="css-text-146c3p1"
+                      dir="auto"
+                    >
+                      Apple
+                    </div>
+                  </div>
+                  <div
+                    class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                    role="option"
+                    tabindex="0"
+                  >
+                    <div
+                      class="css-text-146c3p1"
+                      dir="auto"
+                    >
+                      Banana
+                    </div>
+                  </div>
+                  <div
+                    class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                    role="option"
+                    tabindex="0"
+                  >
+                    <div
+                      class="css-text-146c3p1"
+                      dir="auto"
+                    >
+                      Cherry
+                    </div>
+                  </div>
+                  <div
+                    class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                    role="option"
+                    tabindex="0"
+                  >
+                    <div
+                      class="css-text-146c3p1"
+                      dir="auto"
+                    >
+                      Dragon Fruit
+                    </div>
+                  </div>
+                  <div
+                    class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                    role="option"
+                    tabindex="0"
+                  >
+                    <div
+                      class="css-text-146c3p1"
+                      dir="auto"
+                    >
+                      Elderberry
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+          style="width: 72px;"
+        >
+          focus
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-view-175oi2r"
+              style="background-color: rgb(28, 25, 22); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+            >
+              <input
+                aria-label="Input focus"
+                autocapitalize="sentences"
+                autocomplete="on"
+                autocorrect="on"
+                class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+                dir="auto"
+                placeholder="Enter a name..."
+                rows="1"
+                spellcheck="true"
+                style="--placeholderTextColor: var(--color-text-secondary);"
+                value=""
+                virtualkeyboardpolicy="auto"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-view-175oi2r"
+              style="background-color: rgb(28, 25, 22); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+            >
+              <textarea
+                aria-label="TextArea focus"
+                autocapitalize="sentences"
+                autocomplete="on"
+                autocorrect="on"
+                class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+                dir="auto"
+                placeholder="Add a note..."
+                rows="2"
+                spellcheck="true"
+                style="--placeholderTextColor: var(--color-text-secondary);"
+                virtualkeyboardpolicy="auto"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              aria-expanded="false"
+              aria-label="Select focus"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              role="combobox"
+              style=""
+              tabindex="0"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Select a fruit...
+              </div>
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  ▼
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+          style="width: 72px;"
+        >
+          filled
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-view-175oi2r"
+              style="background-color: rgb(28, 25, 22); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+            >
+              <input
+                aria-label="Input filled"
+                autocapitalize="sentences"
+                autocomplete="on"
+                autocorrect="on"
+                class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+                dir="auto"
+                placeholder="Enter a name..."
+                rows="1"
+                spellcheck="true"
+                style="--placeholderTextColor: var(--color-text-secondary);"
+                value="Banana"
+                virtualkeyboardpolicy="auto"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-view-175oi2r"
+              style="background-color: rgb(28, 25, 22); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+            >
+              <textarea
+                aria-label="TextArea filled"
+                autocapitalize="sentences"
+                autocomplete="on"
+                autocorrect="on"
+                class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+                dir="auto"
+                placeholder="Add a note..."
+                rows="2"
+                spellcheck="true"
+                style="--placeholderTextColor: var(--color-text-secondary);"
+                virtualkeyboardpolicy="auto"
+              >
+                Banana
+              </textarea>
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              aria-expanded="false"
+              aria-label="Select filled"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              role="combobox"
+              style="background-color: rgb(28, 25, 22); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+              tabindex="0"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Banana
+              </div>
+              <div
+                class="css-view-175oi2r"
+              >
+                <button
+                  aria-label="Clear Select filled"
+                  class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                  role="button"
+                  tabindex="0"
+                  type="button"
+                >
+                  <div
+                    class="css-text-146c3p1"
+                    dir="auto"
+                  >
+                    ×
+                  </div>
+                </button>
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  ▼
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+          style="width: 72px;"
+        >
+          error
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-view-175oi2r"
+              style="background-color: rgb(28, 25, 22); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+            >
+              <input
+                aria-label="Input error"
+                autocapitalize="sentences"
+                autocomplete="on"
+                autocorrect="on"
+                class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+                dir="auto"
+                placeholder="Enter a name..."
+                rows="1"
+                spellcheck="true"
+                style="--placeholderTextColor: var(--color-text-secondary);"
+                value=""
+                virtualkeyboardpolicy="auto"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-view-175oi2r"
+              style="background-color: rgb(28, 25, 22); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+            >
+              <textarea
+                aria-label="TextArea error"
+                autocapitalize="sentences"
+                autocomplete="on"
+                autocorrect="on"
+                class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+                dir="auto"
+                placeholder="Add a note..."
+                rows="2"
+                spellcheck="true"
+                style="--placeholderTextColor: var(--color-text-secondary);"
+                virtualkeyboardpolicy="auto"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              aria-expanded="false"
+              aria-label="Select error"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              role="combobox"
+              style="background-color: rgb(28, 25, 22); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+              tabindex="0"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Select a fruit...
+              </div>
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  ▼
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+          style="width: 72px;"
+        >
+          disabled
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-view-175oi2r"
+              style="background-color: rgb(28, 25, 22); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+            >
+              <input
+                aria-disabled="true"
+                aria-label="Input disabled"
+                autocapitalize="sentences"
+                autocomplete="on"
+                autocorrect="on"
+                class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+                dir="auto"
+                disabled=""
+                placeholder="Enter a name..."
+                readonly=""
+                rows="1"
+                spellcheck="true"
+                style="--placeholderTextColor: var(--color-text-secondary);"
+                value=""
+                virtualkeyboardpolicy="auto"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-view-175oi2r"
+              style="background-color: rgb(28, 25, 22); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+            >
+              <textarea
+                aria-disabled="true"
+                aria-label="TextArea disabled"
+                autocapitalize="sentences"
+                autocomplete="on"
+                autocorrect="on"
+                class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+                dir="auto"
+                disabled=""
+                placeholder="Add a note..."
+                readonly=""
+                rows="2"
+                spellcheck="true"
+                style="--placeholderTextColor: var(--color-text-secondary);"
+                virtualkeyboardpolicy="auto"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              aria-disabled="true"
+              aria-expanded="false"
+              aria-label="Select disabled"
+              class="css-view-175oi2r r-pointerEvents-12vffkv"
+              role="combobox"
+              style="background-color: rgb(28, 25, 22); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+              tabindex="-1"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Select a fruit...
+              </div>
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  ▼
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Select characterisation > on a dark surface > renders the Filled story closed 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="width: 300px;"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          aria-expanded="false"
+          aria-label="Fruit"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          role="combobox"
+          style="background-color: rgb(28, 25, 22); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+          tabindex="0"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            Select a fruit...
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              ▼
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Select characterisation > on a dark surface > renders the Filled story open 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="width: 300px;"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          aria-expanded="true"
+          aria-label="Fruit"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          role="combobox"
+          style=""
+          tabindex="0"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            Select a fruit...
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              ▼
+            </div>
+          </div>
+        </div>
+        <div
+          aria-hidden="true"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          style="position: absolute;"
+          tabindex="-1"
+        />
+        <div
+          class="css-view-175oi2r"
+          style="background-color: rgb(55, 54, 53); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 10px 24px rgba(0,0,0,0.30), 0 24px 48px rgba(0,0,0,0.20);"
+        >
+          <div
+            class="css-view-175oi2r r-WebkitOverflowScrolling-150rngu r-flexDirection-eqz5dr r-flexGrow-16y2uox r-flexShrink-1wbh5a2 r-overflowX-11yh6sk r-overflowY-1rnoaur r-transform-agouwx"
+          >
+            <div
+              class="css-view-175oi2r"
+            >
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Apple
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Banana
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Cherry
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Dragon Fruit
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Elderberry
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
 exports[`Select characterisation > on a dark surface > renders the InFormLayout story closed 1`] = `
 <div>
   <div
@@ -2874,7 +4218,7 @@ exports[`Select characterisation > on a dark surface > renders the filled varian
         aria-expanded="true"
         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
         role="combobox"
-        style="background-color: rgb(28, 25, 22); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+        style=""
         tabindex="0"
       >
         <div
@@ -2968,7 +4312,7 @@ exports[`Select characterisation > on a dark surface > renders the filled varian
         aria-expanded="true"
         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
         role="combobox"
-        style="background-color: rgb(28, 25, 22); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+        style=""
         tabindex="0"
       >
         <div
@@ -3712,6 +5056,1350 @@ exports[`Select characterisation > on a light surface > renders the Disabled sto
                 dir="auto"
               >
                 ▼
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Select characterisation > on a light surface > renders the FieldFamily story closed 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(237, 234, 231);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="width: 720px;"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          class="css-view-175oi2r"
+          style="width: 72px;"
+        />
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+        >
+          Input
+        </div>
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+        >
+          TextArea
+        </div>
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+        >
+          Select
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+          style="width: 72px;"
+        >
+          enabled
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-view-175oi2r"
+              style="background-color: rgb(237, 234, 231); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+            >
+              <input
+                aria-label="Input enabled"
+                autocapitalize="sentences"
+                autocomplete="on"
+                autocorrect="on"
+                class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+                dir="auto"
+                placeholder="Enter a name..."
+                rows="1"
+                spellcheck="true"
+                style="--placeholderTextColor: var(--color-text-secondary);"
+                value=""
+                virtualkeyboardpolicy="auto"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-view-175oi2r"
+              style="background-color: rgb(237, 234, 231); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+            >
+              <textarea
+                aria-label="TextArea enabled"
+                autocapitalize="sentences"
+                autocomplete="on"
+                autocorrect="on"
+                class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+                dir="auto"
+                placeholder="Add a note..."
+                rows="2"
+                spellcheck="true"
+                style="--placeholderTextColor: var(--color-text-secondary);"
+                virtualkeyboardpolicy="auto"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              aria-expanded="false"
+              aria-label="Select enabled"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              role="combobox"
+              style="background-color: rgb(237, 234, 231); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+              tabindex="0"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Select a fruit...
+              </div>
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  ▼
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+          style="width: 72px;"
+        >
+          focus
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-view-175oi2r"
+              style="background-color: rgb(237, 234, 231); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+            >
+              <input
+                aria-label="Input focus"
+                autocapitalize="sentences"
+                autocomplete="on"
+                autocorrect="on"
+                class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+                dir="auto"
+                placeholder="Enter a name..."
+                rows="1"
+                spellcheck="true"
+                style="--placeholderTextColor: var(--color-text-secondary);"
+                value=""
+                virtualkeyboardpolicy="auto"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-view-175oi2r"
+              style="background-color: rgb(237, 234, 231); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+            >
+              <textarea
+                aria-label="TextArea focus"
+                autocapitalize="sentences"
+                autocomplete="on"
+                autocorrect="on"
+                class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+                dir="auto"
+                placeholder="Add a note..."
+                rows="2"
+                spellcheck="true"
+                style="--placeholderTextColor: var(--color-text-secondary);"
+                virtualkeyboardpolicy="auto"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              aria-expanded="false"
+              aria-label="Select focus"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              role="combobox"
+              style=""
+              tabindex="0"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Select a fruit...
+              </div>
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  ▼
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+          style="width: 72px;"
+        >
+          filled
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-view-175oi2r"
+              style="background-color: rgb(237, 234, 231); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+            >
+              <input
+                aria-label="Input filled"
+                autocapitalize="sentences"
+                autocomplete="on"
+                autocorrect="on"
+                class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+                dir="auto"
+                placeholder="Enter a name..."
+                rows="1"
+                spellcheck="true"
+                style="--placeholderTextColor: var(--color-text-secondary);"
+                value="Banana"
+                virtualkeyboardpolicy="auto"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-view-175oi2r"
+              style="background-color: rgb(237, 234, 231); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+            >
+              <textarea
+                aria-label="TextArea filled"
+                autocapitalize="sentences"
+                autocomplete="on"
+                autocorrect="on"
+                class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+                dir="auto"
+                placeholder="Add a note..."
+                rows="2"
+                spellcheck="true"
+                style="--placeholderTextColor: var(--color-text-secondary);"
+                virtualkeyboardpolicy="auto"
+              >
+                Banana
+              </textarea>
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              aria-expanded="false"
+              aria-label="Select filled"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              role="combobox"
+              style="background-color: rgb(237, 234, 231); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+              tabindex="0"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Banana
+              </div>
+              <div
+                class="css-view-175oi2r"
+              >
+                <button
+                  aria-label="Clear Select filled"
+                  class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                  role="button"
+                  tabindex="0"
+                  type="button"
+                >
+                  <div
+                    class="css-text-146c3p1"
+                    dir="auto"
+                  >
+                    ×
+                  </div>
+                </button>
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  ▼
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+          style="width: 72px;"
+        >
+          error
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-view-175oi2r"
+              style="background-color: rgb(237, 234, 231); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+            >
+              <input
+                aria-label="Input error"
+                autocapitalize="sentences"
+                autocomplete="on"
+                autocorrect="on"
+                class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+                dir="auto"
+                placeholder="Enter a name..."
+                rows="1"
+                spellcheck="true"
+                style="--placeholderTextColor: var(--color-text-secondary);"
+                value=""
+                virtualkeyboardpolicy="auto"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-view-175oi2r"
+              style="background-color: rgb(237, 234, 231); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+            >
+              <textarea
+                aria-label="TextArea error"
+                autocapitalize="sentences"
+                autocomplete="on"
+                autocorrect="on"
+                class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+                dir="auto"
+                placeholder="Add a note..."
+                rows="2"
+                spellcheck="true"
+                style="--placeholderTextColor: var(--color-text-secondary);"
+                virtualkeyboardpolicy="auto"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              aria-expanded="false"
+              aria-label="Select error"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              role="combobox"
+              style="background-color: rgb(237, 234, 231); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+              tabindex="0"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Select a fruit...
+              </div>
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  ▼
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+          style="width: 72px;"
+        >
+          disabled
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-view-175oi2r"
+              style="background-color: rgb(237, 234, 231); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+            >
+              <input
+                aria-disabled="true"
+                aria-label="Input disabled"
+                autocapitalize="sentences"
+                autocomplete="on"
+                autocorrect="on"
+                class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+                dir="auto"
+                disabled=""
+                placeholder="Enter a name..."
+                readonly=""
+                rows="1"
+                spellcheck="true"
+                style="--placeholderTextColor: var(--color-text-secondary);"
+                value=""
+                virtualkeyboardpolicy="auto"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-view-175oi2r"
+              style="background-color: rgb(237, 234, 231); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+            >
+              <textarea
+                aria-disabled="true"
+                aria-label="TextArea disabled"
+                autocapitalize="sentences"
+                autocomplete="on"
+                autocorrect="on"
+                class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+                dir="auto"
+                disabled=""
+                placeholder="Add a note..."
+                readonly=""
+                rows="2"
+                spellcheck="true"
+                style="--placeholderTextColor: var(--color-text-secondary);"
+                virtualkeyboardpolicy="auto"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              aria-disabled="true"
+              aria-expanded="false"
+              aria-label="Select disabled"
+              class="css-view-175oi2r r-pointerEvents-12vffkv"
+              role="combobox"
+              style="background-color: rgb(237, 234, 231); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+              tabindex="-1"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Select a fruit...
+              </div>
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  ▼
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Select characterisation > on a light surface > renders the FieldFamily story open 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(237, 234, 231);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="width: 720px;"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          class="css-view-175oi2r"
+          style="width: 72px;"
+        />
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+        >
+          Input
+        </div>
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+        >
+          TextArea
+        </div>
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+        >
+          Select
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+          style="width: 72px;"
+        >
+          enabled
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-view-175oi2r"
+              style="background-color: rgb(237, 234, 231); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+            >
+              <input
+                aria-label="Input enabled"
+                autocapitalize="sentences"
+                autocomplete="on"
+                autocorrect="on"
+                class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+                dir="auto"
+                placeholder="Enter a name..."
+                rows="1"
+                spellcheck="true"
+                style="--placeholderTextColor: var(--color-text-secondary);"
+                value=""
+                virtualkeyboardpolicy="auto"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-view-175oi2r"
+              style="background-color: rgb(237, 234, 231); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+            >
+              <textarea
+                aria-label="TextArea enabled"
+                autocapitalize="sentences"
+                autocomplete="on"
+                autocorrect="on"
+                class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+                dir="auto"
+                placeholder="Add a note..."
+                rows="2"
+                spellcheck="true"
+                style="--placeholderTextColor: var(--color-text-secondary);"
+                virtualkeyboardpolicy="auto"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              aria-expanded="true"
+              aria-label="Select enabled"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              role="combobox"
+              style=""
+              tabindex="0"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Select a fruit...
+              </div>
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  ▼
+                </div>
+              </div>
+            </div>
+            <div
+              aria-hidden="true"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              style="position: absolute;"
+              tabindex="-1"
+            />
+            <div
+              class="css-view-175oi2r"
+              style="background-color: rgb(255, 255, 255); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 10px 24px rgba(0,0,0,0.12), 0 24px 48px rgba(0,0,0,0.08);"
+            >
+              <div
+                class="css-view-175oi2r r-WebkitOverflowScrolling-150rngu r-flexDirection-eqz5dr r-flexGrow-16y2uox r-flexShrink-1wbh5a2 r-overflowX-11yh6sk r-overflowY-1rnoaur r-transform-agouwx"
+              >
+                <div
+                  class="css-view-175oi2r"
+                >
+                  <div
+                    class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                    role="option"
+                    tabindex="0"
+                  >
+                    <div
+                      class="css-text-146c3p1"
+                      dir="auto"
+                    >
+                      Apple
+                    </div>
+                  </div>
+                  <div
+                    class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                    role="option"
+                    tabindex="0"
+                  >
+                    <div
+                      class="css-text-146c3p1"
+                      dir="auto"
+                    >
+                      Banana
+                    </div>
+                  </div>
+                  <div
+                    class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                    role="option"
+                    tabindex="0"
+                  >
+                    <div
+                      class="css-text-146c3p1"
+                      dir="auto"
+                    >
+                      Cherry
+                    </div>
+                  </div>
+                  <div
+                    class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                    role="option"
+                    tabindex="0"
+                  >
+                    <div
+                      class="css-text-146c3p1"
+                      dir="auto"
+                    >
+                      Dragon Fruit
+                    </div>
+                  </div>
+                  <div
+                    class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                    role="option"
+                    tabindex="0"
+                  >
+                    <div
+                      class="css-text-146c3p1"
+                      dir="auto"
+                    >
+                      Elderberry
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+          style="width: 72px;"
+        >
+          focus
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-view-175oi2r"
+              style="background-color: rgb(237, 234, 231); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+            >
+              <input
+                aria-label="Input focus"
+                autocapitalize="sentences"
+                autocomplete="on"
+                autocorrect="on"
+                class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+                dir="auto"
+                placeholder="Enter a name..."
+                rows="1"
+                spellcheck="true"
+                style="--placeholderTextColor: var(--color-text-secondary);"
+                value=""
+                virtualkeyboardpolicy="auto"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-view-175oi2r"
+              style="background-color: rgb(237, 234, 231); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+            >
+              <textarea
+                aria-label="TextArea focus"
+                autocapitalize="sentences"
+                autocomplete="on"
+                autocorrect="on"
+                class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+                dir="auto"
+                placeholder="Add a note..."
+                rows="2"
+                spellcheck="true"
+                style="--placeholderTextColor: var(--color-text-secondary);"
+                virtualkeyboardpolicy="auto"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              aria-expanded="false"
+              aria-label="Select focus"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              role="combobox"
+              style=""
+              tabindex="0"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Select a fruit...
+              </div>
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  ▼
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+          style="width: 72px;"
+        >
+          filled
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-view-175oi2r"
+              style="background-color: rgb(237, 234, 231); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+            >
+              <input
+                aria-label="Input filled"
+                autocapitalize="sentences"
+                autocomplete="on"
+                autocorrect="on"
+                class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+                dir="auto"
+                placeholder="Enter a name..."
+                rows="1"
+                spellcheck="true"
+                style="--placeholderTextColor: var(--color-text-secondary);"
+                value="Banana"
+                virtualkeyboardpolicy="auto"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-view-175oi2r"
+              style="background-color: rgb(237, 234, 231); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+            >
+              <textarea
+                aria-label="TextArea filled"
+                autocapitalize="sentences"
+                autocomplete="on"
+                autocorrect="on"
+                class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+                dir="auto"
+                placeholder="Add a note..."
+                rows="2"
+                spellcheck="true"
+                style="--placeholderTextColor: var(--color-text-secondary);"
+                virtualkeyboardpolicy="auto"
+              >
+                Banana
+              </textarea>
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              aria-expanded="false"
+              aria-label="Select filled"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              role="combobox"
+              style="background-color: rgb(237, 234, 231); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+              tabindex="0"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Banana
+              </div>
+              <div
+                class="css-view-175oi2r"
+              >
+                <button
+                  aria-label="Clear Select filled"
+                  class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                  role="button"
+                  tabindex="0"
+                  type="button"
+                >
+                  <div
+                    class="css-text-146c3p1"
+                    dir="auto"
+                  >
+                    ×
+                  </div>
+                </button>
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  ▼
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+          style="width: 72px;"
+        >
+          error
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-view-175oi2r"
+              style="background-color: rgb(237, 234, 231); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+            >
+              <input
+                aria-label="Input error"
+                autocapitalize="sentences"
+                autocomplete="on"
+                autocorrect="on"
+                class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+                dir="auto"
+                placeholder="Enter a name..."
+                rows="1"
+                spellcheck="true"
+                style="--placeholderTextColor: var(--color-text-secondary);"
+                value=""
+                virtualkeyboardpolicy="auto"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-view-175oi2r"
+              style="background-color: rgb(237, 234, 231); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+            >
+              <textarea
+                aria-label="TextArea error"
+                autocapitalize="sentences"
+                autocomplete="on"
+                autocorrect="on"
+                class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+                dir="auto"
+                placeholder="Add a note..."
+                rows="2"
+                spellcheck="true"
+                style="--placeholderTextColor: var(--color-text-secondary);"
+                virtualkeyboardpolicy="auto"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              aria-expanded="false"
+              aria-label="Select error"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              role="combobox"
+              style="background-color: rgb(237, 234, 231); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+              tabindex="0"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Select a fruit...
+              </div>
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  ▼
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+          style="width: 72px;"
+        >
+          disabled
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-view-175oi2r"
+              style="background-color: rgb(237, 234, 231); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+            >
+              <input
+                aria-disabled="true"
+                aria-label="Input disabled"
+                autocapitalize="sentences"
+                autocomplete="on"
+                autocorrect="on"
+                class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+                dir="auto"
+                disabled=""
+                placeholder="Enter a name..."
+                readonly=""
+                rows="1"
+                spellcheck="true"
+                style="--placeholderTextColor: var(--color-text-secondary);"
+                value=""
+                virtualkeyboardpolicy="auto"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-view-175oi2r"
+              style="background-color: rgb(237, 234, 231); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+            >
+              <textarea
+                aria-disabled="true"
+                aria-label="TextArea disabled"
+                autocapitalize="sentences"
+                autocomplete="on"
+                autocorrect="on"
+                class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+                dir="auto"
+                disabled=""
+                placeholder="Add a note..."
+                readonly=""
+                rows="2"
+                spellcheck="true"
+                style="--placeholderTextColor: var(--color-text-secondary);"
+                virtualkeyboardpolicy="auto"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              aria-disabled="true"
+              aria-expanded="false"
+              aria-label="Select disabled"
+              class="css-view-175oi2r r-pointerEvents-12vffkv"
+              role="combobox"
+              style="background-color: rgb(237, 234, 231); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+              tabindex="-1"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Select a fruit...
+              </div>
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  ▼
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Select characterisation > on a light surface > renders the Filled story closed 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(237, 234, 231);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="width: 300px;"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          aria-expanded="false"
+          aria-label="Fruit"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          role="combobox"
+          style="background-color: rgb(237, 234, 231); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+          tabindex="0"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            Select a fruit...
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              ▼
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Select characterisation > on a light surface > renders the Filled story open 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(237, 234, 231);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="width: 300px;"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          aria-expanded="true"
+          aria-label="Fruit"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          role="combobox"
+          style=""
+          tabindex="0"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            Select a fruit...
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              ▼
+            </div>
+          </div>
+        </div>
+        <div
+          aria-hidden="true"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          style="position: absolute;"
+          tabindex="-1"
+        />
+        <div
+          class="css-view-175oi2r"
+          style="background-color: rgb(255, 255, 255); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 10px 24px rgba(0,0,0,0.12), 0 24px 48px rgba(0,0,0,0.08);"
+        >
+          <div
+            class="css-view-175oi2r r-WebkitOverflowScrolling-150rngu r-flexDirection-eqz5dr r-flexGrow-16y2uox r-flexShrink-1wbh5a2 r-overflowX-11yh6sk r-overflowY-1rnoaur r-transform-agouwx"
+          >
+            <div
+              class="css-view-175oi2r"
+            >
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Apple
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Banana
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Cherry
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Dragon Fruit
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Elderberry
+                </div>
               </div>
             </div>
           </div>
@@ -5937,7 +8625,7 @@ exports[`Select characterisation > on a light surface > renders the filled varia
         aria-expanded="true"
         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
         role="combobox"
-        style="background-color: rgb(237, 234, 231); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+        style=""
         tabindex="0"
       >
         <div
@@ -6031,7 +8719,7 @@ exports[`Select characterisation > on a light surface > renders the filled varia
         aria-expanded="true"
         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
         role="combobox"
-        style="background-color: rgb(237, 234, 231); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+        style=""
         tabindex="0"
       >
         <div

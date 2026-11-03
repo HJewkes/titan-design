@@ -64,6 +64,15 @@ describe('Input', () => {
     expect(input).toHaveAttribute('readonly')
   })
 
+  it('colours the placeholder text-secondary, as Select does', () => {
+    render(<Input placeholder="Pick a name" />)
+    const input = screen.getByPlaceholderText('Pick a name')
+    // react-native-web carries `placeholderTextColor` as this inline custom property.
+    expect(input.style.getPropertyValue('--placeholderTextColor')).toBe(
+      'var(--color-text-secondary)'
+    )
+  })
+
   describe('filled variant', () => {
     it.each([
       ['dark', 'base'],
@@ -139,6 +148,15 @@ describe('Input', () => {
       const input = screen.getByPlaceholderText('Disabled input')
       // react-native-web renders isDisabled as readonly
       expect(input).toHaveAttribute('readonly')
+      expect(input).toHaveAttribute('aria-disabled', 'true')
+    })
+
+    it('leaves an enabled read-only field not disabled', () => {
+      render(<Input isReadOnly placeholder="Read only input" />)
+      expect(screen.getByPlaceholderText('Read only input')).not.toHaveAttribute(
+        'aria-disabled',
+        'true'
+      )
     })
   })
 })

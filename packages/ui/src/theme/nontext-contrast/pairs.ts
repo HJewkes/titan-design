@@ -181,10 +181,7 @@ const separators: NonTextPair[] = [
     id: 'separator.hairline-subtle',
     token: 'hairline-subtle',
     floor: SUBTLE,
-    sources: [
-      src('ui/select/Select.tsx', 'border-hairline-subtle'),
-      src('ui/card/Card.tsx', 'border-hairline-subtle'),
-    ],
+    sources: [src('ui/card/Card.tsx', 'border-hairline-subtle')],
   },
   {
     id: 'separator.hairline-default',

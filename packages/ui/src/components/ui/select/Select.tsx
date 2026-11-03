@@ -2,7 +2,12 @@ import { useState, createContext, useContext } from 'react'
 import { View, Text, Pressable, ScrollView, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { CheckMark } from '../../icons'
-import { useInsetFieldStyle } from '../surface/insetField'
+import {
+  FIELD_DISABLED_CLASS,
+  insetFieldClassName,
+  useInsetFieldStyle,
+  type FieldState,
+} from '../surface/insetField'
 import { SelectPopover } from './SelectPopover'
 import { hasSelection, isValueSelected, selectDisplayLabel, toggleValue } from './selectModel'
 
@@ -38,6 +43,16 @@ function useSelectContext<T>() {
   return useContext(SelectContext) as SelectContextType<T>
 }
 
+/** Control height of the Select trigger; the same steps as Input's size. */
+export type SelectSize = 'sm' | 'md' | 'lg'
+
+// Input's control height tokens and padding, so a Select sits level with an Input in a row.
+const sizeStyles: Record<SelectSize, { trigger: string; text: string }> = {
+  sm: { trigger: 'h-control-sm px-3', text: 'text-sm' },
+  md: { trigger: 'h-control-md px-4', text: 'text-base' },
+  lg: { trigger: 'h-control-lg px-4', text: 'text-lg' },
+}
+
 export interface SelectProps<T = string> extends ViewProps {
   /** Selected value (single mode) */
   value?: T | null
@@ -59,8 +74,42 @@ export interface SelectProps<T = string> extends ViewProps {
   options: SelectOption<T>[]
   /** Visual variant — use 'filled' on dark/elevated surfaces */
   variant?: 'default' | 'filled'
+  /** Control height, matching Input's sizes. Omitted, the trigger keeps its padded height. */
+  size?: SelectSize
   /** Additional className */
   className?: string
+}
+
+interface TriggerStyleState extends FieldState {
+  variant: NonNullable<SelectProps['variant']>
+  size?: SelectSize
+}
+
+function defaultTriggerClassName({ isFocused, isInvalid, isDisabled }: FieldState) {
+  return cn(
+    'rounded-md border bg-surface-base',
+    isInvalid ? 'border-border-input-error' : 'border-border-input',
+    !isDisabled && !isInvalid && 'web:hover:border-border-input-hover',
+    isFocused && 'border-border-input-focus',
+    isDisabled && FIELD_DISABLED_CLASS
+  )
+}
+
+// Filled drops its well for the focus border while focused, as Input does.
+function triggerClassName({ variant, size, ...field }: TriggerStyleState) {
+  return cn(
+    'flex-row items-center justify-between',
+    size ? sizeStyles[size].trigger : 'px-4 py-2.5',
+    variant === 'filled' ? insetFieldClassName(field) : defaultTriggerClassName(field)
+  )
+}
+
+function labelClassName(size: SelectSize | undefined, hasValue: boolean) {
+  return cn(
+    'flex-1',
+    size && sizeStyles[size].text,
+    hasValue ? 'text-text-primary' : 'text-text-secondary'
+  )
 }
 
 /**
@@ -97,11 +146,15 @@ export function Select<T extends string = string>({
   isInvalid = false,
   options,
   variant = 'default',
+  size,
   className,
   ...props
 }: SelectProps<T>) {
   const [isOpen, setIsOpen] = useState(false)
-  const well = useInsetFieldStyle(variant === 'filled')
+  const [hasFocus, setHasFocus] = useState(false)
+  // Focused or open, the trigger is the focused field, as an Input is while it holds focus.
+  const isFocused = isOpen || hasFocus
+  const well = useInsetFieldStyle(variant === 'filled' && !isFocused)
 
   const selection = { isMulti, value, values }
 
@@ -133,28 +186,23 @@ export function Select<T extends string = string>({
         {/* Trigger */}
         <Pressable
           onPress={() => !isDisabled && setIsOpen(!isOpen)}
+          onFocus={() => setHasFocus(true)}
+          onBlur={() => setHasFocus(false)}
           disabled={isDisabled}
           accessibilityRole="combobox"
           accessibilityLabel={accessibilityLabel}
           aria-expanded={isOpen}
           accessibilityState={{ expanded: isOpen, disabled: isDisabled }}
           style={well}
-          className={cn(
-            'flex-row items-center justify-between px-4 py-2.5 rounded-md border',
-            variant === 'filled' ? undefined : 'bg-surface-base',
-            isInvalid
-              ? 'border-border-input-error'
-              : variant === 'filled'
-                ? 'border-hairline-subtle'
-                : 'border-border-input',
-            !isDisabled && !isInvalid && 'web:hover:border-border-input-hover',
-            isOpen && 'border-border-input-focus',
-            isDisabled && 'opacity-50 cursor-not-allowed'
-          )}
+          className={triggerClassName({
+            variant,
+            size,
+            isFocused,
+            isInvalid,
+            isDisabled,
+          })}
         >
-          <Text className={cn('flex-1', hasValue ? 'text-text-primary' : 'text-text-tertiary')}>
-            {displayValue}
-          </Text>
+          <Text className={labelClassName(size, hasValue)}>{displayValue}</Text>
           <View className="flex-row items-center gap-2">
             {hasValue && (
               <Pressable
