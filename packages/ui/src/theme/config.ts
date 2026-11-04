@@ -18,7 +18,6 @@ import { spacingCSSVars } from './tokens/spacing-vars'
 const themeIndependentCSSVars = {
   // RGB decomposed values for glow shadows
   '--color-brand-primary-rgb': '255, 121, 0',
-  '--color-brand-secondary-rgb': '48, 123, 155',
   '--color-status-success-rgb': '46, 213, 115',
   '--color-status-error-rgb': '209, 67, 67',
   '--color-status-error-vivid-rgb': '255, 71, 87',
@@ -53,6 +52,7 @@ export const lightThemeCSSVars = {
   '--color-brand-secondary-subtle': semanticColorsLight['brand-secondary-subtle'],
   '--color-brand-secondary-muted': semanticColorsLight['brand-secondary-muted'],
   '--color-brand-secondary-strong': semanticColorsLight['brand-secondary-strong'],
+  '--color-brand-secondary-rgb': '48, 123, 155',
 
   '--color-on-brand-primary': semanticColorsLight['on-brand-primary'],
   '--color-on-brand-secondary': semanticColorsLight['on-brand-secondary'],
@@ -242,6 +242,7 @@ export const darkThemeCSSVars = {
   '--color-brand-secondary-subtle': semanticColorsDark['brand-secondary-subtle'],
   '--color-brand-secondary-muted': semanticColorsDark['brand-secondary-muted'],
   '--color-brand-secondary-strong': semanticColorsDark['brand-secondary-strong'],
+  '--color-brand-secondary-rgb': '38, 151, 183',
 
   '--color-on-brand-primary': semanticColorsDark['on-brand-primary'],
   '--color-on-brand-secondary': semanticColorsDark['on-brand-secondary'],
