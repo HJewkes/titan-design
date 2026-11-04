@@ -22,7 +22,7 @@ Unless noted, run commands from `packages/ui/` (the scripts live in that
 package). From the repo root, the same targets run through Turborepo:
 `pnpm lint`, `pnpm type-check`, `pnpm test`, `pnpm build`, `pnpm build-storybook`.
 
-Component files follow the convention in `CLAUDE.md` → _Component Development_:
+Component files follow the convention in `docs/component-development.md` → _Component Development_:
 
 ```
 src/components/{ui|custom}/{ComponentName}/
@@ -57,7 +57,7 @@ src/components/{ui|custom}/{ComponentName}/
 
 - [ ] Component built with React Native primitives (`View`, `Text`,
       `Pressable`, …) styled via NativeWind — never raw `div`/`span`/`button`
-      (see the cross-platform table in `CLAUDE.md`).
+      (see the cross-platform table in `docs/component-development.md`).
 - [ ] Every manifest property is styled from its semantic **token**
       (`src/theme/tokens/semantic.ts` → `src/theme/global.css`), falling back
       to a literal only where the manifest has `token: null`.
@@ -119,7 +119,7 @@ src/components/{ui|custom}/{ComponentName}/
 - [ ] Component sets `accessibilityRole` / `accessibilityLabel` /
       `accessibilityState` as applicable.
 - [ ] The test file includes a `jest-axe` check with
-      `toHaveNoViolations()` (required for every component per `CLAUDE.md`).
+      `toHaveNoViolations()` (required for every component per `docs/component-development.md`).
 
 ## 8. Quality gates — all green, zero new warnings
 

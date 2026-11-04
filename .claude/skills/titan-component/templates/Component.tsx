@@ -1,6 +1,6 @@
 // TEMPLATE: a molecule in ui/ that composes Indicator and Typography.
 // Copy to src/components/ui/<name>/<Name>.tsx, rename Example, delete this header.
-// Placement and tier imports: CLAUDE.md > Component Development > Placement.
+// Placement and tier imports: docs/component-development.md > Placement.
 import { Pressable, type PressableProps } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { useControllableState } from '../../../hooks/useControllableState'

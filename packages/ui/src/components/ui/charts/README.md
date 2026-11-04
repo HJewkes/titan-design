@@ -2,7 +2,7 @@
 
 Charts that paint data marks from a scale and know nothing about workouts, sessions or
 initiatives. A chart whose prop, type or label names a domain concept lives in its
-`custom/<Family>/` instead (`CLAUDE.md`, Placement).
+`custom/<Family>/` instead (`docs/component-development.md`, Placement).
 
 | Member               | Kind     | Holds                                                                                                                                                                                                                                                                               |
 | -------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
