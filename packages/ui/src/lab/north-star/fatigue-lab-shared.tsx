@@ -19,9 +19,10 @@ import { WORKOUT_TOKENS } from '../../theme/workout-tokens'
 import { alpha } from '../../utils/colors'
 import { roundTempo } from '../../utils/workout-format'
 import { paperSheet, insetWell, debossLabel } from '../../theme/materials'
+import { useOnSurfaceColor } from '../../components/ui/surface'
+import { StoryPage, StorySpecimens } from '../story-canvas'
 
 export const C = getSemanticColors('dark')
-export const PAGE_BG = greyRamp[975]
 export const PANEL_BG = greyRamp[950]
 export const FONT_HEAD = '"Space Grotesk", sans-serif'
 export const FONT_UI = '"Nunito Sans", sans-serif'
@@ -1342,15 +1343,20 @@ export const FATIGUE_STATES: Array<{
 // --- Scaffolding -----------------------------------------------------------------
 export function Page({ children }: { children: ReactNode }) {
   return (
-    <View style={{ padding: 28, backgroundColor: PAGE_BG, minHeight: '100%', gap: 24 }}>
-      {children}
-    </View>
+    <StoryPage>
+      <StorySpecimens>{children}</StorySpecimens>
+    </StoryPage>
   )
 }
 export function SectionTitle({ children }: { children: ReactNode }) {
   return (
     <Text
-      style={{ fontSize: 16, fontWeight: '800', fontFamily: FONT_HEAD, color: C['text-primary'] }}
+      style={{
+        fontSize: 16,
+        fontWeight: '800',
+        fontFamily: FONT_HEAD,
+        color: useOnSurfaceColor('primary'),
+      }}
     >
       {children}
     </Text>
@@ -1362,7 +1368,7 @@ export function Caption({ children }: { children: ReactNode }) {
       style={{
         fontSize: 12,
         fontFamily: FONT_UI,
-        color: C['text-secondary'],
+        color: useOnSurfaceColor('secondary'),
         maxWidth: 860,
         lineHeight: 18,
       }}

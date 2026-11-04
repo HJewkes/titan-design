@@ -25,9 +25,10 @@ import { greyRamp, primitiveRamps } from '../../theme/tokens/primitives'
 import { alpha } from '../../utils/colors'
 import { roundTempo } from '../../utils/workout-format'
 import { grainForTone } from '../../theme/materials'
+import { useOnSurfaceColor } from '../../components/ui/surface'
+import { StoryPage, StorySpecimens } from '../story-canvas'
 
 const T = getSemanticColors('dark')
-const PAGE_BG = greyRamp[975]
 const PANEL_BG = greyRamp[975]
 const FONT_HEAD = '"Space Grotesk", sans-serif'
 const FONT_UI = '"Nunito Sans", sans-serif'
@@ -566,7 +567,12 @@ const refinedTempo =
 function SectionTitle({ children }: { children: ReactNode }) {
   return (
     <Text
-      style={{ fontSize: 16, fontWeight: '800', fontFamily: FONT_HEAD, color: T['text-primary'] }}
+      style={{
+        fontSize: 16,
+        fontWeight: '800',
+        fontFamily: FONT_HEAD,
+        color: useOnSurfaceColor('primary'),
+      }}
     >
       {children}
     </Text>
@@ -578,7 +584,7 @@ function Caption({ children }: { children: ReactNode }) {
       style={{
         fontSize: 12,
         fontFamily: FONT_UI,
-        color: T['text-secondary'],
+        color: useOnSurfaceColor('secondary'),
         maxWidth: 620,
         lineHeight: 17,
       }}
@@ -605,9 +611,9 @@ function Panel({ children, width }: { children: ReactNode; width?: number }) {
 }
 function Page({ children }: { children: ReactNode }) {
   return (
-    <View style={{ padding: 28, backgroundColor: PAGE_BG, minHeight: '100%', gap: 24 }}>
-      {children}
-    </View>
+    <StoryPage>
+      <StorySpecimens>{children}</StorySpecimens>
+    </StoryPage>
   )
 }
 

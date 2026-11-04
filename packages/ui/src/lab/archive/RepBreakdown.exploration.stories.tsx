@@ -32,9 +32,10 @@ import { greyRamp } from '../../theme/tokens/primitives'
 import { WORKOUT_TOKENS } from '../../theme/workout-tokens'
 import { alpha } from '../../utils/colors'
 import { formatVelocity } from '../../utils/workout-format'
+import { useOnSurfaceColor } from '../../components/ui/surface'
+import { StoryPage, StorySpecimens } from '../story-canvas'
 
 const C = getSemanticColors('dark')
-const PAGE_BG = greyRamp[975]
 const PANEL_BG = greyRamp[975]
 const FONT_HEAD = '"Space Grotesk", sans-serif'
 const FONT_UI = '"Nunito Sans", sans-serif'
@@ -676,7 +677,12 @@ function FilledRep({ r }: { r: Rep }) {
 function SectionTitle({ children }: { children: ReactNode }) {
   return (
     <Text
-      style={{ fontSize: 16, fontWeight: '800', fontFamily: FONT_HEAD, color: C['text-primary'] }}
+      style={{
+        fontSize: 16,
+        fontWeight: '800',
+        fontFamily: FONT_HEAD,
+        color: useOnSurfaceColor('primary'),
+      }}
     >
       {children}
     </Text>
@@ -688,7 +694,7 @@ function Caption({ children }: { children: ReactNode }) {
       style={{
         fontSize: 12,
         fontFamily: FONT_UI,
-        color: C['text-secondary'],
+        color: useOnSurfaceColor('secondary'),
         maxWidth: 760,
         lineHeight: 18,
       }}
@@ -706,12 +712,20 @@ function Kicker({ children }: { children: ReactNode }) {
     </Text>
   )
 }
-function Legend() {
+/** `onPage`: on the story page rather than a Lab panel, so the labels follow the page plane. */
+function Legend({ onPage }: { onPage?: boolean }) {
+  const pageColor = useOnSurfaceColor('secondary')
+  const labelColor = onPage ? pageColor : C['text-secondary']
   const item = (swatch: ReactNode, label: string) => (
     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
       {swatch}
       <Text
-        style={{ color: C['text-secondary'], fontSize: 11, fontWeight: '700', fontFamily: FONT_UI }}
+        style={{
+          color: labelColor,
+          fontSize: 11,
+          fontWeight: '700',
+          fontFamily: FONT_UI,
+        }}
       >
         {label}
       </Text>
@@ -737,7 +751,12 @@ function Legend() {
         </View>,
         'CADENCE — shape + off signal'
       )}
-      {item(<FormFlag size="xs" />, 'both cut → form breaking')}
+      {item(
+        <View style={{ backgroundColor: PANEL_BG, borderRadius: 4, padding: 2 }}>
+          <FormFlag size="xs" />
+        </View>,
+        'both cut → form breaking'
+      )}
     </View>
   )
 }
@@ -758,9 +777,9 @@ function Panel({ children, width }: { children: ReactNode; width?: number | stri
 }
 function Page({ children }: { children: ReactNode }) {
   return (
-    <View style={{ padding: 28, backgroundColor: PAGE_BG, minHeight: '100%', gap: 24 }}>
-      {children}
-    </View>
+    <StoryPage>
+      <StorySpecimens>{children}</StorySpecimens>
+    </StoryPage>
   )
 }
 function Row({
@@ -942,7 +961,7 @@ export const Overview: Story = {
           which makes the set &quot;look tired&quot; and the two cheat reps jump out fastest at wall
           scale.
         </Caption>
-        <Legend />
+        <Legend onPage />
       </View>
       <View style={{ flexDirection: 'row', gap: 20, flexWrap: 'wrap', alignItems: 'flex-start' }}>
         <Panel width={620}>
@@ -1429,6 +1448,7 @@ function WarningsPanel() {
 
 /** The directional-semantics legend shared by all Round-2 stories. */
 function DirectionalLegend() {
+  const labelColor = useOnSurfaceColor('secondary')
   const chip = (col: string, icon: string, label: string) => (
     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
       <View
@@ -1446,7 +1466,12 @@ function DirectionalLegend() {
         <Text style={{ color: col, fontSize: 9, fontWeight: '900' }}>{icon}</Text>
       </View>
       <Text
-        style={{ color: C['text-secondary'], fontSize: 11, fontWeight: '700', fontFamily: FONT_UI }}
+        style={{
+          color: labelColor,
+          fontSize: 11,
+          fontWeight: '700',
+          fontFamily: FONT_UI,
+        }}
       >
         {label}
       </Text>
@@ -1459,7 +1484,7 @@ function DirectionalLegend() {
       {chip(OFF_WARN, '•', 'GRIND — slow concentric (mild)')}
       <Text
         style={{
-          color: C['text-tertiary'],
+          color: useOnSurfaceColor('secondary'),
           fontSize: 11,
           fontStyle: 'italic',
           fontFamily: FONT_UI,
@@ -1596,7 +1621,7 @@ export const OverviewR2: Story = {
         </Caption>
         <DirectionalLegend />
       </View>
-      <View style={{ flexDirection: 'column', gap: 20 }}>
+      <StorySpecimens>
         <Panel width={900}>
           <Kicker>3 · WARNINGS MODEL — clean bar + directional flags</Kicker>
           <WarningsPanel />
@@ -1632,7 +1657,7 @@ export const OverviewR2: Story = {
             <RepTicks count={SET.length} />
           </View>
         </Panel>
-      </View>
+      </StorySpecimens>
     </Page>
   ),
 }
@@ -1743,6 +1768,7 @@ function HybridColumn({ r }: { r: Rep }) {
 
 /** Legend line for the hybrid — the depth pip + the fire-only flags. */
 function HybridLegend() {
+  const label = useOnSurfaceColor('secondary')
   return (
     <View style={{ flexDirection: 'row', gap: 16, flexWrap: 'wrap', alignItems: 'center' }}>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
@@ -1760,7 +1786,7 @@ function HybridLegend() {
         </View>
         <Text
           style={{
-            color: C['text-secondary'],
+            color: label,
             fontSize: 11,
             fontWeight: '700',
             fontFamily: FONT_UI,
@@ -1773,7 +1799,7 @@ function HybridLegend() {
         <View style={{ width: 5, height: 5, borderRadius: 3, backgroundColor: OFF_STOP }} />
         <Text
           style={{
-            color: C['text-secondary'],
+            color: label,
             fontSize: 11,
             fontWeight: '700',
             fontFamily: FONT_UI,
@@ -1786,7 +1812,7 @@ function HybridLegend() {
         <View style={{ width: 5, height: 5, borderRadius: 3, backgroundColor: OFF_WARN }} />
         <Text
           style={{
-            color: C['text-secondary'],
+            color: label,
             fontSize: 11,
             fontWeight: '700',
             fontFamily: FONT_UI,
