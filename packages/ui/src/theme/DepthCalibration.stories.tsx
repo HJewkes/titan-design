@@ -1,10 +1,11 @@
-import { useState } from 'react'
+import { useState, type ReactNode } from 'react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View, Text, Pressable } from 'react-native'
 import { greyRamp } from './tokens/primitives'
 import { getSemanticColors } from './tokens/semantic'
 import { getElevationSurface, type ElevationLevel } from './elevation'
 import { grainForTone, paperSheet } from './materials'
+import { StorySpecimens } from '../lab/story-canvas'
 
 /**
  * Foundations/Depth Calibration — the S-6 wall gate (VW-99).
@@ -55,6 +56,9 @@ const t = getSemanticColors('dark')
  * would be judging a line with no plane around it. Nothing in the product ships
  * on true black; this is a test surface, and it is deliberately off the ramp so
  * that every step OF the ramp is itself testable.
+ *
+ * It is also why this board does not sit on `StoryPage` (TD-973): the ground is the
+ * calibration's subject, so only its rhythm moved onto the section scale.
  */
 const GROUND = '#000000'
 
@@ -77,52 +81,62 @@ function Panel({
   const [revealed, setRevealed] = useState(false)
   return (
     <View style={{ backgroundColor: GROUND, padding: 28, minHeight: '100vh' as never }}>
-      <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'flex-start',
-          justifyContent: 'space-between',
-          gap: 24,
-          marginBottom: 18,
-        }}
-      >
-        <View style={{ flex: 1 }}>
-          <Text className="text-text-primary" style={{ fontSize: 22, fontWeight: '700' }}>
-            {title}
-          </Text>
-          <Text
-            className="text-text-secondary"
-            style={{ fontSize: 15, marginTop: 6, maxWidth: 900 }}
-          >
-            {task}
-          </Text>
-        </View>
-        <Pressable
-          onPress={() => setRevealed((r) => !r)}
+      <StorySpecimens>
+        <View
           style={{
-            paddingVertical: 10,
-            paddingHorizontal: 18,
-            borderRadius: 8,
-            borderWidth: 1,
-            borderColor: t['hairline-strong'],
-            backgroundColor: getElevationSurface(2, 'dark'),
+            flexDirection: 'row',
+            alignItems: 'flex-start',
+            justifyContent: 'space-between',
+            gap: 24,
           }}
         >
-          <Text className="text-text-primary" style={{ fontSize: 14, fontWeight: '600' }}>
-            {revealed ? 'Hide key' : 'Reveal key'}
-          </Text>
-        </Pressable>
-      </View>
-      {children(revealed)}
+          <View style={{ flex: 1 }}>
+            <Text className="text-text-primary" style={{ fontSize: 22, fontWeight: '700' }}>
+              {title}
+            </Text>
+            <Text
+              className="text-text-secondary"
+              style={{ fontSize: 15, marginTop: 6, maxWidth: 900 }}
+            >
+              {task}
+            </Text>
+          </View>
+          <Pressable
+            onPress={() => setRevealed((r) => !r)}
+            style={{
+              paddingVertical: 10,
+              paddingHorizontal: 18,
+              borderRadius: 8,
+              borderWidth: 1,
+              borderColor: t['hairline-strong'],
+              backgroundColor: getElevationSurface(2, 'dark'),
+            }}
+          >
+            <Text className="text-text-primary" style={{ fontSize: 14, fontWeight: '600' }}>
+              {revealed ? 'Hide key' : 'Reveal key'}
+            </Text>
+          </Pressable>
+        </View>
+        {children(revealed)}
+      </StorySpecimens>
     </View>
   )
 }
 
 function KeyLine({ children }: { children: string }) {
   return (
-    <Text className="text-text-secondary" style={{ fontSize: 13, marginTop: 10, lineHeight: 19 }}>
+    <Text className="text-text-secondary" style={{ fontSize: 13, lineHeight: 19 }}>
       {children}
     </Text>
+  )
+}
+
+/** The hidden key: its lines `stack-md` apart, one section below the panel's last field. */
+function Key({ children }: { children: ReactNode }) {
+  return (
+    <View className="gap-stack-md" style={{ maxWidth: 1000 }}>
+      {children}
+    </View>
   )
 }
 
@@ -161,11 +175,11 @@ export const Hairlines: StoryObj = {
       }
     >
       {(revealed) => (
-        <View>
+        <StorySpecimens>
           {HAIRLINE_GRID.map((row, r) => (
             <View
               key={HAIRLINE_GROUNDS[r]}
-              style={{ flexDirection: 'row', gap: 14, marginBottom: 22, alignItems: 'flex-start' }}
+              style={{ flexDirection: 'row', gap: 14, alignItems: 'flex-start' }}
             >
               {/* Row gutter. Labels used to sit UNDER their tiles, which made every
                   row number ambiguous the moment one row was hard to see — the
@@ -208,7 +222,7 @@ export const Hairlines: StoryObj = {
           ))}
 
           {revealed ? (
-            <View style={{ marginTop: 6, maxWidth: 1000 }}>
+            <Key>
               <KeyLine>
                 {'Decoys: B1, C2, A3, D4. Reporting a line in any of those invalidates the run — ' +
                   'move back to the real distance and go again.'}
@@ -223,9 +237,9 @@ export const Hairlines: StoryObj = {
                   '.06 / .09 / .14 white). Raise the whole family together — the ratio between the ' +
                   'three is what makes them read as one scale.'}
               </KeyLine>
-            </View>
+            </Key>
           ) : null}
-        </View>
+        </StorySpecimens>
       )}
     </Panel>
   ),
@@ -263,22 +277,26 @@ export const ToneSteps: StoryObj = {
       }
     >
       {(revealed) => (
-        <View>
-          <View style={{ flexDirection: 'row', height: 200, borderRadius: 6, overflow: 'hidden' }}>
-            {STAIRCASE.map((lv) => (
-              <View
-                key={lv}
-                style={{ flex: 1, backgroundColor: getElevationSurface(lv, 'dark') }}
-              />
-            ))}
+        <StorySpecimens>
+          <View className="gap-stack-md">
+            <View
+              style={{ flexDirection: 'row', height: 200, borderRadius: 6, overflow: 'hidden' }}
+            >
+              {STAIRCASE.map((lv) => (
+                <View
+                  key={lv}
+                  style={{ flex: 1, backgroundColor: getElevationSurface(lv, 'dark') }}
+                />
+              ))}
+            </View>
+            <Text className="text-text-tertiary" style={{ fontSize: 13 }}>
+              {revealed
+                ? `6 bands / 5 edges — elevation -2…3 = frame · background · base · elevated · raised · overlay`
+                : 'Edges visible: ______'}
+            </Text>
           </View>
-          <Text className="text-text-tertiary" style={{ fontSize: 13, marginTop: 8 }}>
-            {revealed
-              ? `6 bands / 5 edges — elevation -2…3 = frame · background · base · elevated · raised · overlay`
-              : 'Edges visible: ______'}
-          </Text>
 
-          <View style={{ flexDirection: 'row', gap: 14, marginTop: 26 }}>
+          <View style={{ flexDirection: 'row', gap: 14 }}>
             {STEP_PAIRS.map((pair) => (
               <View key={pair.label} style={{ flex: 1 }}>
                 <View
@@ -310,7 +328,7 @@ export const ToneSteps: StoryObj = {
           </View>
 
           {revealed ? (
-            <View style={{ marginTop: 14, maxWidth: 1000 }}>
+            <Key>
               <KeyLine>
                 {'Pair 2 is the one that matters: raised → overlay is the tightest step on the ' +
                   'ramp (ΔL* 2.5) and the one a card inside a card lands on. Pair 3 is the decoy.'}
@@ -325,9 +343,9 @@ export const ToneSteps: StoryObj = {
                   'elevation ladder no longer has values of its own to widen — it reads the ramp — ' +
                   'so a missed step is a ramp finding, and re-spacing goes through the generator.'}
               </KeyLine>
-            </View>
+            </Key>
           ) : null}
-        </View>
+        </StorySpecimens>
       )}
     </Panel>
   ),
@@ -386,8 +404,8 @@ export const PaperMaterial: StoryObj = {
       }
     >
       {(revealed) => (
-        <View>
-          <View style={{ flexDirection: 'row', gap: 22 }}>
+        <StorySpecimens>
+          <StorySpecimens direction="row" className="flex-nowrap">
             {PAPER_SHEETS.map((kind, i) => (
               <Card
                 key={i}
@@ -405,56 +423,54 @@ export const PaperMaterial: StoryObj = {
                 }
               />
             ))}
+          </StorySpecimens>
+
+          <View className="gap-stack-md">
+            <Text className="text-text-secondary" style={{ fontSize: 15 }}>
+              The same material, at hero size — lit sheet, visible noise, or nothing?
+            </Text>
+            <View
+              style={{
+                height: 260,
+                borderRadius: 12,
+                ...(paperSheet(PAPER_TONE) as Record<string, unknown>),
+              }}
+            />
+            <Text className="text-text-tertiary" style={{ fontSize: 12 }}>
+              {revealed ? 'paperSheet() at hero width' : 'reads as: ______'}
+            </Text>
           </View>
 
-          <Text
-            className="text-text-secondary"
-            style={{ fontSize: 15, marginTop: 26, marginBottom: 10 }}
-          >
-            The same material, at hero size — lit sheet, visible noise, or nothing?
-          </Text>
-          <View
-            style={{
-              height: 260,
-              borderRadius: 12,
-              ...(paperSheet(PAPER_TONE) as Record<string, unknown>),
-            }}
-          />
-          <Text className="text-text-tertiary" style={{ fontSize: 12, marginTop: 8 }}>
-            {revealed ? 'paperSheet() at hero width' : 'reads as: ______'}
-          </Text>
-
-          <Text
-            className="text-text-secondary"
-            style={{ fontSize: 15, marginTop: 26, marginBottom: 10 }}
-          >
-            Inset wells — which of these have a light line along the FLOOR (bottom inner edge)?
-          </Text>
-          <View style={{ flexDirection: 'row', gap: 22 }}>
-            {WELL_FLOORS.map((w) => (
-              <View key={w.label} style={{ flex: 1 }}>
-                <View
-                  style={
-                    {
-                      height: 120,
-                      borderRadius: 10,
-                      backgroundColor: WELL_TONE,
-                      boxShadow: w.floorAlpha
-                        ? `inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,${w.floorAlpha})`
-                        : 'inset 0 2px 6px rgba(0,0,0,0.55)',
-                    } as Record<string, unknown>
-                  }
-                />
-                <Text className="text-text-tertiary" style={{ fontSize: 12, marginTop: 6 }}>
-                  {w.label}
-                  {revealed ? `  ·  ${w.answer}` : '  ·  floor line? ______'}
-                </Text>
-              </View>
-            ))}
+          <View className="gap-stack-md">
+            <Text className="text-text-secondary" style={{ fontSize: 15 }}>
+              Inset wells — which of these have a light line along the FLOOR (bottom inner edge)?
+            </Text>
+            <StorySpecimens direction="row" className="flex-nowrap">
+              {WELL_FLOORS.map((w) => (
+                <View key={w.label} style={{ flex: 1 }}>
+                  <View
+                    style={
+                      {
+                        height: 120,
+                        borderRadius: 10,
+                        backgroundColor: WELL_TONE,
+                        boxShadow: w.floorAlpha
+                          ? `inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,${w.floorAlpha})`
+                          : 'inset 0 2px 6px rgba(0,0,0,0.55)',
+                      } as Record<string, unknown>
+                    }
+                  />
+                  <Text className="text-text-tertiary" style={{ fontSize: 12, marginTop: 6 }}>
+                    {w.label}
+                    {revealed ? `  ·  ${w.answer}` : '  ·  floor line? ______'}
+                  </Text>
+                </View>
+              ))}
+            </StorySpecimens>
           </View>
 
           {revealed ? (
-            <View style={{ marginTop: 14, maxWidth: 1000 }}>
+            <Key>
               <KeyLine>
                 {'Sheet 2 is the material; 1 and 3 are the identical decoy pair. PASS: 2 picked out, ' +
                   'AND the hero sheet described as a surface rather than as noise. Invisible and ' +
@@ -471,9 +487,9 @@ export const PaperMaterial: StoryObj = {
                 {'If 1 and 3 were reported as different from each other, the run is invalid at this ' +
                   'distance — they are byte-identical. Step back to 3 m and go again.'}
               </KeyLine>
-            </View>
+            </Key>
           ) : null}
-        </View>
+        </StorySpecimens>
       )}
     </Panel>
   ),
@@ -605,7 +621,7 @@ export const Banding: StoryObj = {
       }
     >
       {(revealed) => (
-        <View>
+        <StorySpecimens>
           {BAND_FIELDS.map((field) => (
             <View key={field.key}>
               <View
@@ -613,7 +629,6 @@ export const Banding: StoryObj = {
                   {
                     height: 240,
                     borderRadius: 8,
-                    marginTop: field.key === '1' ? 0 : 20,
                     ...field.style,
                   } as Record<string, unknown>
                 }
@@ -626,7 +641,7 @@ export const Banding: StoryObj = {
           ))}
 
           {revealed ? (
-            <View style={{ marginTop: 14, maxWidth: 1000 }}>
+            <Key>
               <KeyLine>
                 {'READ FIELDS 2 AND 2b FIRST — they decide whether the rest of the panel means ' +
                   'anything. 2b is banding drawn by hand: the same tone span quantised into five ' +
@@ -650,9 +665,9 @@ export const Banding: StoryObj = {
                   'past ~0.03 it stops being invisible and becomes texture, at which point it is ' +
                   'grain, not dither.'}
               </KeyLine>
-            </View>
+            </Key>
           ) : null}
-        </View>
+        </StorySpecimens>
       )}
     </Panel>
   ),
