@@ -251,3 +251,19 @@ export const Default: Story = {
     )
   },
 }
+
+/** The ego view at phone width: the rings keep their minimum gap and the canvas pans instead. */
+export const EgoOnPhone: Story = {
+  ...Default,
+  name: 'Ego on a phone',
+  args: { fixture: 'Ego (20)', layout: LAYOUTS.ego, width: 375, height: 560, showLegend: false },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'A 20-node ego graph at 375 px. Fitting stops once two rings are `MIN_RING_GAP` (80 px) ' +
+          'apart, so the focus and every first-hop label stay readable and the canvas scrolls.',
+      },
+    },
+  },
+}

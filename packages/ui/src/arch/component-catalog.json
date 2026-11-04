@@ -12778,7 +12778,8 @@
       },
       "status": "candidate",
       "storyIds": [
-        "components-organisms-networkgraph--default"
+        "components-organisms-networkgraph--default",
+        "components-organisms-networkgraph--ego-on-phone"
       ],
       "tier": "organism"
     },

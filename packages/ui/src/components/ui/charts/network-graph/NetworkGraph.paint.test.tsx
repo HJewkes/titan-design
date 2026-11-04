@@ -47,6 +47,7 @@ describe('NetworkGraph paint', () => {
         "All equal": "6a3c73cc",
         "Deep chain": "d84a809c",
         "Directed chain": "351911ce",
+        "Ego (20)": "8c28a332",
         "Empty": "3efc4e99",
         "Grouped (40)": "852aa973",
         "Hostile": "c67b190e",
