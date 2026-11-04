@@ -1,0 +1,50 @@
+{
+  "v": 1,
+  "mutations": [
+    {
+      "name": "the URL policy lets every scheme through",
+      "file": "packages/ui/src/components/custom/Prose/proseUrl.ts",
+      "find": "  if (scheme) return ALLOWED_SCHEMES.has(scheme.toLowerCase()) ? url : null",
+      "replace": "  if (scheme) return url",
+      "kills": [
+        "links safe targets, routes nothing else, and keeps a refused link as text",
+        "javascript:alert(1) passes: false"
+      ]
+    },
+    {
+      "name": "a repeated heading reuses the first heading's id",
+      "file": "packages/ui/src/components/custom/Prose/proseSlug.ts",
+      "find": "    while (seen.has(id)) id = `${base}-${++n}`",
+      "replace": "",
+      "kills": ["gives every heading its source level and a VitePress-style unique id"]
+    },
+    {
+      "name": "a list item drops everything indented under its first line",
+      "file": "packages/ui/src/components/custom/Prose/parseProseBlocks.ts",
+      "find": "  const children = parseLines(item.content, depth + 1)",
+      "replace": "  const children = parseLines(item.content.slice(0, 1), depth + 1)",
+      "kills": [
+        "numbers ordered items and nests what is indented under them",
+        "groups items into lists, nested lists inside their item",
+        "passes each fence to the highlight seam and renders what it returns"
+      ]
+    },
+    {
+      "name": "a ::: line inside a fence closes the container",
+      "file": "packages/ui/src/components/custom/Prose/proseNest.ts",
+      "find": "    if (inFence) continue\n",
+      "replace": "",
+      "kills": [
+        "reads containers with their kind, title and nested blocks",
+        "gives every heading its source level and a VitePress-style unique id"
+      ]
+    },
+    {
+      "name": "underscore italic needs a doubled underscore",
+      "file": "packages/ui/src/components/custom/Prose/proseInlineTokens.ts",
+      "find": "|(?<![A-Za-z0-9_])_(?![\\s_])",
+      "replace": "|(?<![A-Za-z0-9_])__(?![\\s_])",
+      "kills": ["renders italic, bold and code spans without their markers"]
+    }
+  ]
+}

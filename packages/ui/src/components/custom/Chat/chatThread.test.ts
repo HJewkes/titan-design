@@ -131,9 +131,13 @@ describe('plainText', () => {
     expect(plainText('2026. A good year')).toBe('2026. A good year')
   })
 
-  it('keeps italics, underscores and links the bubble shows literally', () => {
+  it('drops the italic and link markup the bubble renders, keeping intraword underscores', () => {
     const body = 'a _light_ day, see top_set_velocity and [the plan](https://example.com)'
-    expect(plainText(body)).toBe(body)
+    expect(plainText(body)).toBe('a light day, see top_set_velocity and the plan')
+  })
+
+  it('reads nested list items after their parent', () => {
+    expect(plainText('- Bench\n  - 3x5\n- Rows')).toBe('Bench 3x5 Rows')
   })
 
   it('stays linear on unclosed markup', () => {

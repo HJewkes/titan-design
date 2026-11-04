@@ -106,7 +106,7 @@ Generated from `src/arch/component-catalog.json` by `pnpm catalog`. Do not edit 
 | LiveFatigueCard | candidate | custom/Fatigue | — | FatigueLights, GhostSpark, RomProgressionChart, Surface, VerdictHero | custom-fatigue-live-fatigue-card--default |
 | LiveFatiguePanel | candidate | custom/Fatigue | — | LiveAuraFrame, LiveFatigueCard, VelocityHero | custom-fatigue-live-fatigue-panel--live-panel-v-2 |
 | MapCard | candidate | ui/map-card | MapCard: a pop-out card beside a point on a map, joined to it by a leader line. | Surface, Typography | components-molecules-mapcard--default |
-| MarkdownProse | candidate | custom/Prose | MarkdownProse — renders a small, predictable markdown subset as themed prose and auto-links references the caller describes. | Typography | custom-prose-markdownprose--code-blocks |
+| MarkdownProse | candidate | custom/Prose | MarkdownProse — renders a predictable markdown subset as themed prose and auto-links references the caller describes. | Typography | custom-prose-markdownprose--callouts |
 | MediaThumb | candidate | ui/media-thumb | A media poster frame at a fixed aspect ratio, with three corner badge slots. | Skeleton, mediaIcons | components-molecules-mediathumb--default |
 | MediaThumbBadge | candidate | ui/media-thumb | A small dark badge for a `MediaThumb` corner. | SvgIcon | components-atoms-mediathumbbadge--default |
 | Menu | candidate | ui/menu | Menu component for dropdown menus. | Surface, TriggerSurface | components-molecules-menu--controlled |
