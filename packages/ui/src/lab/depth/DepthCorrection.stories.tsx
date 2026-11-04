@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View, Text } from 'react-native'
 import { Surface } from '../../components/ui/surface/Surface'
+import { StoryPage, StorySpecimen, StorySpecimens } from '../story-canvas'
 import { useOnSurfaceColor } from '../../components/ui/surface/SurfaceContext'
 import {
   Card,
@@ -44,7 +45,6 @@ function Label({ children }: { children: string }) {
         fontSize: 10,
         fontWeight: '700',
         letterSpacing: 1,
-        marginBottom: 8,
       }}
     >
       {children}
@@ -93,10 +93,9 @@ function RawCard({
 
 function Row({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <View style={{ marginBottom: 28 }}>
-      <Label>{label}</Label>
+    <StorySpecimen label={<Label>{label}</Label>}>
       <View style={{ flexDirection: 'row', gap: 16 }}>{children}</View>
-    </View>
+    </StorySpecimen>
   )
 }
 
@@ -114,7 +113,7 @@ function TreatmentRows({ mode }: { mode: ThemeMode }) {
   const hex = (step: LiftStep) => surfaceBackground(PLANE_OF[step], mode)
   const sub = (step: LiftStep) => `${PLANE_OF[step]} · ${hex(step)}`
   return (
-    <>
+    <StorySpecimens>
       <Row label="CONTROL — WHAT SHIPPED: GREY-900, 0.10 HAIRLINE RING, NO SHADOW">
         {STEPS.map((step) => (
           <RawCard
@@ -169,7 +168,7 @@ function TreatmentRows({ mode }: { mode: ThemeMode }) {
           <RawCard key={step} hex={hex(step)} style={{}} title={`+${step}`} sub={sub(step)} />
         ))}
       </Row>
-    </>
+    </StorySpecimens>
   )
 }
 
@@ -231,46 +230,46 @@ export const Floating: StoryObj = {
 export const Composed: StoryObj = {
   name: '4 · Through the components: Card on Surface, nested',
   render: () => (
-    <Surface level="base" style={{ padding: 28, minHeight: '100vh' as never, gap: 20 }}>
-      <Label>DEFAULT CARDS ON THE PAGE (RAISED, LIFT 2) · INSIDE: INSET, NOT A SECOND LIFT</Label>
-      <View style={{ flexDirection: 'row', gap: 16 }}>
-        {['Open loops', 'Brief', 'Tasks'].map((title) => (
-          <Card key={title} style={{ flex: 1 }}>
-            <CardHeader>
-              <CardTitle>{title}</CardTitle>
-              <CardDescription>Two planes up from the page, rim + shadow</CardDescription>
-            </CardHeader>
+    <StoryPage className="min-h-screen">
+      <StorySpecimens>
+        <Row label="DEFAULT CARDS ON THE PAGE (RAISED, LIFT 2) · INSIDE: INSET, NOT A SECOND LIFT">
+          {['Open loops', 'Brief', 'Tasks'].map((title) => (
+            <Card key={title} style={{ flex: 1 }}>
+              <CardHeader>
+                <CardTitle>{title}</CardTitle>
+                <CardDescription>Two planes up from the page, rim + shadow</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Text className="text-text-secondary text-sm">
+                  Body copy sits on the card plane. Grouped content inside recesses instead of
+                  lifting again.
+                </Text>
+                <View style={{ height: 12 }} />
+                <CardInset className="p-3">
+                  <Text className="text-text-primary text-sm">CardInset · elevated, recessed</Text>
+                </CardInset>
+              </CardContent>
+            </Card>
+          ))}
+        </Row>
+        <Row label="OUTLINE AND SUBTLE STAY ON THE HOST PLANE (OPT-IN EDGE, NO LIFT)">
+          <Card variant="outline" style={{ flex: 1 }}>
             <CardContent>
-              <Text className="text-text-secondary text-sm">
-                Body copy sits on the card plane. Grouped content inside recesses instead of lifting
-                again.
-              </Text>
-              <View style={{ height: 12 }} />
-              <CardInset className="p-3">
-                <Text className="text-text-primary text-sm">CardInset · elevated, recessed</Text>
-              </CardInset>
+              <Text className="text-text-primary">outline · hairline-strong</Text>
             </CardContent>
           </Card>
-        ))}
-      </View>
-      <Label>OUTLINE AND SUBTLE STAY ON THE HOST PLANE (OPT-IN EDGE, NO LIFT)</Label>
-      <View style={{ flexDirection: 'row', gap: 16 }}>
-        <Card variant="outline" style={{ flex: 1 }}>
-          <CardContent>
-            <Text className="text-text-primary">outline · hairline-strong</Text>
-          </CardContent>
-        </Card>
-        <Card variant="subtle" style={{ flex: 1 }}>
-          <CardContent>
-            <Text className="text-text-primary">subtle · hairline-subtle</Text>
-          </CardContent>
-        </Card>
-        <Card variant="filled" style={{ flex: 1 }}>
-          <CardContent>
-            <Text className="text-text-primary">filled · tone only, two planes up</Text>
-          </CardContent>
-        </Card>
-      </View>
-    </Surface>
+          <Card variant="subtle" style={{ flex: 1 }}>
+            <CardContent>
+              <Text className="text-text-primary">subtle · hairline-subtle</Text>
+            </CardContent>
+          </Card>
+          <Card variant="filled" style={{ flex: 1 }}>
+            <CardContent>
+              <Text className="text-text-primary">filled · tone only, two planes up</Text>
+            </CardContent>
+          </Card>
+        </Row>
+      </StorySpecimens>
+    </StoryPage>
   ),
 }

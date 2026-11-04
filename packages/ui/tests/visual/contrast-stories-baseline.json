@@ -1826,17 +1826,11 @@
     "#e05254|#311816": 6
   },
   "lab-audits-row-inventory--all-rows dark": {
-    "#5b616d|#131418": 15,
     "#888684|#2c2a28": 5,
-    "#888684|#2f2015": 1,
-    "#a29f9d|#44362c": 3
+    "#888684|#372513": 1,
+    "#a29f9d|#4b3b2b": 3
   },
   "lab-audits-row-inventory--all-rows light": {
-    "#121828|#131418": 3,
-    "#424140|#111216": 3,
-    "#424140|#131418": 6,
-    "#5a5958|#131418": 1,
-    "#5b616d|#131418": 15,
     "#ff7900|#ffe6d4": 1,
     "#ffffff|#ff7900": 1
   },
@@ -2222,42 +2216,28 @@
     "#424140|#373635": 3
   },
   "lab-explorations-full-rail--next-to-nav dark": {
-    "#605d5b|#100d0a": 2,
-    "#888684|#252321": 4
-  },
-  "lab-explorations-full-rail--next-to-nav light": {
-    "#605d5b|#100d0a": 2,
     "#888684|#252321": 4
   },
   "lab-explorations-session-pace--states dark": {
     "#888684|#252321": 6
   },
   "lab-explorations-session-pace--states light": {
-    "#888684|#252321": 6
+    "#2ed573|#c3d1c5": 2,
+    "#f9b415|#d8cebc": 1,
+    "#f9b415|#edeae7": 2,
+    "#ff7900|#d4d1ce": 3
   },
-  "lab-explorations-session-rail-heading--states dark": {
-    "#605d5b|#100d0a": 1
-  },
-  "lab-explorations-session-rail-heading--states light": {
-    "#605d5b|#100d0a": 1
+  "lab-explorations-set-modalities--strip-vocabulary light": {
+    "#22d3ee|#d4d1ce": 8
   },
   "lab-explorations-unified-exercise-card--unified dark": {
     "#888684|#2c2a28": 5
-  },
-  "lab-explorations-unified-exercise-card--unified light": {
-    "#121828|#100d0a": 3,
-    "#5a5958|#100d0a": 1
   },
   "lab-explorations-workout-expansion--direction-study dark": {
     "#888684|#252321": 2
   },
   "lab-explorations-workout-expansion--direction-study light": {
-    "#121828|#100d0a": 2,
-    "#121828|#252321": 6,
-    "#424140|#100d0a": 15,
-    "#424140|#121910": 5,
-    "#5a5958|#100d0a": 4,
-    "#5a5958|#252321": 2
+    "#2ed573|#cad1c9": 2
   },
   "lab-north-star-1-surface-system--surface-ramp-system dark": {
     "#6b7280|#000000": 1

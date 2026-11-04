@@ -19,6 +19,7 @@ import {
   BORDER_SUBTLE,
   Page,
   monoTag,
+  PAGE_TEXT_MUTED,
 } from './setHeadingKit'
 
 const INTER = 'Inter, sans-serif'
@@ -175,6 +176,7 @@ function Card({ m }: { m: Modality }) {
         padding: 18,
         gap: 12,
         width: 460,
+        maxWidth: '100%',
       }}
     >
       <View
@@ -277,7 +279,7 @@ function Swatch({ color, label, outlined }: { color: string; label: string; outl
           ...(outlined ? { borderWidth: 1, borderColor: VAR_EDGE } : {}),
         }}
       />
-      <Text style={{ fontFamily: INTER, fontSize: 12, color: T_SECONDARY }}>{label}</Text>
+      <Text style={{ fontFamily: INTER, fontSize: 12, color: PAGE_TEXT_MUTED }}>{label}</Text>
     </View>
   )
 }
@@ -321,7 +323,6 @@ export const StripVocabulary: Story = {
           flexWrap: 'wrap',
           gap: 14,
           alignItems: 'center',
-          marginTop: 4,
         }}
       >
         <Swatch color={velColor(1.1)} label="fastest" />
@@ -332,7 +333,7 @@ export const StripVocabulary: Story = {
         <Swatch color={CYAN} label="variable · continue" outlined />
       </View>
 
-      <View style={{ height: 1, backgroundColor: BORDER_SUBTLE, marginVertical: 4 }} />
+      <View style={{ height: 1, backgroundColor: BORDER_SUBTLE }} />
 
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 16 }}>
         {MODS.map((m) => (
@@ -344,9 +345,8 @@ export const StripVocabulary: Story = {
         style={{
           fontFamily: INTER,
           fontSize: 12.5,
-          color: T_TERTIARY,
+          color: PAGE_TEXT_MUTED,
           maxWidth: 820,
-          marginTop: 8,
         }}
       >
         Open calls: how a drop set shows the WEIGHT drop (baseline step vs marker vs load labels) ·

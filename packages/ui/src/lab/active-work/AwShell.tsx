@@ -89,7 +89,7 @@ export function AwShell({ active, title, subtitle, headerRight, children }: AwSh
       </View>
 
       {/* Content */}
-      <View className="flex-1">
+      <View className="flex-1 gap-section-sm">
         <View className="h-[54px] flex-row items-center justify-between border-b border-border-prominent px-[24px]">
           <View className="flex-row items-baseline gap-[10px]">
             <Typography variant="h5" className="text-[17px] font-bold text-text-primary">
@@ -104,7 +104,7 @@ export function AwShell({ active, title, subtitle, headerRight, children }: AwSh
           {headerRight ?? null}
         </View>
         <ScrollView className="flex-1">
-          <View className="gap-[18px] p-[24px]">{children}</View>
+          <View className="gap-[18px] px-[24px] pb-[24px]">{children}</View>
         </ScrollView>
       </View>
     </View>

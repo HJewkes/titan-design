@@ -80,7 +80,10 @@ function Options({ children }: { children: ReactNode }) {
 function Frame({ children }: { children: ReactNode }) {
   const mode = useSurfaceMode()
   return (
-    <View className="min-h-screen gap-5 p-6" style={{ backgroundColor: reviewPlaneHex(mode) }}>
+    <View
+      className="min-h-screen gap-section-sm p-6"
+      style={{ backgroundColor: reviewPlaneHex(mode) }}
+    >
       {children}
     </View>
   )
