@@ -66,6 +66,27 @@ async function shoot(browser, origin, id, viewport, file) {
   }
 }
 
+/**
+ * Shoots every story at every width. A story that is absent or throws is logged and skipped, never
+ * rethrown, so the manifest step still lists it in `selected` and leaves it out of `shots`.
+ */
+export async function captureStories({ storyIds, outDir, has, shootOne }) {
+  for (const id of storyIds) {
+    if (!has(id)) {
+      console.log(`pr-visual-capture: ${id} is not in this build; skipped`)
+      continue
+    }
+    for (const viewport of WIDTHS) {
+      const file = join(outDir, `${id}@${viewport.width}.png`)
+      try {
+        await shootOne(id, viewport, file)
+      } catch (error) {
+        console.log(`pr-visual-capture: ${id}@${viewport.width} failed: ${error.message}`)
+      }
+    }
+  }
+}
+
 async function captureSide({ staticDir, storyIds, outDir }) {
   mkdirSync(outDir, { recursive: true })
   const server = await serve(staticDir)
@@ -73,18 +94,12 @@ async function captureSide({ staticDir, storyIds, outDir }) {
   const browser = await chromium.launch()
   try {
     const index = JSON.parse(readFileSync(join(staticDir, 'index.json'), 'utf8'))
-    for (const id of storyIds) {
-      if (!index.entries[id]) {
-        console.log(`pr-visual-capture: ${id} is not in this build; skipped`)
-        continue
-      }
-      for (const viewport of WIDTHS) {
-        const file = join(outDir, `${id}@${viewport.width}.png`)
-        await shoot(browser, origin, id, viewport, file).catch((error) =>
-          console.log(`pr-visual-capture: ${id}@${viewport.width} failed: ${error.message}`)
-        )
-      }
-    }
+    await captureStories({
+      storyIds,
+      outDir,
+      has: (id) => Boolean(index.entries[id]),
+      shootOne: (id, viewport, file) => shoot(browser, origin, id, viewport, file),
+    })
   } finally {
     await browser.close()
     server.close()

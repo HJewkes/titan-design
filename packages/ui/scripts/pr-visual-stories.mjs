@@ -29,8 +29,21 @@ function selectEntries(paths, entries) {
   return new Set([...direct, ...composers])
 }
 
+/** Each story id with the changed rendered paths that selected it, directly or through a composed entry. */
+function selectedStories(rendered, entries, ids) {
+  const owners = (entry) => rendered.filter((path) => owns(entry, path))
+  const paths = new Map([...ids].map((id) => [id, new Set()]))
+  for (const entry of entries) {
+    const own = owners(entry)
+    const composed = entries.filter((other) => entry.composes?.includes(other.name))
+    const reached = [...own, ...composed.flatMap(owners)]
+    for (const id of entry.storyIds) for (const path of reached) paths.get(id)?.add(path)
+  }
+  return [...ids].sort().map((story) => ({ story, paths: [...paths.get(story)].sort() }))
+}
+
 /**
- * `{ storyIds, reason }` for the stories a change reaches, or `{ broad: true, storyIds: [], reason }`
+ * `{ storyIds, selected, reason }` for the stories a change reaches, or `{ broad: true, storyIds: [], reason }`
  * when it cannot be narrowed. `catalog` is `src/arch/component-catalog.json`.
  */
 export function storiesFor(changedPaths, catalog, { cap = DEFAULT_CAP } = {}) {
@@ -38,15 +51,34 @@ export function storiesFor(changedPaths, catalog, { cap = DEFAULT_CAP } = {}) {
   const pipeline = changedPaths.some((path) => PIPELINE_PATHS.some((p) => p.test(path)))
   const rendered = changedPaths.filter((path) => firstRenderedPath([path]))
   const unowned = rendered.find((path) => !entries.some((entry) => owns(entry, path)))
-  if (unowned) return { broad: true, storyIds: [], reason: `${unowned} maps to no catalog entry` }
+  if (unowned) {
+    const reason = `${unowned} maps to no catalog entry`
+    return { broad: true, storyIds: [], selected: [], reason }
+  }
 
   const ids = new Set([...selectEntries(rendered, entries)].flatMap((entry) => entry.storyIds))
   if (pipeline) ids.add(PIPELINE_CANARY)
   if (ids.size > cap)
-    return { broad: true, storyIds: [], reason: `${ids.size} stories exceed the cap of ${cap}` }
+    return {
+      broad: true,
+      storyIds: [],
+      selected: [],
+      reason: `${ids.size} stories exceed the cap of ${cap}`,
+    }
   if (ids.size === 0)
-    return { storyIds: [], reason: `none of ${changedPaths.length} changed paths renders a story` }
-  return { storyIds: [...ids].sort(), reason: `${ids.size} stories reached` }
+    return {
+      storyIds: [],
+      selected: [],
+      reason: `none of ${changedPaths.length} changed paths renders a story`,
+    }
+  const selected = selectedStories(rendered, entries, ids)
+  if (pipeline) {
+    const canary = selected.find((item) => item.story === PIPELINE_CANARY)
+    for (const path of changedPaths.filter((p) => PIPELINE_PATHS.some((re) => re.test(p))))
+      if (!canary.paths.includes(path)) canary.paths.push(path)
+    canary.paths.sort()
+  }
+  return { storyIds: [...ids].sort(), selected, reason: `${ids.size} stories reached` }
 }
 
 async function select({ GITHUB_REPOSITORY, PR_NUMBER, GITHUB_TOKEN }) {

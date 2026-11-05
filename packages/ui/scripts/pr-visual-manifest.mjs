@@ -39,17 +39,33 @@ function pairShots(before, after) {
  */
 export function buildManifest({ repo, pr, baseSha, headSha, selection, before, after }) {
   const header = { v: 1, repo, pr, baseSha, headSha }
+  const selectionFields = {
+    selected: selection?.selected ?? [],
+    ...(selection?.broad && { broad: { reason: selection.reason } }),
+  }
   if (!selection)
-    return { ...header, rendered: false, reason: 'story selection did not run', shots: [] }
+    return {
+      ...header,
+      selected: [],
+      rendered: false,
+      reason: 'story selection did not run',
+      shots: [],
+    }
   if (selection.storyIds.length === 0)
-    return { ...header, rendered: false, reason: selection.reason, shots: [] }
+    return { ...header, ...selectionFields, rendered: false, reason: selection.reason, shots: [] }
   const { shots, dropped } = pairShots(before, after)
   const droppedNote = dropped.length > 0 ? `dropped one-sided shots: ${dropped.join(', ')}` : ''
   if (shots.length === 0) {
     const reason = ['no story rendered on both sides', droppedNote].filter(Boolean).join('; ')
-    return { ...header, rendered: false, reason, shots: [] }
+    return { ...header, ...selectionFields, rendered: false, reason, shots: [] }
   }
-  return { ...header, rendered: true, ...(droppedNote && { reason: droppedNote }), shots }
+  return {
+    ...header,
+    ...selectionFields,
+    rendered: true,
+    ...(droppedNote && { reason: droppedNote }),
+    shots,
+  }
 }
 
 const listPngs = (dir) =>

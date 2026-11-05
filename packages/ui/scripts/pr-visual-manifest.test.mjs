@@ -4,6 +4,46 @@ import { buildManifest } from './pr-visual-manifest.mjs'
 const run = { repo: 'owner/repo', pr: 7, baseSha: 'b'.repeat(40), headSha: 'h'.repeat(40) }
 const selected = { storyIds: ['pill--default'], reason: '1 stories reached' }
 
+describe('pr-visual manifest selected stories (TP-4774)', () => {
+  const selection = {
+    storyIds: ['pill--default', 'pill--tone'],
+    selected: [
+      { story: 'pill--default', paths: ['packages/ui/src/Pill.tsx'] },
+      { story: 'pill--tone', paths: ['packages/ui/src/Pill.tsx'] },
+    ],
+    reason: '2 stories reached',
+  }
+
+  it('lists each selected story with the paths that selected it', () => {
+    const files = ['pill--default@1280.png']
+    const manifest = buildManifest({ ...run, selection, before: files, after: files })
+    expect(manifest.selected).toEqual(selection.selected)
+    expect(manifest.broad).toBeUndefined()
+  })
+
+  it('keeps a story whose capture threw in selected and out of shots', () => {
+    const files = ['pill--default@1280.png']
+    const manifest = buildManifest({ ...run, selection, before: files, after: files })
+    expect(manifest.selected.map((item) => item.story)).toContain('pill--tone')
+    expect(manifest.shots.map((shot) => shot.story)).toEqual(['pill--default'])
+  })
+
+  it('names the reason when the selection went broad', () => {
+    const broad = {
+      broad: true,
+      storyIds: [],
+      selected: [],
+      reason: 'x.css maps to no catalog entry',
+    }
+    const manifest = buildManifest({ ...run, selection: broad, before: [], after: [] })
+    expect(manifest).toMatchObject({
+      rendered: false,
+      selected: [],
+      broad: { reason: 'x.css maps to no catalog entry' },
+    })
+  })
+})
+
 describe('pr-visual manifest (TP-1697)', () => {
   it('pairs each shot captured on both sides', () => {
     const files = ['pill--default@1280.png', 'pill--default@390.png']
@@ -11,6 +51,7 @@ describe('pr-visual manifest (TP-1697)', () => {
     expect(manifest).toEqual({
       v: 1,
       ...run,
+      selected: [],
       rendered: true,
       shots: [
         {
