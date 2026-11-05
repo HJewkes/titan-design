@@ -48,12 +48,33 @@ describe('pr-visual story selection (TP-1697)', () => {
 
   it('selects nothing for a change that renders no story', () => {
     const selection = storiesFor(['README.md', `${ui}/Pill/Pill.test.tsx`], catalog)
-    expect(selection).toEqual({ storyIds: [], reason: expect.stringContaining('2 changed paths') })
+    expect(selection).toEqual({
+      storyIds: [],
+      selected: [],
+      reason: expect.stringContaining('2 changed paths'),
+    })
   })
 
   it('renders the canary story when the capture pipeline itself changes', () => {
     expect(storiesFor(['.github/workflows/pr-visual.yml'], catalog).storyIds).toEqual([
       PIPELINE_CANARY,
     ])
+  })
+})
+
+describe('pr-visual selected paths (TP-4774)', () => {
+  it('names the changed path that selected each story, direct or by composition', () => {
+    const path = `${ui}/Pill/Pill.tsx`
+    const { selected } = storiesFor([path], catalog)
+    expect(selected).toEqual([
+      { story: 'card--default', paths: [path] },
+      { story: 'card--empty', paths: [path] },
+      { story: 'pill--default', paths: [path] },
+    ])
+  })
+
+  it('selects nothing and names no story when the change is broad', () => {
+    const selection = storiesFor(['packages/ui/src/theme/tokens/semantic.ts'], catalog)
+    expect(selection.selected).toEqual([])
   })
 })

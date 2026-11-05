@@ -3,7 +3,7 @@ import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
-import { serve, WIDTHS } from './pr-visual-capture.mjs'
+import { captureStories, serve, WIDTHS } from './pr-visual-capture.mjs'
 import { storiesFor } from './pr-visual-stories.mjs'
 
 const UI_ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
@@ -24,6 +24,23 @@ describe('pr-visual capture inputs (TP-1697)', () => {
     const config = readFileSync(join(UI_ROOT, 'playwright.config.ts'), 'utf8')
     for (const { width, height } of WIDTHS)
       expect(config).toContain(`viewport: { width: ${width}, height: ${height} }`)
+  })
+})
+
+describe('pr-visual capture failures (TP-4774)', () => {
+  it('keeps going after a story throws and shoots the others', async () => {
+    const shot = []
+    await captureStories({
+      storyIds: ['a--one', 'b--two'],
+      outDir: 'out',
+      has: () => true,
+      shootOne: async (id, _viewport, file) => {
+        if (id === 'a--one') throw new Error('boom')
+        shot.push(file)
+      },
+    })
+    expect(shot).toHaveLength(WIDTHS.length)
+    expect(shot.every((file) => file.includes('b--two'))).toBe(true)
   })
 })
 
