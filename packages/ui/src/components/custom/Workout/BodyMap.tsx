@@ -1,5 +1,5 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { View, Text, Pressable, Animated, Easing, type ViewProps } from 'react-native'
 import { type ExtendedBodyPart, type Slug } from 'react-native-body-highlighter'
 import { cn } from '../../../utils/cn'
@@ -8,6 +8,7 @@ import { getSemanticColors, type ThemeMode } from '../../../theme/tokens/semanti
 import { useSurfaceMode } from '../../ui/surface/SurfaceContext'
 import { alpha } from '../../../utils/colors'
 import { getGlowShadow } from '../../../theme/elevation'
+import { useEasedValue } from './useEasedValue'
 import {
   MuscleGroup,
   SimpleMuscleGroup,
@@ -30,6 +31,8 @@ export type BodyMapSize = 'phone' | 'wall'
 
 /** Figure scale per size — drives react-native-body-highlighter's `scale` prop
  * (the rendered SVG is 200*scale wide by 400*scale tall). */
+const EASE_OUT = Easing.out(Easing.ease)
+
 const BODY_SCALE: Record<BodyMapSize, number> = {
   phone: 0.8, // 200x400 intrinsic -> ~160x320 px
   wall: 2.4, // 200x400 intrinsic -> 480x960 px
@@ -176,17 +179,7 @@ export function BodyMap({
     [data, mode]
   )
 
-  const [highlight] = useState(() => new Animated.Value(highlightedMuscle ? 1 : 0))
-  useEffect(() => {
-    const animation = Animated.timing(highlight, {
-      toValue: highlightedMuscle ? 1 : 0,
-      duration: 250,
-      easing: Easing.out(Easing.ease),
-      useNativeDriver: false,
-    })
-    animation.start()
-    return () => animation.stop()
-  }, [highlightedMuscle, highlight])
+  const highlight = useEasedValue(highlightedMuscle ? 1 : 0, EASE_OUT)
 
   const scale = highlight.interpolate({ inputRange: [0, 1], outputRange: [1, 1.02] })
   const glowColor = highlightedMuscle

@@ -18,10 +18,7 @@
     "complexity": 19
   },
   "components/custom/Workout/BodyMap.tsx": {
-    "file-lines": 308
-  },
-  "components/custom/Workout/BodyMap.tsx#BodyMap": {
-    "function-lines": 104
+    "file-lines": 300
   },
   "components/custom/Workout/BodyMapDetailPanel.tsx": {
     "file-lines": 522
@@ -94,8 +91,8 @@
     "file-lines": 538
   },
   "components/custom/Workout/IntensityBar.tsx#IntensityBar": {
-    "component-lines": 131,
-    "function-lines": 131
+    "component-lines": 122,
+    "function-lines": 122
   },
   "components/custom/Workout/MesoStatusCard.tsx": {
     "file-lines": 359
