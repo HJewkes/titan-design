@@ -34,9 +34,10 @@ import { WORKOUT_TOKENS } from '../../theme/workout-tokens'
 import { alpha } from '../../utils/colors'
 import { formatVelocity } from '../../utils/workout-format'
 import { paperSheet, insetWell, debossLabel } from '../../theme/materials'
+import { useOnSurfaceColor } from '../../components/ui/surface'
+import { StoryPage, StorySpecimens } from '../story-canvas'
 
 const C = getSemanticColors('dark')
-const PAGE_BG = greyRamp[975]
 const PANEL_BG = greyRamp[975]
 const FONT_HEAD = '"Space Grotesk", sans-serif'
 const FONT_UI = '"Nunito Sans", sans-serif'
@@ -150,15 +151,20 @@ function vlVerdict(loss: number): { word: string; sub: string; tone: string } {
 // --- Presentation scaffolding -----------------------------------------------------
 function Page({ children }: { children: ReactNode }) {
   return (
-    <View style={{ padding: 28, backgroundColor: PAGE_BG, minHeight: '100%', gap: 24 }}>
-      {children}
-    </View>
+    <StoryPage>
+      <StorySpecimens>{children}</StorySpecimens>
+    </StoryPage>
   )
 }
 function SectionTitle({ children }: { children: ReactNode }) {
   return (
     <Text
-      style={{ fontSize: 16, fontWeight: '800', fontFamily: FONT_HEAD, color: C['text-primary'] }}
+      style={{
+        fontSize: 16,
+        fontWeight: '800',
+        fontFamily: FONT_HEAD,
+        color: useOnSurfaceColor('primary'),
+      }}
     >
       {children}
     </Text>
@@ -170,7 +176,7 @@ function Caption({ children }: { children: ReactNode }) {
       style={{
         fontSize: 12,
         fontFamily: FONT_UI,
-        color: C['text-secondary'],
+        color: useOnSurfaceColor('secondary'),
         maxWidth: 780,
         lineHeight: 18,
       }}
@@ -533,7 +539,7 @@ function ForceVelocityChart({ width = 760, height = 360 }: { width?: number; hei
                 cy={py(p.v)}
                 r={emph ? 6 : 4.5}
                 fill={velColor(p.v)}
-                stroke={PAGE_BG}
+                stroke={PANEL_BG}
                 strokeWidth={1}
               />
               <text
@@ -706,7 +712,7 @@ function LoadVelocityChart({ width = 620, height = 360 }: { width?: number; heig
           cy={py(MVT)}
           r={5}
           fill={C['status-error']}
-          stroke={PAGE_BG}
+          stroke={PANEL_BG}
           strokeWidth={1.5}
         />
         <line
@@ -728,7 +734,7 @@ function LoadVelocityChart({ width = 620, height = 360 }: { width?: number; heig
                 cy={py(p.v)}
                 r={emph ? 7 : 5.5}
                 fill={velColor(p.v)}
-                stroke={PAGE_BG}
+                stroke={PANEL_BG}
                 strokeWidth={1.5}
               />
               <text
@@ -1044,6 +1050,8 @@ function CurvesSlot({ width, height = 150 }: { width?: number | string; height?:
 
 // --- Stage relationship banner (live wall ⟶ this review surface) ------------------
 function LiveToReviewBanner() {
+  const primary = useOnSurfaceColor('primary')
+  const secondary = useOnSurfaceColor('secondary')
   return (
     <View
       style={{
@@ -1054,7 +1062,7 @@ function LiveToReviewBanner() {
         paddingVertical: 6,
         paddingHorizontal: 12,
         borderRadius: 999,
-        backgroundColor: alpha(C['text-primary'], 0.05),
+        backgroundColor: alpha(primary, 0.05),
         borderWidth: 1,
         borderColor: PARCH_GHOST,
       }}
@@ -1066,21 +1074,17 @@ function LiveToReviewBanner() {
             fontSize: 11,
             fontWeight: '800',
             fontFamily: FONT_UI,
-            color: C['text-tertiary'],
+            color: secondary,
           }}
         >
           LIVE WALL
         </Text>
       </View>
       <Text style={{ fontSize: 13, color: PARCH_DIM }}>⟶</Text>
-      <Text
-        style={{ fontSize: 11, fontWeight: '800', fontFamily: FONT_UI, color: C['text-primary'] }}
-      >
+      <Text style={{ fontSize: 11, fontWeight: '800', fontFamily: FONT_UI, color: primary }}>
         REVIEW / ANALYSIS
       </Text>
-      <Text
-        style={{ fontSize: 11, fontWeight: '600', fontFamily: FONT_UI, color: C['text-secondary'] }}
-      >
+      <Text style={{ fontSize: 11, fontWeight: '600', fontFamily: FONT_UI, color: secondary }}>
         · the between-set + post-session counterpart to the single-rep glance
       </Text>
     </View>
@@ -1185,39 +1189,46 @@ export const LoadVelocityProfile: Story = {
   ),
 }
 
+/** The review screen's title block; it sits on the page plane. */
+function AnalysisHeading() {
+  return (
+    <View style={{ gap: 10 }}>
+      <View
+        style={{ flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between' }}
+      >
+        <View style={{ gap: 2 }}>
+          <Text
+            style={{
+              fontSize: 22,
+              fontWeight: '900',
+              fontFamily: FONT_HEAD,
+              color: useOnSurfaceColor('primary'),
+            }}
+          >
+            Cable Chest Press · Set 3 review
+          </Text>
+          <Text
+            style={{
+              fontSize: 13,
+              fontWeight: '600',
+              fontFamily: FONT_UI,
+              color: useOnSurfaceColor('secondary'),
+            }}
+          >
+            Push A · Hypertrophy — 140 lb × 10 · analysed from persisted per-rep signals
+          </Text>
+        </View>
+        <LiveToReviewBanner />
+      </View>
+    </View>
+  )
+}
+
 export const AnalysisLayout: Story = {
   name: '4 · Analysis layout (review screen)',
   render: () => (
     <Page>
-      <View style={{ gap: 10 }}>
-        <View
-          style={{ flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between' }}
-        >
-          <View style={{ gap: 2 }}>
-            <Text
-              style={{
-                fontSize: 22,
-                fontWeight: '900',
-                fontFamily: FONT_HEAD,
-                color: C['text-primary'],
-              }}
-            >
-              Cable Chest Press · Set 3 review
-            </Text>
-            <Text
-              style={{
-                fontSize: 13,
-                fontWeight: '600',
-                fontFamily: FONT_UI,
-                color: C['text-secondary'],
-              }}
-            >
-              Push A · Hypertrophy — 140 lb × 10 · analysed from persisted per-rep signals
-            </Text>
-          </View>
-          <LiveToReviewBanner />
-        </View>
-      </View>
+      <AnalysisHeading />
       {/* Top row: the set-level decision (VL) as the hero, verdict + fatigue-vector readouts stacked beside it. */}
       <View style={{ flexDirection: 'row', gap: 16, alignItems: 'stretch' }}>
         <Panel width={720}>
