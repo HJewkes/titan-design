@@ -4,9 +4,6 @@
  */
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { NavStub, Rail, Page, T_TERTIARY } from './setHeadingKit'
-import { getSemanticColors } from '../../theme/tokens/semantic'
-
-const t = getSemanticColors('dark')
 
 type Args = { stripHeight: number }
 const meta: Meta<Args> = {
@@ -32,7 +29,7 @@ export const NextToNav: Story = {
         <div
           style={{
             width: 140,
-            background: t['background-base'],
+            background: 'var(--color-background-base)',
             alignSelf: 'stretch',
             display: 'flex',
             alignItems: 'center',
