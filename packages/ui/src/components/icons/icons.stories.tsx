@@ -26,6 +26,8 @@ import {
   ChevronRightIcon,
   CheckMark,
   SearchIcon,
+  PlayIcon,
+  VolumeOffIcon,
   DatabaseIcon,
   ChartIcon,
 } from './icons'
@@ -187,6 +189,16 @@ export const All: Story = {
       <Swatch label="ChartIcon">
         <View className="text-text-primary">
           <ChartIcon size={28} />
+        </View>
+      </Swatch>
+      <Swatch label="PlayIcon">
+        <View className="text-text-primary">
+          <PlayIcon size={28} />
+        </View>
+      </Swatch>
+      <Swatch label="VolumeOffIcon">
+        <View className="text-text-primary">
+          <VolumeOffIcon size={28} />
         </View>
       </Swatch>
     </View>

@@ -6,6 +6,7 @@
 
 import { ChatMessage } from '@titan-design/chat-protocol';
 import { ClassValue } from 'clsx';
+import { ComponentType } from 'react';
 import { DataPart } from '@titan-design/chat-protocol';
 import { DeliveryStatus } from '@titan-design/chat-protocol';
 import { ImageSourcePropType } from 'react-native';
@@ -1073,6 +1074,7 @@ export interface ChipProps extends ViewProps {
     // (undocumented)
     children?: React__default.ReactNode;
     className?: string;
+    // @deprecated
     color?: ChipColor;
     isDisabled?: boolean;
     isSelected?: boolean;
@@ -1081,6 +1083,7 @@ export interface ChipProps extends ViewProps {
     onPress?: () => void;
     rightElement?: React__default.ReactNode;
     size?: ChipSize;
+    tone?: PillTone;
     variant?: ChipVariant;
 }
 
@@ -3473,6 +3476,9 @@ export function isHistoryOnly(agent: Pick<AgentSummary, 'stateSource'>): boolean
 export function isLiveAgent(state: AgentSummaryState): boolean;
 
 // @public
+export type JsonSchema = Readonly<Record<string, unknown>>;
+
+// @public
 export function KanbanIcon(input: IconProps): react_jsx_runtime.JSX.Element;
 
 // @public
@@ -3632,6 +3638,15 @@ export function Label(props: LabelProps): react_jsx_runtime.JSX.Element;
 
 // @public (undocumented)
 export interface LabelProps extends Omit<TypographyProps, 'variant'> {
+}
+
+// @public
+export function laneLayout(input: LaneLayoutOptions): GraphLayout;
+
+// @public
+export interface LaneLayoutOptions {
+    lanes: readonly GraphGroup[];
+    rankEdgeKinds?: readonly string[];
 }
 
 // @public
@@ -3997,6 +4012,36 @@ export interface MarkdownProseProps {
     size?: ProseSize;
     // (undocumented)
     testID?: string;
+}
+
+// @public
+export function MediaThumb(input: MediaThumbProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export function MediaThumbBadge(input: MediaThumbBadgeProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface MediaThumbBadgeProps {
+    accessibilityLabel: string;
+    children?: string;
+    className?: string;
+    icon?: ComponentType<IconProps>;
+}
+
+// @public
+export type MediaThumbFit = 'cover' | 'contain-blur';
+
+// @public
+export interface MediaThumbProps extends Omit<ViewProps, 'children'> {
+    accessibilityLabel?: string;
+    aspect?: number;
+    bottomEnd?: ReactNode;
+    bottomStart?: ReactNode;
+    className?: string;
+    fit?: MediaThumbFit;
+    isLoading?: boolean;
+    source?: ImageSourcePropType;
+    topStart?: ReactNode;
 }
 
 // @public
@@ -4632,6 +4677,9 @@ export type PillVariant = 'solid' | 'subtle' | 'outline' | 'clear';
 
 // @public
 export const PLANE_ORDER: readonly ["frame", "background", "base", "elevated", "raised", "overlay"];
+
+// @public
+export function PlayIcon(props: IconProps): react_jsx_runtime.JSX.Element;
 
 // @public
 export function pluralize(count: number, one: string, many: string): string;
@@ -5341,6 +5389,29 @@ export type ScatterReferenceLine = ({
     id?: string;
     label?: string;
 };
+
+// @public
+export function SchemaForm(input: SchemaFormProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export type SchemaFormErrors = Readonly<Record<string, string | readonly string[]>>;
+
+// @public
+export interface SchemaFormProps {
+    className?: string;
+    emptyState?: React__default.ReactNode;
+    errors?: SchemaFormErrors;
+    isDisabled?: boolean;
+    lockedIdHint?: string;
+    lockedIds?: readonly string[];
+    onChange: (value: SchemaFormValue) => void;
+    schema: JsonSchema;
+    testID?: string;
+    value: SchemaFormValue;
+}
+
+// @public
+export type SchemaFormValue = Record<string, unknown>;
 
 // @public
 export const SCORE_BAND_META: Record<CodeScoreBand, {
@@ -8006,6 +8077,9 @@ export interface VerdictHeroWordProps {
 
 // @public
 export function VoltrasMark(input: IconProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export function VolumeOffIcon(props: IconProps): react_jsx_runtime.JSX.Element;
 
 // @public (undocumented)
 export function VStack(props: StackProps): react_jsx_runtime.JSX.Element;

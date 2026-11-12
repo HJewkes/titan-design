@@ -109,6 +109,8 @@ Generated from `src/arch/component-catalog.json` by `pnpm catalog`. Do not edit 
 | LiveFatiguePanel | candidate | custom/Fatigue | — | LiveAuraFrame, LiveFatigueCard, VelocityHero | custom-fatigue-live-fatigue-panel--live-panel-v-2 |
 | MapCard | candidate | ui/map-card | MapCard: a pop-out card beside a point on a map, joined to it by a leader line. | Surface, Typography | components-molecules-mapcard--default |
 | MarkdownProse | candidate | custom/Prose | MarkdownProse — renders a small, predictable markdown subset as themed prose and auto-links references the caller describes. | Typography | custom-prose-markdownprose--code-blocks |
+| MediaThumb | candidate | ui/media-thumb | A media poster frame at a fixed aspect ratio, with three corner badge slots. | Skeleton, mediaIcons | components-molecules-mediathumb--default |
+| MediaThumbBadge | candidate | ui/media-thumb | A small dark badge for a `MediaThumb` corner. | SvgIcon | components-atoms-mediathumbbadge--default |
 | Menu | candidate | ui/menu | Menu component for dropdown menus. | Surface, TriggerSurface | components-molecules-menu--controlled |
 | MesoCard | candidate | custom/Workout | A mesocycle card with name, goal, split, week range, an optional volume heatmap strip, and an expandable WeekRow list. | Badge, Card, WeekRow | custom-workout-mesocard--collapsed |
 | MesoProgressBar | candidate | custom/Workout | Segmented horizontal bar of mesocycles. | — | custom-workout-mesoprogressbar--active-current |
@@ -151,6 +153,7 @@ Generated from `src/arch/component-catalog.json` by `pnpm catalog`. Do not edit 
 | ScatterPointMark | review | ui/charts | One pressable bubble, ringed when selected, labelled when large or selected. | — | — |
 | ScheduleTiles | candidate | custom/Workout | ScheduleTiles — Date / Time / Until row for an upcoming session. | DateTime, Stack, Tile | custom-workout-scheduletiles--soon-under-a-day |
 | SchemaCard | candidate | ui/charts | SchemaCard: tables, their fields and the relations between them, laid out from data with no measuring. | EmptyState, SchemaConnectors, Skeleton, Surface, Typography | components-organisms-schemacard--default |
+| SchemaForm | candidate | ui/schema-form | A form rendered from a JSON Schema: strings (with a `maxLength` counter), string enums as a select, numbers, booleans, nested objects and arrays whose rows add, remove and reorder inside `minItems` / `maxItems`. | EmptyState, SchemaFormNodes, Stack | components-organisms-schemaform--default |
 | Section | stable | ui/section | — | — | components-atoms-section--default |
 | SegmentedBar | candidate | custom/Workout | A horizontal track split into weighted, individually-fillable segments — the presentational atom the per-set strips are built from. | — | custom-workout-segmentedbar--equal-segments |
 | SegmentedProgressBar | candidate | custom/Workout | A progress bar segmented by weighted slots (one chunk per exercise, width ∝ its set count): `value` fills the chunks left-to-right, and a single pace colour spans them all — green when at/ahead of the `target` pace, amber when behind, steel when there is no target. | SegmentedBar | custom-workout-segmentedprogressbar--ahead |

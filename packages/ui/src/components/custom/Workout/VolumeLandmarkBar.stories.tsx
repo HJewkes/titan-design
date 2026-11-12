@@ -1,13 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { View } from 'react-native'
 import { VolumeLandmarkBar } from './VolumeLandmarkBar'
-import { Surface } from '../../ui/surface'
+import { StorySpecimens } from '../../../lab/story-canvas'
 
 const meta: Meta<typeof VolumeLandmarkBar> = {
   title: 'Custom/Workout/DataViz/VolumeLandmarkBar',
   component: VolumeLandmarkBar,
   tags: ['autodocs', 'status:candidate', '!status:review'],
   parameters: {
+    canvas: 'page',
+    layout: 'fullscreen',
     docs: {
       description: {
         component:
@@ -28,13 +29,6 @@ const meta: Meta<typeof VolumeLandmarkBar> = {
     trackHeight: { control: 'number', description: 'Track height in px' },
     scaleMax: { control: 'number', description: 'Upper bound of the track scale (sets)' },
   },
-  decorators: [
-    (Story) => (
-      <Surface level="background" style={{ padding: 24, paddingBottom: 40 }}>
-        <Story />
-      </Surface>
-    ),
-  ],
 }
 
 export default meta
@@ -64,12 +58,12 @@ export const OverMRV: Story = {
 
 export const AllZones: Story = {
   render: () => (
-    <View style={{ gap: 28 }}>
+    <StorySpecimens>
       <VolumeLandmarkBar muscle="Rear Delts" currentSets={5} landmarks={LANDMARKS} />
       <VolumeLandmarkBar muscle="Calves" currentSets={12} landmarks={LANDMARKS} />
       <VolumeLandmarkBar muscle="Quads" currentSets={17} landmarks={LANDMARKS} />
       <VolumeLandmarkBar muscle="Back" currentSets={21} landmarks={LANDMARKS} />
       <VolumeLandmarkBar muscle="Biceps" currentSets={26} landmarks={LANDMARKS} />
-    </View>
+    </StorySpecimens>
   ),
 }

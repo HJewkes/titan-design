@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View, Text } from 'react-native'
 import { SetStrip, type SetStripSet } from './SetStrip'
-import { Surface } from '../../ui/surface'
+import { StorySpecimen, StorySpecimens } from '../../../lab/story-canvas'
 
 /**
  * `SetStrip` — the per-set segmented performance strip. One continuous bar per
@@ -14,6 +14,9 @@ const meta: Meta<typeof SetStrip> = {
   component: SetStrip,
   tags: ['autodocs', 'status:candidate', '!status:review'],
   parameters: {
+    // The strip heads an exercise card, so it is shown in a panel on the page plane.
+    canvas: 'panel',
+    layout: 'fullscreen',
     docs: {
       description: {
         component:
@@ -29,9 +32,9 @@ const meta: Meta<typeof SetStrip> = {
   },
   decorators: [
     (Story) => (
-      <Surface level="base" style={{ width: 210, padding: 16 }}>
+      <View style={{ width: 210 }}>
         <Story />
-      </Surface>
+      </View>
     ),
   ],
 }
@@ -258,17 +261,20 @@ export const ExpectedRangeLongLabel: Story = {
 // ---- set-type variant sheet: every variant at the real rail width, for eyeballing
 function SheetRow({ label, meta, sets }: { label: string; meta: string; sets: SetStripSet[] }) {
   return (
-    <View style={{ gap: 6 }}>
-      <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 8 }}>
-        <Text className="text-text-primary" style={{ fontSize: 13, fontWeight: '800' }}>
-          {label}
-        </Text>
-        <Text className="text-text-tertiary" style={{ fontSize: 10, fontFamily: 'monospace' }}>
-          {meta}
-        </Text>
-      </View>
+    <StorySpecimen
+      label={
+        <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 8 }}>
+          <Text className="text-text-primary" style={{ fontSize: 13, fontWeight: '800' }}>
+            {label}
+          </Text>
+          <Text className="text-text-secondary" style={{ fontSize: 10, fontFamily: 'monospace' }}>
+            {meta}
+          </Text>
+        </View>
+      }
+    >
       <SetStrip sets={sets} />
-    </View>
+    </StorySpecimen>
   )
 }
 
@@ -279,7 +285,7 @@ function SheetRow({ label, meta, sets }: { label: string; meta: string; sets: Se
  */
 export const SetTypes: Story = {
   render: () => (
-    <View style={{ width: 232, gap: 18 }}>
+    <StorySpecimens className="w-[232px]">
       <SheetRow
         label="Flat sets"
         meta="5 × 8 — done + active + todo"
@@ -319,10 +325,9 @@ export const SetTypes: Story = {
         meta="~15 + clusters to failure"
         sets={[{ status: 'myo-upcoming', activationLen: 15 }]}
       />
-    </View>
+    </StorySpecimens>
   ),
   parameters: {
-    layout: 'padded',
     docs: {
       description: {
         story:

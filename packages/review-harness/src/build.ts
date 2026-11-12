@@ -20,6 +20,7 @@ import { prepareLockBuild, type FootprintReader, type LockBuild } from './locks-
 import { ReviewError, assertStoriesExist, loadRound, type LoadedRound } from './review.ts'
 import { applyRoundRules } from './round-rules.ts'
 import { discoverPriorRounds, loadPriorRound, shipRefusals, type PriorRound } from './ship-gate.ts'
+import { buildStorybook, storybookBuildIo, type StorybookBuildIo } from './storybook-build.ts'
 import {
   RoundSchema,
   lintRound,
@@ -50,6 +51,8 @@ export interface BuildIo {
   git: TreeGit
   /** Reads a PR head's footprint in the tree for `--locks`; the real git reader when absent. */
   footprint?: FootprintReader
+  /** The build and tree reads of `--storybook-build`; the real ones when absent. */
+  storybook?: StorybookBuildIo
 }
 
 export interface BuildOptions {
@@ -59,6 +62,8 @@ export interface BuildOptions {
   priorFeedback?: string[]
   /** The titan-locks/1 registry; the lock checks run only when it is given. */
   locks?: string
+  /** Build the tree's static Storybook into `storybook/` beside the round (needs `tree`). */
+  storybookBuild?: boolean
 }
 
 type BuildProvenance = NonNullable<Manifest['build']>
@@ -216,6 +221,33 @@ async function servedFaults(io: BuildIo, round: LoadedRound, dir: string, report
   return faults.length > 0
 }
 
+/**
+ * The static Storybook a round carries with `--storybook-build`, built from the tree whose HEAD
+ * is the round's `build.mergeSha`; a tree that moved under the round refuses.
+ */
+async function writeStorybook(
+  io: BuildIo,
+  options: BuildOptions,
+  dir: string,
+  build: BuildProvenance | undefined
+) {
+  if (!options.storybookBuild || options.tree === undefined) return
+  const { sidecar, path, elapsedMs } = await buildStorybook(
+    options.tree,
+    dir,
+    io.storybook ?? storybookBuildIo
+  )
+  if (build && sidecar.sha !== build.mergeSha)
+    throw new ReviewError(
+      `--storybook-build built ${sidecar.sha}, not the round's ${build.mergeSha}`
+    )
+  const bytes = sidecar.files.reduce((sum, f) => sum + f.bytes, 0)
+  io.stderr(
+    `wrote ${path} (${sidecar.files.length} files, ${bytes} bytes, ${sidecar.storyIds} stories` +
+      `${sidecar.dirty ? ', built from uncommitted changes' : ''}) in ${(elapsedMs / 1000).toFixed(1)}s`
+  )
+}
+
 type Checked =
   | { refusal: string[] }
   | { ruled: ManifestInput; round: LoadedRound; build?: BuildProvenance }
@@ -261,6 +293,8 @@ export async function buildRound(
   io: BuildIo,
   options: BuildOptions = {}
 ): Promise<number> {
+  if (options.storybookBuild && options.tree === undefined)
+    throw new ReviewError('--storybook-build needs --tree <path>, the checkout to build')
   const checked = await checkDraft(draftPath, storybook, io, options)
   if ('refusal' in checked) {
     checked.refusal.forEach((line) => io.stderr(`refused: ${line}`))
@@ -283,6 +317,7 @@ export async function buildRound(
     io.stderr(FRAME_REFUSAL)
     return EXIT_REFUSED
   }
+  await writeStorybook(io, options, dir, checked.build)
   await writeFile(join(dir, ROUND_FILE), bytes)
   io.stderr(`wrote ${join(dir, ROUND_FILE)}`)
   return 0
