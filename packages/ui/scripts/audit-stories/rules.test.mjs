@@ -4,7 +4,7 @@ import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 import { BLOCKER_KINDS, CONTRAST_TOKEN_KIND, WARNING_KINDS } from './checks.mjs'
-import { RULE_BY_KIND, withRules } from './rules.mjs'
+import { RULE_BY_AXE_RULE, RULE_BY_KIND, withRules } from './rules.mjs'
 
 const doc = readFileSync(
   resolve(dirname(fileURLToPath(import.meta.url)), '../../docs/design-rules.md'),
@@ -46,6 +46,16 @@ describe('audit:stories rule ids', () => {
     expect(tagged.blockers[0]).not.toHaveProperty('rule')
     expect(tagged.warnings[0].rule).toBe('DR-LA-04')
     expect(tagged.contrast_token[0].rule).toBe('DR-CO-01')
+  })
+
+  it('cites the narrower rule for target-size and label, and DR-IX-14 for other axe rules', () => {
+    const axe = (rule) => ({ kind: 'axe-violation', axe_rule: rule, selector: '.a', detail: 'x' })
+    const entry = { warnings: [axe('target-size'), axe('label'), axe('list')] }
+
+    const rules = withRules(entry).warnings.map((f) => f.rule)
+
+    expect(rules).toEqual(['DR-IX-02', 'DR-IX-13', 'DR-IX-14'])
+    expect(Object.values(RULE_BY_AXE_RULE).filter((id) => !documentedRules.has(id))).toEqual([])
   })
 
   it('leaves a frame that failed to render as it was', () => {
