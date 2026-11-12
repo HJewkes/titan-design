@@ -9,6 +9,7 @@ import {
   isValueSelected,
   selectDisplayLabel,
   toggleValue,
+  labelClassName,
   triggerClassName,
   type SelectSize,
 } from './selectModel'
@@ -50,12 +51,6 @@ function useSelectContext<T>() {
 
 export type { SelectSize }
 
-const labelSizeClass: Record<SelectSize, string> = {
-  sm: 'text-sm',
-  md: 'text-base',
-  lg: 'text-lg',
-}
-
 export interface SelectProps<T = string> extends ViewProps {
   /** Selected value (single mode) */
   value?: T | null
@@ -83,14 +78,6 @@ export interface SelectProps<T = string> extends ViewProps {
   size?: SelectSize
   /** Additional className */
   className?: string
-}
-
-function labelClassName(size: SelectSize | undefined, hasValue: boolean) {
-  return cn(
-    'flex-1',
-    size && labelSizeClass[size],
-    hasValue ? 'text-text-primary' : 'text-text-secondary'
-  )
 }
 
 /**

@@ -77,3 +77,17 @@ export function triggerClassName(state: TriggerState) {
     isDisabled && 'opacity-50 cursor-not-allowed'
   )
 }
+
+const labelSizeClass: Record<SelectSize, string> = {
+  sm: 'text-sm',
+  md: 'text-base',
+  lg: 'text-lg',
+}
+
+export function labelClassName(size: SelectSize | undefined, hasValue: boolean) {
+  return cn(
+    'flex-1',
+    size && labelSizeClass[size],
+    hasValue ? 'text-text-primary' : 'text-text-secondary'
+  )
+}
