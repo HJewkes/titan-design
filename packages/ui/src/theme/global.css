@@ -720,6 +720,15 @@
     color: var(--color-text-primary);
   }
 
+  /* Default text face (TD-1036): React Native Web gives every outermost <Text> `font: 14px System`
+     in its `css-text-*` reset class, so text with no font-* class drew the system stack. This sets
+     the body face on that class only; nested text (`css-textHasAncestor-*`) still inherits. RNW
+     inserts its sheet first in <head>, so this wins over the reset and loses to any later font-*
+     utility at the same specificity. */
+  [class*='css-text-'] {
+    font-family: var(--font-family-body), sans-serif;
+  }
+
   /* Focus ring (TD-765): text-brand over a 2px gap. The gap is the outline offset, left transparent
      so it shows whatever plane the element sits on; a box-shadow gap would need that plane's colour
      and loses to any shadow utility. `.focus-ring` paints the same ring for a component that draws
