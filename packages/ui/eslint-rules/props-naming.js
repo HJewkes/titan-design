@@ -1,7 +1,7 @@
 /**
  * ESLint rule: props-naming
  *
- * Every titan component takes the same vocabulary for the same thing (CLAUDE.md, Props
+ * Every titan component takes the same vocabulary for the same thing (docs/component-development.md, Props
  * Conventions): boolean state is `isDisabled`, `isLoading`, `isSelected`, and the press handler
  * is `onPress`. A component that declares `disabled` or `onClick` instead composes differently
  * from its siblings, and nothing but a reviewer's eye catches it (TD-690).
@@ -13,7 +13,7 @@
  * inherited through `extends PressableProps` or a type reference do not, since the rule has no
  * type information and the upstream API is not titan's to rename. The three state names are
  * flagged only when their annotation is absent or boolean-shaped: `selected: Item | null` is a
- * controlled value, which CLAUDE.md names `x` / `defaultX` / `onXChange`, not a flag.
+ * controlled value, which docs/component-development.md names `x` / `defaultX` / `onXChange`, not a flag.
  *
  * RATCHET, same shape as no-html-element: today's sites are recorded in
  * `props-naming-baseline.json`, keyed by file and then property name, so swapping a baselined
@@ -27,7 +27,7 @@ const { loadBaseline, baselineKey } = require('./ratchet')
 
 const BASELINE_FILE = 'props-naming-baseline.json'
 
-/** Off-convention prop name -> the name CLAUDE.md gives the same thing. */
+/** Off-convention prop name -> the name docs/component-development.md gives the same thing. */
 const REPLACEMENT = {
   disabled: 'isDisabled',
   loading: 'isLoading',
@@ -106,7 +106,7 @@ module.exports = {
     messages: {
       offConvention:
         '`{{name}}` on {{type}} is off the props convention: every titan component names boolean state ' +
-        'isDisabled, isLoading and isSelected and its press handler onPress (CLAUDE.md, Props Conventions), ' +
+        'isDisabled, isLoading and isSelected and its press handler onPress (docs/component-development.md, Props Conventions), ' +
         'so a consumer composes `Button`, `Link` and this component the same way. Use `{{replacement}}` here. ' +
         'A prop that must mirror a third-party API keeps `// eslint-disable-next-line titan/props-naming -- <why>`.',
       stale: `${BASELINE_FILE} still allows {{count}} off-convention prop(s) this file no longer declares. Use \`scripts/update-props-naming-baseline.mjs\` to shrink the baseline so the site can't come back unnoticed.`,

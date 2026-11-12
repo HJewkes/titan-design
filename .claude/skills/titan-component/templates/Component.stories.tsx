@@ -4,7 +4,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Example } from './Example'
 
 const meta: Meta<typeof Example> = {
-  // Group per CLAUDE.md > Storybook Pattern: Components/Atoms|Molecules|Organisms/<Name> for ui/.
+  // Group per docs/component-development.md > Storybook Pattern: Components/Atoms|Molecules|Organisms/<Name> for ui/.
   title: 'Components/Molecules/Example',
   component: Example,
   // Status tag per packages/ui/MATURITY.md; negate the inherited default when you set one.

@@ -3,7 +3,7 @@
 TEMPLATE for `src/components/custom/<Family>/README.md` (a domain family) or a shell app folder.
 Delete this line. A domain-free component goes in `ui/` and gets a row in `ui/README.md` instead.
 
-One paragraph: what the family is and where it sits. Placement rules: `CLAUDE.md` > Placement.
+One paragraph: what the family is and where it sits. Placement rules: `docs/component-development.md` > Placement.
 
 This README is the index. It maps each component's dependencies (**composes ↓**) and consumers
 (**used-by ↑**) so the tree navigates both ways and a hand-rolled element that should have used a
