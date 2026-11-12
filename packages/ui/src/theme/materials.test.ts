@@ -12,14 +12,7 @@
  * the anti-banding layer was mitigating nothing. See the materials.ts header.
  */
 import { describe, it, expect } from 'vitest'
-import {
-  grainOpacityForTone,
-  grainForTone,
-  paperSheet,
-  insetWell,
-  barPaper,
-  postIt,
-} from './materials'
+import { grainOpacityForTone, grainForTone, paperSheet, insetWell, barPaper } from './materials'
 import { greyRamp } from './tokens/primitives'
 import { getSemanticColors } from './tokens/semantic'
 
@@ -106,15 +99,13 @@ describe('default tones follow the caller mode (TD-521)', () => {
     expect(paperSheet(undefined, 'light').backgroundColor).toBe(light['surface-raised'])
   })
 
-  it('gives a light caller the light well and post-it fills', () => {
+  it('gives a light caller the light well fill', () => {
     expect(insetWell(undefined, 'light').backgroundColor).toBe(light['surface-input'])
-    expect(postIt(undefined, -1.5, 'light').backgroundColor).toBe(light['surface-raised'])
   })
 
   it('keeps the dark defaults for callers that pass no mode', () => {
     expect(paperSheet().backgroundColor).toBe(dark['surface-raised'])
     expect(insetWell().backgroundColor).toBe(dark['surface-input'])
-    expect(postIt().backgroundColor).toBe(dark['surface-raised'])
   })
 })
 

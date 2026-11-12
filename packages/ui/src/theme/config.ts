@@ -5,7 +5,7 @@
  * Dark mode is the default theme.
  */
 
-import { semanticColorsLight, semanticColorsDark, type ThemeMode } from './tokens/semantic'
+import { semanticColorsLight, semanticColorsDark } from './tokens/semantic'
 import { motionCSSVars } from './tokens/motion-vars'
 import { spacingCSSVars } from './tokens/spacing-vars'
 
@@ -416,84 +416,3 @@ export const darkThemeCSSVars = {
 
   ...themeIndependentCSSVars,
 } as const
-
-// Helper to get CSS vars for a theme mode
-export function getThemeCSSVars(mode: ThemeMode) {
-  return mode === 'dark' ? darkThemeCSSVars : lightThemeCSSVars
-}
-
-// Gluestack UI theme configuration
-export const gluestackConfig = {
-  tokens: {
-    colors: {
-      // Map to our semantic colors via CSS vars
-      primary500: 'var(--color-brand-primary)',
-      primary600: 'var(--color-brand-primary-dark)',
-      primary400: 'var(--color-brand-primary-light)',
-
-      secondary500: 'var(--color-brand-secondary)',
-      secondary600: 'var(--color-brand-secondary-dark)',
-      secondary400: 'var(--color-brand-secondary-light)',
-
-      success500: 'var(--color-status-success)',
-      error500: 'var(--color-status-error)',
-      warning500: 'var(--color-status-warning)',
-      info500: 'var(--color-status-info)',
-
-      textLight: 'var(--color-text-primary)',
-      textDark: 'var(--color-text-inverse)',
-
-      backgroundLight: 'var(--color-background-default)',
-      backgroundDark: 'var(--color-surface-base)',
-    },
-    space: {
-      '0': 0,
-      '1': 4,
-      '2': 8,
-      '3': 12,
-      '4': 16,
-      '5': 20,
-      '6': 24,
-      '8': 32,
-      '10': 40,
-      '12': 48,
-      '16': 64,
-      '20': 80,
-      '24': 96,
-    },
-    radii: {
-      none: 0,
-      sm: 4,
-      md: 8,
-      lg: 12,
-      xl: 16,
-      '2xl': 24,
-      full: 9999,
-    },
-    fontSizes: {
-      xs: 12,
-      sm: 14,
-      md: 16,
-      lg: 18,
-      xl: 20,
-      '2xl': 24,
-      '3xl': 30,
-      '4xl': 36,
-      '5xl': 48,
-    },
-  },
-  aliases: {
-    bg: 'backgroundColor',
-    p: 'padding',
-    px: 'paddingHorizontal',
-    py: 'paddingVertical',
-    m: 'margin',
-    mx: 'marginHorizontal',
-    my: 'marginVertical',
-    h: 'height',
-    w: 'width',
-    rounded: 'borderRadius',
-  },
-} as const
-
-export type ThemeConfig = typeof gluestackConfig
