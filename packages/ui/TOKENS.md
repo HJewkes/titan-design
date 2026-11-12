@@ -9,6 +9,75 @@ where the choice is actually made.
 
 ---
 
+## 0. Token classes at a glance
+
+The map before the detail. Each row points at the section that decides the choice.
+
+### Two tiers
+
+1. **Primitives** (`theme/tokens/primitives.ts`) — raw colour scales and the 4px spacing scale. No
+   meaning attached.
+2. **Semantic** (`theme/tokens/semantic.ts`) — meaningful names that reference primitives, one set
+   for dark and one for light. Components use these; they do not reach for a primitive step.
+
+A semantic colour reaches a component as a Tailwind class backed by a `--color-{category}-{name}`
+custom property (`global.css`, `tailwind.config.js`). §7 lists the files to touch when adding one.
+
+### Categories
+
+| Category    | Pattern               | Example classes                                              |
+| ----------- | --------------------- | ------------------------------------------------------------ |
+| Brand       | `brand-{role}`        | `bg-brand-primary`, `text-brand-secondary`                   |
+| Status      | `status-{type}`       | `bg-status-success`, `text-status-error`                     |
+| Result      | `result-{outcome}`    | `text-result-improve`, `text-result-degrade`                 |
+| Text        | `text-{role}`         | `text-text-primary`, `text-text-secondary`                   |
+| Surface     | `surface-{level}`     | `bg-surface-base`, `bg-surface-elevated`                     |
+| Background  | `background-{role}`   | `bg-background-base`, `bg-background-default`                |
+| Border      | `border-{role}`       | `border-border-prominent`, `border-border-focus`             |
+| Hairline    | `hairline-{strength}` | `border-hairline`, `border-hairline-subtle`                  |
+| Interactive | `interactive-{state}` | `hover:bg-interactive-hover`, `focus:ring-interactive-focus` |
+| Data        | `data-{n}`            | `bg-data-1` … `bg-data-10` (superseded, see §1)              |
+| Spacing     | `{situation}-{level}` | `p-inset-md`, `gap-stack-md`, `px-control-x-md`              |
+| Sizing      | `control-{level}`     | `h-control-md`, `min-h-control-md`                           |
+
+`border-border-default`, `-subtle` and `-strong` are retired; separation uses `hairline-*` (§1).
+
+### Spacing situations
+
+`inset`, `squish`, `stack`, `inline`, `control`, `section` and `gutter`. `squish` and `control` carry
+an explicit axis (`squish-x-md`, `control-y-md`) because `px-` and `py-` share one Tailwind
+namespace. The numeric scale (`p-3`, `gap-2`) stays legal everywhere. Levels and pixel values are in
+§5.
+
+### Dark by default, light on `.light`
+
+Dark is the default: its values sit on `:root`. Light mode is the `.light` class on `<html>`.
+Declare both modes explicitly — do not rely on inheritance. The light base is `#EDEAE7`
+(`--color-surface-base` and `--color-background-default` in `global.css`), not pure white, so the
+elevation ramp has room to work.
+
+### Elevation
+
+Levels run from -2 to +5 (`theme/elevation.ts`). Each resolves to a plane on the surface ramp plus
+a treatment:
+
+| Level | Plane                     | Treatment                                |
+| ----- | ------------------------- | ---------------------------------------- |
+| -2    | frame                     | recessed (inset well, two planes down)   |
+| -1    | background                | recessed (inset well, one plane down)    |
+| 0     | base                      | flat, no treatment                       |
+| 1–3   | elevated, raised, overlay | lifted (tone, rim-light, ambient shadow) |
+| 4–5   | overlay                   | floating (same recipe, larger shadow)    |
+
+Levels 4 and 5 share the overlay plane; past the top of the ramp, separation is the shadow's job.
+
+### Platform modifiers
+
+Style per platform with `web:`, `native:`, `ios:` and `android:` prefixes on a `className`, for
+example `web:hover:bg-brand-primary-hover`.
+
+---
+
 ## 1. Which colour palette?
 
 Pick by **what the colour means**, not by what looks right.

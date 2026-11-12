@@ -3,6 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View, Text } from 'react-native'
 import { Surface } from '../surface'
 import { ToolbarButton, ToolbarButtonGroup } from './ToolbarButton'
+import { StorySpecimen, StorySpecimens } from '../../../lab/story-canvas'
 
 const meta: Meta<typeof ToolbarButton> = {
   title: 'Components/Molecules/ToolbarButton',
@@ -241,10 +242,13 @@ export const ButtonGroup: Story = {
     const [activeIndex, setActiveIndex] = useState<number | null>(1)
 
     return (
-      <View style={{ gap: 16 }}>
-        <Text className="text-text-secondary text-xs mb-1">
-          Click to select (one active at a time):
-        </Text>
+      <StorySpecimen
+        label={
+          <Text className="text-text-secondary text-xs">
+            Click to select (one active at a time):
+          </Text>
+        }
+      >
         <ToolbarButtonGroup gap="sm">
           <ToolbarButton
             label="Filter"
@@ -265,7 +269,7 @@ export const ButtonGroup: Story = {
             onPress={() => setActiveIndex(activeIndex === 2 ? null : 2)}
           />
         </ToolbarButtonGroup>
-      </View>
+      </StorySpecimen>
     )
   },
 }
@@ -361,9 +365,12 @@ export const CompactMode: Story = {
 
 export const Variants: Story = {
   render: () => (
-    <View style={{ gap: 24 }}>
-      <View>
-        <Text className="text-text-secondary text-xs mb-2">Neumorphic (with 3D inset shadows)</Text>
+    <StorySpecimens>
+      <StorySpecimen
+        label={
+          <Text className="text-text-secondary text-xs">Neumorphic (with 3D inset shadows)</Text>
+        }
+      >
         <View style={{ flexDirection: 'row', gap: 8 }}>
           <ToolbarButton
             label="Inactive"
@@ -373,9 +380,8 @@ export const Variants: Story = {
           />
           <ToolbarButton label="Active" icon={<SettingsIcon />} variant="raised" isActive={true} />
         </View>
-      </View>
-      <View>
-        <Text className="text-text-secondary text-xs mb-2">Flat (no shadows)</Text>
+      </StorySpecimen>
+      <StorySpecimen label={<Text className="text-text-secondary text-xs">Flat (no shadows)</Text>}>
         <View style={{ flexDirection: 'row', gap: 8 }}>
           <ToolbarButton
             label="Inactive"
@@ -385,8 +391,8 @@ export const Variants: Story = {
           />
           <ToolbarButton label="Active" icon={<SettingsIcon />} variant="default" isActive={true} />
         </View>
-      </View>
-    </View>
+      </StorySpecimen>
+    </StorySpecimens>
   ),
 }
 

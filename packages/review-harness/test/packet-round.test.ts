@@ -23,7 +23,8 @@ const FRAMES = 'frames/frames.json'
 /** A 4x4 packet with one changed, one new and one removed baseline, and its prose. */
 async function packetWithProse() {
   const dir = join(await tempDir(), 'packet')
-  const at = (name: string) => `snapshots/${name}-chromium-linux.png`
+  const at = (name: string) =>
+    `packages/ui/specimen/baseline/x.test.ts-snapshots/${name}-chromium-linux.png`
   const base = { layer: 'component', source: 'artifact' } as const
   const shown: Gathered[] = [
     { ...base, path: at('a'), change: 'changed', before: png(4, 4), after: png(4, 4, RED) },
