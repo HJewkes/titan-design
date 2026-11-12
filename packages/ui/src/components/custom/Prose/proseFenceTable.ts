@@ -14,17 +14,18 @@ export interface TableRead {
   next: number
 }
 
-const FENCE_OPEN = /^\s*```\s*([\w+#.-]*)\s*$/
+// Matched against a trimmed line: two `\s*` around the language backtrack quadratically.
+const FENCE_OPEN = /^```\s*([\w+#.-]*)$/
 const FENCE_CLOSE = /^\s*```\s*$/
 const DELIMITER_CELL = /^:?-+:?$/
 
 export function isFenceOpen(line: string): boolean {
-  return FENCE_OPEN.test(line)
+  return FENCE_OPEN.test(line.trim())
 }
 
 /** Reads a fence opened at `start`. An unterminated fence takes every remaining line. */
 export function readFence(lines: string[], start: number): FenceRead {
-  const lang = FENCE_OPEN.exec(lines[start]!)?.[1] ?? ''
+  const lang = FENCE_OPEN.exec(lines[start]!.trim())?.[1] ?? ''
   const body: string[] = []
   let i = start + 1
   while (i < lines.length && !FENCE_CLOSE.test(lines[i]!)) body.push(lines[i++]!)

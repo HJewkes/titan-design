@@ -2,7 +2,7 @@
 const CONTROL = /[\u0000-\u001f]/g
 const SPECIAL = /[\s~`!@#$%^&*()\-_+=[\]{}|\\;:"'“”‘’<>,.?/]+/g
 const COMBINING = /[̀-ͯ]/g
-const CUSTOM_ID = /^(.*?)\s*\{#([\w-]+)\}\s*$/
+const CUSTOM_ID = /\{#([\w-]+)\}$/
 
 /**
  * A heading's anchor id, by the same rule as VitePress (`@mdit-vue/shared`), so a site moved
@@ -22,8 +22,10 @@ export function slugify(text: string): string {
 
 /** Splits `Title {#custom-id}` into its text and the id it pins. */
 export function readCustomId(heading: string): { text: string; id?: string } {
-  const match = CUSTOM_ID.exec(heading)
-  return match ? { text: match[1]!, id: match[2]! } : { text: heading }
+  const trimmed = heading.trimEnd()
+  const match = CUSTOM_ID.exec(trimmed)
+  if (!match) return { text: heading }
+  return { text: trimmed.slice(0, match.index).trimEnd(), id: match[1]! }
 }
 
 /** Hands out ids in document order; a repeat gets `-1`, `-2`, … like markdown-it-anchor. */

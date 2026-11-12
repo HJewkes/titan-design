@@ -1,7 +1,8 @@
 import type { ProseCalloutKind } from './proseTypes'
 
 const LIST_ITEM = /^(\s*)([-*+]|(\d{1,9})[.)])(\s+)(.*)$/
-const CALLOUT_OPEN = /^\s*:::\s*([A-Za-z]+)\s*(.*?)\s*$/
+// Matched against a trimmed line: a trailing `\s*$` after a lazy title backtracks quadratically.
+const CALLOUT_OPEN = /^:::\s*([A-Za-z]+)\s*([\s\S]*)$/
 const CALLOUT_CLOSE = /^\s*:::\s*$/
 const FENCE_TOGGLE = /^\s*```/
 const CALLOUT_KINDS = new Set<string>(['tip', 'info', 'warning', 'danger'])
@@ -41,7 +42,7 @@ export interface CalloutRead {
 
 /** A `::: kind [title]` container up to its matching `:::`, skipping fences; unclosed, it takes the rest. */
 export function readCallout(lines: string[], start: number): CalloutRead | null {
-  const open = CALLOUT_OPEN.exec(lines[start]!)
+  const open = CALLOUT_OPEN.exec(lines[start]!.trim())
   if (!open) return null
   let depth = 1
   let inFence = false
@@ -50,7 +51,7 @@ export function readCallout(lines: string[], start: number): CalloutRead | null 
     const line = lines[i]!
     if (FENCE_TOGGLE.test(line)) inFence = !inFence
     if (inFence) continue
-    if (CALLOUT_OPEN.test(line)) depth++
+    if (CALLOUT_OPEN.test(line.trim())) depth++
     if (CALLOUT_CLOSE.test(line) && --depth === 0) break
   }
   const word = open[1]!.toLowerCase()

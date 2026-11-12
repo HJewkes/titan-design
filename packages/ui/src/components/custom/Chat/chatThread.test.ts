@@ -146,4 +146,18 @@ describe('plainText', () => {
     // A quadratic scan of these 640k characters takes seconds; 1s leaves headroom for a loaded CI runner.
     expect(performance.now() - started).toBeLessThan(1000)
   })
+
+  it('stays linear on block lines padded with a long whitespace run', () => {
+    const pad = ' \t'.repeat(40_000)
+    const body = [
+      `::: tip a${pad}a`,
+      `\`\`\`${pad}a b`,
+      `# Title${pad}x`,
+      `::: tip${pad}`,
+      ':::',
+    ].join('\n')
+    const started = performance.now()
+    plainText(body)
+    expect(performance.now() - started).toBeLessThan(1000)
+  })
 })
