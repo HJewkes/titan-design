@@ -16,7 +16,7 @@ import { InfoIcon } from '../../icons'
 import { TipTrigger } from '../../ui/tooltip'
 import { Typography } from '../../ui/typography'
 import type { GeometryPoint, GoalTrajectoryGeometry } from './GoalTrajectoryChartGeometry'
-import type { TrajectoryPalette } from './GoalTrajectoryPlot'
+import type { TrajectoryPalette } from './goalTrajectoryPlotTokens'
 import { boxesTouch, type HitBox } from './goalTrajectoryTargets'
 
 /**
