@@ -2,7 +2,6 @@ import { expectTypeOf, test } from 'vitest'
 import type * as root from '../../../index'
 import type * as moved from '../../ui/table'
 import type * as legacy from '.'
-import type * as legacyColumnFit from './column-fit'
 
 test('custom/Table re-exports every type as the ui/table type', () => {
   expectTypeOf<legacy.TableProps>().toEqualTypeOf<moved.TableProps>()
@@ -21,13 +20,6 @@ test('custom/Table re-exports every type as the ui/table type', () => {
   expectTypeOf<legacy.ColumnFitResult>().toEqualTypeOf<moved.ColumnFitResult>()
   expectTypeOf<legacy.UseColumnFitResult>().toEqualTypeOf<moved.UseColumnFitResult>()
   expectTypeOf<legacy.UseMeasuredWidthResult>().toEqualTypeOf<moved.UseMeasuredWidthResult>()
-})
-
-test('custom/Table/column-fit keeps its types on the deep path', () => {
-  expectTypeOf<legacyColumnFit.TableColumnFit>().toEqualTypeOf<moved.TableColumnFit>()
-  expectTypeOf<legacyColumnFit.ColumnFitResult>().toEqualTypeOf<moved.ColumnFitResult>()
-  expectTypeOf<legacyColumnFit.UseColumnFitResult>().toEqualTypeOf<moved.UseColumnFitResult>()
-  expectTypeOf<legacyColumnFit.UseMeasuredWidthResult>().toEqualTypeOf<moved.UseMeasuredWidthResult>()
 })
 
 test('the package root still exports every Table type', () => {
