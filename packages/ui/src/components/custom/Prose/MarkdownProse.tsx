@@ -4,7 +4,7 @@ import { Text, View } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { Alert, AlertTitle, type AlertStatus } from '../../ui/alert'
 import { Typography } from '../../ui/typography'
-import { parseProseBlocks } from './parseProseBlocks'
+import { joinProseLines, parseProseBlocks } from './parseProseBlocks'
 import { CodeBlock, ProseTable } from './ProseBlocks'
 import {
   ProseAnchor,
@@ -213,7 +213,7 @@ export function MarkdownProse({
   if (isInline) {
     return (
       <Text className={className} testID={testID}>
-        {inline(body.replace(/\s*\n\s*/g, ' '))}
+        {inline(joinProseLines(body))}
       </Text>
     )
   }

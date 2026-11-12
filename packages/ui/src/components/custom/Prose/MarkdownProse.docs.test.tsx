@@ -222,4 +222,21 @@ describe('parseProseBlocks on unclosed markup', () => {
     render(<MarkdownProse body={'[a('.repeat(lines) + '<!--'.repeat(lines) + '*a'.repeat(lines)} />)
     expect(performance.now() - started).toBeLessThan(1500)
   })
+
+  it.each([
+    ['block', false],
+    ['inline', true],
+  ])('stays linear in %s mode on lines padded with a long whitespace run', (_mode, isInline) => {
+    const pad = ' \t'.repeat(40_000)
+    const body = [
+      `::: tip a${pad}a`,
+      `\`\`\`${pad}a b`,
+      `# Title${pad}x`,
+      `a${pad}`,
+      `${pad}b`,
+    ].join('\n')
+    const started = performance.now()
+    render(<MarkdownProse body={body} inline={isInline} />)
+    expect(performance.now() - started).toBeLessThan(1500)
+  })
 })

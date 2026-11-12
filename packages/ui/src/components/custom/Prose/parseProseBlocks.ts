@@ -26,6 +26,18 @@ export function parseProseBlocks(body: string): ProseBlock[] {
   return blocks
 }
 
+/**
+ * A body as one line for `inline` mode: each line trimmed, blank ones dropped, joined by a space.
+ * String operations, not a `\s*\n\s*` pattern, which backtracks quadratically on a long whitespace run.
+ */
+export function joinProseLines(body: string): string {
+  return body
+    .split('\n')
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .join(' ')
+}
+
 function parseLines(lines: string[], depth: number): ProseBlock[] {
   const blocks: ProseBlock[] = []
   let paragraph: string[] = []
