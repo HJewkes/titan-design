@@ -53,15 +53,14 @@ describe('Spinner', () => {
   describe('accessibility', () => {
     it('has no accessibility violations', async () => {
       const { container } = render(<Spinner />)
-      const results = await axe(container, {
-        rules: { 'aria-progressbar-name': { enabled: false } },
-      })
-      expect(results).toHaveNoViolations()
+      expect(await axe(container)).toHaveNoViolations()
     })
 
-    it('has correct progressbar role', () => {
-      render(<Spinner />)
-      expect(screen.getAllByRole('progressbar').length).toBeGreaterThan(0)
+    it('exposes exactly one progressbar, and it is named', () => {
+      render(<Spinner label="Syncing" />)
+      const bars = screen.getAllByRole('progressbar')
+      expect(bars).toHaveLength(1)
+      expect(bars[0]).toHaveAccessibleName('Syncing')
     })
   })
 })
