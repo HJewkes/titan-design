@@ -1614,7 +1614,7 @@ export const primitiveTypography: {
         readonly normal: "0em";
         readonly wide: "0.025em";
         readonly wider: "0.05em";
-        readonly widest: "0.5px";
+        readonly widest: "0.1em";
     };
 };
 
