@@ -23,13 +23,13 @@ const shown = (over: Partial<Gathered> & Pick<Gathered, 'path' | 'change'>): Gat
 export async function packetDir() {
   const dir = join(await tempDir(), 'packet')
   const changed = shown({
-    path: 'snapshots/a-chromium-linux.png',
+    path: 'packages/ui/specimen/baseline/x.test.ts-snapshots/a-chromium-linux.png',
     change: 'changed',
     before: png(4, 4),
     after: png(4, 4, undefined, [[1, 1, RED]]),
   })
   const added = shown({
-    path: 'snapshots/b-chromium-linux.png',
+    path: 'packages/ui/specimen/baseline/x.test.ts-snapshots/b-chromium-linux.png',
     change: 'new',
     after: png(4, 4, RED),
   })

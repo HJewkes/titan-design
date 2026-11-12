@@ -9,7 +9,7 @@ A cross-platform design system built on React Native primitives with NativeWind 
 - **Accessible**: Built with accessibility in mind (WCAG 2.1 AA)
 - **Customizable**: Theme tokens and component styles are easy to override
 - **Type-safe**: Full TypeScript support with strict mode
-- **Compound components**: Flexible composition following Gluestack patterns
+- **Compound components**: Flexible composition through explicit parts such as `ButtonIcon` and `ButtonText`
 
 ## Installation
 
@@ -21,10 +21,10 @@ pnpm add @titan-design/react-ui
 
 ```bash
 # For web
-pnpm add react react-dom react-native-web lucide-react
+pnpm add react react-dom react-native-web
 
 # For React Native
-pnpm add react react-native lucide-react-native
+pnpm add react react-native
 ```
 
 ## Setup
@@ -85,8 +85,8 @@ import {
   CardContent,
   Input,
   InputGroup,
+  SearchIcon,
 } from '@titan-design/react-ui'
-import { Plus } from 'lucide-react'
 
 function App() {
   return (
@@ -102,8 +102,8 @@ function App() {
         </InputGroup>
 
         <Button color="primary" variant="solid">
-          <ButtonIcon as={Plus} />
-          <ButtonText>Get Started</ButtonText>
+          <ButtonIcon as={SearchIcon} />
+          <ButtonText>Search</ButtonText>
         </Button>
       </CardContent>
     </Card>
@@ -141,8 +141,9 @@ function App() {
 
 ## Subpaths
 
-Four exports stay off the root barrel, so `@titan-design/react-ui` itself never pulls
-their heavier runtime dependencies or the code of a domain it does not need:
+Six entries stay off the root barrel, so `@titan-design/react-ui` itself never pulls
+their heavier runtime dependencies or the code of a domain it does not need. The theme
+entries and stylesheets that follow them complete the `exports` map in `package.json`.
 
 - **`@titan-design/react-ui/bodymap`** — `BodyMap`, `BodyMapDetailPanel`,
   `TrainingStatusPage`, `MuscleGlyph`, `GoalMuscleCard`, the muscle taxonomy
@@ -185,6 +186,29 @@ their heavier runtime dependencies or the code of a domain it does not need:
   (`TitanMotionApi`: `seek`, `ready`, `duration`) for a frame-capture renderer.
   It also carries the video-only components and utils (`EvidenceChip`,
   `elideSource`), which never shipped on the root.
+
+- **`@titan-design/react-ui/diagram`** — the network-graph map suite's pure contract:
+  the layout and timeline types, `resolveMapState`, the layout and timeline
+  validators, and the `MapCard` and `FileCard` pop-out cards.
+
+- **`@titan-design/react-ui/visual-router`** — the visual router: `PATTERNS`,
+  `CATALOGUE` and `routeVisual`. Data plus one pure function, so the entry carries
+  no React.
+
+The remaining entries in the `exports` map:
+
+- **`@titan-design/react-ui/theme`** — the theme API (`getThemeCSSVars`, `resolveColor`,
+  `semanticColorsDark`, `elevation`, …).
+- **`@titan-design/react-ui/theme/tokens`** — the raw token maps: primitives, semantic
+  colours, and the spacing and motion variable maps.
+- **`@titan-design/react-ui/theme/tokens-css`** — `generateTokensCss()`, the generator for the
+  static token stylesheet below.
+- **`@titan-design/react-ui/theme/global.css`** — the stylesheet with the CSS custom
+  properties and Tailwind layers (see [Setup](#1-import-global-css)).
+- **`@titan-design/react-ui/tokens.css`** — the generated static token stylesheet, a
+  `:root` block plus a `.light` block, for HTML that does not run Tailwind.
+- **`@titan-design/react-ui/tailwind.config.js`** — the Tailwind preset (see
+  [Setup](#2-configure-tailwind)).
 
 ## Component API
 
