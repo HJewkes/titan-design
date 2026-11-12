@@ -1,4 +1,6 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, afterEach } from 'vitest'
+import { Animated } from 'react-native'
+import { stubReducedMotion } from '../../../test/reduced-motion-stub'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { BodyMap, type BodyMapData } from './BodyMap'
@@ -254,5 +256,33 @@ describe('BodyMap on a light surface', () => {
     expect(screen.getByTestId(`body-map-muscle-${MuscleGroup.CHEST}`)).toHaveStyle({
       borderTopColor: brand,
     })
+  })
+})
+
+describe('BodyMap reduced motion', () => {
+  afterEach(() => {
+    vi.restoreAllMocks()
+    vi.unstubAllGlobals()
+  })
+
+  // Catches: dropping the usePrefersReducedMotion guard, so the 250 ms timing always runs.
+  it('starts no timing animation when reduced motion is preferred', () => {
+    stubReducedMotion(true)
+    const timing = vi.spyOn(Animated, 'timing')
+    const { rerender } = render(<BodyMap data={data} view="front" />)
+    rerender(<BodyMap data={data} view="front" highlightedMuscle={MuscleGroup.CHEST} />)
+    expect(timing).not.toHaveBeenCalled()
+  })
+
+  // Catches: the guard being inverted or hard-wired on, which would drop the default animation.
+  it('still runs the 250 ms timing animation when reduced motion is not preferred', () => {
+    stubReducedMotion(false)
+    const timing = vi.spyOn(Animated, 'timing')
+    const { rerender } = render(<BodyMap data={data} view="front" />)
+    rerender(<BodyMap data={data} view="front" highlightedMuscle={MuscleGroup.CHEST} />)
+    expect(timing).toHaveBeenCalledWith(
+      expect.anything(),
+      expect.objectContaining({ duration: 250 })
+    )
   })
 })
