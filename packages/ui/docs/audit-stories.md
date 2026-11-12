@@ -44,6 +44,7 @@ ratcheted kind's finding outside the baseline (see _Ratchet baseline_).
 | `proximity-inversion`  | A child that is itself a stack of two or more inked children whose largest internal ink gap is at least 1.5 times the smaller gap between it and its neighbours in the parent stack (items inside the group sit clearly farther apart than the group sits from what is outside; a near tie is ambiguous and not flagged). Exempt: a painted group (its own background, border or shadow shows its extent), and a control row (two or more interactive items, at least half of the group, a button nested in a wrapper counts) whose items are at least 1.5 times as far apart as it sits from its neighbour, since a controls row is coupled to what it controls on purpose. A control row that is only as near as its items are apart (inner at least the outer gap, but under 1.5 times it) is still flagged, because the coupling did not happen. Dividers split the parent and the group as for `gap-outlier`; a single-child wrapper is not a group; grids are skipped. Detail: `<group>: items 18px apart inside, 12px from <neighbour> outside`.                                                                                                                                                                                                                                                                                                                                                                                                          |
 | `font-size-near-miss`  | Two text elements on one visual line (same nearest flex-row ancestor, overlapping vertically by half the smaller height) whose computed font sizes differ by more than 0 and at most 2px. A larger step, such as a hero number and its unit, reads as deliberate contrast and is not flagged. Detail: `<a> 14px vs <b> 13px on one line: Δ1 (limit 2px)`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
 | `font-size-drift`      | The same element (child-index path and own text) has a different computed font size at two widths of one story, compared on the first theme. Only the outermost drifting element is reported, once per story, on the frame of the first width that differs. Text whose path changes between widths is not compared. Detail: `"Total" is 14px at 360, 16px at 1280`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| `axe-violation`        | Any axe violation other than `color-contrast` (which is `contrast` or `contrast_token`), one finding per failing node, capped at 25 nodes per axe rule. `axe_rule` holds the axe rule id and `impact` its impact. Beyond axe's defaults the audit turns on `target-size` (WCAG 2.5.8), whose finding also carries `unobscured_rect` (`{ width, height, obscured }`: the largest rect of the target no neighbouring target covers), and turns off axe's `non-empty-placeholder` check, so `label` fails a field named only by its placeholder. The `rule` field is DR-IX-02 for `target-size`, DR-IX-13 for `label` and DR-IX-14 for the rest. Detail: `label (critical): Form elements must have labels :: Element does not have an implicit (wrapped) <label>`.                                                                                                                  |
 
 ### Colour, elevation and glyph warnings (TD-935)
 
@@ -200,7 +201,8 @@ printed lines. The PNGs show what geometry cannot measure; look at them too.
   design rule also carries `rule`, its id in [design-rules.md](./design-rules.md) (`DR-LA-04` for
   `stacked-inset`); the map is `scripts/audit-stories/rules.mjs`. A ratcheted kind's finding also
   carries `ratchet` (`new`, `baselined` or `unbaselined-width`; see _Ratchet baseline_).
-- `metrics`, `axe.violations`: raw page metrics and the axe contrast result.
+- `metrics`, `axe.violations`: raw page metrics and every axe violation (the source of `contrast`,
+  `contrast_token` and `axe-violation`).
 - `shot`: the PNG, relative to the output directory.
 
 The summary prints no per-kind counts. This prints, per warning kind, the findings over all frames,
@@ -210,6 +212,12 @@ kind per frame makes each a lower bound, except for `text-floor`, whose counts a
 
 ```bash
 node -e 'const d=require(process.argv[1]);const n={},u={},s={};for(const e of d.stories)for(const w of e.warnings||[]){n[w.kind]=(n[w.kind]||0)+1;(u[w.kind]??=new Set).add([e.id,w.selector,w.detail].join("|"));(s[w.kind]??=new Set).add(e.id)}for(const k of Object.keys(n).sort())console.log(k.padEnd(24),"frames-findings",n[k],"distinct",u[k].size,"stories",s[k].size)' "$OUT/dom.json"
+```
+
+The same counts per axe rule, for `axe-violation` findings:
+
+```bash
+node -e 'const d=require(process.argv[1]);const n={},s={};for(const e of d.stories)for(const w of e.warnings||[])if(w.axe_rule){n[w.axe_rule]=(n[w.axe_rule]||0)+1;(s[w.axe_rule]??=new Set).add(e.id)}for(const k of Object.keys(n).sort())console.log(k.padEnd(28),"frames-findings",n[k],"stories",s[k].size)' "$OUT/dom.json"
 ```
 
 ### Probe data (not in `dom.json`)

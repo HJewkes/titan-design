@@ -23,6 +23,7 @@ const CONTRAST_TOKEN = 'contrast-token'
 const OFF_SCALE_SPACING = 'off-scale-spacing'
 const THEME_GEOMETRY_SHIFT = 'theme-geometry-shift'
 const FONT_SIZE_DRIFT = 'font-size-drift'
+const AXE_VIOLATION = 'axe-violation'
 
 // Kinds that fail the run. `render-error` also blocks but comes from capture.mjs, not these checks.
 export const BLOCKER_KINDS = Object.freeze([
@@ -47,9 +48,11 @@ export const WARNING_KINDS = Object.freeze([
   PROXIMITY_INVERSION,
   FONT_SIZE_NEAR_MISS,
   FONT_SIZE_DRIFT,
+  AXE_VIOLATION,
   ...PROBE_KINDS,
 ])
 export const CONTRAST_TOKEN_KIND = CONTRAST_TOKEN
+export const AXE_VIOLATION_KIND = AXE_VIOLATION
 
 // Runs in the page. Every check is a named function so a finding can cite it.
 export function domChecks({ touch, spacingVars, smallText }) {
@@ -490,14 +493,30 @@ export function domChecks({ touch, spacingVars, smallText }) {
   }
 }
 
+// target-size is off by default in axe 4.9 (DR-IX-02). With the placeholder check off, `label`
+// fails a field named only by its placeholder (DR-IX-13), which axe otherwise accepts.
+export const AXE_OPTIONS = Object.freeze({
+  rules: {
+    'color-contrast': { enabled: true },
+    'target-size': { enabled: true },
+    region: { enabled: false },
+  },
+  checks: { 'non-empty-placeholder': { enabled: false } },
+  resultTypes: ['violations'],
+})
+
 export async function runAxe(page, axeSource) {
   if (!(await page.evaluate(() => Boolean(window.axe))))
     await page.addScriptTag({ content: axeSource })
-  return page.evaluate(async () => {
-    const res = await window.axe.run('#storybook-root', {
-      rules: { 'color-contrast': { enabled: true }, region: { enabled: false } },
-      resultTypes: ['violations'],
-    })
+  return page.evaluate(async (options) => {
+    const res = await window.axe.run('#storybook-root', options)
+    // The target-size check measures the largest rect no neighbouring target covers.
+    const unobscuredRect = (n) => {
+      const data = n.any?.find((c) => c.id === 'target-size')?.data
+      if (data?.width === undefined) return undefined
+      const obscured = String(data.messageKey ?? '').startsWith('partiallyObscured')
+      return { width: data.width, height: data.height, obscured }
+    }
     return res.violations.map((v) => ({
       id: v.id,
       impact: v.impact,
@@ -507,9 +526,26 @@ export async function runAxe(page, axeSource) {
         summary: (n.failureSummary || '').split('\n').slice(1, 2).join('').trim(),
         fg: n.any?.[0]?.data?.fgColor,
         bg: n.any?.[0]?.data?.bgColor,
+        unobscuredRect: unobscuredRect(n),
       })),
     }))
-  })
+  }, AXE_OPTIONS)
+}
+
+const axeFinding = (v) => (n) => ({
+  kind: AXE_VIOLATION,
+  axe_rule: v.id,
+  impact: v.impact,
+  selector: n.target,
+  detail: [`${v.id} (${v.impact}): ${v.help}`, n.summary].filter(Boolean).join(' :: '),
+  ...(n.unobscuredRect ? { unobscured_rect: n.unobscuredRect } : {}),
+})
+
+// Every violation but color-contrast, which splitContrast turns into blockers and contrast_token.
+export function axeWarnings(violations) {
+  return violations
+    .filter((v) => v.id !== 'color-contrast')
+    .flatMap((v) => v.nodes.slice(0, MAX_FINDINGS_PER_KIND).map(axeFinding(v)))
 }
 
 // Every opaque --color-* token in the current theme, as lowercase #rrggbb mapped to token names.
@@ -615,6 +651,7 @@ export async function auditPage(page, { axeSource, spacingConfig, story, fonts, 
   const warnings = [
     ...offScaleWarnings(dom.spacing, scale),
     ...dom.warnings,
+    ...axeWarnings(violations),
     ...(await layoutWarnings(page, spacingConfig.vars, { tokens, story, fonts })),
   ]
   return {
