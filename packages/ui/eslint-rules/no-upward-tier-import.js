@@ -22,7 +22,7 @@
  * Regenerate with `node scripts/update-tier-import-baseline.mjs` after fixing one.
  *
  * The fix is always to move the imported code down to the importer's tier,
- * the lowest home that makes the import legal; CLAUDE.md placement forbids
+ * the lowest home that makes the import legal; docs/component-development.md placement forbids
  * copying it or replacing it with a slot. When the target is a deprecated shim
  * whose tag says where the code already moved (`Moved to \`ui/eyebrow\``), the
  * message names that path instead.
