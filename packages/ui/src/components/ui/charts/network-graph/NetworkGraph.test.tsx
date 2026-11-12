@@ -7,6 +7,7 @@ import {
   groupedGroups,
   hostileFixture,
   hostilePositions,
+  laneFixtureLanes,
   largeFixture,
   mediumFixture,
   networkGraphFixtures,
@@ -16,6 +17,7 @@ import {
 import { clusteredLayout } from './layouts/clustered-layout-model'
 import { egoLayout } from './layouts/ego-layout-model'
 import { forceLayout } from './layouts/force-layout-model'
+import { laneLayout } from './layouts/lane-layout-model'
 import { suppliedLayout } from './layouts/supplied-layout-model'
 import { labelBox, RING_LABEL_CLEARANCE } from './network-graph-labels'
 import { buildGraphModel, GRAPH_NODE_RADIUS } from './network-graph-model'
@@ -622,6 +624,7 @@ describe('NetworkGraph layout prop', () => {
 
 const grouped = networkGraphFixtures['Grouped (40)']
 const clustered = () => clusteredLayout({ groups: groupedGroups })
+const lanes = () => laneLayout({ lanes: laneFixtureLanes })
 const ego = (hops = 2) => egoLayout({ focusId: grouped.focusId ?? null, hops })
 
 /** Four nodes in two tight pairs: each left node's label runs into the right node's mark. */
@@ -684,6 +687,15 @@ describe('NetworkGraph free-form layouts', () => {
     const first = container.querySelector('path[data-edge]')?.getAttribute('d') ?? ''
     expect(first).toMatch(/^M.*C/)
     expect(container.querySelector('marker')).toHaveAttribute('refX', '0')
+  })
+
+  it('lane paints one labelled box per lane and names each node with its lane', () => {
+    const { container } = renderGraph({ layout: lanes() }, networkGraphFixtures['Three lanes'])
+    expect(container.querySelectorAll('rect[data-variant="box"]')).toHaveLength(3)
+    for (const lane of laneFixtureLanes) {
+      expect(screen.getByTestId(`network-graph-group-${lane.id}`)).toHaveTextContent(lane.label)
+    }
+    expect(nodeButton('beta-02')).toHaveAccessibleName(/^beta-02, Worker, Beta, /)
   })
 
   it('ego does not render nodes beyond hops and the name says "showing n of m"', () => {
@@ -866,6 +878,7 @@ describe('NetworkGraph free-form layouts', () => {
     ['ego', { layout: ego() }, grouped],
     ['clustered', { layout: clustered(), showLegend: true }, grouped],
     ['the ego empty state', { layout: egoLayout({ focusId: null }) }, grouped],
+    ['lane', { layout: lanes() }, networkGraphFixtures['Three lanes']],
   ] as [string, Partial<NetworkGraphProps>, GraphFixture][])(
     'has no axe violations for %s',
     { timeout: AXE_TIMEOUT },

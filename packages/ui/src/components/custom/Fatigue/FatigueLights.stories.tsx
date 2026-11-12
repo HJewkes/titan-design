@@ -1,19 +1,18 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { View, Text } from 'react-native'
+import { View } from 'react-native'
 import { FatigueLights } from './FatigueLights'
 import { Surface } from '../../ui/surface'
-import { greyRamp } from '../../../theme/tokens/primitives'
-import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { StorySpecimen, StorySpecimens } from '../../../lab/story-canvas'
 import { FATIGUE_STATES } from './fatigue-mock'
-
-const PAGE_BG = greyRamp[975]
-const t = getSemanticColors('dark')
 
 const meta: Meta<typeof FatigueLights> = {
   title: 'Custom/Fatigue/Fatigue Lights',
   component: FatigueLights,
   tags: ['autodocs', 'status:candidate', '!status:review'],
   parameters: {
+    // The lights sit in a panel card beside the verdict on the session summary page.
+    canvas: 'panel',
+    layout: 'fullscreen',
     docs: {
       description: {
         component:
@@ -40,8 +39,10 @@ export default meta
 type Story = StoryObj<typeof FatigueLights>
 
 export const Default: Story = {
+  // Draws its own raised card at the in-card width, so it needs only the page.
+  parameters: { canvas: 'page' },
   render: (args) => (
-    <Surface level="raised" className="p-inset-md" style={{ width: 396 }}>
+    <Surface level="raised" className="p-inset-md" style={{ width: '100%', maxWidth: 396 }}>
       <FatigueLights {...args} />
     </Surface>
   ),
@@ -49,46 +50,24 @@ export const Default: Story = {
 
 export const AcrossStates: Story = {
   render: () => (
-    <View style={{ backgroundColor: PAGE_BG, padding: 28, gap: 18 }}>
+    <StorySpecimens>
       {FATIGUE_STATES.map((s) => (
-        <View key={s.name} style={{ gap: 6 }}>
-          <Text
-            style={{
-              fontSize: 9,
-              letterSpacing: 1,
-              fontFamily: 'monospace',
-              color: t['text-tertiary'],
-            }}
-          >
-            {s.name}
-          </Text>
+        <StorySpecimen key={s.name} label={s.name}>
           <FatigueLights dimensions={s.model.verdict?.dimensions ?? null} />
-        </View>
+        </StorySpecimen>
       ))}
-      <View style={{ gap: 6 }}>
-        <Text
-          style={{
-            fontSize: 9,
-            letterSpacing: 1,
-            fontFamily: 'monospace',
-            color: t['text-tertiary'],
-          }}
-        >
-          WARMING UP
-        </Text>
+      <StorySpecimen label="WARMING UP">
         <FatigueLights dimensions={null} />
-      </View>
-    </View>
+      </StorySpecimen>
+    </StorySpecimens>
   ),
 }
 
 /** Spread evenly across a fixed width (the in-card layout). */
 export const Spread: Story = {
   render: () => (
-    <View style={{ backgroundColor: PAGE_BG, padding: 28 }}>
-      <View style={{ width: 280 }}>
-        <FatigueLights dimensions={FATIGUE_STATES[3].model.verdict?.dimensions ?? null} spread />
-      </View>
+    <View style={{ width: 280 }}>
+      <FatigueLights dimensions={FATIGUE_STATES[3].model.verdict?.dimensions ?? null} spread />
     </View>
   ),
 }
