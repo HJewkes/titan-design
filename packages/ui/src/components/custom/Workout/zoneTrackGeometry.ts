@@ -74,6 +74,8 @@ export interface ZoneTrackTick {
   label?: string
   /** Line + label colour. Defaults to a muted tick colour (or brand when `emphasized`). */
   color?: string
+  /** Label-only colour, for an ink that must pass text contrast where the line colour does not. Defaults to `color`. */
+  labelColor?: string
   /** Emphasize this tick (thicker line, brand colour by default) — e.g. a target landmark. */
   emphasized?: boolean
   /** Tooltip content shown on hover (web) / long-press (native) — expand the acronym, show the raw value. */
