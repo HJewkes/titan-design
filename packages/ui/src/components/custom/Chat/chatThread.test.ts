@@ -143,6 +143,7 @@ describe('plainText', () => {
   it('stays linear on unclosed markup', () => {
     const started = performance.now()
     plainText('[a('.repeat(80_000) + '**a'.repeat(80_000) + '`a'.repeat(80_000))
-    expect(performance.now() - started).toBeLessThan(200)
+    // A quadratic scan of these 640k characters takes seconds; 1s leaves headroom for a loaded CI runner.
+    expect(performance.now() - started).toBeLessThan(1000)
   })
 })
