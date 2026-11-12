@@ -3494,6 +3494,15 @@ export interface LabelProps extends Omit<TypographyProps, 'variant'> {
 }
 
 // @public
+export function laneLayout(input: LaneLayoutOptions): GraphLayout;
+
+// @public
+export interface LaneLayoutOptions {
+    lanes: readonly GraphGroup[];
+    rankEdgeKinds?: readonly string[];
+}
+
+// @public
 export function layeredLayout(options?: LayeredLayoutOptions): GraphLayout;
 
 // @public

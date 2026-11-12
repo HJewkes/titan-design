@@ -4,6 +4,7 @@ export { suppliedLayout } from './layouts/supplied-layout-model'
 export { forceLayout, type ForceLayoutOptions } from './layouts/force-layout-model'
 export { egoLayout, type EgoDirection, type EgoLayoutOptions } from './layouts/ego-layout-model'
 export { clusteredLayout, type ClusteredLayoutOptions } from './layouts/clustered-layout-model'
+export { laneLayout, type LaneLayoutOptions } from './layouts/lane-layout-model'
 export type {
   GraphBox,
   GraphEdge,
