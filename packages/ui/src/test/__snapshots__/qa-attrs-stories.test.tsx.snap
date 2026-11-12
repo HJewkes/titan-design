@@ -9,6 +9,8 @@ exports[`qa-relevant stories emit the render-QA hooks > NetworkGraph › Default
 
 exports[`qa-relevant stories emit the render-QA hooks > ui/charts/network-graph/NetworkGraph.stories.tsx › Default 1`] = `[]`;
 
+exports[`qa-relevant stories emit the render-QA hooks > ui/charts/network-graph/NetworkGraph.stories.tsx › EgoOnPhone 1`] = `[]`;
+
 exports[`qa-relevant stories emit the render-QA hooks > ui/chip/StateChip.stories.tsx › Default 1`] = `
 [
   "state-chip-label: data-qa-glyph",

@@ -84,12 +84,18 @@ function fittingRadius({ width, height }: { width: number; height: number }): nu
   return Number.isFinite(room) && room > 0 ? room : Number.POSITIVE_INFINITY
 }
 
-/** The smallest factor that leaves every node `MIN_ARC` of arc on its ring; at most 1. */
+/**
+ * The smallest factor that leaves every node `MIN_ARC` of arc on its ring and every ring
+ * `MIN_RING_GAP` past the one inside it; at most 1.
+ */
 function minimumScale(rings: readonly (readonly string[])[], radii: readonly number[]): number {
-  const { MIN_ARC } = LAYOUT_DEFAULTS
+  const { MIN_ARC, MIN_RING_GAP } = LAYOUT_DEFAULTS
   return rings.reduce((floor, ring, hop) => {
     const radius = radii[hop] as number
-    return radius > 0 ? Math.max(floor, (ring.length * MIN_ARC) / (2 * Math.PI * radius)) : floor
+    if (radius <= 0) return floor
+    const arc = (ring.length * MIN_ARC) / (2 * Math.PI * radius)
+    const gap = MIN_RING_GAP / (radius - (radii[hop - 1] as number))
+    return Math.max(floor, arc, gap)
   }, 0)
 }
 
@@ -179,7 +185,8 @@ function sanitize(options: EgoLayoutOptions | undefined): Required<EgoLayoutOpti
  * from one node. Nodes further away are left unplaced and counted; a `null` or unknown `focusId`
  * places nothing, so the empty state renders. When the rings would overflow a sized viewport, every
  * radius shrinks by one factor so the outer ring fits, never so far that a node keeps less than
- * `MIN_ARC` of arc; past that the layout overflows and scrolls. Asks for arc edges and decluttered labels, and
+ * `MIN_ARC` of arc or two rings come closer than `MIN_RING_GAP`; past that the layout overflows and
+ * scrolls, which is what a phone-width viewport gets. Asks for arc edges and decluttered labels, and
  * returns one `ring` group per hop.
  */
 export function egoLayout(options: EgoLayoutOptions): GraphLayout {
