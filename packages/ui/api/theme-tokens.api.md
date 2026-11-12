@@ -40,9 +40,6 @@ export const divergingScale: readonly ["#2196F3", "#22D3EE", "#58F69E", "#F9B415
 // @public
 export function getCategoricalColor(index: number, variant?: CategoricalVariant): string;
 
-// @public
-export function getDiscreteRainbowColor(index: number, size: number): string;
-
 // @public (undocumented)
 export function getSemanticColors(mode: ThemeMode): {
     readonly 'brand-primary': "#FF7900";
@@ -666,7 +663,7 @@ export const primitiveTypography: {
         readonly normal: "0em";
         readonly wide: "0.025em";
         readonly wider: "0.05em";
-        readonly widest: "0.5px";
+        readonly widest: "0.1em";
     };
 };
 

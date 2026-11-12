@@ -40,6 +40,7 @@ const meta: Meta<typeof DualVelocityStrip> = {
   title: 'Custom/Workout/DataViz/VelocityStrip/Dual',
   component: DualVelocityStrip,
   parameters: {
+    layout: 'fullscreen',
     docs: { description: { component: 'Composes **SetBarChart** · **ChartSideRail**.' } },
   },
   tags: ['autodocs', 'status:candidate', '!status:review'],
