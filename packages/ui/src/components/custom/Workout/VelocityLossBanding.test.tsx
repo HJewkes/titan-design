@@ -9,6 +9,8 @@ import { render, screen, within } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { DualVelocityStrip } from './DualVelocityStrip'
 import { VelocityStrip, shownVelocityLoss, velocityLossForRep } from './VelocityStrip'
+import { SurfaceContext } from '../../ui/surface/SurfaceContext'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
 
 const THRESHOLDS = [6.7, 13.3, 20] as const
 
@@ -110,5 +112,38 @@ describe('the loss text', () => {
       <VelocityStrip velocities={VELOCITIES} lossThresholds={THRESHOLDS} />
     )
     expect(await axe(container)).toHaveNoViolations()
+  })
+})
+
+// TD-971: on the light base plane the scale's orange and red, and the 75% VL line colour, fall
+// under AA as small text, so light-mode label text takes the status text tokens.
+describe('the loss labels in light mode', () => {
+  const light = getSemanticColors('light')
+  const onLight = (node: React.ReactNode) =>
+    render(
+      <SurfaceContext.Provider value={{ mode: 'light', level: 'base' }}>
+        {node}
+      </SurfaceContext.Provider>
+    )
+
+  it.each([
+    [0.8667, 'Loss: 13%', 'text-warning'],
+    [0.8, 'Loss: 20%', 'text-error'],
+  ] as const)('reads %f in the %s text token', (last, text, token) => {
+    onLight(<VelocityStrip velocities={[1.0, last]} lossThresholds={THRESHOLDS} />)
+    expect(screen.getByText(text)).toHaveStyle({ color: light[token] })
+  })
+
+  it('sets the VL labels in the status text tokens', () => {
+    onLight(
+      <VelocityStrip
+        velocities={[1.0, 0.95, 0.88, 0.8]}
+        variant="hero"
+        height={300}
+        lossThresholds={[5, 10, 15]}
+      />
+    )
+    expect(screen.getByText('VL 10%')).toHaveStyle({ color: light['text-warning'] })
+    expect(screen.getByText('VL 15%')).toHaveStyle({ color: light['text-error'] })
   })
 })
