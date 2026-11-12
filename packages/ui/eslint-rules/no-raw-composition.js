@@ -9,7 +9,7 @@
  *   and the Button family's tokens. Tests and stories may render one.
  * - `d3Import`: an import, re-export, dynamic import or require of `d3` or
  *   `d3-*` outside `src/components/ui/charts/**`, which is where charts and
- *   their shared scales and geometry live (CLAUDE.md placement table).
+ *   their shared scales and geometry live (docs/component-development.md placement table).
  * - `pathMath`: a template literal or `+` concatenation that builds an SVG
  *   path `d` string from computed values outside `src/components/ui/charts/**`.
  *   Tests and stories may build one. Static path data (no expressions) is fine.
