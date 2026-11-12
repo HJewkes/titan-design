@@ -220,7 +220,7 @@ export function Tab({ index = 0, isDisabled = false, className, children }: TabP
     >
       <Text
         className={cn(
-          'font-medium',
+          'font-sans font-medium',
           isActive
             ? variant === 'soft-rounded'
               ? 'text-on-brand-primary'
