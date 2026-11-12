@@ -33,7 +33,6 @@ export interface RestTimerProps {
 /** The +30s / Skip control row — shared by both variants (hidden in `displayOnly`). */
 function RestActions({ onAddTime, onSkip }: { onAddTime: () => void; onSkip: () => void }) {
   const sem = getSemanticColors(useSurfaceMode())
-  const brandPrimary = sem['brand-primary']
   return (
     <View className="flex-row gap-inline-md">
       <Pressable
@@ -58,7 +57,8 @@ function RestActions({ onAddTime, onSkip }: { onAddTime: () => void; onSkip: () 
         onPress={onSkip}
         className="py-control-y-md px-control-x-md"
         style={{
-          backgroundColor: alpha(brandPrimary, 0.12),
+          // The Pill brand pair: brand-primary ink on its own tint fails AA on light planes.
+          backgroundColor: sem['brand-primary-subtle'],
           borderRadius: 8,
         }}
         accessibilityRole="button"
@@ -70,7 +70,7 @@ function RestActions({ onAddTime, onSkip }: { onAddTime: () => void; onSkip: () 
             fontSize: 11,
             fontFamily: 'Inter, sans-serif',
             fontWeight: '600',
-            color: brandPrimary,
+            color: sem['on-brand-primary-subtle'],
           }}
         >
           Skip
@@ -127,7 +127,7 @@ function RestTimerRing({
       />
       {nextSetInfo != null && (
         <Text
-          className="text-text-tertiary"
+          className="text-text-secondary"
           style={{ fontSize: 13, fontFamily: 'Inter, sans-serif' }}
           testID="rest-timer-next-set"
         >

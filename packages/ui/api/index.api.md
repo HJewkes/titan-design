@@ -1074,6 +1074,7 @@ export interface ChipProps extends ViewProps {
     // (undocumented)
     children?: React__default.ReactNode;
     className?: string;
+    // @deprecated
     color?: ChipColor;
     isDisabled?: boolean;
     isSelected?: boolean;
@@ -1082,6 +1083,7 @@ export interface ChipProps extends ViewProps {
     onPress?: () => void;
     rightElement?: React__default.ReactNode;
     size?: ChipSize;
+    tone?: PillTone;
     variant?: ChipVariant;
 }
 
@@ -3028,6 +3030,9 @@ export function isHistoryOnly(agent: Pick<AgentSummary, 'stateSource'>): boolean
 export function isLiveAgent(state: AgentSummaryState): boolean;
 
 // @public
+export type JsonSchema = Readonly<Record<string, unknown>>;
+
+// @public
 export function KanbanIcon(input: IconProps): react_jsx_runtime.JSX.Element;
 
 // @public
@@ -3049,6 +3054,15 @@ export function Label(props: LabelProps): react_jsx_runtime.JSX.Element;
 
 // @public (undocumented)
 export interface LabelProps extends Omit<TypographyProps, 'variant'> {
+}
+
+// @public
+export function laneLayout(input: LaneLayoutOptions): GraphLayout;
+
+// @public
+export interface LaneLayoutOptions {
+    lanes: readonly GraphGroup[];
+    rankEdgeKinds?: readonly string[];
 }
 
 // @public
@@ -4776,6 +4790,29 @@ export type ScatterReferenceLine = ({
     id?: string;
     label?: string;
 };
+
+// @public
+export function SchemaForm(input: SchemaFormProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export type SchemaFormErrors = Readonly<Record<string, string | readonly string[]>>;
+
+// @public
+export interface SchemaFormProps {
+    className?: string;
+    emptyState?: React__default.ReactNode;
+    errors?: SchemaFormErrors;
+    isDisabled?: boolean;
+    lockedIdHint?: string;
+    lockedIds?: readonly string[];
+    onChange: (value: SchemaFormValue) => void;
+    schema: JsonSchema;
+    testID?: string;
+    value: SchemaFormValue;
+}
+
+// @public
+export type SchemaFormValue = Record<string, unknown>;
 
 // @public
 export const SCORE_BAND_META: Record<CodeScoreBand, {
