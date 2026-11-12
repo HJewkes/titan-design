@@ -106,7 +106,7 @@ audiobook/frontend (Badge, Chip, StatusPill) · voltras-mcp (Pill, Badge, PrBadg
 
 ## Decision, 2026-09-19: component placement and migration
 
-Placement is decided by what a component knows, not by how much it composes (`CLAUDE.md`,
+Placement is decided by what a component knows, not by how much it composes (`docs/component-development.md`,
 Placement). `ui/` is domain-free at any size and may compose `ui/` siblings, `theme`, `utils`,
 `hooks` and `icons`; `custom/<Family>/` knows one domain's vocabulary; `shell/` is the application
 frame; `src/lab/` is unpublished. The chart substrate is `ui/charts/<chart>/` with a shared `kit/`;
@@ -137,7 +137,7 @@ PR).** A separate tooling PR adds, each ratcheted with a committed baseline in t
 pattern (`eslint-rules/*-baseline.json`):
 
 - `no-upward-tier-import`'s failure message names the fix: "move the shared code to `ui/` (see
-  Placement in `CLAUDE.md`); use a slot only for consumer vocabulary."
+  Placement in `docs/component-development.md`); use a slot only for consumer vocabulary."
 - `no-upward-tier-import`'s `tierOf` classifies `hooks/` and `utils/` as a foundation tier beside
   `theme`, so they cannot import `components/`.
 - A `custom-families.test.ts` structure test: a top-level `custom/` directory must be a declared

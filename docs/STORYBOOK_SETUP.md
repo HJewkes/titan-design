@@ -218,11 +218,11 @@ export const Default: Story = {}
 ```
 
 The title groups, status tags, the "Composes" line and the lint rules that apply to stories are
-listed in `CLAUDE.md` under _Storybook Pattern_.
+listed in `docs/component-development.md` under _Storybook Pattern_.
 
 ## Global CSS Structure
 
-The `global.css` file must be structured correctly:
+The `global.css` file must be structured correctly. This is an excerpt of `packages/ui/src/theme/global.css`, abridged to three properties per mode:
 
 ```css
 /* Self-hosted @font-face rules sit at top level (not inside @layer); see TOKENS.md */
@@ -239,18 +239,18 @@ The `global.css` file must be structured correctly:
 @layer base {
   /* Dark mode (default) */
   :root {
-    --color-brand-primary: #5048E5;
-    --color-text-primary: #F9FAFB;
-    --color-surface-base: #111827;
+    --color-brand-primary: #FF7900;
+    --color-text-primary: #F9F6F3;
+    --color-surface-base: #252321;
     /* ... other variables */
   }
 
   /* Light mode */
   .light,
   :root.light {
-    --color-brand-primary: #5048E5;
-    --color-text-primary: #111827;
-    --color-surface-base: #FFFFFF;
+    --color-brand-primary: #FF7900;
+    --color-text-primary: #121828;
+    --color-surface-base: #EDEAE7;
     /* ... other variables */
   }
 }
@@ -361,7 +361,7 @@ src/
 1. **Use `tags: ['autodocs']`** - Enables automatic documentation generation
 2. **Define argTypes** - Provides controls for all configurable props
 3. **Create render functions** - For compound components, explicit render functions work better
-4. **Group related stories** - Use the six title groups in `CLAUDE.md`, for example
+4. **Group related stories** - Use the six title groups in `docs/component-development.md`, for example
    `Components/Molecules/Popover`, `Custom/Workout/SetRow`, `Foundations/Typography`
 5. **One `Default` story** - Show variants through controls, not one story per variant
 6. **Show composition** - Create stories that show components working together

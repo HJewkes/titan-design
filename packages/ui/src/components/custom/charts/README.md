@@ -4,7 +4,7 @@ Two marks and one hook (`SparkBars` moved to [`ui/charts/spark-bars`](../../ui/c
 in migration M5; the table row below stays so the dependency map is complete), extracted so every value-height bar family in the library
 draws the same bar rather than each re-rolling geometry and entrance animation.
 `SetBarChart` and `live-rep-growth` carry workout vocabulary (the set-type slot,
-mesocycle framing) and stay in this family for that reason (`CLAUDE.md`,
+mesocycle framing) and stay in this family for that reason (`docs/component-development.md`,
 Placement); colour, reference overlays and labels are still passed in by the
 consumer rather than hard-coded.
 

@@ -32,6 +32,16 @@ const meta: Meta<typeof Select> = {
       control: 'boolean',
       description: 'Enable multi-select mode',
     },
+    variant: {
+      control: 'select',
+      options: ['default', 'filled'],
+      description: "Use 'filled' on dark or elevated surfaces",
+    },
+    size: {
+      control: 'select',
+      options: [undefined, 'sm', 'md', 'lg'],
+      description: "Control height; 'md' matches Input's default height",
+    },
   },
 }
 
@@ -39,16 +49,12 @@ export default meta
 type Story = StoryObj<typeof Select>
 
 export const Default: Story = {
-  render: function Render() {
+  args: { placeholder: 'Select a fruit...' },
+  render: function Render(args) {
     const [value, setValue] = useState<string | null>(null)
     return (
       <View style={{ width: 300 }}>
-        <Select
-          value={value}
-          onChange={setValue}
-          options={basicOptions}
-          placeholder="Select a fruit..."
-        />
+        <Select {...args} value={value} onChange={setValue} options={basicOptions} />
       </View>
     )
   },

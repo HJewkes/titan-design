@@ -1,10 +1,21 @@
-import { useState, createContext, useContext } from 'react'
+import { useState, useId, createContext, useContext } from 'react'
 import { View, Text, Pressable, ScrollView, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { CheckMark } from '../../icons'
 import { useInsetFieldStyle } from '../surface/insetField'
 import { SelectPopover } from './SelectPopover'
-import { hasSelection, isValueSelected, selectDisplayLabel, toggleValue } from './selectModel'
+import {
+  hasSelection,
+  isValueSelected,
+  selectDisplayLabel,
+  toggleValue,
+  labelClassName,
+  triggerClassName,
+  type SelectSize,
+} from './selectModel'
+
+// React Native's `Role` union omits it; RNW passes it straight through to the DOM.
+const LISTBOX_ROLE = 'listbox' as ViewProps['role']
 
 export interface SelectOption<T = string> {
   value: T
@@ -38,6 +49,8 @@ function useSelectContext<T>() {
   return useContext(SelectContext) as SelectContextType<T>
 }
 
+export type { SelectSize }
+
 export interface SelectProps<T = string> extends ViewProps {
   /** Selected value (single mode) */
   value?: T | null
@@ -59,6 +72,10 @@ export interface SelectProps<T = string> extends ViewProps {
   options: SelectOption<T>[]
   /** Visual variant — use 'filled' on dark/elevated surfaces */
   variant?: 'default' | 'filled'
+  /** Whether a selected value shows a clear button. Set false when the value is a meaningful "all". */
+  isClearable?: boolean
+  /** Control height, matching Input's sizes. Omitted, the trigger keeps its padded height. */
+  size?: SelectSize
   /** Additional className */
   className?: string
 }
@@ -97,10 +114,13 @@ export function Select<T extends string = string>({
   isInvalid = false,
   options,
   variant = 'default',
+  size,
+  isClearable = true,
   className,
   ...props
 }: SelectProps<T>) {
   const [isOpen, setIsOpen] = useState(false)
+  const listboxId = useId()
   const well = useInsetFieldStyle(variant === 'filled')
 
   const selection = { isMulti, value, values }
@@ -137,26 +157,14 @@ export function Select<T extends string = string>({
           accessibilityRole="combobox"
           accessibilityLabel={accessibilityLabel}
           aria-expanded={isOpen}
+          aria-controls={isOpen ? listboxId : undefined}
           accessibilityState={{ expanded: isOpen, disabled: isDisabled }}
           style={well}
-          className={cn(
-            'flex-row items-center justify-between px-4 py-2.5 rounded-md border',
-            variant === 'filled' ? undefined : 'bg-surface-base',
-            isInvalid
-              ? 'border-border-input-error'
-              : variant === 'filled'
-                ? 'border-hairline-subtle'
-                : 'border-border-input',
-            !isDisabled && !isInvalid && 'web:hover:border-border-input-hover',
-            isOpen && 'border-border-input-focus',
-            isDisabled && 'opacity-50 cursor-not-allowed'
-          )}
+          className={triggerClassName({ variant, size, isInvalid, isDisabled, isOpen })}
         >
-          <Text className={cn('flex-1', hasValue ? 'text-text-primary' : 'text-text-tertiary')}>
-            {displayValue}
-          </Text>
+          <Text className={labelClassName(size, hasValue)}>{displayValue}</Text>
           <View className="flex-row items-center gap-2">
-            {hasValue && (
+            {hasValue && isClearable && (
               <Pressable
                 onPress={(e) => {
                   e.stopPropagation?.()
@@ -177,16 +185,48 @@ export function Select<T extends string = string>({
 
         {/* Dropdown */}
         {isOpen && (
-          <SelectPopover onClose={() => setIsOpen(false)}>
-            <ScrollView className="py-1">
-              {options.map((option) => (
-                <SelectOption key={option.value} option={option} />
-              ))}
-            </ScrollView>
-          </SelectPopover>
+          <SelectListbox
+            id={listboxId}
+            accessibilityLabel={accessibilityLabel}
+            isMulti={isMulti}
+            options={options}
+            onClose={() => setIsOpen(false)}
+          />
         )}
       </View>
     </SelectContext.Provider>
+  )
+}
+
+interface SelectListboxProps<T> {
+  id: string
+  accessibilityLabel?: string
+  isMulti: boolean
+  options: SelectOption<T>[]
+  onClose: () => void
+}
+
+function SelectListbox<T extends string>({
+  id,
+  accessibilityLabel,
+  isMulti,
+  options,
+  onClose,
+}: SelectListboxProps<T>) {
+  return (
+    <SelectPopover onClose={onClose}>
+      <ScrollView
+        id={id}
+        role={LISTBOX_ROLE}
+        aria-label={accessibilityLabel}
+        aria-multiselectable={isMulti || undefined}
+        className="py-1"
+      >
+        {options.map((option) => (
+          <SelectOption key={option.value} option={option} />
+        ))}
+      </ScrollView>
+    </SelectPopover>
   )
 }
 
@@ -202,7 +242,8 @@ function SelectOption<T>({ option }: SelectOptionComponentProps<T>) {
     <Pressable
       onPress={() => !option.isDisabled && selectValue(option.value)}
       disabled={option.isDisabled}
-      role={isMulti ? 'checkbox' : 'option'}
+      role="option"
+      aria-selected={selected}
       accessibilityState={{ selected, disabled: option.isDisabled }}
       className={cn(
         'flex-row items-center px-4 py-2',

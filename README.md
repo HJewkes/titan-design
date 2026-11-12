@@ -108,8 +108,8 @@ titan-design/
 │   └── ui/                     # Component library
 │       ├── src/
 │       │   ├── components/     # UI components
-│       │   │   ├── ui/         # Gluestack-based
-│       │   │   └── custom/     # Hand-built
+│       │   │   ├── ui/         # Domain-free components
+│       │   │   └── custom/     # Domain families
 │       │   ├── theme/          # Design tokens & CSS
 │       │   └── utils/          # Utilities
 │       └── .storybook/         # Storybook config
@@ -125,7 +125,11 @@ titan-design/
 
 - **[Architecture](./docs/ARCHITECTURE.md)** - Technical architecture and design decisions
 - **[Storybook Setup](./docs/STORYBOOK_SETUP.md)** - Storybook configuration guide
-- **[CLAUDE.md](./CLAUDE.md)** - Component patterns, tokens, and development conventions
+- **[CLAUDE.md](./CLAUDE.md)** - Quick reference and hard constraints, with pointers to the docs below
+- **[Component Development](./docs/component-development.md)** - Architecture, placement, props, accessibility, testing and Storybook patterns
+- **[Design Tokens](./docs/design-tokens.md)** - Token tiers and categories, adding tokens, elevation
+- **[Storybook Ports](./docs/storybook-ports.md)** - The locked-port policy and how to reap servers
+- **[Package Reference](./docs/package-reference.md)** - Key files, exports and gotchas
 - **[Component Implementation Checklist](./docs/component-implementation-checklist.md)** - Per-component "done" gate for porting a frozen HTML prototype with pixel parity; other components follow the `titan-component` skill (`.claude/skills/titan-component`)'s Gate 2
 - **[CI and Scripts](./docs/ci-and-scripts.md)** - The CI jobs and their steps, Turbo argument passthrough, registering a root script, coverage thresholds and the bundle budget
 - **[Component States](./docs/component-states.md)** - The loading, empty, error and disabled checklist every component meets or explains
@@ -143,7 +147,6 @@ titan-design/
 |------------|---------|
 | React Native | Cross-platform primitives |
 | NativeWind v4 | Tailwind CSS for React Native |
-| Gluestack UI | Accessible component foundation |
 | Storybook 10 | Component documentation |
 | Vitest | Unit testing |
 | TypeScript | Type safety |
@@ -161,7 +164,7 @@ Design for dark mode first, add explicit light mode styles.
 
 ### 3. Compound Components
 
-Complex components follow the Gluestack pattern:
+Complex components use an explicit compound structure:
 
 ```tsx fragment
 <Button variant="solid" color="primary">
@@ -186,7 +189,7 @@ All components include proper ARIA attributes and accessibility labels.
 
 ## Components
 
-### Core UI (Gluestack-based)
+### Core UI
 
 - Button, Input, Card, Badge
 - Checkbox, Switch, Radio

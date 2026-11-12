@@ -2,13 +2,13 @@
 
 A directory here knows one domain's vocabulary and is shared by that domain's products. It composes
 `ui/*` and may never be imported by it. A component with no domain concept in its props, types or
-labels belongs in `ui/` (`CLAUDE.md`, Placement). Status here is `candidate` by rule (`MATURITY.md`).
+labels belongs in `ui/` (`docs/component-development.md`, Placement). Status here is `candidate` by rule (`MATURITY.md`).
 
 | Family       | Domain                                                                                           | Products                                | Index                  |
 | ------------ | ------------------------------------------------------------------------------------------------ | --------------------------------------- | ---------------------- |
 | `Workout`    | sets, reps, mesocycles, goals                                                                    | voltras-mcp dashboard, voltras mobile   | `Workout/README.md`    |
 | `Fatigue`    | velocity loss, ROM, readiness                                                                    | voltras-mcp dashboard                   | `Fatigue/README.md`    |
-| `ActiveWork` | initiatives, tasks, task stages, file activity, typed refs                                       | active-work dashboard                   | `ActiveWork/README.md` |
+| `ActiveWork` | initiatives, tasks, task stages, file activity, notes and sources, record classes, typed refs    | active-work dashboard, console          | `ActiveWork/README.md` |
 | `Chat`       | chat messages and participants (`ChatMessage`, `Participant` from `@titan-design/chat-protocol`) | coach chat preset (`CoachPreset` story) | `Chat/README.md`       |
 | `Session`    | agent transcripts: turns, tool calls, tokens, replay events                                      | titan-platform console                  | `Session/README.md`    |
 | `Agents`     | agent sessions: presence, lifecycle state, tokens, tool calls and spend                          | titan-platform console                  | `Agents/README.md`     |

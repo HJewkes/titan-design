@@ -203,6 +203,7 @@ describe('edgePath', () => {
         "All equal": "8:852e277c",
         "Deep chain": "11:d86c6b9a",
         "Directed chain": "5:7eb8c9b7",
+        "Ego (20)": "19:d5a5ae42",
         "Empty": "0:811c9dc5",
         "Grouped (40)": "53:2b349dfa",
         "Hostile": "5:f5ce052",
@@ -220,6 +221,7 @@ describe('edgePath', () => {
         "Pulse": "7:e77ac5ad",
         "Small (5)": "7:e77ac5ad",
         "Supplied": "7:e77ac5ad",
+        "Three lanes": "15:e76a8545",
         "Two components": "12:30a45071",
         "Wide fan-out": "60:5d4d50d5",
       }

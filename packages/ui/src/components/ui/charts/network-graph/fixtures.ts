@@ -21,7 +21,7 @@ export interface GraphFixture {
   width?: number
   /** The node an ego view of this fixture centres on. */
   focusId?: string
-  /** Region order and labels for a clustered view of this fixture. */
+  /** Region order and labels for a clustered view, and the lanes of a lane view, of this fixture. */
   groups?: GraphGroup[]
 }
 
@@ -280,6 +280,20 @@ function buildHubAndSpokes(): GraphFixture {
   )
 }
 
+/** A focus, 4 neighbours and 15 second-hop nodes: the ego view sized for a phone. */
+function buildEgoTwenty(): GraphFixture {
+  const near = series('lead', 4, 2)
+  const far = series('worker', 15)
+  return fixture(
+    [node('lead-01', 'lead'), ...near.map((id) => node(id, 'lead')), ...inGroup(far)],
+    [
+      ...near.map((id) => spawn('lead-01', id)),
+      ...far.map((id, i) => spawn(near[i % near.length] as string, id)),
+    ],
+    { focusId: 'lead-01' }
+  )
+}
+
 function buildManyGroups(): GraphFixture {
   const groups = series('group', 14)
   let next = 1
@@ -291,6 +305,35 @@ function buildManyGroups(): GraphFixture {
   return fixture(
     members.flatMap((ids, i) => inGroup(ids, groups[i])),
     members.flatMap(chainSpawns)
+  )
+}
+
+export const laneFixtureLanes: GraphGroup[] = [
+  { id: 'alpha', label: 'Alpha' },
+  { id: 'beta', label: 'Beta' },
+  { id: 'gamma', label: 'Gamma' },
+]
+
+/** Three lanes of 6, 5 and 4 nodes with branches, and three edges across lanes. */
+function buildLanes(): GraphFixture {
+  const [alpha, beta, gamma] = [series('alpha', 6), series('beta', 5), series('gamma', 4)]
+  const at = (ids: readonly string[], i: number) => ids[i - 1] as string
+  const lanes = [alpha, beta, gamma]
+  return fixture(
+    lanes.flatMap((ids, i) => inGroup(ids, laneFixtureLanes[i]?.id)),
+    [
+      ...chainSpawns(alpha.slice(0, 4)),
+      spawn(at(alpha, 2), at(alpha, 5)),
+      spawn(at(alpha, 5), at(alpha, 6)),
+      ...chainSpawns(beta.slice(0, 3)),
+      spawn(at(beta, 1), at(beta, 4)),
+      spawn(at(beta, 4), at(beta, 5)),
+      ...chainSpawns(gamma),
+      message(at(alpha, 3), at(beta, 3), 4),
+      message(at(beta, 2), at(gamma, 3), 2),
+      spawn(at(alpha, 1), at(gamma, 2)),
+    ],
+    { groups: laneFixtureLanes }
   )
 }
 
@@ -388,9 +431,11 @@ export const networkGraphFixtures = {
   'Mutual pair': buildMutualPair(),
   'Grouped (40)': buildGrouped(),
   'Hub and spokes': buildHubAndSpokes(),
+  'Ego (20)': buildEgoTwenty(),
   'Directed chain': fixture(inGroup(series('alpha', 6)), chainSpawns(series('alpha', 6)), {
     focusId: 'alpha-03',
   }),
   'One group': fixture(inGroup(series('alpha', 10), 'alpha'), chainSpawns(series('alpha', 10))),
   'Many groups': buildManyGroups(),
+  'Three lanes': buildLanes(),
 } satisfies Record<string, GraphFixture>

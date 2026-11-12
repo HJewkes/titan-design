@@ -1,0 +1,103 @@
+name: PR visual
+
+# TP-1697: before and after screenshots of the stories a UI PR changes, for review. Its own
+# workflow, not a ci.yml job, so it can never change a required status or slow `check`; no
+# ruleset requires it. Uploads artifact pr-visual-<head sha> with before/, after/ and
+# manifest.json in the shape Shepherd's PrVisualManifestSchema reads.
+on:
+  pull_request:
+
+permissions:
+  contents: read
+  # Lets the story selector list the PR's files.
+  pull-requests: read
+
+concurrency:
+  group: pr-visual-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  pr-visual:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    # ci.yml's visual image, so the captures render as its baselines do.
+    container:
+      image: mcr.microsoft.com/playwright:v1.58.2-noble
+    env:
+      HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+      PR_NUMBER: ${{ github.event.pull_request.number }}
+      # Relative to the workspace: in a container job `github.workspace` names the host path.
+      OUT_DIR: pr-visual-out
+      STORIES_FILE: pr-visual-stories.json
+      BASE_TREE: pr-visual-base
+
+    steps:
+      # The PR head, not the merge commit, so "after" is exactly the sha the manifest names.
+      # Full history for the merge base.
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+
+      - name: Merge base
+        id: base
+        run: |
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          echo "sha=$(git merge-base "$PR_BASE_SHA" HEAD)" >> "$GITHUB_OUTPUT"
+        env:
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+
+      # Writes STORIES_FILE; run=false when no story is selected, and every capture step skips.
+      - name: Stories the PR changes
+        id: stories
+        run: node packages/ui/scripts/pr-visual-stories.mjs
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
+      - uses: pnpm/action-setup@v4
+        if: steps.stories.outputs.run == 'true'
+
+      - uses: actions/setup-node@v4
+        if: steps.stories.outputs.run == 'true'
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Build Storybook at the head
+        if: steps.stories.outputs.run == 'true'
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm --filter @titan-design/react-ui build-storybook
+
+      - name: Build Storybook at the merge base
+        if: steps.stories.outputs.run == 'true'
+        run: |
+          git worktree add --detach "$BASE_TREE" "$BASE_SHA"
+          cd "$BASE_TREE"
+          pnpm install --frozen-lockfile
+          pnpm --filter @titan-design/react-ui build-storybook
+        env:
+          BASE_SHA: ${{ steps.base.outputs.sha }}
+
+      - name: Capture before and after
+        if: steps.stories.outputs.run == 'true'
+        run: |
+          node packages/ui/scripts/pr-visual-capture.mjs --side before \
+            --static "$BASE_TREE/packages/ui/storybook-static" --stories "$STORIES_FILE" --out "$OUT_DIR"
+          node packages/ui/scripts/pr-visual-capture.mjs --side after \
+            --static packages/ui/storybook-static --stories "$STORIES_FILE" --out "$OUT_DIR"
+
+      - name: Manifest
+        if: always()
+        run: node packages/ui/scripts/pr-visual-manifest.mjs
+        env:
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          BASE_SHA: ${{ steps.base.outputs.sha || github.event.pull_request.base.sha }}
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pr-visual-${{ github.event.pull_request.head.sha }}
+          path: ${{ env.OUT_DIR }}
+          if-no-files-found: error
+          retention-days: 14

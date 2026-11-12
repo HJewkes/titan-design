@@ -482,6 +482,174 @@
     },
     {
       "composes": [
+        "Indicator",
+        "Typography"
+      ],
+      "family": "custom/ActiveWork",
+      "file": "packages/ui/src/components/custom/ActiveWork/KnowledgeClassLabel.tsx",
+      "name": "KnowledgeClassLabel",
+      "props": [
+        {
+          "default": null,
+          "description": "Tailwind overrides for the row.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": "false",
+          "description": "Hides the text, leaving only the dot.",
+          "name": "dotOnly",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": "false",
+          "description": "Reads `Notes` rather than `Note`, for a legend or a count.",
+          "name": "isPlural",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "A {@link KnowledgeClass} or any wire name for one (`notes`, `nested_sources`).",
+          "name": "knowledgeClass",
+          "required": true,
+          "type": "KnowledgeClass | (string & {})"
+        }
+      ],
+      "purpose": "KnowledgeClassLabel — a record class as a categorical dot plus its name.",
+      "sources": {
+        "props": "packages/ui/src/components/custom/ActiveWork/KnowledgeClassLabel.tsx",
+        "status": "packages/ui/src/components/custom/ActiveWork/KnowledgeClassLabel.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-activework-knowledgeclasslabel--default"
+      ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [
+        "Alert",
+        "Button",
+        "EmptyState",
+        "Eyebrow",
+        "KnowledgeFilterBar",
+        "KnowledgeRow",
+        "KnowledgeTable"
+      ],
+      "family": "custom/ActiveWork",
+      "file": "packages/ui/src/components/custom/ActiveWork/KnowledgeList.tsx",
+      "name": "KnowledgeList",
+      "props": [
+        {
+          "default": null,
+          "description": "Tailwind overrides for the root.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Starting filters when uncontrolled.",
+          "name": "defaultFilters",
+          "required": false,
+          "type": "KnowledgeFilters"
+        },
+        {
+          "default": null,
+          "description": "Starting selection when uncontrolled.",
+          "name": "defaultSelectedId",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Controlled filter state.",
+          "name": "filters",
+          "required": false,
+          "type": "KnowledgeFilters"
+        },
+        {
+          "default": null,
+          "description": "Fills the rows with skeleton cells; the header and the filter row stay, inert.",
+          "name": "isLoading",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "Every note and source to list.",
+          "name": "items",
+          "required": true,
+          "type": "KnowledgeItem[]"
+        },
+        {
+          "default": null,
+          "description": "Reference time for the date range.",
+          "name": "now",
+          "required": true,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Called with the next filters on any filter change.",
+          "name": "onFiltersChange",
+          "required": false,
+          "type": "((filters: KnowledgeFilters) => void)"
+        },
+        {
+          "default": null,
+          "description": "Called when a title is pressed.",
+          "name": "onSelectedIdChange",
+          "required": false,
+          "type": "((id: string | undefined) => void)"
+        },
+        {
+          "default": null,
+          "description": "Files the source could not read.",
+          "name": "problems",
+          "required": false,
+          "type": "KnowledgeProblem[]"
+        },
+        {
+          "default": null,
+          "description": "The open item, marked `aria-current`.",
+          "name": "selectedId",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Consumer parts that replace the built-in filter row and empty states.",
+          "name": "slots",
+          "required": false,
+          "type": "KnowledgeListSlots"
+        },
+        {
+          "default": null,
+          "description": "Paging and columns.",
+          "name": "table",
+          "required": false,
+          "type": "KnowledgeListTable"
+        }
+      ],
+      "purpose": "KnowledgeList — every note and source across initiatives in one filterable, sortable, paged table.",
+      "sources": {
+        "props": "packages/ui/src/components/custom/ActiveWork/KnowledgeList.tsx",
+        "status": "packages/ui/src/components/custom/ActiveWork/KnowledgeList.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-activework-knowledgelist--default",
+        "custom-activework-knowledgelist-interactions--enter-on-a-header-cycles-the-sort",
+        "custom-activework-knowledgelist-interactions--enter-on-a-title-selects-its-row"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
         "Divider",
         "Eyebrow",
         "MarkdownProse",
@@ -1030,10 +1198,12 @@
     {
       "composes": [
         "DateTime",
+        "Indicator",
         "Pill",
         "SeverityLabel",
         "Table",
         "TableCell",
+        "TagPills",
         "Tooltip",
         "Typography"
       ],
@@ -12093,7 +12263,7 @@
         },
         {
           "default": null,
-          "description": "Callback when card is pressed (makes card interactive)",
+          "description": "Press callback; it makes the card one `role=\"button\"`, so never wrap form controls in it.",
           "name": "onPress",
           "required": false,
           "type": "(() => void)"
@@ -12886,7 +13056,8 @@
       },
       "status": "candidate",
       "storyIds": [
-        "components-organisms-networkgraph--default"
+        "components-organisms-networkgraph--default",
+        "components-organisms-networkgraph--ego-on-phone"
       ],
       "tier": "organism"
     },
@@ -13665,7 +13836,7 @@
         },
         {
           "default": "default",
-          "description": "Color scheme",
+          "description": "Legacy colour scheme, mapped onto `tone`.",
           "name": "color",
           "required": false,
           "type": "ChipColor"
@@ -13718,6 +13889,13 @@
           "name": "size",
           "required": false,
           "type": "ChipSize"
+        },
+        {
+          "default": null,
+          "description": "Semantic tone, as on `Pill`.",
+          "name": "tone",
+          "required": false,
+          "type": "PillTone"
         },
         {
           "default": "subtle",
@@ -16513,6 +16691,98 @@
       "tier": "atom"
     },
     {
+      "composes": [
+        "EmptyState",
+        "SchemaFormNodes",
+        "Stack"
+      ],
+      "family": "ui/schema-form",
+      "file": "packages/ui/src/components/ui/schema-form/SchemaForm.tsx",
+      "name": "SchemaForm",
+      "props": [
+        {
+          "default": null,
+          "description": "Additional className for the root stack.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Shown when the schema has no properties.",
+          "name": "emptyState",
+          "required": false,
+          "type": "ReactNode"
+        },
+        {
+          "default": "{}",
+          "description": "Per-field errors by dotted path; an array's own path carries its row-count error.",
+          "name": "errors",
+          "required": false,
+          "type": "Readonly<Record<string, string | readonly string[]>>"
+        },
+        {
+          "default": "false",
+          "description": "Disables every control, including the row buttons.",
+          "name": "isDisabled",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": "This id is locked",
+          "description": "Helper text under a locked id.",
+          "name": "lockedIdHint",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": "[]",
+          "description": "Ids that must not change: an object whose `id` is listed shows it read-only, and its row cannot be removed.",
+          "name": "lockedIds",
+          "required": false,
+          "type": "readonly string[]"
+        },
+        {
+          "default": null,
+          "description": "Called with the whole next value on every edit.",
+          "name": "onChange",
+          "required": true,
+          "type": "(value: SchemaFormValue) => void"
+        },
+        {
+          "default": null,
+          "description": "An object JSON Schema; each of its `properties` renders as one field.",
+          "name": "schema",
+          "required": true,
+          "type": "Readonly<Record<string, unknown>>"
+        },
+        {
+          "default": "schema-form",
+          "description": "Root test id; each field's is `<testID>-<path with dots as dashes>`.",
+          "name": "testID",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "The current value.",
+          "name": "value",
+          "required": true,
+          "type": "SchemaFormValue"
+        }
+      ],
+      "purpose": "A form rendered from a JSON Schema: strings (with a `maxLength` counter), string enums as a select, numbers, booleans, nested objects and arrays whose rows add, remove and reorder inside `minItems` / `maxItems`.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/schema-form/SchemaForm.tsx",
+        "status": "packages/ui/src/components/ui/schema-form/SchemaForm.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-organisms-schemaform--default"
+      ],
+      "tier": "organism"
+    },
+    {
       "composes": [],
       "family": "ui/section",
       "file": "packages/ui/src/components/ui/section/Section.tsx",
@@ -16556,6 +16826,13 @@
           "name": "className",
           "required": false,
           "type": "string"
+        },
+        {
+          "default": "true",
+          "description": "Whether a selected value shows a clear button.",
+          "name": "isClearable",
+          "required": false,
+          "type": "boolean"
         },
         {
           "default": "false",
@@ -16605,6 +16882,13 @@
           "name": "placeholder",
           "required": false,
           "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Control height, matching Input's sizes.",
+          "name": "size",
+          "required": false,
+          "type": "SelectSize"
         },
         {
           "default": null,
@@ -17045,7 +17329,7 @@
         },
         {
           "default": null,
-          "description": "Callback when card is pressed (makes card interactive)",
+          "description": "Press callback; it makes the card one `role=\"button\"`, so never wrap form controls in it.",
           "name": "onPress",
           "required": false,
           "type": "(() => void)"

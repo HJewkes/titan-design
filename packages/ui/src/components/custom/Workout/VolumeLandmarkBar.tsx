@@ -76,6 +76,20 @@ function volumeLandmarkReading(
   }
 }
 
+/**
+ * Tick label inks. The lines keep ZoneTrack's muted and brand colours, but as text
+ * dark text-tertiary and light brand orange fall below 4.5:1 on the base plane
+ * (TD-972), so the labels read text-secondary and, in light, text-warning.
+ */
+function useTickLabelInks(): { muted: string; target: string } {
+  const mode = useSurfaceMode()
+  const t = getSemanticColors(useSurfaceMode())
+  return {
+    muted: t['text-secondary'],
+    target: mode === 'light' ? t['text-warning'] : t['brand-primary'],
+  }
+}
+
 interface VolumeLandmarkTrackProps {
   muscle: string
   currentSets: number
@@ -100,6 +114,7 @@ function VolumeLandmarkTrack({
   // `heatmapColors` rather than `resolveColor`, which returns `var()` on web.
   const fillColor = heatmapColors(useSurfaceMode())[zone]
   const trackColor = getSemanticColors(useSurfaceMode())[TRACK_TOKEN]
+  const ink = useTickLabelInks()
 
   return (
     <ZoneTrack
@@ -115,14 +130,25 @@ function VolumeLandmarkTrack({
       trackColor={CLEAR}
       trackHeight={trackHeight}
       ticks={[
-        { value: mev, label: 'MEV', tooltip: `${LANDMARK_NAME.MEV} · ${mev} sets/wk` },
+        {
+          value: mev,
+          label: 'MEV',
+          labelColor: ink.muted,
+          tooltip: `${LANDMARK_NAME.MEV} · ${mev} sets/wk`,
+        },
         {
           value: mav,
           label: 'MAV',
+          labelColor: ink.target,
           emphasized: true,
           tooltip: `${LANDMARK_NAME.MAV} (target) · ${mav} sets/wk`,
         },
-        { value: mrv, label: 'MRV', tooltip: `${LANDMARK_NAME.MRV} · ${mrv} sets/wk` },
+        {
+          value: mrv,
+          label: 'MRV',
+          labelColor: ink.muted,
+          tooltip: `${LANDMARK_NAME.MRV} · ${mrv} sets/wk`,
+        },
       ]}
       accessibilityLabel={`${muscle} weekly volume: ${currentSets} sets, ${pct}% of MAV target, ${ZONE_DESCRIPTION[zone]}`}
       testID="volume-landmark-track"

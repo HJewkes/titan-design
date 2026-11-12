@@ -64,7 +64,7 @@ describe('custom families structure', () => {
     expect(
       offenders,
       `Undeclared: ${names(offenders)}. Add a Family-table row to custom/README.md if it is a ` +
-        'domain family; a generic component belongs in ui/ (CLAUDE.md, Placement).'
+        'domain family; a generic component belongs in ui/ (docs/component-development.md, Placement).'
     ).toEqual([])
   })
 

@@ -1,6 +1,6 @@
 // The OS "reduce motion" preference, read once and then watched. Lives in `hooks/` so
 // `ui/`-tier components can honour it without importing `custom/` (the tier order in
-// CLAUDE.md, Placement); it was promoted out of `custom/charts/live-rep-growth`.
+// docs/component-development.md, Placement); it was promoted out of `custom/charts/live-rep-growth`.
 import { useEffect, useState } from 'react'
 import { AccessibilityInfo, Platform } from 'react-native'
 

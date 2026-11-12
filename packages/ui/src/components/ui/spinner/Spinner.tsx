@@ -72,7 +72,14 @@ export function Spinner({
       className={cn('items-center justify-center', containerSizes[size], className)}
       {...props}
     >
-      <ActivityIndicator size={sizeMap[size]} color={colorMap(mode)[color]} />
+      {/* ActivityIndicator is itself an unnamed progressbar; the wrapper is the one AT reads. */}
+      <ActivityIndicator
+        size={sizeMap[size]}
+        color={colorMap(mode)[color]}
+        aria-hidden
+        accessibilityElementsHidden
+        importantForAccessibility="no-hide-descendants"
+      />
     </View>
   )
 }
