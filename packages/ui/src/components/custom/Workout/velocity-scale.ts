@@ -257,5 +257,11 @@ export function getLossStyle(
   mode: ThemeMode
 ): Record<string, string> | null {
   const band = velocityLossBand(loss, thresholds)
-  return band >= 2 ? { color: velScaleColor(LOSS_BAND_TOKENS[band], mode) } : null
+  if (band < 2) return null
+  // The light scale's orange and red are bar fills and fall under AA as small text on the base
+  // plane; the dark scale passes there, while dark `text-error` does not.
+  if (mode === 'light') {
+    return { color: getSemanticColors(mode)[band === 2 ? 'text-warning' : 'text-error'] }
+  }
+  return { color: velScaleColor(LOSS_BAND_TOKENS[band], mode) }
 }
