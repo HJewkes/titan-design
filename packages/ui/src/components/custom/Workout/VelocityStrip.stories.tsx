@@ -7,7 +7,6 @@ import type { SetRowProps } from './SetRow'
 import {
   Note,
   ViewLabel,
-  SURFACE_BG,
   VIEW_HEIGHT,
   dualVariantFor,
   dualOf,
@@ -18,6 +17,7 @@ import {
   type StripView,
 } from '../../../lab/velocity-story-kit/velocity-story-kit'
 import { Surface } from '../../ui/surface'
+import { StoryPage, StorySpecimens } from '../../../lab/story-canvas'
 
 /**
  * Per-rep velocity strip.
@@ -132,49 +132,54 @@ const AV_GUTTER = 34
 
 export const AllViews: Story = {
   name: 'All Views · single × dual matrix',
+  parameters: { layout: 'fullscreen' },
   render: () => (
-    <View style={{ padding: 24, backgroundColor: SURFACE_BG, gap: 26, width: 760 }}>
-      <View style={{ flexDirection: 'row', gap: 16 }}>
-        <View style={{ width: 92 }} />
-        <View style={{ flex: 1 }}>
-          <ViewLabel text="Single slot" />
-        </View>
-        <View style={{ flex: 1 }}>
-          <ViewLabel text="Dual · diverging" />
-        </View>
+    <StoryPage>
+      <View style={{ width: '100%', maxWidth: 760 }}>
+        <StorySpecimens>
+          <View style={{ flexDirection: 'row', gap: 16 }}>
+            <View style={{ width: 92 }} />
+            <View style={{ flex: 1 }}>
+              <ViewLabel text="Single slot" />
+            </View>
+            <View style={{ flex: 1 }}>
+              <ViewLabel text="Dual · diverging" />
+            </View>
+          </View>
+          <Note>
+            The SAME set across every row — compact is the flattened expanded (identical bar
+            x-positions, only the heights change). Shown at actual size.
+          </Note>
+          {AV_VIEWS.map(({ view, note }) => (
+            <View key={view} style={{ flexDirection: 'row', gap: 16, alignItems: 'center' }}>
+              <View style={{ width: 92, gap: 3 }}>
+                <ViewLabel text={view} />
+                <Note>{note}</Note>
+              </View>
+              <View style={{ flex: 1, paddingLeft: view === 'hero' ? 0 : AV_GUTTER }}>
+                <VelocityStrip
+                  velocities={REP_SET}
+                  variant={view}
+                  height={VIEW_HEIGHT[view].single}
+                  scale="peak"
+                  {...(view === 'hero' ? { label: 'Set' } : {})}
+                  {...(view === 'expanded' ? { showNumbers: false, showInfo: false } : {})}
+                />
+              </View>
+              <View style={{ flex: 1, paddingLeft: view === 'hero' ? 0 : AV_GUTTER }}>
+                <DualVelocityStrip
+                  left={dualOf(REP_SET, LEFT_SLOT)}
+                  right={dualOf(REP_SET_LAGGING, RIGHT_SLOT)}
+                  variant={dualVariantFor(view)}
+                  height={VIEW_HEIGHT[view].dual}
+                  scale="peak"
+                />
+              </View>
+            </View>
+          ))}
+        </StorySpecimens>
       </View>
-      <Note>
-        The SAME set across every row — compact is the flattened expanded (identical bar
-        x-positions, only the heights change). Shown at actual size.
-      </Note>
-      {AV_VIEWS.map(({ view, note }) => (
-        <View key={view} style={{ flexDirection: 'row', gap: 16, alignItems: 'center' }}>
-          <View style={{ width: 92, gap: 3 }}>
-            <ViewLabel text={view} />
-            <Note>{note}</Note>
-          </View>
-          <View style={{ flex: 1, paddingLeft: view === 'hero' ? 0 : AV_GUTTER }}>
-            <VelocityStrip
-              velocities={REP_SET}
-              variant={view}
-              height={VIEW_HEIGHT[view].single}
-              scale="peak"
-              {...(view === 'hero' ? { label: 'Set' } : {})}
-              {...(view === 'expanded' ? { showNumbers: false, showInfo: false } : {})}
-            />
-          </View>
-          <View style={{ flex: 1, paddingLeft: view === 'hero' ? 0 : AV_GUTTER }}>
-            <DualVelocityStrip
-              left={dualOf(REP_SET, LEFT_SLOT)}
-              right={dualOf(REP_SET_LAGGING, RIGHT_SLOT)}
-              variant={dualVariantFor(view)}
-              height={VIEW_HEIGHT[view].dual}
-              scale="peak"
-            />
-          </View>
-        </View>
-      ))}
-    </View>
+    </StoryPage>
   ),
 }
 
@@ -274,7 +279,7 @@ export const InContext: Story = {
   name: 'In Context · session rail',
   parameters: { layout: 'fullscreen' },
   render: () => (
-    <View style={{ flexDirection: 'row', backgroundColor: SURFACE_BG, minHeight: 640 }}>
+    <Surface level="base" className="flex-row" style={{ minHeight: 640 }}>
       <SessionRail
         title="Pull A · Intensification"
         exercises={RAIL_SESSION}
@@ -291,7 +296,7 @@ export const InContext: Story = {
         ]}
       />
 
-      <View style={{ flex: 1, padding: 28, gap: 6 }}>
+      <View className="flex-1 p-gutter-md gap-stack-sm">
         <ViewLabel text="reading the rail" />
         <Note>
           Collapsed rows draw SET-level bars — one per set, segmented per rep, at the same 8px
@@ -300,6 +305,6 @@ export const InContext: Story = {
           A zoom, not a repeat.
         </Note>
       </View>
-    </View>
+    </Surface>
   ),
 }
