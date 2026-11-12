@@ -1,4 +1,6 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi, afterEach } from 'vitest'
+import { Animated } from 'react-native'
+import { stubReducedMotion } from '../../../test/reduced-motion-stub'
 import { resolveAll, spacingClassesOf } from '../../../test/spacing-resolver'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
@@ -197,5 +199,33 @@ describe('IntensityBar geometry resolves to the numeric scale', () => {
     expect(spacingClassesOf('intensity-label')).toEqual(['mt-1.5'])
     expect(spacingClassesOf('intensity-threshold-label')).toEqual(['mt-0.5'])
     expect(resolveAll(['mt-1.5', 'mt-0.5'])).toEqual(['6px', '2px'])
+  })
+})
+
+describe('IntensityBar reduced motion', () => {
+  afterEach(() => {
+    vi.restoreAllMocks()
+    vi.unstubAllGlobals()
+  })
+
+  // Catches: dropping the usePrefersReducedMotion guard, so the 250 ms timing always runs.
+  it('starts no timing animation when reduced motion is preferred', () => {
+    stubReducedMotion(true)
+    const timing = vi.spyOn(Animated, 'timing')
+    const { rerender } = render(<IntensityBar level={0.2} />)
+    rerender(<IntensityBar level={0.8} />)
+    expect(timing).not.toHaveBeenCalled()
+  })
+
+  // Catches: the guard being inverted or hard-wired on, which would drop the default animation.
+  it('still runs the 250 ms timing animation when reduced motion is not preferred', () => {
+    stubReducedMotion(false)
+    const timing = vi.spyOn(Animated, 'timing')
+    const { rerender } = render(<IntensityBar level={0.2} />)
+    rerender(<IntensityBar level={0.8} />)
+    expect(timing).toHaveBeenCalledWith(
+      expect.anything(),
+      expect.objectContaining({ duration: 250 })
+    )
   })
 })
