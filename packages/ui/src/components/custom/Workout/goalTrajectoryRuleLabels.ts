@@ -15,7 +15,7 @@ import {
   type GoalTrajectoryGeometry,
 } from './GoalTrajectoryChartGeometry'
 import { roundWeight } from '../../../utils/workout-format'
-import { ruleLabelX, type ReferenceLabelSide } from './GoalTrajectoryPlot'
+import { ruleLabelX, type ReferenceLabelSide } from './goalTrajectoryPlotTokens'
 import type { HitBox } from './goalTrajectoryTargets'
 
 export type RuleLabelText = 'named' | 'numeric' | 'none'
