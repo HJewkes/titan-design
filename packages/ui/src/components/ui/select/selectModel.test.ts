@@ -90,4 +90,10 @@ describe('triggerClassName', () => {
   it('dims a disabled trigger', () => {
     expect(triggerClassName({ ...closed, isDisabled: true })).toContain('opacity-50')
   })
+
+  it('swaps the padded height for a fixed control height when sized', () => {
+    const classes = triggerClassName({ ...closed, size: 'sm' })
+    expect(classes).toContain('h-8')
+    expect(classes).not.toContain('py-2.5')
+  })
 })

@@ -9,7 +9,9 @@ import {
   isValueSelected,
   selectDisplayLabel,
   toggleValue,
+  labelClassName,
   triggerClassName,
+  type SelectSize,
 } from './selectModel'
 
 // React Native's `Role` union omits it; RNW passes it straight through to the DOM.
@@ -47,6 +49,8 @@ function useSelectContext<T>() {
   return useContext(SelectContext) as SelectContextType<T>
 }
 
+export type { SelectSize }
+
 export interface SelectProps<T = string> extends ViewProps {
   /** Selected value (single mode) */
   value?: T | null
@@ -68,6 +72,10 @@ export interface SelectProps<T = string> extends ViewProps {
   options: SelectOption<T>[]
   /** Visual variant — use 'filled' on dark/elevated surfaces */
   variant?: 'default' | 'filled'
+  /** Whether a selected value shows a clear button. Set false when the value is a meaningful "all". */
+  isClearable?: boolean
+  /** Control height, matching Input's sizes. Omitted, the trigger keeps its padded height. */
+  size?: SelectSize
   /** Additional className */
   className?: string
 }
@@ -106,6 +114,8 @@ export function Select<T extends string = string>({
   isInvalid = false,
   options,
   variant = 'default',
+  size,
+  isClearable = true,
   className,
   ...props
 }: SelectProps<T>) {
@@ -150,13 +160,11 @@ export function Select<T extends string = string>({
           aria-controls={isOpen ? listboxId : undefined}
           accessibilityState={{ expanded: isOpen, disabled: isDisabled }}
           style={well}
-          className={triggerClassName({ variant, isInvalid, isDisabled, isOpen })}
+          className={triggerClassName({ variant, size, isInvalid, isDisabled, isOpen })}
         >
-          <Text className={cn('flex-1', hasValue ? 'text-text-primary' : 'text-text-tertiary')}>
-            {displayValue}
-          </Text>
+          <Text className={labelClassName(size, hasValue)}>{displayValue}</Text>
           <View className="flex-row items-center gap-2">
-            {hasValue && (
+            {hasValue && isClearable && (
               <Pressable
                 onPress={(e) => {
                   e.stopPropagation?.()
