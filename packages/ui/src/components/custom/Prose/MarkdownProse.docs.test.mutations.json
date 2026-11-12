@@ -41,9 +41,9 @@
     },
     {
       "name": "underscore italic needs a doubled underscore",
-      "file": "packages/ui/src/components/custom/Prose/proseInlineTokens.ts",
-      "find": "|(?<![A-Za-z0-9_])_(?![\\s_])",
-      "replace": "|(?<![A-Za-z0-9_])__(?![\\s_])",
+      "file": "packages/ui/src/components/custom/Prose/proseInlineScan.ts",
+      "find": "  if (code === UNDERSCORE) return italicAt(t, p, UNDERSCORE, t.underscore)",
+      "replace": "  if (code === UNDERSCORE && codeAt(t, p + 1) === UNDERSCORE) return italicAt(t, p + 1, UNDERSCORE, t.underscore)",
       "kills": ["renders italic, bold and code spans without their markers"]
     }
   ]

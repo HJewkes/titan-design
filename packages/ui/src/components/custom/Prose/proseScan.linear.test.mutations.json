@@ -1,0 +1,14 @@
+{
+  "v": 1,
+  "mutations": [
+    {
+      "name": "a failed opener rescans from itself",
+      "file": "packages/ui/src/components/custom/Prose/proseInlineScan.ts",
+      "find": "  const angle = nextOf(t, t.angle, bodyStart)\n",
+      "replace": "  let angle = bodyStart\n  while (angle < t.to && codeAt(t, angle) !== GREATER_THAN) angle++\n  if (angle >= t.to) angle = NONE\n",
+      "kills": [
+        "reads each character of an inline span a bounded number of times: unclosed comment openers"
+      ]
+    }
+  ]
+}

@@ -12,7 +12,6 @@ const PROSE_DIR = path.dirname(fileURLToPath(import.meta.url))
  * top-level declaration. The last entry standing is the consumer linker composition.
  */
 const REGEX_ALLOWLIST = [
-  'proseInlineTokens.ts',
   'proseInline.tsx#inlineContext',
   'proseFenceTable.ts#DELIMITER_CELL',
   'proseFenceTable.ts#splitRow',
@@ -21,7 +20,7 @@ const REGEX_ALLOWLIST = [
 ]
 
 /** Modules whose reads the counting tests see; any other string method would read unseen. */
-const SCANNER_MODULES = ['proseSource.ts', 'proseLines.ts']
+const SCANNER_MODULES = ['proseSource.ts', 'proseLines.ts', 'proseInlineScan.ts']
 
 const UNCOUNTED_METHOD =
   /^(indexOf|lastIndexOf|includes|startsWith|endsWith|trim\w*|split|search|match\w*|replace\w*)$/

@@ -36,6 +36,7 @@ export const INLINE_FAMILIES: Record<string, AdversarialFamily> = {
   'unbalanced link brackets': (n) => repeatTo('[[a]', n),
   'unclosed link titles': (n) => repeatTo('[a](x "', n),
   'unclosed comment openers': (n) => repeatTo('<!--', n),
+  'spans nested to the depth cap': (n) => repeatTo('[_**a *b* c**_](u) ', n),
   'every opener mixed': (n) => repeatTo('[a( **a `a *a _a [[a] [a](x " <!-- ', n),
 }
 

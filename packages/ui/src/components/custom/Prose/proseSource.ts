@@ -30,7 +30,12 @@ const SPACES = new Set(
   )
 )
 
+const SPACE = codeOf(' ')
+const NO_BREAK_SPACE = codeOf('\u00a0')
+
 export function isSpace(code: number): boolean {
+  // Printable ASCII, the common case, holds no white space past the space itself.
+  if (code > SPACE && code < NO_BREAK_SPACE) return false
   return SPACES.has(code)
 }
 

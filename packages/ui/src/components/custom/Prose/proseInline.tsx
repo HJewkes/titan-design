@@ -2,12 +2,12 @@ import { Fragment, type ReactNode } from 'react'
 import { Linking, Platform, Text, type TextProps } from 'react-native'
 import { anchorProps } from '../../ui/link/anchorProps'
 import {
-  INLINE_SOURCES,
-  inlineKindOf,
-  innerText,
-  linkParts,
-  plainInline,
-} from './proseInlineTokens'
+  MAX_INLINE_DEPTH,
+  inlineScanner,
+  type InlineScanner,
+  type InlineToken,
+} from './proseInlineScan'
+import { linkParts, plainInline } from './proseInlineTokens'
 import { isExternalHref, safeHref } from './proseUrl'
 
 /** How a linked reference reads: brand for the domain's own ids, link for cross-references, muted for asides. */
@@ -18,7 +18,8 @@ export type ProseLinkTone = 'brand' | 'link' | 'muted'
  * …) or capture groups: the renderer combines every pattern's source into one
  * tokenizer, so flags cannot be kept per linker. A flagged pattern is matched
  * as if it had none, and warns once in development. Spell case-insensitivity
- * out in the pattern, e.g. `/[Tt][Dd]-\d+/`.
+ * out in the pattern, e.g. `/[Tt][Dd]-\d+/`. Linkers run on the plain text
+ * between markdown spans, which is untrusted: a pattern must run in linear time.
  */
 export interface ProseLinker {
   /** Stable id, used in keys and test ids. */
@@ -99,7 +100,8 @@ function LinkedRef({ linker, value }: { linker: ProseLinker; value: string }) {
 export interface InlineContext {
   /** Each linker with its pattern anchored to a whole piece, in order. */
   linkers: { linker: ProseLinker; whole: RegExp }[]
-  tokenizer: RegExp
+  /** Every linker in one pattern, or `null` when there are none. */
+  tokenizer: RegExp | null
   renderLink: (link: ProseLink) => ReactNode
 }
 
@@ -118,12 +120,12 @@ function warnDroppedFlags(linker: ProseLinker) {
   )
 }
 
-/** One tokenizer for the markdown spans and every linker, so a span is classified exactly once. */
+/** One tokenizer for every linker, so a piece of text is classified exactly once. */
 export function inlineContext(linkers: ProseLinker[]): Omit<InlineContext, 'renderLink'> {
   linkers.filter((l) => l.pattern.flags).forEach(warnDroppedFlags)
-  const parts = [...INLINE_SOURCES, ...linkers.map((l) => l.pattern.source)]
+  const sources = linkers.map((l) => l.pattern.source)
   return {
-    tokenizer: new RegExp(`(${parts.join('|')})`, 'g'),
+    tokenizer: sources.length ? new RegExp(`(${sources.join('|')})`, 'g') : null,
     linkers: linkers.map((linker) => ({
       linker,
       whole: new RegExp(`^(?:${linker.pattern.source})$`),
@@ -131,9 +133,32 @@ export function inlineContext(linkers: ProseLinker[]): Omit<InlineContext, 'rend
   }
 }
 
-function renderLinkPiece(piece: string, key: number, ctx: InlineContext): ReactNode {
-  const { label, target } = linkParts(piece)
-  const children = renderInline(label, ctx)
+/** Plain text, each linker match in it rendered as a reference. */
+function renderText(text: string, ctx: InlineContext): ReactNode[] {
+  const pieces = ctx.tokenizer ? text.split(ctx.tokenizer) : [text]
+  return pieces
+    .filter((piece) => piece !== '' && piece !== undefined)
+    .map((piece, i) => {
+      const hit = ctx.linkers.find(({ whole }) => whole.test(piece))
+      return hit ? <LinkedRef key={i} linker={hit.linker} value={piece} /> : piece
+    })
+}
+
+/** A text being rendered and the scanner over it. */
+interface Rendering {
+  text: string
+  scan: InlineScanner
+  ctx: InlineContext
+}
+
+interface Scanned {
+  token: InlineToken
+  depth: number
+}
+
+function renderLinkToken(r: Rendering, { token, depth }: Scanned, key: number) {
+  const { label, target } = linkParts(r.text, token)
+  const children = renderRange(r, token.innerStart, token.innerEnd, depth + 1)
   const href = safeHref(target)
   if (href === null) {
     return (
@@ -143,41 +168,42 @@ function renderLinkPiece(piece: string, key: number, ctx: InlineContext): ReactN
     )
   }
   const link = { href, label: plainInline(label), children, isExternal: isExternalHref(href) }
-  return <Fragment key={key}>{ctx.renderLink(link)}</Fragment>
+  return <Fragment key={key}>{r.ctx.renderLink(link)}</Fragment>
 }
 
-function renderPiece(piece: string, key: number, ctx: InlineContext): ReactNode {
-  const kind = inlineKindOf(piece)
-  if (kind === 'comment') return null
-  if (kind === 'link') return renderLinkPiece(piece, key, ctx)
-  if (kind === 'code') {
+function renderToken(r: Rendering, scanned: Scanned, key: number): ReactNode {
+  const { token, depth } = scanned
+  const { text } = r
+  if (token.kind === 'comment') return null
+  if (token.kind === 'link') return renderLinkToken(r, scanned, key)
+  if (token.kind === 'text') {
+    return <Fragment key={key}>{renderText(text.slice(token.start, token.end), r.ctx)}</Fragment>
+  }
+  if (token.kind === 'code') {
     return (
       <Text key={key} className="font-mono text-text-primary">
-        {innerText(piece, kind)}
+        {text.slice(token.innerStart, token.innerEnd)}
       </Text>
     )
   }
-  if (kind) {
-    const isBold = kind === 'bold'
-    return (
-      <Text
-        key={key}
-        className={isBold ? 'font-semibold text-text-primary' : 'italic'}
-        testID={isBold ? undefined : 'prose-em'}
-      >
-        {renderInline(innerText(piece, kind), ctx)}
-      </Text>
-    )
-  }
-  const hit = ctx.linkers.find(({ whole }) => whole.test(piece))
-  if (hit) return <LinkedRef key={key} linker={hit.linker} value={piece} />
-  return piece
+  const isBold = token.kind === 'bold'
+  return (
+    <Text
+      key={key}
+      className={isBold ? 'font-semibold text-text-primary' : 'italic'}
+      testID={isBold ? undefined : 'prose-em'}
+    >
+      {renderRange(r, token.innerStart, token.innerEnd, depth + 1)}
+    </Text>
+  )
 }
 
-/** Inline spans of one block: links, bold, italic, code, comments dropped, then each linker. */
+function renderRange(r: Rendering, from: number, to: number, depth: number): ReactNode[] {
+  if (depth >= MAX_INLINE_DEPTH) return renderText(r.text.slice(from, to), r.ctx)
+  return r.scan(from, to).map((token, i) => renderToken(r, { token, depth }, i))
+}
+
+/** Inline spans of one block: links, bold, italic, code, comments dropped; linkers on the text between. */
 export function renderInline(text: string, ctx: InlineContext): ReactNode[] {
-  return text
-    .split(ctx.tokenizer)
-    .filter((piece) => piece !== '' && piece !== undefined)
-    .map((piece, i) => renderPiece(piece, i, ctx))
+  return renderRange({ text, scan: inlineScanner(text), ctx }, 0, text.length, 0)
 }

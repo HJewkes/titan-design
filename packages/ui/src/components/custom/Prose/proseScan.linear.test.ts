@@ -1,17 +1,20 @@
 import { describe, expect, it } from 'vitest'
 import { parseProseSource } from './parseProseBlocks'
+import { plainInlineSource } from './proseInlineTokens'
 import {
   BLOCK_FAMILIES,
+  INLINE_FAMILIES,
   countingSource,
   type AdversarialFamily,
 } from './__fixtures__/proseAdversarial'
 
 /**
- * Reads per input character, at most. 1.5 times the largest count measured over the corpus
- * (block: 22.2, an unclosed container on every line, which each nesting level rescans up to the cap).
- * A fixed literal: deriving it from `n` would let a quadratic scan pass.
+ * Reads per input character, at most: 1.5 times the largest count measured over the corpus. Block:
+ * 22.2, an unclosed container on every line, which each nesting level rescans up to the cap. Inline:
+ * 5.3, unclosed star italics. Fixed literals: deriving them from `n` would let a quadratic scan pass.
  */
 const BLOCK_READS_PER_CHAR = 34
+const INLINE_READS_PER_CHAR = 8
 
 const SMALL = 8_000
 const LARGE = 16_000
@@ -21,6 +24,13 @@ const DOUBLING_SLACK = 2.2
 function blockReads(text: string): number {
   const { src, reads } = countingSource(text)
   parseProseSource(src)
+  return reads()
+}
+
+/** Every span level the renderer scans, as `plainInline` walks them. */
+function inlineReads(text: string): number {
+  const { src, reads } = countingSource(text)
+  plainInlineSource(src)
   return reads()
 }
 
@@ -39,6 +49,13 @@ describe('prose scanner cost', () => {
     'reads each character of a block body a bounded number of times: %s',
     (_name, family) => {
       expectLinear(family, blockReads, BLOCK_READS_PER_CHAR)
+    }
+  )
+
+  it.each(Object.entries(INLINE_FAMILIES))(
+    'reads each character of an inline span a bounded number of times: %s',
+    (_name, family) => {
+      expectLinear(family, inlineReads, INLINE_READS_PER_CHAR)
     }
   )
 })
