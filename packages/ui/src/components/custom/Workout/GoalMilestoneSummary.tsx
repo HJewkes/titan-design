@@ -18,7 +18,7 @@ import {
 } from '../../../utils/workout-format'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { useSurfaceMode } from '../../ui/surface'
-import { useMeasuredWidth } from '../Table/column-fit'
+import { useMeasuredWidth } from '../../../hooks/useMeasuredWidth'
 import { Typography } from '../../ui/typography'
 import type { GoalDirection, GoalTrajectoryStatus } from './GoalTrajectoryChartGeometry'
 import { STATUS_TOKEN } from './GoalTrajectoryPlot'
