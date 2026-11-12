@@ -1,5 +1,4 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
-import { useEffect, useState } from 'react'
 import {
   View,
   Text,
@@ -13,6 +12,7 @@ import { getGlowShadow } from '../../../theme/elevation'
 import { WORKOUT_TOKENS } from '../../../theme/workout-tokens'
 import { useSurfaceMode } from '../../ui/surface'
 import { alpha } from '../../../utils/colors'
+import { useEasedValue } from './useEasedValue'
 
 export type IntensityBarOrientation = 'vertical' | 'horizontal'
 
@@ -108,17 +108,7 @@ export function IntensityBar({
   const zone = zoneForPct(pct, colors.zone)
   const atTarget = isAtTarget(pct, threshold)
 
-  const [fillAnim] = useState(() => new Animated.Value(fillLevel))
-
-  useEffect(() => {
-    const animation = Animated.timing(fillAnim, {
-      toValue: fillLevel,
-      duration: 250,
-      useNativeDriver: false,
-    })
-    animation.start()
-    return () => animation.stop()
-  }, [fillLevel, fillAnim])
+  const fillAnim = useEasedValue(fillLevel)
 
   const fillSizePercent = fillAnim.interpolate({
     inputRange: [0, 1],
