@@ -84,3 +84,24 @@ for (const width of WIDTHS) {
     }
   })
 }
+
+test.describe('tokenColours', () => {
+  test.beforeEach(async ({ page }) => {
+    await loadFixture(page, 'colour.html')
+  })
+
+  test('files a real black token under #000000 and not a bare-triple token', async ({ page }) => {
+    const tokens = await page.evaluate(tokenColours)
+    expect(tokens['#000000']).toEqual(['--color-surface-black'])
+  })
+
+  test('records a hex token under its own colour', async ({ page }) => {
+    const tokens = await page.evaluate(tokenColours)
+    expect(tokens['#22c55e']).toEqual(['--color-status-success'])
+  })
+
+  test('does not file the bare-triple token under any colour', async ({ page }) => {
+    const tokens = await page.evaluate(tokenColours)
+    expect(Object.values(tokens).flat()).not.toContain('--color-status-success-rgb')
+  })
+})
