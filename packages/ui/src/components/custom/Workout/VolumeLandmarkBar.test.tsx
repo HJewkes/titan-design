@@ -148,6 +148,30 @@ describe('VolumeLandmarkBar', () => {
     }
   )
 
+  // Dark text-tertiary and light brand orange fail 4.5:1 as text on the base plane (TD-972).
+  it.each([
+    ['dark', 'brand-primary'],
+    ['light', 'text-warning'],
+  ] as const)(
+    'inks the %s tick labels with AA text tokens, not the line colours',
+    (mode, target) => {
+      const t = getSemanticColors(mode)
+      render(
+        <Surface theme={mode}>
+          <VolumeLandmarkBar muscle="Quads" currentSets={10} landmarks={LANDMARKS} />
+        </Surface>
+      )
+      const inks = screen.getAllByTestId('zone-track-tick-label').map((el) => el.style.color)
+      expect(inks).toEqual([t['text-secondary'], t[target], t['text-secondary']].map(cssColor))
+      const lines = screen
+        .getAllByTestId('zone-track-tick-line')
+        .map((el) => el.style.backgroundColor)
+      expect(lines).toEqual(
+        [t['text-tertiary'], t['brand-primary'], t['text-tertiary']].map(cssColor)
+      )
+    }
+  )
+
   describe('productive-zone glow', () => {
     it('glows the track in the productive zone', () => {
       renderBar(16)

@@ -64,6 +64,7 @@ describe('NetworkGraph paint', () => {
         "Pulse": "5d5805f4",
         "Small (5)": "5d5805f4",
         "Supplied": "fe851967",
+        "Three lanes": "98158892",
         "Two components": "a92e826b",
         "Wide fan-out": "bc8b8d99",
       }

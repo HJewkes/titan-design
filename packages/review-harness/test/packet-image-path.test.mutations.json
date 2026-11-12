@@ -1,0 +1,43 @@
+{
+  "v": 1,
+  "mutations": [
+    {
+      "name": "the schema stops refining images[].path",
+      "file": "packages/review-harness/src/packet.ts",
+      "find": "      ctx.addIssue({ code: 'custom', path: ['path'], message: `the baseline path ${problem}` })",
+      "replace": "      void ctx",
+      "kills": ["the schema refuses a .. traversal", "the packet lint refuses an absolute path"]
+    },
+    {
+      "name": "from-ci checks the path but not its layer's prefix",
+      "file": "packages/review-harness/src/packet.ts",
+      "find": "    const problem = imagePathProblem(g.layer, g.path)",
+      "replace": "    const problem = baselinePathProblem(g.path)",
+      "kills": ["from-ci refuses to write a packet for a path outside every baseline prefix"]
+    },
+    {
+      "name": "any file name is allowed, not only a .png in the safe alphabet",
+      "file": "packages/review-harness/src/packet.ts",
+      "find": "  if (!BASELINE_PATH.test(path)) return 'is not a .png named in A-Z a-z 0-9 . _ / -'",
+      "replace": "",
+      "kills": ["the schema refuses a non-.png file", "the schema refuses a space in the name"]
+    },
+    {
+      "name": "the layer's baseline prefix is not required",
+      "file": "packages/review-harness/src/packet.ts",
+      "find": "path.startsWith(prefix) ? null",
+      "replace": "true ? null",
+      "kills": [
+        "the schema refuses a path outside every baseline prefix",
+        "the schema refuses the story layer's prefix"
+      ]
+    },
+    {
+      "name": "dot-dot segments are allowed",
+      "file": "packages/review-harness/src/packet.ts",
+      "find": "s === '' || s === '.' || s === '..'",
+      "replace": "s === '' || s === '.'",
+      "kills": ["the schema refuses a .. segment under the prefix"]
+    }
+  ]
+}

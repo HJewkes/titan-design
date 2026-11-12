@@ -1,0 +1,33 @@
+{
+  "v": 1,
+  "mutations": [
+    {
+      "name": "every node is placed in band 0",
+      "file": "packages/ui/src/components/ui/charts/network-graph/layouts/lane-layout-model.ts",
+      "find": "  const firstRowY = top + REGION_LABEL_BAND + LAYER_ROW_HEIGHT / 2",
+      "replace": "  const firstRowY = BOX_X + REGION_LABEL_BAND + LAYER_ROW_HEIGHT / 2",
+      "kills": ["laneLayout places each node inside the box of its own lane"]
+    },
+    {
+      "name": "a node's column is its row in the band, not its depth",
+      "file": "packages/ui/src/components/ui/charts/network-graph/layouts/lane-layout-model.ts",
+      "find": "      x: GRAPH_NODE_PADDING + layerOf(id) * LAYER_COLUMN_WIDTH,",
+      "replace": "      x: GRAPH_NODE_PADDING + (band.rows.get(id) ?? 0) * LAYER_COLUMN_WIDTH,",
+      "kills": ["laneLayout puts a node in the same column layeredLayout gives it"]
+    },
+    {
+      "name": "nodes in no lane get no Other band",
+      "file": "packages/ui/src/components/ui/charts/network-graph/layouts/lane-layout-model.ts",
+      "find": "...(others.length > 0 ? [{ id: OTHER, label: OTHER_LABEL }] : [])",
+      "replace": "...(others.length < 0 ? [{ id: OTHER, label: OTHER_LABEL }] : [])",
+      "kills": ["laneLayout puts a node whose group is not a lane in a trailing Other band"]
+    },
+    {
+      "name": "lanes sort by label instead of the given order",
+      "file": "packages/ui/src/components/ui/charts/network-graph/layouts/lane-layout-model.ts",
+      "find": "  const listed = [...lanes, ",
+      "replace": "  const listed = [...[...lanes].sort((a, b) => compareText(a.label, b.label)), ",
+      "kills": ["laneLayout keeps lanes in the order the caller passes"]
+    }
+  ]
+}

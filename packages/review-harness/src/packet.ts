@@ -27,6 +27,7 @@ import {
   type CiDiff,
   type CiTarget,
   type Gathered,
+  type Layer,
   type LayerSources,
 } from './packet-types.ts'
 import { ReviewError } from './review.ts'
@@ -52,6 +53,37 @@ const DiffSchema = z.object({
 })
 const SizeSchema = z.object({ w: count, h: count })
 
+const BASELINE_PATH = /^[A-Za-z0-9._/-]+\.png$/
+const isControl = (c: string) => c.charCodeAt(0) < 0x20 || c.charCodeAt(0) === 0x7f
+
+/** Why `path` is not a relative POSIX .png path that stays inside the repo, or null when it is. The
+ * path comes from a CI artifact that code at the PR head can shape, so the packet refuses it here. */
+function baselinePathProblem(path: string): string | null {
+  if (path === '') return 'is empty'
+  if ([...path].some(isControl)) return 'contains a control character'
+  if (path.includes('\\')) return 'contains a backslash'
+  if (path.startsWith('/') || /^[A-Za-z]:/.test(path)) return 'is absolute'
+  if (path.split('/').some((s) => s === '' || s === '.' || s === '..'))
+    return 'has an empty, . or .. segment'
+  if (!BASELINE_PATH.test(path)) return 'is not a .png named in A-Z a-z 0-9 . _ / -'
+  return null
+}
+
+const prefixOf = (layer: Layer) => CI_SOURCES.find((s) => s.layer === layer)!.prefix
+
+/** `baselinePathProblem`, or why `path` is not under its layer's baseline directory. */
+export function imagePathProblem(layer: Layer, path: string): string | null {
+  const problem = baselinePathProblem(path)
+  if (problem) return problem
+  const prefix = prefixOf(layer)
+  return path.startsWith(prefix) ? null : `is not under the ${layer} baseline prefix ${prefix}`
+}
+
+/** The index of every value an earlier value already holds. */
+function repeats(values: string[]): number[] {
+  return values.flatMap((v, i) => (values.indexOf(v) < i ? [i] : []))
+}
+
 /** One shown baseline: frames@1-shaped (`key`, `file`, `sha256`, `viewport`), plus both sides. */
 const PacketImageSchema = z
   .object({
@@ -74,6 +106,17 @@ const PacketImageSchema = z
     cause: z.null(),
   })
   .strict()
+  .superRefine((image, ctx) => {
+    const problem = imagePathProblem(image.layer, image.path)
+    if (problem)
+      ctx.addIssue({ code: 'custom', path: ['path'], message: `the baseline path ${problem}` })
+  })
+
+const ImagesSchema = z.array(PacketImageSchema).superRefine((images, ctx) => {
+  for (const field of ['path', 'key'] as const)
+    for (const i of repeats(images.map((image) => image[field])))
+      ctx.addIssue({ code: 'custom', path: [i, field], message: `another image has this ${field}` })
+})
 
 export const CiPacketSchema = z
   .object({
@@ -93,7 +136,7 @@ export const CiPacketSchema = z
       regenerated: perLayer(z.boolean()),
       diagnostics: perLayer(z.boolean()),
     }),
-    images: z.array(PacketImageSchema),
+    images: ImagesSchema,
     unchanged: perLayer(count),
     warnings: z.array(z.string()),
     draft: z.object({ file: z.literal(DRAFT_FILE), sha256: sha256Hex }),
@@ -257,9 +300,21 @@ function layerFlags<T>(layers: LayerSources[], pick: (l: LayerSources) => T) {
   return { component: of('component'), story: of('story') }
 }
 
+/** Refuses, before anything is staged, a baseline whose path the packet schema would refuse. */
+function checkShown(shown: Gathered[]): void {
+  for (const g of shown) {
+    const problem = imagePathProblem(g.layer, g.path)
+    if (problem) throw new ReviewError(`${g.layer} baseline ${JSON.stringify(g.path)} ${problem}`)
+  }
+  const [twice] = repeats(shown.map((g) => g.path))
+  if (twice !== undefined)
+    throw new ReviewError(`${shown[twice].layer} baseline ${shown[twice].path} is shown twice`)
+}
+
 async function stageImages(layers: LayerSources[], staging: string): Promise<PacketImage[]> {
   await Promise.all(SUBDIRS.map((d) => mkdir(join(staging, d))))
   const shown = layers.flatMap((l) => l.shown)
+  checkShown(shown)
   const images: PacketImage[] = []
   for (const [i, g] of shown.entries())
     images.push(await stageImage(g, `img-${String(i + 1).padStart(3, '0')}`, staging))

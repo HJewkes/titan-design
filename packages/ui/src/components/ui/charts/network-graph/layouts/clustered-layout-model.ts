@@ -164,7 +164,7 @@ function computeClustered(input: GraphLayoutInput, options: CleanOptions): Graph
 }
 
 /** Keeps listed groups with a non-empty string id, the first entry winning on a repeated id. */
-function cleanGroups(groups: unknown): GraphGroup[] {
+export function cleanGroups(groups: unknown): GraphGroup[] {
   if (!Array.isArray(groups)) return []
   const kept = new Map<string, string>()
   for (const group of groups as Partial<GraphGroup>[]) {
