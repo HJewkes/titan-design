@@ -1,15 +1,12 @@
 import { useCallback, useState } from 'react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { View, Text } from 'react-native'
+import { View } from 'react-native'
 import { LiveFatiguePanel } from './LiveFatiguePanel'
 import { Surface } from '../../ui/surface'
-import { greyRamp } from '../../../theme/tokens/primitives'
-import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { Typography } from '../../ui/typography'
+import { StorySpecimen, StorySpecimens } from '../../../lab/story-canvas'
 import { FATIGUE_STATES, buildMockPanelState } from './fatigue-mock'
 import { PANEL_BREAKPOINTS } from './panel-layout'
-
-const PAGE_BG = greyRamp[975]
-const t = getSemanticColors('dark')
 
 const meta: Meta<typeof LiveFatiguePanel> = {
   title: 'Custom/Fatigue/Live Fatigue Panel',
@@ -35,16 +32,13 @@ type Story = StoryObj<typeof LiveFatiguePanel>
 /** THE aligned direction — a breaking-down rep 8, ghost-spark revealed. */
 export const LivePanelV2: Story = {
   name: 'Live panel v2 (composition)',
+  parameters: { canvas: 'page' },
   render: () => {
     const { model, velocity } = buildMockPanelState(FATIGUE_STATES[3].current, {
       rpe: 10,
       verdict: FATIGUE_STATES[3].model.verdict,
     })
-    return (
-      <View style={{ backgroundColor: PAGE_BG, padding: 24 }}>
-        <LiveFatiguePanel model={model} velocity={velocity} />
-      </View>
-    )
+    return <LiveFatiguePanel model={model} velocity={velocity} />
   },
 }
 
@@ -98,14 +92,17 @@ export const Widths: Story = {
     })
     const width = frame.width ?? undefined
     return (
-      <View ref={frame.ref} style={{ backgroundColor: PAGE_BG }}>
-        <LiveFatiguePanel
-          model={model}
-          velocity={velocity}
-          containerWidth={width}
-          bodyHeight={width === undefined ? undefined : bodyHeightFor(width)}
-        />
-      </View>
+      // A bare Surface, not StoryPage: each frame's width is a threshold, and a gutter would move it.
+      <Surface level="base" rounded={false}>
+        <View ref={frame.ref}>
+          <LiveFatiguePanel
+            model={model}
+            velocity={velocity}
+            containerWidth={width}
+            bodyHeight={width === undefined ? undefined : bodyHeightFor(width)}
+          />
+        </View>
+      </Surface>
     )
   },
 }
@@ -123,14 +120,14 @@ export const WallWidth: Story = {
       verdict: FATIGUE_STATES[2].model.verdict,
     })
     return (
-      <View style={{ backgroundColor: PAGE_BG, width: PANEL_BREAKPOINTS.xl }}>
+      <Surface level="base" rounded={false} style={{ width: PANEL_BREAKPOINTS.xl }}>
         <LiveFatiguePanel
           model={model}
           velocity={velocity}
           containerWidth={PANEL_BREAKPOINTS.xl}
           bodyHeight={820}
         />
-      </View>
+      </Surface>
     )
   },
 }
@@ -159,26 +156,20 @@ export const OnLightSurface: Story = {
 /** The whole system across the verdict spectrum — GOOD → SLOWING → GRINDING → FORM BREAKING DOWN. */
 export const LiveStates: Story = {
   name: 'Live states (Good → Breaking down)',
+  parameters: { canvas: 'page' },
   render: () => (
-    <View style={{ backgroundColor: PAGE_BG }}>
-      <View style={{ padding: 28, paddingBottom: 8, gap: 4 }}>
-        <Text
-          style={{
-            fontSize: 16,
-            fontWeight: '800',
-            fontFamily: '"Space Grotesk", sans-serif',
-            color: t['text-primary'],
-          }}
-        >
+    <StorySpecimens>
+      <View className="gap-stack-sm" style={{ maxWidth: 860 }}>
+        <Typography variant="h6">
           Live-view states — the system across the fatigue spectrum
-        </Text>
-        <Text style={{ fontSize: 12, color: t['text-secondary'], maxWidth: 860, lineHeight: 18 }}>
+        </Typography>
+        <Typography variant="body2" color="secondary">
           The live panel rendered per verdict state, each driven by a full plausible model — RPE,
           the three status dots, the control-aware ghost line, and the ROM progression all respond
           together. The aura flood tracks the state. Every panel is built from ONE truncation point,
           so the ROM chart&apos;s upcoming reps and the velocity strip&apos;s beside it always agree
           on the rep count.
-        </Text>
+        </Typography>
       </View>
       {FATIGUE_STATES.map((s) => {
         const { model, velocity } = buildMockPanelState(s.current, {
@@ -186,21 +177,11 @@ export const LiveStates: Story = {
           verdict: s.model.verdict,
         })
         return (
-          <View key={s.name} style={{ gap: 6, paddingHorizontal: 28, paddingBottom: 22 }}>
-            <Text
-              style={{
-                fontSize: 9,
-                letterSpacing: 1,
-                fontFamily: 'monospace',
-                color: t['text-tertiary'],
-              }}
-            >
-              {s.name}
-            </Text>
+          <StorySpecimen key={s.name} label={s.name}>
             <LiveFatiguePanel model={model} velocity={velocity} />
-          </View>
+          </StorySpecimen>
         )
       })}
-    </View>
+    </StorySpecimens>
   ),
 }
