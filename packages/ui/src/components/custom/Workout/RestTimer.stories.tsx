@@ -1,10 +1,6 @@
 import type { Decorator, Meta, StoryObj } from '@storybook/react-vite'
-import { View, Text } from 'react-native'
 import { RestTimer } from './RestTimer'
-import { greyRamp } from '../../../theme/tokens/primitives'
-import { getSemanticColors } from '../../../theme/tokens/semantic'
-
-const t = getSemanticColors('dark')
+import { StorySpecimen } from '../../../lab/story-canvas'
 
 const meta: Meta<typeof RestTimer> = {
   title: 'Custom/Workout/RestTimer',
@@ -99,33 +95,23 @@ export const JustStarted: Story = {
 }
 
 // --- Ring variant ------------------------------------------------------------
-// The across-the-room wall rest treatment. Rendered on the north-star wall
-// background so the draining ring reads the way it will live.
+// The across-the-room wall rest treatment. Rendered on the page plane the rest
+// page draws, so the draining ring reads the way it will live.
 
-/** Wall-background frame for the ring stories (mirrors the north-star rest page). */
-const ringDecorator: Decorator = (Story) => (
-  <View
-    style={{
-      width: 420,
-      padding: 32,
-      alignItems: 'center',
-      backgroundColor: t['background-frame'],
-    }}
+/** The rest page's eyebrow above the ring, `stack-sm` from it as the caption sits on the rest page. */
+const ringLabel: Decorator = (Story) => (
+  <StorySpecimen
+    label="REST · UNTIL NEXT SET · (organism chrome — not the component)"
+    className="items-center"
   >
-    <Text
-      style={{
-        color: greyRamp[700],
-        fontSize: 10,
-        fontWeight: '700',
-        letterSpacing: 1,
-        marginBottom: 20,
-      }}
-    >
-      REST · UNTIL NEXT SET · (organism chrome — not the component)
-    </Text>
     <Story />
-  </View>
+  </StorySpecimen>
 )
+
+const RING_FRAME = {
+  decorators: [ringLabel],
+  parameters: { canvas: 'page', layout: 'fullscreen' },
+} satisfies Pick<Story, 'decorators' | 'parameters'>
 
 /** Controls-driven ring: flip `totalSeconds` / `elapsedMs` / `size` / `displayOnly`. */
 export const RingPlayground: Story = {
@@ -138,7 +124,7 @@ export const RingPlayground: Story = {
     onAddTime: () => {},
     visible: true,
   },
-  decorators: [ringDecorator],
+  ...RING_FRAME,
 }
 
 /** Just started: the ring is nearly full and draining. */
@@ -152,7 +138,7 @@ export const RingJustStarted: Story = {
     onAddTime: () => {},
     visible: true,
   },
-  decorators: [ringDecorator],
+  ...RING_FRAME,
 }
 
 /** Midway: half the rest has drained. */
@@ -166,7 +152,7 @@ export const RingMidway: Story = {
     onAddTime: () => {},
     visible: true,
   },
-  decorators: [ringDecorator],
+  ...RING_FRAME,
 }
 
 /** Almost done: a sliver of ring left. */
@@ -180,7 +166,7 @@ export const RingAlmostDone: Story = {
     onAddTime: () => {},
     visible: true,
   },
-  decorators: [ringDecorator],
+  ...RING_FRAME,
 }
 
 /** Rest is up: the ring empties and flips to success (go time). */
@@ -194,7 +180,7 @@ export const RingDone: Story = {
     onAddTime: () => {},
     visible: true,
   },
-  decorators: [ringDecorator],
+  ...RING_FRAME,
 }
 
 /** Display-only ring (poll mode): the ring + next-set line, no controls. */
@@ -209,5 +195,5 @@ export const RingDisplayOnly: Story = {
     onAddTime: () => {},
     visible: true,
   },
-  decorators: [ringDecorator],
+  ...RING_FRAME,
 }
