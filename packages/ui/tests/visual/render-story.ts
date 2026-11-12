@@ -7,8 +7,7 @@ import { STORY_INDEX_ENV } from './story-index.global-setup'
  * The story-render routine the Playwright specs share: a page whose clock is installed and paused
  * at a fixed instant, the story URL with its settling arguments, and the blank-render guard.
  *
- * `contrast.spec.ts` uses it today. `stories.spec.ts` carries its own copy until the per-worker
- * page rewrite (TD-730, PR #724) lands; moving it onto this module is that PR's follow-up.
+ * `contrast.spec.ts` and `stories.spec.ts` both load stories through it.
  */
 
 export const FIXED_TIME = new Date('2024-01-01T16:12:07')
@@ -46,6 +45,11 @@ const SETTLED_ARGS_PREFIX = 'custom-workout-dataviz-goaltrajectorychart--'
 // renders without args, so this prefix runs the paused clock past the draw instead.
 const SETTLED_CLOCK_PREFIX = 'custom-workout-dataviz-strengthtrendchart--'
 const SETTLE_MS = 1000
+
+/** Whether loading the story runs the paused clock forward, which a reused page cannot undo. */
+export function advancesClock(id: string): boolean {
+  return id.startsWith(SETTLED_CLOCK_PREFIX)
+}
 
 export function storyUrl(id: string, theme: StoryTheme = 'dark'): string {
   const args = id.startsWith(SETTLED_ARGS_PREFIX) ? '&args=animate:!false' : ''
@@ -109,6 +113,6 @@ export async function loadStory(
   await page.waitForLoadState('networkidle')
   await page.evaluate(() => document.fonts.ready)
   const blank = await blankAfter(page, renderTimeout)
-  if (id.startsWith(SETTLED_CLOCK_PREFIX)) await page.clock.runFor(SETTLE_MS)
+  if (advancesClock(id)) await page.clock.runFor(SETTLE_MS)
   return blank
 }
