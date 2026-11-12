@@ -255,7 +255,7 @@
     "complexity": 17
   },
   "components/ui/progress/Progress.tsx#Progress": {
-    "complexity": 22
+    "complexity": 21
   },
   "components/ui/stat-card/StatCard.tsx#StatCard": {
     "props": 20
