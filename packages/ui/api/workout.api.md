@@ -2832,6 +2832,7 @@ export interface ZoneTrackTick {
     color?: string;
     emphasized?: boolean;
     label?: string;
+    labelColor?: string;
     tooltip?: string;
     value: number;
 }

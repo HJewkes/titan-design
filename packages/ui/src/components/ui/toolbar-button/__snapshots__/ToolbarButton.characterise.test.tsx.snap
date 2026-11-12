@@ -193,7 +193,7 @@ exports[`ToolbarButton characterisation > on a dark surface > renders the Button
     >
       <div
         class="css-view-175oi2r"
-        style="gap: 16px;"
+        data-testid="story-specimen"
       >
         <div
           class="css-text-146c3p1"
@@ -1320,10 +1320,11 @@ exports[`ToolbarButton characterisation > on a dark surface > renders the Varian
     >
       <div
         class="css-view-175oi2r"
-        style="gap: 24px;"
+        data-testid="story-specimens"
       >
         <div
           class="css-view-175oi2r"
+          data-testid="story-specimen"
         >
           <div
             class="css-text-146c3p1"
@@ -1417,6 +1418,7 @@ exports[`ToolbarButton characterisation > on a dark surface > renders the Varian
         </div>
         <div
           class="css-view-175oi2r"
+          data-testid="story-specimen"
         >
           <div
             class="css-text-146c3p1"
@@ -2361,7 +2363,7 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Butto
     >
       <div
         class="css-view-175oi2r"
-        style="gap: 16px;"
+        data-testid="story-specimen"
       >
         <div
           class="css-text-146c3p1"
@@ -3488,10 +3490,11 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Varia
     >
       <div
         class="css-view-175oi2r"
-        style="gap: 24px;"
+        data-testid="story-specimens"
       >
         <div
           class="css-view-175oi2r"
+          data-testid="story-specimen"
         >
           <div
             class="css-text-146c3p1"
@@ -3585,6 +3588,7 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Varia
         </div>
         <div
           class="css-view-175oi2r"
+          data-testid="story-specimen"
         >
           <div
             class="css-text-146c3p1"
