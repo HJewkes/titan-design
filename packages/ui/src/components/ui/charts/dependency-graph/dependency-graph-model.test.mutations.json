@@ -1,0 +1,19 @@
+{
+  "v": 1,
+  "mutations": [
+    {
+      "name": "the ego subgraph keeps every edge, so second-hop nodes join it",
+      "file": "packages/ui/src/components/ui/charts/dependency-graph/dependency-graph-model.ts",
+      "find": "  const edges = clean.edges.filter((edge) => edge.source === id || edge.target === id)\n",
+      "replace": "  const edges = clean.edges\n",
+      "kills": ["holds exactly the focus, its dependencies and its dependents, never a second hop"]
+    },
+    {
+      "name": "tiers no longer become compound boxes",
+      "file": "packages/ui/src/components/ui/charts/dependency-graph/dependency-graph-model.ts",
+      "find": "        return box && used.has(id) ? [{ id: `tier:${id}`, label, box, stroke: REST_MARK }] : []\n",
+      "replace": "        return []\n",
+      "kills": ["places every node inside its own tier box, on routed edges"]
+    }
+  ]
+}

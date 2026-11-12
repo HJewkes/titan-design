@@ -1926,6 +1926,43 @@
       "standard": true
     },
     {
+      "name": "DependencyGraph",
+      "file": "packages/ui/src/components/ui/charts/dependency-graph/DependencyGraph.tsx",
+      "dir": "ui",
+      "family": "ui/charts",
+      "exports": [
+        "DependencyGraph",
+        "asSelection",
+        "useDependencyGraph"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "DependencyFocusPanel",
+        "NetworkGraph"
+      ],
+      "leak": {
+        "rawView": 1,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 95,
+        "score": 1
+      },
+      "tier": "organism",
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
       "name": "DeviationBar",
       "file": "packages/ui/src/components/custom/Workout/DeviationBar.tsx",
       "dir": "workout",

@@ -1,0 +1,19 @@
+{
+  "v": 1,
+  "mutations": [
+    {
+      "name": "the focus lights its dependencies but leaves its dependents at rest",
+      "file": "packages/ui/src/components/ui/charts/dependency-graph/dependency-graph-model.ts",
+      "find": "  const touches = (edge: GraphEdge) => edge.source === focusId || edge.target === focusId\n",
+      "replace": "  const touches = (edge: GraphEdge) => edge.source === focusId\n",
+      "kills": ["pressing a node keeps its dependencies and dependents lit after focus leaves"]
+    },
+    {
+      "name": "NetworkGraph ignores an edge kind's colour",
+      "file": "packages/ui/src/components/ui/charts/network-graph/NetworkGraphPlot.tsx",
+      "find": "  const stroke = isStrong ? EDGE_STRONG_COLOR : (geometry.color ?? EDGE_REST_COLOR)\n",
+      "replace": "  const stroke = isStrong ? EDGE_STRONG_COLOR : EDGE_REST_COLOR\n",
+      "kills": ["pressing a node keeps its dependencies and dependents lit after focus leaves"]
+    }
+  ]
+}

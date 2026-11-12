@@ -52,6 +52,8 @@ export interface GraphEdgeKind {
   label: string
   /** Default 'solid'. */
   stroke?: 'solid' | 'dashed'
+  /** The stroke and arrowhead of this kind's edges at rest; an emphasised edge keeps the strong colour. */
+  color?: ColorToken
 }
 
 /** The selection: one node or one edge, by id. */
@@ -120,6 +122,8 @@ export interface GraphGroupRegion {
   variant: 'region' | 'ring' | 'box'
   /** The rectangle of a `box`; a `box` without one, or with no area, is not painted. */
   box?: GraphBox
+  /** A `box`'s outline colour; unset is the default hairline. */
+  stroke?: ColorToken
 }
 
 /** What a layout returns: positions, an order and a natural size. */

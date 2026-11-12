@@ -47,6 +47,7 @@ Generated from `src/arch/component-catalog.json` by `pnpm catalog`. Do not edit 
 | DataRow | stable | ui/data-row | A label-and-value row: the dense rung of the row ladder. | — | components-molecules-datarow--custom-class-name |
 | DateSeparator | candidate | custom/Chat | — | DateTime, Divider, Typography | custom-chat-messagelist-dateseparator--older |
 | DateTime | candidate | ui/date-time | DateTime component for displaying formatted dates and times. | Typography | components-molecules-datetime--all-formats |
+| DependencyGraph | candidate | ui/charts | A system's units boxed by tier, with their dependencies as routed edges, on a layout computed before render. | DependencyFocusPanel, NetworkGraph | components-organisms-dependencygraph--default |
 | DeviationBar | candidate | custom/Workout | — | — | custom-workout-dataviz-deviationbar--full-range |
 | DeviceIndicator | candidate | shell | The device/BLE connection glyph — a color-coded bluetooth mark, no label. | icons | shell-workout-deviceindicator--default |
 | DeviceMenu | candidate | shell | The device glyph + its dropdown of individual devices (availability, slot binding, id, connection state). | DeviceIndicator, DeviceRow, Popover, Typography | shell-workout-devicemenu--default |
