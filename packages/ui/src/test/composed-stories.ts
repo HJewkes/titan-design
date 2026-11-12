@@ -19,7 +19,7 @@ const storyModules = import.meta.glob<StoryModule>('../components/**/*.stories.t
 const labDecisionModules = import.meta.glob<StoryModule>('../lab/decisions/**/*.stories.tsx')
 
 // VolumeStatusPalette › Compare mounts every palette at once and takes 5-6 s on a CI runner.
-export const SLOW_STORY_TIMEOUT = 30_000
+const SLOW_STORY_TIMEOUT = 30_000
 const SLOW_STORY_IDS = new Set(['lab-decisions-volume-status-palette--compare'])
 
 export function storyTimeout(id: string): number | undefined {
