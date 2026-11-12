@@ -11,4 +11,7 @@ containers as `Alert`s with a note role; a `highlight` seam for fenced code (no 
 bundled); an `inline` mode with no block wrapper; and leading frontmatter and HTML comments
 dropped. It renders on a server. New exports: `ProseAnchor`, `safeHref`, `slugify`,
 `plainInline`. Lines like `1. Squat` now render as an ordered list, and the chat `plainText`
-drops the italic and link markup the bubble now renders.
+drops the italic and link markup the bubble now renders. Lines end at CRLF, CR, LF, U+2028 and
+U+2029, so CRLF bodies keep their lists. Block and inline parsing is a single-pass scanner with no
+regular expressions, so any body costs linear time; consumer linkers run only on the text between
+markdown spans.

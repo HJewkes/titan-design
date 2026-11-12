@@ -215,6 +215,8 @@ describe('slugify', () => {
     ['1. Intro', '_1-intro'],
     ['Café crème', 'cafe-creme'],
     ['A -- B', 'a-b'],
+    [`a${'-'.repeat(200)}b`, 'a-b'],
+    ['{#id}   ', 'id'],
   ])('%s becomes %s', (text, id) => {
     expect(slugify(text)).toBe(id)
   })

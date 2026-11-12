@@ -34,13 +34,24 @@ interrupt a paragraph, so a wrapped `60. An id…` stays prose. `::: kind [title
 matching `:::` is a `callout` (fences inside are skipped). Deeper headings flatten to `h3` in
 `type` and keep their source `level`; every heading gets an `id` by the VitePress slug rule
 (`{#id}` pins one, repeats get `-1`, `-2`), so a site moved off VitePress keeps its fragments.
-A leading YAML frontmatter block and comment-only lines are dropped. Nesting stops at eight
-levels, and every scan stops at the next opener, so hostile input costs linear time. It is
-pure, so it is unit-tested on its own.
+A leading YAML frontmatter block and comment-only lines are dropped. A line ends at CRLF, CR,
+LF, U+2028 or U+2029. It is pure, so it is unit-tested on its own.
+
+**Scanning, not regular expressions.** Every earlier quadratic case was a regex with an
+unbounded run before a match that could fail, so the parse modules hold no regex at all.
+Lines are ranges from one pass; each block kind comes from a forward-only character walk over
+one line, and a line none of them claims is paragraph text. Inline spans come from one walk
+whose closers are looked up in tables built in two passes (next-occurrence tables for the
+markers, bracket and paren matches one level deep); an opener with no valid closer is text.
+Block nesting stops at eight levels and span nesting at four, past which markup is text.
+`proseScan.guard.test.ts` fails on any regex in a parse module and on a scanner reading input
+other than through `charCodeAt` and `slice`; `proseScan.linear.test.ts` counts those reads on
+adversarial bodies, so linear cost is checked without a clock.
 
 **Inline spans** are HTML comments (dropped), code, `[text](url)` links, `**bold**` and
 `*italic*` / `_italic_` (never intraword, so `2*3*4` and `snake_case` stay literal), then each
-linker. Bold, italic and link text nest the other spans. A link's target goes through
+linker. Bold, italic and link text nest the other spans. Linkers run only on the plain text
+between spans. A link's target goes through
 `safeHref`: http(s), mailto and relative targets link, anything else (`javascript:`, `data:`,
 a scheme hidden behind a tab) shows its text in the muted tone. `renderLink` receives
 `{ href, label, children, isExternal }`; the default, `ProseAnchor`, is a `<Text>` that is an
@@ -52,7 +63,8 @@ Nothing reads `window` or `document` during render, so the prose renders on a se
 **`MarkdownProse`** renders those blocks and inline-links references. `linkers`
 is an ordered list of `{ id, pattern, tone, label, onPress }`; the renderer
 combines the patterns into one tokenizer, which is why **a `ProseLinker.pattern`
-must carry neither the `g` flag nor capture groups**. `tone` chooses how a
+must carry neither the `g` flag nor capture groups**. The patterns are the consumer's
+responsibility: they run on untrusted text, so each one must run in linear time. `tone` chooses how a
 reference reads: `brand` for the domain's own ids, `link` for cross-references,
 `muted` for asides. A linker with `onPress` becomes pressable and takes a link
 role; without one it is styled text, not an interactive element.

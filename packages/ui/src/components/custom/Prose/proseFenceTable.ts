@@ -1,5 +1,5 @@
 import { fenceOpenLang, hasPipe, isFenceClose } from './proseLines'
-import { isBlank, type LineRange, type ProseSource } from './proseSource'
+import { codeOf, isBlank, type LineRange, type ProseSource } from './proseSource'
 
 export type TableAlign = 'left' | 'center' | 'right'
 
@@ -17,7 +17,10 @@ export interface TableRead {
   next: number
 }
 
-const DELIMITER_CELL = /^:?-+:?$/
+const PIPE = codeOf('|')
+const BACKSLASH = codeOf('\\')
+const COLON = codeOf(':')
+const DASH = codeOf('-')
 
 /** A fence opened at `start`, or `null` when that line opens none. An unterminated fence takes every remaining line. */
 export function readFence(src: ProseSource, lines: LineRange[], start: number): FenceRead | null {
@@ -31,15 +34,47 @@ export function readFence(src: ProseSource, lines: LineRange[], start: number): 
   return { lang, code: body.join('\n'), next: Math.min(i + 1, lines.length) }
 }
 
+/** `:?-+:?`: a run of dashes, optionally colon-capped at either end. */
+function isDelimiterCell(cell: string): boolean {
+  const start = cell.charCodeAt(0) === COLON ? 1 : 0
+  const last = cell.length - 1
+  const end = last >= start && cell.charCodeAt(last) === COLON ? last : cell.length
+  if (start >= end) return false
+  for (let i = start; i < end; i++) if (cell.charCodeAt(i) !== DASH) return false
+  return true
+}
+
+/** A cell with each escaped pipe unescaped. */
+function unescapePipes(cell: string): string {
+  let out = ''
+  for (let i = 0; i < cell.length; i++) {
+    if (cell.charCodeAt(i) !== BACKSLASH || cell.charCodeAt(i + 1) !== PIPE) out += cell[i]
+  }
+  return out
+}
+
+/** A row's cells: split at each pipe not escaped with a backslash, one outer pipe dropped at each end. */
 function splitRow(line: string): string[] {
-  const inner = line.trim().replace(/^\|/, '').replace(/\|$/, '')
-  return inner.split(/(?<!\\)\|/).map((cell) => cell.trim().replace(/\\\|/g, '|'))
+  const trimmed = line.trim()
+  const start = trimmed.charCodeAt(0) === PIPE ? 1 : 0
+  const last = trimmed.length - 1
+  const end = last >= start && trimmed.charCodeAt(last) === PIPE ? last : trimmed.length
+  const cells: string[] = []
+  let cellStart = start
+  for (let i = start; i < end; i++) {
+    const escaped = i > start && trimmed.charCodeAt(i - 1) === BACKSLASH
+    if (trimmed.charCodeAt(i) !== PIPE || escaped) continue
+    cells.push(unescapePipes(trimmed.slice(cellStart, i).trim()))
+    cellStart = i + 1
+  }
+  cells.push(unescapePipes(trimmed.slice(cellStart, end).trim()))
+  return cells
 }
 
 function isDelimiterRow(line: string): boolean {
-  if (!line.includes('|') && !DELIMITER_CELL.test(line.trim())) return false
+  if (!line.includes('|') && !isDelimiterCell(line.trim())) return false
   const cells = splitRow(line)
-  return cells.length > 0 && cells.every((cell) => DELIMITER_CELL.test(cell))
+  return cells.length > 0 && cells.every(isDelimiterCell)
 }
 
 function alignOf(cell: string): TableAlign {

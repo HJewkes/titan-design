@@ -9,15 +9,10 @@ const PROSE_DIR = path.dirname(fileURLToPath(import.meta.url))
 /**
  * Shrink-only. A regular expression on untrusted text is how every earlier review found a
  * quadratic scan, so the parse modules hold none. An entry is a file, or `file#name` for one
- * top-level declaration. The last entry standing is the consumer linker composition.
+ * top-level declaration. The one left composes the consumer's linker patterns, which
+ * `ProseLinker` requires to run in linear time.
  */
-const REGEX_ALLOWLIST = [
-  'proseInline.tsx#inlineContext',
-  'proseFenceTable.ts#DELIMITER_CELL',
-  'proseFenceTable.ts#splitRow',
-  'proseSlug.ts',
-  'proseUrl.ts',
-]
+const REGEX_ALLOWLIST = ['proseInline.tsx#inlineContext']
 
 /** Modules whose reads the counting tests see; any other string method would read unseen. */
 const SCANNER_MODULES = ['proseSource.ts', 'proseLines.ts', 'proseInlineScan.ts']
