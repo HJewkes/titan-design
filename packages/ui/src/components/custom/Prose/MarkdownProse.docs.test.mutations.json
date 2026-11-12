@@ -21,8 +21,8 @@
     {
       "name": "a list item drops everything indented under its first line",
       "file": "packages/ui/src/components/custom/Prose/parseProseBlocks.ts",
-      "find": "  const children = parseLines(item.content, depth + 1)",
-      "replace": "  const children = parseLines(item.content.slice(0, 1), depth + 1)",
+      "find": "  const children = parseLines(nestedScan(scan, item.content))",
+      "replace": "  const children = parseLines(nestedScan(scan, item.content.slice(0, 1)))",
       "kills": [
         "numbers ordered items and nests what is indented under them",
         "groups items into lists, nested lists inside their item",

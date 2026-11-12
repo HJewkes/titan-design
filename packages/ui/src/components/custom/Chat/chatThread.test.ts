@@ -155,6 +155,8 @@ describe('plainText', () => {
       `# Title${pad}x`,
       `::: tip${pad}`,
       ':::',
+      `- ${pad}x\ry`,
+      `1. ${pad}x y`,
     ].join('\n')
     const started = performance.now()
     plainText(body)

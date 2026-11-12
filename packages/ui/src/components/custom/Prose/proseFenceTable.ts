@@ -1,3 +1,6 @@
+import { fenceOpenLang, hasPipe, isFenceClose } from './proseLines'
+import { isBlank, type LineRange, type ProseSource } from './proseSource'
+
 export type TableAlign = 'left' | 'center' | 'right'
 
 export interface FenceRead {
@@ -14,21 +17,17 @@ export interface TableRead {
   next: number
 }
 
-// Matched against a trimmed line: two `\s*` around the language backtrack quadratically.
-const FENCE_OPEN = /^```\s*([\w+#.-]*)$/
-const FENCE_CLOSE = /^\s*```\s*$/
 const DELIMITER_CELL = /^:?-+:?$/
 
-export function isFenceOpen(line: string): boolean {
-  return FENCE_OPEN.test(line.trim())
-}
-
-/** Reads a fence opened at `start`. An unterminated fence takes every remaining line. */
-export function readFence(lines: string[], start: number): FenceRead {
-  const lang = FENCE_OPEN.exec(lines[start]!.trim())?.[1] ?? ''
+/** A fence opened at `start`, or `null` when that line opens none. An unterminated fence takes every remaining line. */
+export function readFence(src: ProseSource, lines: LineRange[], start: number): FenceRead | null {
+  const lang = fenceOpenLang(src, lines[start]!)
+  if (lang === null) return null
   const body: string[] = []
   let i = start + 1
-  while (i < lines.length && !FENCE_CLOSE.test(lines[i]!)) body.push(lines[i++]!)
+  for (; i < lines.length && !isFenceClose(src, lines[i]!); i++) {
+    body.push(src.slice(lines[i]!.start, lines[i]!.end))
+  }
   return { lang, code: body.join('\n'), next: Math.min(i + 1, lines.length) }
 }
 
@@ -56,19 +55,19 @@ function fit(cells: string[], count: number): string[] {
 }
 
 /** A table is a pipe header line straight above a delimiter row; anything else is prose. */
-export function readTable(lines: string[], start: number): TableRead | null {
+export function readTable(src: ProseSource, lines: LineRange[], start: number): TableRead | null {
   const head = lines[start]
   const delimiter = lines[start + 1]
-  if (head === undefined || delimiter === undefined) return null
-  if (!head.includes('|') || !isDelimiterRow(delimiter)) return null
-  const header = splitRow(head)
+  if (head === undefined || delimiter === undefined || !hasPipe(src, head)) return null
+  const delimiterText = src.slice(delimiter.start, delimiter.end)
+  if (!isDelimiterRow(delimiterText)) return null
+  const header = splitRow(src.slice(head.start, head.end))
   const count = header.length
-  const align = fit(splitRow(delimiter), count).map((cell) => alignOf(cell))
+  const align = fit(splitRow(delimiterText), count).map((cell) => alignOf(cell))
   const rows: string[][] = []
   let i = start + 2
-  while (i < lines.length && lines[i]!.trim() && lines[i]!.includes('|')) {
-    rows.push(fit(splitRow(lines[i]!), count))
-    i++
+  for (; i < lines.length && !isBlank(src, lines[i]!) && hasPipe(src, lines[i]!); i++) {
+    rows.push(fit(splitRow(src.slice(lines[i]!.start, lines[i]!.end)), count))
   }
   return { header, align, rows, next: i }
 }

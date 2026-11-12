@@ -1,34 +1,42 @@
+import {
+  calloutOpenLine,
+  findText,
+  isCalloutClose,
+  isCommentOpener,
+  isExactly,
+  isFrontmatterKey,
+  listItemLine,
+  togglesFence,
+} from './proseLines'
+import { indentOf, isBlank, type LineRange, type ProseSource } from './proseSource'
 import type { ProseCalloutKind } from './proseTypes'
 
-const LIST_ITEM = /^(\s*)([-*+]|(\d{1,9})[.)])(\s+)(.*)$/
-// Matched against a trimmed line: a trailing `\s*$` after a lazy title backtracks quadratically.
-const CALLOUT_OPEN = /^:::\s*([A-Za-z]+)\s*([\s\S]*)$/
-const CALLOUT_CLOSE = /^\s*:::\s*$/
-const FENCE_TOGGLE = /^\s*```/
 const CALLOUT_KINDS = new Set<string>(['tip', 'info', 'warning', 'danger'])
-
-const indentOf = (line: string) => /^\s*/.exec(line)![0].length
+const COMMENT_OPENER_LENGTH = 4
 
 /** The line a body's content starts on: past a leading `---` YAML block, else 0. */
-export function skipFrontmatter(lines: string[]): number {
-  if (lines[0]?.trim() !== '---' || !/^[\w-]+:/.test(lines[1] ?? '')) return 0
-  const close = lines.findIndex((line, i) => i > 0 && line.trim() === '---')
-  return close === -1 ? 0 : close + 1
+export function skipFrontmatter(src: ProseSource, lines: LineRange[]): number {
+  if (lines.length < 2 || !isExactly(src, lines[0]!, '---')) return 0
+  if (!isFrontmatterKey(src, lines[1]!)) return 0
+  for (let i = 1; i < lines.length; i++) if (isExactly(src, lines[i]!, '---')) return i + 1
+  return 0
 }
 
 /**
  * An HTML comment that owns its lines is dropped: returns the line after it, or `null`
  * when the line is not one (a comment with text after it stays in the paragraph).
  */
-export function readComment(lines: string[], start: number): number | null {
-  const first = lines[start]!.trim()
-  if (!first.startsWith('<!--')) return null
+export function readComment(src: ProseSource, lines: LineRange[], start: number): number | null {
+  const first = lines[start]!
+  if (!isCommentOpener(src, first)) return null
   for (let i = start; i < lines.length; i++) {
-    const at = lines[i]!.indexOf('-->', i === start ? 4 : 0)
+    const line = lines[i]!
+    const from = i === start ? first.start + COMMENT_OPENER_LENGTH : line.start
+    const at = findText(src, from, line.end, '-->')
     // A new opener first means this one never closes; stopping there keeps the scan linear.
-    if (at === -1 && i > start && lines[i]!.includes('<!--')) return null
+    if (at === -1 && i > start && findText(src, line.start, line.end, '<!--') !== -1) return null
     if (at === -1) continue
-    return lines[i]!.slice(at + 3).trim() ? null : i + 1
+    return isBlank(src, { start: at + 3, end: line.end }) ? i + 1 : null
   }
   return null
 }
@@ -36,37 +44,47 @@ export function readComment(lines: string[], start: number): number | null {
 export interface CalloutRead {
   kind: ProseCalloutKind
   title: string
-  inner: string[]
+  inner: LineRange[]
   next: number
 }
 
-/** A `::: kind [title]` container up to its matching `:::`, skipping fences; unclosed, it takes the rest. */
-export function readCallout(lines: string[], start: number): CalloutRead | null {
-  const open = CALLOUT_OPEN.exec(lines[start]!.trim())
-  if (!open) return null
+/** The index of the `:::` closing a container whose content starts at `from`; the end when unclosed. */
+function calloutEnd(src: ProseSource, lines: LineRange[], from: number): number {
   let depth = 1
   let inFence = false
-  let i = start + 1
+  let i = from
   for (; i < lines.length; i++) {
     const line = lines[i]!
-    if (FENCE_TOGGLE.test(line)) inFence = !inFence
+    if (togglesFence(src, line)) inFence = !inFence
     if (inFence) continue
-    if (CALLOUT_OPEN.test(line.trim())) depth++
-    if (CALLOUT_CLOSE.test(line) && --depth === 0) break
+    if (calloutOpenLine(src, line)) depth++
+    if (isCalloutClose(src, line) && --depth === 0) break
   }
-  const word = open[1]!.toLowerCase()
+  return i
+}
+
+/** A `::: kind [title]` container up to its matching `:::`, skipping fences; unclosed, it takes the rest. */
+export function readCallout(
+  src: ProseSource,
+  lines: LineRange[],
+  start: number
+): CalloutRead | null {
+  const open = calloutOpenLine(src, lines[start]!)
+  if (!open) return null
+  const close = calloutEnd(src, lines, start + 1)
+  const word = open.word.toLowerCase()
   const kind = (CALLOUT_KINDS.has(word) ? word : 'info') as ProseCalloutKind
   return {
     kind,
-    title: open[2]!,
-    inner: lines.slice(start + 1, i),
-    next: Math.min(i + 1, lines.length),
+    title: open.title,
+    inner: lines.slice(start + 1, close),
+    next: Math.min(close + 1, lines.length),
   }
 }
 
 export interface ListItemRead {
   /** The item's lines with its content indent removed, ready to parse as blocks. */
-  content: string[]
+  content: LineRange[]
   ordered: boolean
   start: number
   next: number
@@ -77,27 +95,25 @@ export interface ListItemRead {
  * An ordered item numbered other than 1 cannot interrupt a paragraph, as in CommonMark.
  */
 export function readListItem(
-  lines: string[],
+  src: ProseSource,
+  lines: LineRange[],
   start: number,
   inParagraph: boolean
 ): ListItemRead | null {
-  const match = LIST_ITEM.exec(lines[start]!)
-  if (!match || !match[5]!.trim()) return null
-  const ordered = match[3] !== undefined
-  const number = ordered ? Number(match[3]) : 1
-  if (ordered && inParagraph && number !== 1) return null
-  const indent = match[1]!.length
-  const offset = indent + match[2]!.length + match[4]!.length
-  const content = [match[5]!]
+  const first = lines[start]!
+  const item = listItemLine(src, first)
+  if (!item || (item.ordered && inParagraph && item.number !== 1)) return null
+  const content = [{ start: first.start + item.offset, end: first.end }]
   let end = start + 1
   for (let i = end; i < lines.length; i++) {
     const line = lines[i]!
-    if (!line.trim()) continue
-    if (indentOf(line) <= indent) break
+    const indent = indentOf(src, line)
+    if (indent === line.end - line.start) continue
+    if (indent <= item.indent) break
     // Every line skipped since `end` was blank; they stay, so paragraphs inside the item still split.
-    for (; end < i; end++) content.push('')
-    content.push(line.slice(Math.min(indentOf(line), offset)))
+    for (; end < i; end++) content.push(lines[end]!)
+    content.push({ start: line.start + Math.min(indent, item.offset), end: line.end })
     end = i + 1
   }
-  return { content, ordered, start: number, next: end }
+  return { content, ordered: item.ordered, start: item.number, next: end }
 }

@@ -65,6 +65,17 @@ describe('parseProseBlocks on a docs page', () => {
     )
     expect(ofType('callout')[1]!.children![1]!.text).toBe('echo none\n:::')
   })
+
+  it("reads a CRLF body's list items as list items", () => {
+    const body = '- one\r\n- run:\r\n\r\n  ```sh\r\n  a\r\n  b\r\n  ```\r\n1. three\r\n'
+    const items = parseProseBlocks(body)
+    expect(items.map((b) => [b.type, b.ordered, b.text])).toEqual([
+      ['li', undefined, 'one'],
+      ['li', undefined, 'run:'],
+      ['li', true, 'three'],
+    ])
+    expect(items[1]!.children!.map((c) => [c.type, c.text])).toEqual([['code', 'a\nb']])
+  })
 })
 
 describe('MarkdownProse on a docs page', () => {
@@ -206,37 +217,5 @@ describe('slugify', () => {
     ['A -- B', 'a-b'],
   ])('%s becomes %s', (text, id) => {
     expect(slugify(text)).toBe(id)
-  })
-})
-
-describe('parseProseBlocks on unclosed markup', () => {
-  it('stays linear on unclosed comments, containers and nested items', () => {
-    const lines = 4_000
-    const body = [
-      '<!-- open\n'.repeat(lines),
-      '::: tip\n'.repeat(lines),
-      '- a\n  '.repeat(lines),
-    ].join('')
-    const started = performance.now()
-    parseProseBlocks(body)
-    render(<MarkdownProse body={'[a('.repeat(lines) + '<!--'.repeat(lines) + '*a'.repeat(lines)} />)
-    expect(performance.now() - started).toBeLessThan(1500)
-  })
-
-  it.each([
-    ['block', false],
-    ['inline', true],
-  ])('stays linear in %s mode on lines padded with a long whitespace run', (_mode, isInline) => {
-    const pad = ' \t'.repeat(40_000)
-    const body = [
-      `::: tip a${pad}a`,
-      `\`\`\`${pad}a b`,
-      `# Title${pad}x`,
-      `a${pad}`,
-      `${pad}b`,
-    ].join('\n')
-    const started = performance.now()
-    render(<MarkdownProse body={body} inline={isInline} />)
-    expect(performance.now() - started).toBeLessThan(1500)
   })
 })

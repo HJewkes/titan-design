@@ -1,0 +1,12 @@
+{
+  "v": 1,
+  "mutations": [
+    {
+      "name": "the line splitter ignores \\r",
+      "file": "packages/ui/src/components/custom/Prose/proseSource.ts",
+      "find": "  return code === LF || code === CR || code === LINE_SEPARATOR || code === PARAGRAPH_SEPARATOR",
+      "replace": "  return code === LF || code === LINE_SEPARATOR || code === PARAGRAPH_SEPARATOR",
+      "kills": ["splits lines on \\r\\n, \\r, \\n, U+2028 and U+2029"]
+    }
+  ]
+}
