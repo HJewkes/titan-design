@@ -129,6 +129,18 @@ describe('Button', () => {
       expect(screen.getByRole('button')).toBeInTheDocument()
     })
 
+    it('announces loading as busy, not as an unnamed progressbar', async () => {
+      const { container } = render(
+        <Button isLoading>
+          <ButtonText>Save</ButtonText>
+        </Button>
+      )
+
+      expect(screen.getByRole('button', { name: 'Save' })).toHaveAttribute('aria-busy', 'true')
+      expect(screen.queryAllByRole('progressbar')).toHaveLength(0)
+      expect(await axe(container)).toHaveNoViolations()
+    })
+
     it('communicates disabled state to assistive technology', () => {
       render(
         <Button isDisabled>

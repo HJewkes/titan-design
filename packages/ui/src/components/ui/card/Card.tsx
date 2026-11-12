@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { useMemo } from 'react'
 import { View, Text, Pressable, type ViewProps, type ViewStyle } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { liftStyle, type LiftStep } from '../../../theme/lift'
@@ -6,6 +6,7 @@ import { resolveColor } from '../../../theme/resolve-color'
 import { Surface } from '../surface/Surface'
 import { SurfaceContext, type SurfaceContextValue } from '../surface/SurfaceContext'
 import { useResolvedSurface } from '../surface/resolveSurface'
+import { useCardInteraction } from './cardInteraction'
 
 export type CardVariant = 'elevated' | 'outline' | 'filled' | 'accent' | 'subtle'
 /** Planes to lift above the enclosing Surface. */
@@ -27,7 +28,7 @@ export interface CardProps extends ViewProps {
   isInteractive?: boolean
   /** Whether the card is in a loading state (renders skeleton) */
   isLoading?: boolean
-  /** Callback when card is pressed (makes card interactive) */
+  /** Press callback; it makes the card one `role="button"`, so never wrap form controls in it. */
   onPress?: () => void
   /** Custom border color (hex, rgb, or CSS color). Useful for status cards. */
   borderColor?: string
@@ -127,14 +128,13 @@ export function Card({
   ...props
 }: CardProps) {
   const isClickable = isInteractive || !!onPress
-  const [isHovered, setIsHovered] = useState(false)
-  const depth = useCardDepth(variant, elevation, isHovered && isClickable)
+  const interaction = useCardInteraction()
+  const depth = useCardDepth(variant, elevation, interaction.isHovered && isClickable)
 
   const baseClassName = cn(
     'rounded-lg overflow-hidden relative',
     borderColor ? 'border' : EDGE_CLASS[variant],
-    isClickable && 'web:cursor-pointer web:transition-all web:duration-150',
-    isClickable && 'web:hover:-translate-y-0.5 active:scale-[0.99]',
+    isClickable && interaction.className,
     isLoading && 'pointer-events-none animate-pulse',
     className
   )
@@ -174,12 +174,10 @@ export function Card({
       {isClickable ? (
         <Pressable
           onPress={onPress}
-          onHoverIn={() => setIsHovered(true)}
-          onHoverOut={() => setIsHovered(false)}
           accessibilityRole="button"
           className={baseClassName}
           style={mergedStyle}
-          {...props}
+          {...interaction.pressableProps(props)}
         >
           {content}
         </Pressable>
