@@ -125,7 +125,11 @@ titan-design/
 
 - **[Architecture](./docs/ARCHITECTURE.md)** - Technical architecture and design decisions
 - **[Storybook Setup](./docs/STORYBOOK_SETUP.md)** - Storybook configuration guide
-- **[CLAUDE.md](./CLAUDE.md)** - Component patterns, tokens, and development conventions
+- **[CLAUDE.md](./CLAUDE.md)** - Quick reference and hard constraints, with pointers to the docs below
+- **[Component Development](./docs/component-development.md)** - Architecture, placement, props, accessibility, testing and Storybook patterns
+- **[Design Tokens](./docs/design-tokens.md)** - Token tiers and categories, adding tokens, elevation
+- **[Storybook Ports](./docs/storybook-ports.md)** - The locked-port policy and how to reap servers
+- **[Package Reference](./docs/package-reference.md)** - Key files, exports and gotchas
 - **[Component Implementation Checklist](./docs/component-implementation-checklist.md)** - Per-component "done" gate for porting a frozen HTML prototype with pixel parity; other components follow the `titan-component` skill (`.claude/skills/titan-component`)'s Gate 2
 - **[CI and Scripts](./docs/ci-and-scripts.md)** - The CI jobs and their steps, Turbo argument passthrough, registering a root script, coverage thresholds and the bundle budget
 - **[Component States](./docs/component-states.md)** - The loading, empty, error and disabled checklist every component meets or explains

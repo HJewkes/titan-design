@@ -164,6 +164,12 @@ and lines, over `src/components/**` (stories, tests and `index.ts` excluded). Se
 coverage (`pnpm exec vitest run --coverage` in `packages/ui`), not from a target, and raise it as coverage
 grows.
 
+## API reports
+
+`pnpm api:check` (in `verify:unit`, after the build) runs API Extractor on each built entry's d.ts and
+fails when `packages/ui/api/<entry>.api.md` differs or is missing. After changing an export, run
+`pnpm --filter @titan-design/react-ui api:update` and commit the reports.
+
 ## Bundle budget
 
 `pnpm --filter @titan-design/react-ui size` runs `size-limit` against `packages/ui/.size-limit.json`,

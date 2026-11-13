@@ -47,6 +47,7 @@ Generated from `src/arch/component-catalog.json` by `pnpm catalog`. Do not edit 
 | DataRow | stable | ui/data-row | A label-and-value row: the dense rung of the row ladder. | — | components-molecules-datarow--custom-class-name |
 | DateSeparator | candidate | custom/Chat | — | DateTime, Divider, Typography | custom-chat-messagelist-dateseparator--older |
 | DateTime | candidate | ui/date-time | DateTime component for displaying formatted dates and times. | Typography | components-molecules-datetime--all-formats |
+| DependencyGraph | candidate | ui/charts | A system's units boxed by tier, with their dependencies as routed edges, on a layout computed before render. | DependencyFocusPanel, NetworkGraph | components-organisms-dependencygraph--default |
 | DeviationBar | candidate | custom/Workout | — | — | custom-workout-dataviz-deviationbar--full-range |
 | DeviceIndicator | candidate | shell | The device/BLE connection glyph — a color-coded bluetooth mark, no label. | icons | shell-workout-deviceindicator--default |
 | DeviceMenu | candidate | shell | The device glyph + its dropdown of individual devices (availability, slot binding, id, connection state). | DeviceIndicator, DeviceRow, Popover, Typography | shell-workout-devicemenu--default |
@@ -100,6 +101,8 @@ Generated from `src/arch/component-catalog.json` by `pnpm catalog`. Do not edit 
 | InputBar | candidate | custom/Workout | — | — | custom-workout-inputbar--default |
 | IntensityBar | candidate | custom/Workout | — | — | custom-workout-dataviz-intensitybar--all-zones |
 | Kbd | candidate | ui/kbd | Kbd — a display-only keyboard shortcut hint, one keycap per key. | Typography | components-atoms-kbd--default |
+| KnowledgeClassLabel | candidate | custom/ActiveWork | KnowledgeClassLabel — a record class as a categorical dot plus its name. | Indicator, Typography | custom-activework-knowledgeclasslabel--default |
+| KnowledgeList | candidate | custom/ActiveWork | KnowledgeList — every note and source across initiatives in one filterable, sortable, paged table. | Alert, Button, EmptyState, Eyebrow, KnowledgeFilterBar, KnowledgeRow, KnowledgeTable | custom-activework-knowledgelist--default |
 | Link | stable | ui/link | Link component for navigation. | — | components-atoms-link--all-colors |
 | ListItem | stable | ui/list-item | — | — | components-molecules-listitem--basic |
 | LiveAuraFrame | candidate | custom/Workout | Full-surface color-flood frame tied to a coaching category. | — | custom-workout-liveauraframe--all-states |
@@ -199,7 +202,7 @@ Generated from `src/arch/component-catalog.json` by `pnpm catalog`. Do not edit 
 | TableHeaderCell | review | ui/table | Table header cell with optional sorting. | Tooltip | — |
 | TablePagination | review | ui/table | Pagination controls for table. | — | — |
 | Tabs | stable | ui/tabs | Tabs component for tabbed navigation. | — | components-molecules-tabs--all-variants |
-| TaskRow | candidate | custom/ActiveWork | TaskRow — one task as a dense grid row: initiative, id, title, severity, priority, estimate, tags and age. | DateTime, Pill, SeverityLabel, Table, TableCell, Tooltip, Typography | custom-activework-taskrow--critical-with-overflowing-tags |
+| TaskRow | candidate | custom/ActiveWork | TaskRow — one task as a dense grid row: initiative, id, title, severity, priority, estimate, tags and age. | DateTime, Indicator, Pill, SeverityLabel, Table, TableCell, TagPills, Tooltip, Typography | custom-activework-taskrow--critical-with-overflowing-tags |
 | TaskStagePill | candidate | custom/ActiveWork | The one renderer of a stage outside the board columns; label and tone come from the stage table. | Pill | custom-activework-taskstagepill--default |
 | TaskTable | candidate | custom/ActiveWork | TaskTable — every open task across initiatives in one dense, sortable grid. | Eyebrow, SeverityLabel, Table, TableHeaderCell, TaskRow, Typography | custom-activework-tasktable--default |
 | TempoDisplay | candidate | custom/Workout | — | metricText | custom-workout-tempodisplay--active-tempo-conditions |

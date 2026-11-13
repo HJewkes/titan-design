@@ -187,6 +187,12 @@ entries and stylesheets that follow them complete the `exports` map in `package.
   It also carries the video-only components and utils (`EvidenceChip`,
   `elideSource`), which never shipped on the root.
 
+- **`@titan-design/react-ui/dependency-graph`** — `DependencyGraph`, a system's
+  units boxed by tier with routed dependency edges on a layout computed at build
+  time, with `egoSubgraph`, `neighbourhood`, `cleanDependencies`,
+  `dependencyEdgeId`, `fromCompoundLayout` and their types. It never shipped on
+  the root, which keeps the root bundle's budget.
+
 - **`@titan-design/react-ui/diagram`** — the network-graph map suite's pure contract:
   the layout and timeline types, `resolveMapState`, the layout and timeline
   validators, and the `MapCard` and `FileCard` pop-out cards.

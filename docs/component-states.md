@@ -44,6 +44,6 @@ plane.
 
 - **Story**: a control on the `Default` story (`isLoading`, `isDisabled`, `isInvalid` as boolean
   controls) or a fixture reachable through an `object` control. Do not add one story per state;
-  see _Storybook Pattern_ in `CLAUDE.md`.
+  see _Storybook Pattern_ in `docs/component-development.md`.
 - **Test**: one test per applicable state, with an `axe` assertion.
 - **Docs**: the prop's JSDoc, which Storybook autodocs shows, or the "does not apply" line.

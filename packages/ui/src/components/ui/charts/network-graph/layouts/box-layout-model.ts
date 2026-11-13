@@ -1,3 +1,4 @@
+import type { ColorToken } from '../../../../../theme/resolve-color'
 import { compareText } from '../../kit/compareText'
 import { boxCentre, isPaintableBox } from '../network-graph-boxes'
 import { GRAPH_NODE_PADDING } from '../network-graph-model'
@@ -8,6 +9,8 @@ export interface BoxLayoutGroup {
   id: string
   label: string
   box: GraphBox
+  /** The outline colour; unset is the default hairline. */
+  stroke?: ColorToken
 }
 
 export interface BoxLayoutOptions {
@@ -47,6 +50,7 @@ function groupRegions(
       radius: 0,
       variant: 'box' as const,
       box: { ...group.box },
+      ...(group.stroke ? { stroke: group.stroke } : {}),
     }))
 }
 

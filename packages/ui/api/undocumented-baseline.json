@@ -67,6 +67,7 @@
     "VolumeLandmarks.mev",
     "VolumeLandmarks.mrv"
   ],
+  "dependency-graph": [],
   "diagram": [
     "MapBox.h",
     "MapBox.w",

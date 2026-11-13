@@ -1,6 +1,6 @@
 # Gotchas
 
-Code and tooling traps that each cost a review round or a CI cycle. Traps that CLAUDE.md >
+Code and tooling traps that each cost a review round or a CI cycle. Traps that docs/package-reference.md >
 Gotchas states are not repeated here, and test-writing traps live in `verify.md`.
 
 ## Contents
@@ -24,8 +24,8 @@ Gotchas states are not repeated here, and test-writing traps live in `verify.md`
 
 ## Token files take additive edits only
 
-The order of the token chain is CLAUDE.md > Design Tokens > Adding New Tokens, and the
-formatting rule is CLAUDE.md > Gotchas. If a reformat slips into a token file anyway, restore it
+The order of the token chain is docs/design-tokens.md > Adding New Tokens, and the
+formatting rule is docs/package-reference.md > Gotchas. If a reformat slips into a token file anyway, restore it
 with `git checkout HEAD -- <file>` and re-add your lines; `config.completeness.test.ts` names
 every `--color-*` property that went missing. Then run `pnpm exec vitest run src/theme`.
 
@@ -109,7 +109,7 @@ computed styles). Never trust the CSS values.
 
 `storybook-launch.mjs` passes an unknown flag through to `storybook dev`, which rejects it only
 after the launcher has already reclaimed the locked port, killing another tree's server. Use
-only the scripts in CLAUDE.md > Quick Reference > Storybook ports. They live in
+only the scripts in docs/storybook-ports.md. They live in
 `packages/ui/package.json`, not the root, so `cd packages/ui` first; never retry a root failure
 with a guessed flag.
 

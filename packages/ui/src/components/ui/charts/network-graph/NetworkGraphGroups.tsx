@@ -51,7 +51,7 @@ function GroupRect({ group, box }: { group: GraphGroupRegion; box: GraphBox }) {
       height={box.height}
       rx={BOX_CORNER_RADIUS}
       strokeWidth={1}
-      style={{ fill: resolveColor(GROUP_FILL), stroke: resolveColor(GROUP_STROKE) }}
+      style={{ fill: resolveColor(GROUP_FILL), stroke: resolveColor(group.stroke ?? GROUP_STROKE) }}
       data-group={group.id}
       data-variant="box"
     />

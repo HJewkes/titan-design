@@ -2,7 +2,8 @@ import fc from 'fast-check'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { fcAssert } from '../../../../../test/property'
 import { hostileLayoutOptions, networkGraphFixtures } from '../fixtures'
-import { cleanGraph } from '../network-graph-model'
+import { pinnedNodeIds, placeLabels, type LabelBox } from '../network-graph-labels'
+import { buildGraphModel, cleanGraph } from '../network-graph-model'
 import { GRAPH_NODE_RADIUS } from '../network-graph-arc'
 import type { GraphEdge, GraphLayoutResult, GraphNode, GraphPoint } from '../types'
 import { egoLayout, type EgoDirection, type EgoLayoutOptions } from './ego-layout-model'
@@ -237,6 +238,128 @@ describe('egoLayout geometry', () => {
       expect(ring.cx + ring.radius).toBeLessThanOrEqual(result.width)
       expect(ring.cy + ring.radius).toBeLessThanOrEqual(result.height)
     }
+  })
+})
+
+const PHONE = { width: 375, height: 560 }
+const STORY = { width: 720, height: 420 }
+const egoTwenty = networkGraphFixtures['Ego (20)']
+const egoModel = (size: typeof PHONE) =>
+  buildGraphModel(egoTwenty.nodes, egoTwenty.edges, egoLayout({ focusId: 'lead-01' }), size)
+const meets = (a: LabelBox, b: LabelBox) =>
+  a.x < b.x + b.width && b.x < a.x + a.width && a.y < b.y + b.height && b.y < a.y + a.height
+
+describe('egoLayout on a phone', () => {
+  it('Ego (20) at 375 px: every ring sits at least MIN_RING_GAP past the one inside it, and the layout scrolls', () => {
+    const result = fixtureRun('Ego (20)', {}, PHONE)
+    const radii = (result.groups ?? []).map((ring) => ring.radius)
+    expect(radii).toHaveLength(3)
+    for (let hop = 1; hop < radii.length; hop += 1) {
+      const gap = (radii[hop] as number) - (radii[hop - 1] as number)
+      expect(gap).toBeGreaterThanOrEqual(LAYOUT_DEFAULTS.MIN_RING_GAP - 0.01)
+    }
+    expect(result.width).toBeGreaterThan(PHONE.width)
+  })
+
+  it('Ego (20) at 375 px: no two shown labels meet, and the focus and every first-hop node keep theirs', () => {
+    const model = egoModel(PHONE)
+    for (const pinned of [new Set<string>(), pinnedNodeIds(model.index, 'lead-01', 'lead-01')]) {
+      const boxes = [...placeLabels(model, pinned).values()]
+      const pairs = boxes.flatMap((a, i) => boxes.slice(i + 1).map((b) => meets(a, b)))
+      expect(pairs.some(Boolean)).toBe(false)
+    }
+    const shown = placeLabels(model)
+    const near = model.groups.slice(0, 2).flatMap((ring) => ring.nodeIds)
+    expect(near.filter((id) => !shown.has(id))).toEqual([])
+  })
+
+  it('Ego (20) in the desktop story viewport: the ring-gap floor leaves the positions unchanged', () => {
+    const result = fixtureRun('Ego (20)', {}, STORY)
+    expect((result.groups ?? []).map((ring) => ring.radius)).toEqual([0, 93, 186])
+    expect(result.positions).toMatchInlineSnapshot(`
+      {
+        "lead-01": {
+          "x": 280,
+          "y": 210,
+        },
+        "lead-02": {
+          "x": 280,
+          "y": 117,
+        },
+        "lead-03": {
+          "x": 373,
+          "y": 210,
+        },
+        "lead-04": {
+          "x": 280,
+          "y": 303,
+        },
+        "lead-05": {
+          "x": 187,
+          "y": 210,
+        },
+        "worker-01": {
+          "x": 280,
+          "y": 24,
+        },
+        "worker-02": {
+          "x": 464.98,
+          "y": 229.44,
+        },
+        "worker-03": {
+          "x": 241.33,
+          "y": 391.94,
+        },
+        "worker-04": {
+          "x": 103.1,
+          "y": 152.52,
+        },
+        "worker-05": {
+          "x": 355.65,
+          "y": 40.08,
+        },
+        "worker-06": {
+          "x": 441.08,
+          "y": 303,
+        },
+        "worker-07": {
+          "x": 170.67,
+          "y": 360.48,
+        },
+        "worker-08": {
+          "x": 141.78,
+          "y": 85.54,
+        },
+        "worker-09": {
+          "x": 418.22,
+          "y": 85.54,
+        },
+        "worker-10": {
+          "x": 389.33,
+          "y": 360.48,
+        },
+        "worker-11": {
+          "x": 118.92,
+          "y": 303,
+        },
+        "worker-12": {
+          "x": 204.35,
+          "y": 40.08,
+        },
+        "worker-13": {
+          "x": 456.9,
+          "y": 152.52,
+        },
+        "worker-14": {
+          "x": 318.67,
+          "y": 391.94,
+        },
+        "worker-15": {
+          "x": 95.02,
+          "y": 229.44,
+        },
+      }
+    `)
   })
 })
 
