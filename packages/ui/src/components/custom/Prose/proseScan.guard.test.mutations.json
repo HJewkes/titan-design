@@ -1,0 +1,12 @@
+{
+  "v": 1,
+  "mutations": [
+    {
+      "name": "a block classifier calls a regex",
+      "file": "packages/ui/src/components/custom/Prose/proseLines.ts",
+      "find": "export const isCalloutClose = (src: ProseSource, line: LineRange) => isExactly(src, line, ':::')",
+      "replace": "export const isCalloutClose = (src: ProseSource, line: LineRange) =>\n  /^\\s*:::\\s*$/.test(src.slice(line.start, line.end))",
+      "kills": ["no Prose parse module contains a regular expression"]
+    }
+  ]
+}

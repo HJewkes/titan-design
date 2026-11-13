@@ -131,14 +131,35 @@ describe('plainText', () => {
     expect(plainText('2026. A good year')).toBe('2026. A good year')
   })
 
-  it('keeps italics, underscores and links the bubble shows literally', () => {
+  it('drops the italic and link markup the bubble renders, keeping intraword underscores', () => {
     const body = 'a _light_ day, see top_set_velocity and [the plan](https://example.com)'
-    expect(plainText(body)).toBe(body)
+    expect(plainText(body)).toBe('a light day, see top_set_velocity and the plan')
+  })
+
+  it('reads nested list items after their parent', () => {
+    expect(plainText('- Bench\n  - 3x5\n- Rows')).toBe('Bench 3x5 Rows')
   })
 
   it('stays linear on unclosed markup', () => {
     const started = performance.now()
     plainText('[a('.repeat(80_000) + '**a'.repeat(80_000) + '`a'.repeat(80_000))
-    expect(performance.now() - started).toBeLessThan(200)
+    // A quadratic scan of these 640k characters takes seconds; 1s leaves headroom for a loaded CI runner.
+    expect(performance.now() - started).toBeLessThan(1000)
+  })
+
+  it('stays linear on block lines padded with a long whitespace run', () => {
+    const pad = ' \t'.repeat(40_000)
+    const body = [
+      `::: tip a${pad}a`,
+      `\`\`\`${pad}a b`,
+      `# Title${pad}x`,
+      `::: tip${pad}`,
+      ':::',
+      `- ${pad}x\ry`,
+      `1. ${pad}x y`,
+    ].join('\n')
+    const started = performance.now()
+    plainText(body)
+    expect(performance.now() - started).toBeLessThan(1000)
   })
 })
