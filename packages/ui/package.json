@@ -225,7 +225,7 @@
     }
   },
   "dependencies": {
-    "@titan-design/chat-protocol": "0.3.0",
+    "@titan-design/chat-protocol": "0.3.1",
     "clsx": "^2.1.0",
     "d3-force": "^3",
     "d3-scale": "^4",

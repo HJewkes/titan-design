@@ -131,8 +131,8 @@ importers:
   packages/ui:
     dependencies:
       '@titan-design/chat-protocol':
-        specifier: 0.3.0
-        version: 0.3.0(zod@4.3.6)
+        specifier: 0.3.1
+        version: 0.3.1(zod@4.3.6)
       clsx:
         specifier: ^2.1.0
         version: 2.1.1
@@ -2240,8 +2240,8 @@ packages:
     peerDependencies:
       '@testing-library/dom': '>=7.21.4'
 
-  '@titan-design/chat-protocol@0.3.0':
-    resolution: {integrity: sha512-d1RkqzPK4s95FDAAMdxMECSJT26IMQzZ1ADAGPUYZA7oBSzKVQFGMkQTWl5wotaJHNJa4DJgSdC4wXG9o9COYw==}
+  '@titan-design/chat-protocol@0.3.1':
+    resolution: {integrity: sha512-7mOpLrCm0verRv5kdGATN0Yi2NWQboriPfdEret5IkX6NW5KwhXU/OexCUlgxMOrpF1mpTYmWVu0P7zWJZi73g==}
     engines: {node: '>=20'}
     peerDependencies:
       zod: ^4.0.0
@@ -8373,7 +8373,7 @@ snapshots:
     dependencies:
       '@testing-library/dom': 10.4.2
 
-  '@titan-design/chat-protocol@0.3.0(zod@4.3.6)':
+  '@titan-design/chat-protocol@0.3.1(zod@4.3.6)':
     dependencies:
       zod: 4.3.6
 
