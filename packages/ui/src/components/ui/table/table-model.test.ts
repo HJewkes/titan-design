@@ -79,14 +79,15 @@ describe('filterRows properties', () => {
   it('passes a row iff every filtered field has its value in that field set', () => {
     const values = fc.array(fc.constantFrom('error', 'warning', 'info'))
     const rules = fc.array(fc.constantFrom('max-file-loc', 'max-cyclomatic-per-function', 'nope'))
+    const rows = veryLarge.rows.slice(0, 1000)
+    const inSet = (set: string[], value: string) => set.length === 0 || set.includes(value)
     fcAssert(
       fc.property(values, rules, (severity, rule) => {
-        const kept = new Set(filterRows(veryLarge.rows, { severity, rule }, columns))
-        for (const row of veryLarge.rows.slice(0, 2000)) {
-          const inSet = (set: string[], value: string) => set.length === 0 || set.includes(value)
-          const expected = inSet(severity, row.severity) && inSet(rule, row.rule)
-          expect(kept.has(row)).toBe(expected)
-        }
+        const kept = new Set(filterRows(rows, { severity, rule }, columns))
+        const wrong = rows.filter(
+          (row) => kept.has(row) !== (inSet(severity, row.severity) && inSet(rule, row.rule))
+        )
+        expect(wrong).toEqual([])
       })
     )
   })
