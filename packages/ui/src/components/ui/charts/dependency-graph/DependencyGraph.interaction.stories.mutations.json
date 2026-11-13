@@ -1,0 +1,26 @@
+{
+  "v": 1,
+  "mutations": [
+    {
+      "name": "focus that moves to the graph root mid-press scrolls the page",
+      "file": "packages/ui/src/components/ui/charts/network-graph/useGraphRoot.ts",
+      "find": "return event.currentTarget.focus(FOCUS_IN_PLACE)",
+      "replace": "return event.currentTarget.focus()",
+      "kills": ["Mouse Press Focuses A Node At The Fold"]
+    },
+    {
+      "name": "a press focuses the graph root by scrolling the page",
+      "file": "packages/ui/src/components/ui/charts/network-graph/NetworkGraphCanvas.tsx",
+      "find": "      root?.focus?.(FOCUS_IN_PLACE)\n",
+      "replace": "      root?.focus?.()\n",
+      "kills": ["Click Focuses A Node Without Scrolling"]
+    },
+    {
+      "name": "the graph's focus calls allow scrolling",
+      "file": "packages/ui/src/components/ui/charts/network-graph/useGraphRoot.ts",
+      "find": "export const FOCUS_IN_PLACE = { preventScroll: true }\n",
+      "replace": "export const FOCUS_IN_PLACE = { preventScroll: false }\n",
+      "kills": ["Mouse Press Focuses A Node At The Fold", "Click Focuses A Node Without Scrolling"]
+    }
+  ]
+}
