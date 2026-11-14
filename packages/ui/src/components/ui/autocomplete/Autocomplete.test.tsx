@@ -351,6 +351,28 @@ describe('Autocomplete', () => {
       expect(results).toHaveNoViolations()
     })
 
+    it('links error text to the input and marks it invalid', () => {
+      render(<Autocomplete options={defaultOptions} label="Fruit" errorMessage="Pick one" />)
+      const input = screen.getByRole('textbox', { name: 'Fruit' })
+      expect(input).toHaveAttribute('aria-invalid', 'true')
+      expect(input.getAttribute('aria-describedby')).toBe(screen.getByText('Pick one').id)
+      expect(screen.getByText('Pick one').id).not.toBe('')
+    })
+
+    it('links helper text without marking the input invalid', () => {
+      render(<Autocomplete options={defaultOptions} label="Fruit" helperText="Any fruit" />)
+      const input = screen.getByRole('textbox', { name: 'Fruit' })
+      expect(input).not.toHaveAttribute('aria-invalid')
+      expect(input.getAttribute('aria-describedby')).toBe(screen.getByText('Any fruit').id)
+    })
+
+    it('has no accessibility violations with an error', async () => {
+      const { container } = render(
+        <Autocomplete options={defaultOptions} label="Fruit" errorMessage="Pick one" />
+      )
+      expect(await axe(container)).toHaveNoViolations()
+    })
+
     it('has accessible label on input', () => {
       render(<Autocomplete options={defaultOptions} label="Search fruits" />)
       expect(screen.getByLabelText('Search fruits')).toBeInTheDocument()

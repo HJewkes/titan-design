@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useId } from 'react'
 import { View, TextInput, type ViewProps, type TextInputProps } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { defaultFilterFn, dropdownContent, type AutocompleteOption } from './autocompleteFilter'
@@ -123,6 +123,8 @@ export function Autocomplete<T extends string = string>({
   })
 
   const isInvalid = !!errorMessage
+  const messageId = `${useId()}-message`
+  const hasMessage = !!(helperText || errorMessage)
   const { showMinCharsMessage, showNoResults, showOptions } = dropdownContent({
     inputValue: state.inputValue,
     minChars,
@@ -156,6 +158,8 @@ export function Autocomplete<T extends string = string>({
             editable={!isDisabled}
             className={cn('flex-1 px-3 py-2 text-text-primary', 'placeholder:text-text-tertiary')}
             accessibilityLabel={label}
+            aria-invalid={isInvalid || undefined}
+            aria-describedby={hasMessage ? messageId : undefined}
             {...inputProps}
           />
 
@@ -194,8 +198,12 @@ export function Autocomplete<T extends string = string>({
       </View>
 
       {/* Helper/Error text */}
-      {!!(helperText || errorMessage) && (
-        <AutocompleteHelper text={errorMessage || helperText} isInvalid={isInvalid} />
+      {!!hasMessage && (
+        <AutocompleteHelper
+          id={messageId}
+          text={errorMessage || helperText}
+          isInvalid={isInvalid}
+        />
       )}
     </View>
   )

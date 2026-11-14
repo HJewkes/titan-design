@@ -95,9 +95,20 @@ export function AutocompleteOptionRow<T>({
   )
 }
 
-export function AutocompleteHelper({ text, isInvalid }: { text?: string; isInvalid: boolean }) {
+export function AutocompleteHelper({
+  id,
+  text,
+  isInvalid,
+}: {
+  id: string
+  text?: string
+  isInvalid: boolean
+}) {
   return (
-    <Text className={cn('text-xs mt-1', isInvalid ? 'text-text-error' : 'text-text-secondary')}>
+    <Text
+      id={id}
+      className={cn('text-xs mt-1', isInvalid ? 'text-text-error' : 'text-text-secondary')}
+    >
       {text}
     </Text>
   )

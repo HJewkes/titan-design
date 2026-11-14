@@ -18,6 +18,7 @@ exports[`Autocomplete characterisation > helper text, not clearable, selected 1`
         class="css-view-175oi2r"
       >
         <input
+          aria-describedby=":rm:-message"
           aria-label="Fruit"
           autocapitalize="sentences"
           autocomplete="on"
@@ -59,6 +60,7 @@ exports[`Autocomplete characterisation > helper text, not clearable, selected 1`
     <div
       class="css-text-146c3p1"
       dir="auto"
+      id=":rm:-message"
     >
       Pick one
     </div>
@@ -89,6 +91,8 @@ exports[`Autocomplete characterisation > invalid, required, disabled and selecte
         class="css-view-175oi2r"
       >
         <input
+          aria-describedby=":rl:-message"
+          aria-invalid="true"
           aria-label="Fruit"
           autocapitalize="sentences"
           autocomplete="on"
@@ -137,6 +141,7 @@ exports[`Autocomplete characterisation > invalid, required, disabled and selecte
     <div
       class="css-text-146c3p1"
       dir="auto"
+      id=":rl:-message"
     >
       Bad
     </div>
@@ -1354,6 +1359,8 @@ exports[`Autocomplete characterisation > story WithError 1`] = `
           class="css-view-175oi2r"
         >
           <input
+            aria-describedby=":r4:-message"
+            aria-invalid="true"
             aria-label="Select fruit"
             autocapitalize="sentences"
             autocomplete="on"
@@ -1371,6 +1378,7 @@ exports[`Autocomplete characterisation > story WithError 1`] = `
       <div
         class="css-text-146c3p1"
         dir="auto"
+        id=":r4:-message"
       >
         Please select a fruit
       </div>
@@ -1400,6 +1408,7 @@ exports[`Autocomplete characterisation > story WithLabel 1`] = `
           class="css-view-175oi2r"
         >
           <input
+            aria-describedby=":r1:-message"
             aria-label="Select a fruit"
             autocapitalize="sentences"
             autocomplete="on"
@@ -1417,6 +1426,7 @@ exports[`Autocomplete characterisation > story WithLabel 1`] = `
       <div
         class="css-text-146c3p1"
         dir="auto"
+        id=":r1:-message"
       >
         Choose your favorite fruit
       </div>
