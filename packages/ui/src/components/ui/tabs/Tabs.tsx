@@ -282,7 +282,11 @@ export function TabPanel({ index = 0, children, className }: TabPanelProps) {
       aria-labelledby={tabId(baseId, index)}
       className={cn('py-4', className)}
     >
-      {children}
+      {typeof children === 'string' || typeof children === 'number' ? (
+        <Text className="text-text-primary">{children}</Text>
+      ) : (
+        children
+      )}
     </View>
   )
 }
