@@ -1,6 +1,7 @@
 import React from 'react'
 import { View, Text, Pressable, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
+import { useHitTarget } from '../../../hooks/useHitTarget'
 
 export type PillVariant = 'solid' | 'subtle' | 'outline' | 'clear'
 /** Semantic tone. `brand-secondary` is the accent, not a second brand. */
@@ -60,6 +61,12 @@ export interface PillProps extends ViewProps {
   onPress?: () => void
   /** Non-interactive and dimmed */
   isDisabled?: boolean
+  /**
+   * Whether a pressable pill grows a 44px hit box. `Chip` sets `false` because
+   * it owns a group-aware one.
+   * @default true
+   */
+  hasHitTarget?: boolean
   /** Additional className on the container */
   className?: string
   /** Additional className on the label, for presets that own their typography */
@@ -200,6 +207,33 @@ function PillContent({ tone, ...p }: PillProps & { tone: PillTone }) {
   )
 }
 
+type PressablePillProps = Pick<PillProps, 'onPress' | 'isDisabled' | 'hasHitTarget'> &
+  Omit<ViewProps, 'children'> & { className: string; children: React.ReactNode }
+
+function PressablePill({
+  onPress,
+  isDisabled,
+  hasHitTarget,
+  onLayout,
+  children,
+  ...rest
+}: PressablePillProps) {
+  const hitTarget = useHitTarget({ enabled: hasHitTarget, onLayout })
+  return (
+    <Pressable
+      onPress={onPress}
+      disabled={isDisabled}
+      accessibilityRole="button"
+      hitSlop={hitTarget.hitSlop}
+      onLayout={hitTarget.onLayout}
+      {...rest}
+    >
+      {hitTarget.layerProps ? <View {...hitTarget.layerProps} /> : null}
+      {children}
+    </Pressable>
+  )
+}
+
 /**
  * The single pill primitive: a capsule of tone-coloured label with optional
  * leading and trailing slots. `Badge`, `Chip`, `StatusPill` and
@@ -221,6 +255,7 @@ export function Pill(props: PillProps) {
     trailing,
     onPress,
     isDisabled,
+    hasHitTarget = true,
     className,
     textClassName,
     children,
@@ -232,15 +267,15 @@ export function Pill(props: PillProps) {
 
   if (onPress) {
     return (
-      <Pressable
+      <PressablePill
         onPress={onPress}
-        disabled={isDisabled}
-        accessibilityRole="button"
+        isDisabled={isDisabled}
+        hasHitTarget={hasHitTarget}
         className={classes}
         {...viewProps}
       >
         {content}
-      </Pressable>
+      </PressablePill>
     )
   }
 

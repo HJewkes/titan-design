@@ -16,6 +16,7 @@ import { Button, ButtonText } from './button'
 import { ToolbarButton, ToolbarButtonGroup } from './toolbar-button'
 import { Chip } from './chip'
 import { ChipGroup } from './chip-group'
+import { Pill } from './pill'
 
 const require = createRequire(import.meta.url)
 const packageRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../..')
@@ -77,6 +78,12 @@ const pressables: [string, React.ReactElement][] = [
     'ToolbarButton sm icon-only',
     <ToolbarButton key="o" size="sm" label="Filter" icon={icon} showLabel={false} />,
   ],
+  ...(['xs', 'sm', 'md'] as const).map((size): [string, React.ReactElement] => [
+    `Pill ${size}`,
+    <Pill key={size} size={size} onPress={() => {}}>
+      Tag
+    </Pill>,
+  ]),
 ]
 
 describe('hit targets', () => {
@@ -112,6 +119,14 @@ describe('hit targets', () => {
         <ButtonText>Go</ButtonText>
       </Button>
     )
+
+    expect(screen.queryByTestId(HIT_TARGET_TEST_ID)).toBeNull()
+  })
+})
+
+describe('hit targets on a Pill', () => {
+  it('leaves a Pill without onPress without a hit layer', () => {
+    render(<Pill>Tag</Pill>)
 
     expect(screen.queryByTestId(HIT_TARGET_TEST_ID)).toBeNull()
   })

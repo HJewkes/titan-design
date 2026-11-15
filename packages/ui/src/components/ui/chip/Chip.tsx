@@ -151,6 +151,7 @@ export function Chip({
       variant={chipFace(variant, isSelected)}
       tone={resolvedTone}
       rounded={false}
+      hasHitTarget={false}
       onPress={onPress}
       isDisabled={isDisabled}
       leading={<ChipLeading layerProps={hitTarget.layerProps} leftElement={leftElement} />}
