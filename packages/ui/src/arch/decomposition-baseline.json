@@ -205,7 +205,7 @@
     "props": 19
   },
   "components/ui/autocomplete/Autocomplete.tsx#Autocomplete": {
-    "complexity": 28,
+    "complexity": 25,
     "props": 20
   },
   "components/ui/button/Button.tsx#Button": {

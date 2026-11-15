@@ -2,7 +2,8 @@ import React from 'react'
 import { View, Text, Pressable, ScrollView } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { Surface } from '../surface'
-import type { AutocompleteOption } from './autocompleteFilter'
+import type { AutocompleteOption, dropdownContent } from './autocompleteFilter'
+import type { useAutocompleteState } from './useAutocompleteState'
 
 export function AutocompleteLabel({ label, isRequired }: { label: string; isRequired: boolean }) {
   return (
@@ -111,5 +112,52 @@ export function AutocompleteHelper({
     >
       {text}
     </Text>
+  )
+}
+
+interface AutocompleteResultsProps<T> {
+  state: ReturnType<typeof useAutocompleteState<T>>
+  content: ReturnType<typeof dropdownContent>
+  value?: T | null
+  isLoading: boolean
+  minChars: number
+  minCharsText?: string
+  noOptionsText: string
+  loadingText: string
+  renderOption?: (option: AutocompleteOption<T>, isHighlighted: boolean) => React.ReactNode
+}
+
+export function AutocompleteResults<T>({
+  state,
+  content,
+  value,
+  isLoading,
+  minChars,
+  minCharsText,
+  noOptionsText,
+  loadingText,
+  renderOption,
+}: AutocompleteResultsProps<T>) {
+  return (
+    <AutocompleteDropdown>
+      {!!content.showMinCharsMessage && (
+        <AutocompleteMessage>
+          {minCharsText || `Type at least ${minChars} characters`}
+        </AutocompleteMessage>
+      )}
+      {!!isLoading && <AutocompleteMessage>{loadingText}</AutocompleteMessage>}
+      {!!content.showNoResults && <AutocompleteMessage>{noOptionsText}</AutocompleteMessage>}
+      {!!content.showOptions &&
+        state.filteredOptions.map((option, index) => (
+          <AutocompleteOptionRow
+            key={String(option.value)}
+            option={option}
+            isHighlighted={index === state.highlightedIndex}
+            isSelected={option.value === value}
+            renderOption={renderOption}
+            onSelect={state.handleSelectOption}
+          />
+        ))}
+    </AutocompleteDropdown>
   )
 }

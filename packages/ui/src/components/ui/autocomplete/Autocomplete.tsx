@@ -4,11 +4,9 @@ import { cn } from '../../../utils/cn'
 import { defaultFilterFn, dropdownContent, type AutocompleteOption } from './autocompleteFilter'
 import {
   AutocompleteClearButton,
-  AutocompleteDropdown,
   AutocompleteHelper,
   AutocompleteLabel,
-  AutocompleteMessage,
-  AutocompleteOptionRow,
+  AutocompleteResults,
   AutocompleteSpinner,
 } from './AutocompleteParts'
 import { useAutocompleteState } from './useAutocompleteState'
@@ -125,7 +123,7 @@ export function Autocomplete<T extends string = string>({
   const isInvalid = !!errorMessage
   const messageId = `${useId()}-message`
   const hasMessage = !!(helperText || errorMessage)
-  const { showMinCharsMessage, showNoResults, showOptions } = dropdownContent({
+  const content = dropdownContent({
     inputValue: state.inputValue,
     minChars,
     isLoading,
@@ -172,28 +170,18 @@ export function Autocomplete<T extends string = string>({
           {!!isLoading && <AutocompleteSpinner />}
         </View>
 
-        {/* Dropdown */}
         {!!state.isOpen && (
-          <AutocompleteDropdown>
-            {!!showMinCharsMessage && (
-              <AutocompleteMessage>
-                {minCharsText || `Type at least ${minChars} characters`}
-              </AutocompleteMessage>
-            )}
-            {!!isLoading && <AutocompleteMessage>{loadingText}</AutocompleteMessage>}
-            {!!showNoResults && <AutocompleteMessage>{noOptionsText}</AutocompleteMessage>}
-            {!!showOptions &&
-              state.filteredOptions.map((option, index) => (
-                <AutocompleteOptionRow
-                  key={String(option.value)}
-                  option={option}
-                  isHighlighted={index === state.highlightedIndex}
-                  isSelected={option.value === value}
-                  renderOption={renderOption}
-                  onSelect={state.handleSelectOption}
-                />
-              ))}
-          </AutocompleteDropdown>
+          <AutocompleteResults
+            state={state}
+            content={content}
+            value={value}
+            isLoading={isLoading}
+            minChars={minChars}
+            minCharsText={minCharsText}
+            noOptionsText={noOptionsText}
+            loadingText={loadingText}
+            renderOption={renderOption}
+          />
         )}
       </View>
 
