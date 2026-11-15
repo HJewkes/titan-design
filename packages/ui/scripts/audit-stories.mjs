@@ -6,7 +6,7 @@
  * most 30 lines, and stops the server it started by process group.
  *
  * Exit codes: 0 clean, 1 blockers remain (including a text-floor finding outside the ratchet
- * baseline) or no story is touched, 2 a story failed to render, 70 an unexpected error,
+ * baseline), 2 a story failed to render, 3 no story is touched, 70 an unexpected error,
  * 64 usage, targeting refusal or start failure, 130 interrupted.
  */
 import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs'
@@ -45,7 +45,7 @@ export const USAGE = `Usage: pnpm audit:stories [--base <ref>] [--stories <id,..
 Audits the stories touched by the diff against --base (default origin/main).
 --touch adds the 320 width and checks 44px hit targets. Output goes under TMPDIR.
 Exit: 0 clean, 1 blockers (including a text-floor finding outside the ratchet baseline)
-      or no story touched, 2 render error, 64 usage or start failure,
+      2 render error, 3 no story touched, 64 usage or start failure,
       70 unexpected error, 130 interrupted (SIGINT, SIGTERM or SIGHUP).`
 
 /** A bad flag or output location; the command exits 64. */
