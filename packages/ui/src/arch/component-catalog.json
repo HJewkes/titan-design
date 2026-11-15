@@ -18266,7 +18266,7 @@
         },
         {
           "default": null,
-          "description": "Tooltip text (shown when label is hidden)",
+          "description": "Tooltip text, exposed as the button's accessible description",
           "name": "tooltip",
           "required": false,
           "type": "string"
