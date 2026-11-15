@@ -136,6 +136,12 @@ jobs:
         if: steps.paths.outputs.run != 'false'
         run: pnpm --filter @titan-design/react-ui test:visual:compare
 
+      # Token resolution — every colour token's computed value in dark and light must equal
+      # src/theme/config.ts, on the same specimen dev server as Layer 3 (TD-1066).
+      - name: Token resolution — computed colour per theme
+        if: steps.paths.outputs.run != 'false'
+        run: pnpm --filter @titan-design/react-ui test:visual:tokens
+
       # A single-file consumer of global.css, opened over file:// with the network
       # blocked, must still load every titan font face (TD-36).
       - name: Offline fonts — single-file consumer
