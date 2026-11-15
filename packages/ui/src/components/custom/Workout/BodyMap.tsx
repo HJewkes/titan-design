@@ -1,6 +1,6 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { useMemo } from 'react'
-import { View, Text, Pressable, Animated, Easing, type ViewProps } from 'react-native'
+import { View, Text, Pressable, Animated, Easing, Platform, type ViewProps } from 'react-native'
 import { type ExtendedBodyPart, type Slug } from 'react-native-body-highlighter'
 import { cn } from '../../../utils/cn'
 import { resolveColor } from '../../../theme/resolve-color'
@@ -23,7 +23,7 @@ import {
   volumeStatusDotStyle,
   type VolumeStatus,
 } from './muscleTaxonomy'
-import { Body, unlitBodyProps } from './bodyHighlighter'
+import { Body, PressFreeBody, unlitBodyProps } from './bodyHighlighter'
 
 /** Presentation size for BodyMap and TrainingStatusPage: 'phone' (default) keeps
  * today's compact geometry; 'wall' scales up for large-display dashboards. */
@@ -198,6 +198,15 @@ export function BodyMap({
     if (muscle) onMusclePress(muscle)
   }
 
+  // On web the figure's per-path onPress would leak responder props into the DOM, so taps
+  // arrive as a click on the wrapper and the muscle slug is read from the clicked path's id.
+  const isWeb = Platform.OS === 'web'
+  const handleFigureClick = (event: { target: unknown }) => {
+    const slug = (event.target as { id?: string } | null)?.id
+    if (slug) handleBodyPress({ slug: slug as Slug })
+  }
+  const FigureBody = isWeb ? PressFreeBody : Body
+
   return (
     <View className={cn(className)} testID="body-map" {...props}>
       <ViewToggle view={view} onViewChange={onViewChange} ramp={ramp} />
@@ -218,14 +227,15 @@ export function BodyMap({
         accessibilityElementsHidden
         importantForAccessibility="no-hide-descendants"
         testID="body-map-svg"
+        {...(isWeb ? { onClick: handleFigureClick } : {})}
       >
-        <Body
+        <FigureBody
           side={view}
           data={slugParts}
           scale={bodyScale}
           gender="male"
           {...unlitBodyProps(surfaceMode)}
-          onBodyPartPress={handleBodyPress}
+          onBodyPartPress={isWeb ? undefined : handleBodyPress}
         />
       </Animated.View>
 
