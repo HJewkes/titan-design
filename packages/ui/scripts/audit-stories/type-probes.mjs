@@ -1,10 +1,16 @@
 // Typography probes (TD-938): pure judges over one frame's collectLayout output, its story and the
 // tree's mono family (`ctx.fonts`). Thresholds are the DOM checks of rows DR-TY-01, DR-TY-03,
-// DR-TY-06, DR-TY-10, DR-TY-11, DR-TY-12 and DR-CO-05 in docs/design-rules.md.
+// DR-TY-06, DR-TY-09, DR-TY-10, DR-TY-11, DR-TY-12 and DR-CO-05 in docs/design-rules.md.
 import { toHex } from './colour.mjs'
 import { isMono } from './font-config.mjs'
 import { inInstance, instanceRoots, isPageScope, isSpecimen } from './instances.mjs'
-import { FONT_SIZE_NEAR_MISS_MAX, index, isFlexRow, textByRow, visualLines } from './layout-probes.mjs'
+import {
+  FONT_SIZE_NEAR_MISS_MAX,
+  index,
+  isFlexRow,
+  textByRow,
+  visualLines,
+} from './layout-probes.mjs'
 
 export const CAPS_TRACKING = 'caps-tracking'
 export const CAPS_LABEL_LOOKS = 'caps-label-looks'
@@ -13,6 +19,7 @@ export const SIZES_PER_COMPONENT = 'sizes-per-component'
 export const WEIGHTS_FACES = 'weights-faces'
 export const LOWERCASE_TRACKING = 'lowercase-tracking'
 export const LINE_STYLE_BUDGET = 'line-style-budget'
+export const READABLE_MEASURE = 'readable-measure'
 
 /** The warning kinds this module emits. */
 export const KINDS = Object.freeze([
@@ -23,6 +30,7 @@ export const KINDS = Object.freeze([
   WEIGHTS_FACES,
   LOWERCASE_TRACKING,
   LINE_STYLE_BUDGET,
+  READABLE_MEASURE,
 ])
 /** Each kind's design rule id in docs/design-rules.md. */
 export const RULES = Object.freeze({
@@ -33,6 +41,7 @@ export const RULES = Object.freeze({
   [WEIGHTS_FACES]: 'DR-TY-11',
   [LOWERCASE_TRACKING]: 'DR-TY-12',
   [LINE_STYLE_BUDGET]: 'DR-CO-05',
+  [READABLE_MEASURE]: 'DR-TY-09',
 })
 
 /** DR-TY-01: caps tracking as a share of the font size. */
@@ -43,6 +52,8 @@ export const LOOKS_PER_PAGE = 2
 export const LOOKS_PER_COMPONENT = 1
 /** DR-TY-06 error tier; gated by the audit:stories ratchet baseline (ratchet.mjs). */
 export const TEXT_FLOOR_PX = 10
+/** DR-TY-09 warning tier: mean characters per line of wrapped text, final line excluded. */
+export const MEASURE_MAX_CHARS = 90
 /** DR-TY-10. */
 export const SIZES_PER_INSTANCE = 4
 export const SIZES_PER_PAGE = 6
@@ -363,6 +374,22 @@ export function judgeLineStyleBudget(layout) {
   })
 }
 
+// --- DR-TY-09 readable-measure
+
+/** Wrapped text (2 or more lines) whose mean characters per line, final line excluded, is over 90. */
+export function judgeReadableMeasure(layout) {
+  const out = []
+  for (const n of texts(layout)) {
+    const body = (n.text.lineChars ?? []).slice(0, -1)
+    if (!body.length) continue
+    const mean = body.reduce((a, b) => a + b, 0) / body.length
+    if (mean <= MEASURE_MAX_CHARS) continue
+    const detail = `wrapped text averages ${+mean.toFixed(1)} characters per line (limit ${MEASURE_MAX_CHARS})`
+    out.push({ kind: READABLE_MEASURE, selector: n.selector, detail })
+  }
+  return out
+}
+
 /** judge(layout, ctx): findings `{ kind, selector, detail }`. */
 export function judge(layout, ctx = {}) {
   return [
@@ -373,5 +400,6 @@ export function judge(layout, ctx = {}) {
     ...judgeWeightsFaces(layout, ctx),
     ...judgeLowercaseTracking(layout),
     ...judgeLineStyleBudget(layout),
+    ...judgeReadableMeasure(layout),
   ]
 }
