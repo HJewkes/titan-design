@@ -757,7 +757,8 @@ round-level `contrast` holds them for every frame:
   below it blocks again. The old `maxRatio` is refused at load. `route` is required. It is the task id of the primitive or token audit that owns an
   inherited miss, or `component` for the component's own miss. A declared miss is still
   printed and written with its route and ratio. Only undeclared misses block. A declaration
-  that matched nothing prints `UNMATCHED` so it does not linger and hide a later miss.
+  that matched nothing refuses the round and prints a `REFUSED` line naming its `where`
+  (the round, or `section <id> contrast`) and route, so it cannot linger and hide a later miss.
 - An **image variant** has no DOM. **Each mode**, light and dark, needs a `measured` ratio
   (judged at the same thresholds) or an `unmeasured` entry with a reason. A light measurement
   does not cover dark. A story variant takes neither.
