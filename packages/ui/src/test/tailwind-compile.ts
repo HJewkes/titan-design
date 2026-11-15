@@ -15,14 +15,17 @@ const postcss = createRequire(tailwindEntry)('postcss') as any
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const tailwindConfig = require(path.join(uiRoot, 'tailwind.config.js')) as any
 
-/** The subset of `classes` the real `tailwind.config.js` emits a CSS rule for. */
-export async function compileClasses(classes: string[]): Promise<Set<string>> {
+/** The raw CSS the real `tailwind.config.js` emits for `classes`, `@media` blocks included. */
+export async function compileCss(classes: string[]): Promise<string> {
   const raw = `<div class="${classes.join(' ')}"></div>`
   const result = await postcss([
     tailwind({ ...tailwindConfig, content: { files: [{ raw, extension: 'html' }] } }),
   ]).process('@tailwind utilities;', { from: undefined })
+  return result.css as string
+}
 
-  return new Set(
-    [...(result.css as string).matchAll(/^\.([^\s{]+)\s*\{/gm)].map((m) => m[1].replace(/\\/g, ''))
-  )
+/** The subset of `classes` the real `tailwind.config.js` emits a CSS rule for. */
+export async function compileClasses(classes: string[]): Promise<Set<string>> {
+  const css = await compileCss(classes)
+  return new Set([...css.matchAll(/^\.([^\s{]+)\s*\{/gm)].map((m) => m[1].replace(/\\/g, '')))
 }
