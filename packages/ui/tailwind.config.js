@@ -473,7 +473,7 @@ module.exports = {
         'fade-in': 'fade-in 250ms cubic-bezier(0.22, 1, 0.36, 1)',
         'slide-down': 'slide-down 250ms cubic-bezier(0.22, 1, 0.36, 1)',
         'slide-up': 'slide-up 400ms cubic-bezier(0.34, 1.56, 0.64, 1)',
-        'scale-in': 'scale-in 200ms cubic-bezier(0.22, 1, 0.36, 1)',
+        'scale-in': 'scale-in 150ms cubic-bezier(0.22, 1, 0.36, 1)',
         shimmer: 'shimmer 2s linear infinite',
       },
     },
