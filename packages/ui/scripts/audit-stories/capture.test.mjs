@@ -4,6 +4,10 @@ import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { USAGE, UsageError, parseOptions, resolveOutDir } from '../audit-stories.mjs'
 import {
+  EXIT_BLOCKERS,
+  EXIT_CLEAN,
+  EXIT_RENDER_ERROR,
+  EXIT_UNEXPECTED,
   MAX_SUMMARY_LINES,
   addFontSizeDrift,
   captureContext,
@@ -15,7 +19,7 @@ import {
   withOneRetry,
 } from './capture.mjs'
 import { StorybookError } from './storybook.mjs'
-import { TargetError } from './targets.mjs'
+import { EXIT_NO_TARGETS, TargetError } from './targets.mjs'
 
 const uiDir = resolve(dirname(fileURLToPath(import.meta.url)), '../..')
 
@@ -156,9 +160,9 @@ describe('exit codes', () => {
     expect(exitCodeFor([frame({ blockers: [blocker('hit-target', '.a')] }), failed])).toBe(2)
   })
 
-  it('maps a targeting refusal to 64 and a diff that touches no story to 1', () => {
+  it('maps a targeting refusal to 64 and a diff that touches no story to EXIT_NO_TARGETS', () => {
     expect(exitCodeForError(new TargetError('refused'))).toBe(64)
-    expect(exitCodeForError(new TargetError('nothing touched', 1))).toBe(1)
+    expect(exitCodeForError(new TargetError('nothing touched', EXIT_NO_TARGETS))).toBe(3)
   })
 
   it('maps a Storybook start failure and a usage error to 64', () => {
@@ -177,7 +181,16 @@ describe('exit codes', () => {
   })
 
   it('names every exit code in the usage text', () => {
-    for (const code of [0, 1, 2, 3, 64, 70, 130]) expect(USAGE).toMatch(new RegExp(`\\b${code} `))
+    for (const code of [
+      EXIT_CLEAN,
+      EXIT_BLOCKERS,
+      EXIT_RENDER_ERROR,
+      EXIT_NO_TARGETS,
+      64,
+      EXIT_UNEXPECTED,
+      130,
+    ])
+      expect(USAGE).toMatch(new RegExp(`\\b${code} `))
   })
 })
 
