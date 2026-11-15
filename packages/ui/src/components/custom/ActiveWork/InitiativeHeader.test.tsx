@@ -31,6 +31,16 @@ describe('InitiativeHeader', () => {
     expect(screen.queryByText('updated')).not.toBeInTheDocument()
   })
 
+  it('renders the title as a level 1 heading by default', () => {
+    render(<InitiativeHeader title="planner" slug="planner" state="focused" />)
+    expect(screen.getByRole('heading', { level: 1, name: 'planner' })).toBeInTheDocument()
+  })
+
+  it('renders the title at the level passed in', () => {
+    render(<InitiativeHeader title="planner" slug="planner" state="focused" level={2} />)
+    expect(screen.getByRole('heading', { level: 2, name: 'planner' })).toBeInTheDocument()
+  })
+
   it('has no a11y violations', async () => {
     const { container } = render(
       <InitiativeHeader title="planner" slug="planner" state="focused" rank={1} />
