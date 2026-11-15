@@ -130,6 +130,15 @@ describe('hit targets on a Pill', () => {
 
     expect(screen.queryByTestId(HIT_TARGET_TEST_ID)).toBeNull()
   })
+
+  // Painted above the label, the layer makes axe skip the label's contrast as `bgOverlap`.
+  it('stacks the hit layer beneath the label', () => {
+    render(<Pill onPress={() => {}}>Tag</Pill>)
+
+    const layer = capturedClassNames.get(HIT_TARGET_TEST_ID) ?? ''
+
+    expect(resolvedPx(layer, 'z', 'zIndex')).toBeLessThan(0)
+  })
 })
 
 describe('hit targets in a ToolbarButtonGroup', () => {

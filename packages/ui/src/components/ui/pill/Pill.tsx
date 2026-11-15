@@ -223,7 +223,10 @@ function PressablePill({
       onLayout={hitTarget.onLayout}
       {...rest}
     >
-      {hitTarget.layerProps ? <View {...hitTarget.layerProps} /> : null}
+      {hitTarget.layerProps ? (
+        // Painted above the label, the layer makes axe skip its contrast as `bgOverlap`.
+        <View {...hitTarget.layerProps} className={cn(hitTarget.layerProps.className, 'z-hide')} />
+      ) : null}
       {children}
     </Pressable>
   )
