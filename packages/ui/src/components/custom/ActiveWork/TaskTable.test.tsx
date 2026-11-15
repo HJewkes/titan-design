@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent, within } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { TaskTable, formatTaskAge, type TaskColumnKey } from './TaskTable'
@@ -153,6 +153,57 @@ describe('TaskTable', () => {
   it('has no a11y violations', async () => {
     const { container } = render(<TaskTable tasks={TASK_LIST_FIXTURE} now={TASK_LIST_NOW} />)
     expect(await axe(container)).toHaveNoViolations()
+  })
+})
+
+describe('TaskTable task links', () => {
+  const hrefFor = (task: { slug: string; id: string }) => `/tasks/${task.slug}/${task.id}`
+
+  it('calls onTaskPress with the task whose id was pressed', () => {
+    const onTaskPress = vi.fn()
+    render(<TaskTable tasks={TASK_LIST_FIXTURE} now={TASK_LIST_NOW} onTaskPress={onTaskPress} />)
+
+    fireEvent.click(screen.getByRole('link', { name: 'LH-22' }))
+
+    expect(onTaskPress).toHaveBeenCalledTimes(1)
+    expect(onTaskPress).toHaveBeenCalledWith(TASK_LIST_FIXTURE.find((t) => t.id === 'LH-22'))
+  })
+
+  it('puts the href from getTaskHref on the anchor', () => {
+    render(<TaskTable tasks={TASK_LIST_FIXTURE} now={TASK_LIST_NOW} getTaskHref={hrefFor} />)
+
+    const task = TASK_LIST_FIXTURE.find((t) => t.id === 'LH-22')!
+    expect(screen.getByRole('link', { name: 'LH-22' })).toHaveAttribute('href', hrefFor(task))
+  })
+
+  it('renders the id as plain text when neither prop is given', () => {
+    render(<TaskTable tasks={TASK_LIST_FIXTURE} now={TASK_LIST_NOW} />)
+
+    expect(screen.queryByRole('link')).not.toBeInTheDocument()
+    expect(screen.getByText('LH-22')).toBeInTheDocument()
+  })
+
+  it('keeps each link on its own task after a re-sort', () => {
+    const onTaskPress = vi.fn()
+    render(
+      <TaskTable
+        tasks={TASK_LIST_FIXTURE}
+        now={TASK_LIST_NOW}
+        onTaskPress={onTaskPress}
+        getTaskHref={hrefFor}
+      />
+    )
+    const before = renderedIds()
+
+    fireEvent.click(screen.getByRole('button', { name: 'Sort by Title' }))
+
+    expect(renderedIds()).not.toEqual(before)
+    for (const task of TASK_LIST_FIXTURE) {
+      const link = screen.getByRole('link', { name: task.id })
+      expect(link).toHaveAttribute('href', hrefFor(task))
+    }
+    fireEvent.click(screen.getByRole('link', { name: 'AP-14' }))
+    expect(onTaskPress).toHaveBeenCalledWith(TASK_LIST_FIXTURE.find((t) => t.id === 'AP-14'))
   })
 })
 

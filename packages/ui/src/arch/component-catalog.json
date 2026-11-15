@@ -1220,10 +1220,24 @@
         },
         {
           "default": null,
+          "description": "Makes the id a real anchor on web; pair with `onTaskPress` for client-side routing.",
+          "name": "getTaskHref",
+          "required": false,
+          "type": "((task: TaskListItem) => string)"
+        },
+        {
+          "default": null,
           "description": "Columns the table left out; the row skips their cells so header and body stay aligned.",
           "name": "hideColumns",
           "required": false,
           "type": "TaskColumnKey[]"
+        },
+        {
+          "default": null,
+          "description": "Makes the id a link; called with the task so the host owns client routing.",
+          "name": "onTaskPress",
+          "required": false,
+          "type": "((task: TaskListItem) => void)"
         },
         {
           "default": "false",
@@ -1330,6 +1344,13 @@
           "type": "number"
         },
         {
+          "default": null,
+          "description": "Makes the id a real anchor on web; pair with `onTaskPress` for client-side routing.",
+          "name": "getTaskHref",
+          "required": false,
+          "type": "((task: TaskListItem) => string)"
+        },
+        {
           "default": "[]",
           "description": "Columns to leave out, for an embedded table that already knows its context.",
           "name": "hideColumns",
@@ -1358,6 +1379,13 @@
           "type": "number"
         },
         {
+          "default": null,
+          "description": "Makes the id a link; called with the task so the host owns client routing.",
+          "name": "onTaskPress",
+          "required": false,
+          "type": "((task: TaskListItem) => void)"
+        },
+        {
           "default": "auto",
           "description": "Severity column mode.",
           "name": "severityDisplay",
@@ -1382,6 +1410,7 @@
         "custom-activework-tasktable--default",
         "custom-activework-tasktable--embedded-narrow",
         "custom-activework-tasktable--empty",
+        "custom-activework-tasktable--linked-ids",
         "custom-activework-tasktable--narrow",
         "custom-activework-tasktable--no-legend",
         "custom-activework-tasktable--sorted-by-age",
