@@ -177,7 +177,7 @@ describe('exit codes', () => {
   })
 
   it('names every exit code in the usage text', () => {
-    for (const code of [0, 1, 2, 64, 70, 130]) expect(USAGE).toMatch(new RegExp(`\\b${code} `))
+    for (const code of [0, 1, 2, 3, 64, 70, 130]) expect(USAGE).toMatch(new RegExp(`\\b${code} `))
   })
 })
 

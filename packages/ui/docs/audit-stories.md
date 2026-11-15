@@ -274,7 +274,7 @@ Without `--stories` or `--all`, the targets come from the diff against `--base` 
 - A change under `src/theme/`, `tailwind.config.js` or `.storybook/` touches every story, so the
   command refuses and asks for `--stories` or `--all`.
 - More than 40 targets refuses without `--all`.
-- No target at all (a `src/hooks/` change, say) exits 1 and lists the changed files, so a silent
+- No target at all (a `src/hooks/` change, say) exits 3 and lists the changed files, so a silent
   no-op cannot pass as clean. Name the stories with `--stories`.
 
 | Flag                 | Default        | Effect                                                             |

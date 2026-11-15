@@ -44,7 +44,7 @@ export const USAGE = `Usage: pnpm audit:stories [--base <ref>] [--stories <id,..
 
 Audits the stories touched by the diff against --base (default origin/main).
 --touch adds the 320 width and checks 44px hit targets. Output goes under TMPDIR.
-Exit: 0 clean, 1 blockers (including a text-floor finding outside the ratchet baseline)
+Exit: 0 clean, 1 blockers (including a text-floor finding outside the ratchet baseline),
       2 render error, 3 no story touched, 64 usage or start failure,
       70 unexpected error, 130 interrupted (SIGINT, SIGTERM or SIGHUP).`
 
