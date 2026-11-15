@@ -27,9 +27,15 @@ describe('TaskStagePill', () => {
       const actualHtml = actual.container.innerHTML
       actual.unmount()
       const expected = render(
-        <Pill variant="subtle" tone={tone} size="sm" leading="dot" testID={`task-stage-pill-${stage}`}>
+        <Pill
+          variant="subtle"
+          tone={tone}
+          size="sm"
+          leading="dot"
+          testID={`task-stage-pill-${stage}`}
+        >
           {label}
-        </Pill>,
+        </Pill>
       )
       expect(actualHtml).toBe(expected.container.innerHTML)
       expected.unmount()
