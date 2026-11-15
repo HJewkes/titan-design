@@ -22,7 +22,7 @@ const objectEntries = Object.entries(pkg.exports).filter(
 )
 
 describe('package.json exports', () => {
-  it('has the eleven TypeScript subpaths as object entries', () => {
+  it('has the twelve TypeScript subpaths as object entries', () => {
     expect(objectEntries.map(([subpath]) => subpath)).toEqual([
       '.',
       './bodymap',
@@ -32,6 +32,7 @@ describe('package.json exports', () => {
       './diagram',
       './visual-router',
       './dependency-graph',
+      './line-chart',
       './theme',
       './theme/tokens',
       './theme/tokens-css',
@@ -74,11 +75,24 @@ describe('package.json exports', () => {
     expect(entry.DependencyGraph).toBeTypeOf('function')
     expect(entry.fromCompoundLayout).toBeTypeOf('function')
   })
+
+  it('resolves LineChart through the ./line-chart subpath', async () => {
+    const entry = await import('@titan-design/react-ui/line-chart')
+    expect(entry.LineChart).toBeTypeOf('function')
+    expect(entry.LineChartPlaceholder).toBeTypeOf('function')
+  })
 })
 
-// DependencyGraph exports from /dependency-graph alone; the root keeps its budget.
-describe('dependency-graph-only exports', () => {
-  const SUBPATH_ONLY_VALUES = ['DependencyGraph', 'fromCompoundLayout', 'egoSubgraph']
+// These export from their own subpath alone; the root keeps its 170 kB budget. LineChart would
+// push the root to 172 kB brotlied (TD-1087).
+describe('subpath-only exports', () => {
+  const SUBPATH_ONLY_VALUES = [
+    'DependencyGraph',
+    'fromCompoundLayout',
+    'egoSubgraph',
+    'LineChart',
+    'LineChartPlaceholder',
+  ]
 
   it.each(SUBPATH_ONLY_VALUES)('%s is absent from the root entry', async (name) => {
     const root: Record<string, unknown> = await import('./index')
