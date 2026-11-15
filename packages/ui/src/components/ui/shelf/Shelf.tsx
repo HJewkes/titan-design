@@ -147,7 +147,12 @@ function ShelfRow({ label, itemWidth, bleed, nudge, nudgeFrom, items, ...props }
         >
           <View role="list" style={LIST_STYLE}>
             {items.map((item, index) => (
-              <ShelfItem key={item.key ?? index} width={slotWidth} onFocus={() => reveal(index)}>
+              <ShelfItem
+                key={item.key ?? index}
+                width={slotWidth}
+                isLast={index === items.length - 1}
+                onFocus={() => reveal(index)}
+              >
                 {item}
               </ShelfItem>
             ))}
@@ -175,17 +180,27 @@ function scrollerStyle(bleed: number): object {
   }
 }
 
-const WEB_ITEM_SNAP = (Platform.OS === 'web' ? { scrollSnapAlign: 'start' } : {}) as object
+/**
+ * Every item snaps by its start, except the last, which snaps by its end. The row's far
+ * end is then a snap point of its own. Otherwise the end is only a start position clamped
+ * to the scroll range, and Chromium sometimes settles a smooth scroll aimed at the end on
+ * the last start that fits (TD-1178).
+ */
+function webItemSnap(isLast: boolean): object {
+  if (Platform.OS !== 'web') return {}
+  return { scrollSnapAlign: isLast ? 'end' : 'start' }
+}
 
 interface ShelfItemProps {
   width: number
+  isLast: boolean
   onFocus: () => void
   children: React.ReactNode
 }
 
-function ShelfItem({ width, onFocus, children }: ShelfItemProps) {
+function ShelfItem({ width, isLast, onFocus, children }: ShelfItemProps) {
   return (
-    <View role="listitem" onFocus={onFocus} style={[WEB_ITEM_SNAP, { width }] as object}>
+    <View role="listitem" onFocus={onFocus} style={[webItemSnap(isLast), { width }] as object}>
       {children}
     </View>
   )
