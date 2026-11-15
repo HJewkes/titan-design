@@ -125,9 +125,11 @@ describe('PrBadge reduced motion', () => {
 
   /** Spies on timing without running it; each call's target value tells opacity (0) from scale. */
   function spyTiming() {
-    const spy = vi.spyOn(Animated, 'timing').mockImplementation(
-      () => ({ start: () => {}, stop: () => {}, reset: () => {} }) as Animated.CompositeAnimation
-    )
+    const spy = vi
+      .spyOn(Animated, 'timing')
+      .mockImplementation(
+        () => ({ start: () => {}, stop: () => {}, reset: () => {} }) as Animated.CompositeAnimation
+      )
     const startingValues = () =>
       spy.mock.calls.map(([value]) => (value as unknown as { __getValue(): number }).__getValue())
     return { spy, startingValues }
