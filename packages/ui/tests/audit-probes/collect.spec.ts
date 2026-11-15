@@ -56,6 +56,11 @@ test('wrapped ragged text spans its widest line and reports each line', async ({
   expect(ink![0] + ink![2]).toBeGreaterThan(widestEnd + 20)
 })
 
+test('each wrapped line reports its character count, spaces included', async ({ page }) => {
+  const { text } = byTestId(await collect(page), 'ragged')
+  expect(text!.lineChars).toEqual([2, 20, 2])
+})
+
 test('a box-shadow paints, so its ink is its own box', async ({ page }) => {
   const shadowed = byTestId(await collect(page), 'shadowed')
   expect(shadowed.paints).toBe(true)
