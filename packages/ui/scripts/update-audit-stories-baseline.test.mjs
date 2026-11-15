@@ -4,6 +4,15 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { main, mergeKeys, serialise } from './update-audit-stories-baseline.mjs'
 
+// Only text-floor is ratcheted today; a second kind makes the add-a-kind path reachable.
+vi.mock('./audit-stories/probe-suite.mjs', async (importOriginal) => {
+  const original = await importOriginal()
+  return {
+    ...original,
+    RATCHETED_KINDS: Object.freeze([...original.RATCHETED_KINDS, 'nested-lift']),
+  }
+})
+
 const WIDTHS = [360, 768, 1280]
 const FIXED = 'components-atoms-fixed--default'
 const UNTOUCHED = 'components-atoms-untouched--default'
@@ -18,6 +27,7 @@ const frame = (id, width, selectors = []) => ({
   blockers: [],
   warnings: selectors.map(floor),
 })
+const lift = (selector) => ({ kind: 'nested-lift', selector, detail: 'lifted' })
 const atAllWidths = (id, selectors) => WIDTHS.map((w) => frame(id, w, selectors))
 const baseline = (textFloor, extraKinds = {}) => ({
   schema: 1,
@@ -129,11 +139,53 @@ describe('seeding', () => {
     expect(() => run('--seed', '1272', '--sha', 'def5678')).toThrow(/expects 1272 stories/)
   })
 
-  it('refuses to seed over an existing file', () => {
+  it('refuses to seed a kind the existing file already holds', () => {
     write('baseline.json', baseline({}))
     write('dom.json', { stories: atAllWidths(FIXED, []) })
 
-    expect(() => run('--seed', '1', '--sha', 'def5678')).toThrow(/exists/)
+    expect(() => run('--seed', '1', '--sha', 'def5678')).toThrow(/already has a section/)
+  })
+})
+
+describe('seeding a new kind into an existing baseline', () => {
+  const liftFrame = (id, width, selectors) => ({
+    ...frame(id, width),
+    warnings: selectors.map(lift),
+  })
+  const liftAtAllWidths = (id, selectors) => WIDTHS.map((w) => liftFrame(id, w, selectors))
+
+  it('adds the kind’s section and ceiling and leaves text-floor and widths byte-identical', () => {
+    write('baseline.json', baseline({ [UNTOUCHED]: ['span.a', 'span.z'] }))
+    const before = read()
+    write('dom.json', {
+      stories: [...liftAtAllWidths(FIXED, ['div.lift']), ...atAllWidths(UNTOUCHED, [])],
+    })
+
+    expect(run('--seed', '2', '--kind', 'nested-lift')).toBe(0)
+
+    const after = read()
+    expect(after.kinds['nested-lift']).toEqual({ [FIXED]: ['div.lift'] })
+    expect(after.ceiling['nested-lift']).toBe(1)
+    expect(after.kinds['text-floor']).toEqual(before.kinds['text-floor'])
+    expect(after.ceiling['text-floor']).toBe(before.ceiling['text-floor'])
+    expect(after.generated).toEqual(before.generated)
+  })
+
+  it('refuses a kind that already has a section, naming it', () => {
+    write('baseline.json', baseline({ [FIXED]: ['span.a'] }))
+    write('dom.json', { stories: atAllWidths(FIXED, ['span.a']) })
+
+    expect(() => run('--seed', '1', '--kind', 'text-floor')).toThrow(/already has a section/)
+  })
+
+  it('refuses a dom.json whose widths differ from generated.widths', () => {
+    write('baseline.json', baseline({ [UNTOUCHED]: ['span.a'] }))
+    write('dom.json', {
+      stories: [liftFrame(FIXED, 360, ['div.lift']), liftFrame(FIXED, 1024, [])],
+    })
+
+    expect(() => run('--seed', '1', '--kind', 'nested-lift')).toThrow(/widths/)
+    expect(read().kinds['nested-lift']).toBeUndefined()
   })
 })
 
