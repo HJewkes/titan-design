@@ -7,9 +7,12 @@ export interface TaskStagePillProps {
   className?: string
 }
 
-/** The one renderer of a stage outside the board columns; label and tone come from the stage table. */
+/**
+ * The one renderer of a stage outside the board columns; label and tone come from the stage table.
+ * A stage missing from the table (a wire value cast through) shows its raw text on a neutral pill.
+ */
 export function TaskStagePill({ stage, size = 'sm', className }: TaskStagePillProps) {
-  const { label, tone } = TASK_STAGE_META[stage]
+  const { label, tone } = TASK_STAGE_META[stage] ?? { label: String(stage), tone: 'neutral' }
   return (
     <Pill
       variant="subtle"

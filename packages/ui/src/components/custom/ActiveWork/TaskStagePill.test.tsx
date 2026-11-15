@@ -1,8 +1,9 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
+import { Pill } from '../../ui/pill'
 import { TaskStagePill } from './TaskStagePill'
-import { TASK_STAGE_META, TASK_STAGE_ORDER } from './task-stage'
+import { TASK_STAGE_META, TASK_STAGE_ORDER, type TaskStage } from './task-stage'
 
 describe('TaskStagePill', () => {
   it('renders the label from the stage table for every stage', () => {
@@ -10,6 +11,28 @@ describe('TaskStagePill', () => {
       const { unmount } = render(<TaskStagePill stage={stage} />)
       expect(screen.getByText(TASK_STAGE_META[stage].label)).toBeInTheDocument()
       unmount()
+    }
+  })
+
+  it('renders an unknown stage as its raw text without throwing', () => {
+    render(<TaskStagePill stage={'triage' as TaskStage} />)
+    expect(screen.getByText('triage')).toBeInTheDocument()
+    expect(screen.getByTestId('task-stage-pill-triage')).toBeInTheDocument()
+  })
+
+  it('keeps the label and tone of every known stage', () => {
+    for (const stage of TASK_STAGE_ORDER) {
+      const { label, tone } = TASK_STAGE_META[stage]
+      const actual = render(<TaskStagePill stage={stage} />)
+      const actualHtml = actual.container.innerHTML
+      actual.unmount()
+      const expected = render(
+        <Pill variant="subtle" tone={tone} size="sm" leading="dot" testID={`task-stage-pill-${stage}`}>
+          {label}
+        </Pill>,
+      )
+      expect(actualHtml).toBe(expected.container.innerHTML)
+      expected.unmount()
     }
   })
 
