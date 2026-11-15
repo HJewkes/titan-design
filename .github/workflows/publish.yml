@@ -73,6 +73,10 @@ jobs:
         run: npx npm@latest publish --provenance --access public
         working-directory: packages/ui
 
+      # A publish that exits 0 can still leave npm without the version; read the registry back.
+      - name: Verify npm serves the version
+        run: node packages/ui/scripts/check-npm-published.mjs "${GITHUB_REF_NAME#v}"
+
   github-release:
     needs: publish
     runs-on: ubuntu-latest
