@@ -2,28 +2,7 @@ import { readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { loadCsf } from 'storybook/internal/csf-tools'
 
-/**
- * The Layer-2 visual coverage manifest: which stories must have a committed baseline.
- * `visual-coverage.test.ts` checks it against the snapshot directory.
- */
-export const REQUIRED_PREFIXES = [
-  'shell-',
-  'foundations-icons--',
-  'custom-workout-mesoprogressbar--',
-  'custom-workout-dataviz-velocitystrip',
-  'custom-workout-dataviz-dualvelocitystrip--',
-  'custom-workout-mesocard--',
-  'custom-workout-segmentedbar--',
-  'custom-workout-dataviz-goaltrajectorychart--',
-  'custom-workout-dataviz-strengthtrendchart--',
-  'pages-active-workout--',
-  'pages-exercise-detail--',
-  'pages-program-planning--',
-  'pages-training-status--',
-  'custom-activework-',
-  'components-molecules-mediathumb--',
-  'components-atoms-mediathumbbadge--',
-] as const
+import { isBaselined, VISUAL_SCOPE, type VisualScope } from './visual-scope'
 
 export const BASELINE_SUFFIX = '-chromium-linux.png'
 
@@ -50,15 +29,24 @@ export function collectStoryIds(srcDir: string): string[] {
   })
 }
 
-/** Story ids under a required prefix with no `<id>-chromium-linux.png` among the snapshot names. */
+/** Baselined story ids with no `<id>-chromium-linux.png` among the snapshot names. */
 export function findMissingBaselines(
   storyIds: readonly string[],
   snapshotFiles: readonly string[],
-  required: readonly string[] = REQUIRED_PREFIXES
+  scope: VisualScope = VISUAL_SCOPE
 ): string[] {
   const present = new Set(snapshotFiles)
-  return storyIds.filter(
-    (id) => required.some((prefix) => id.startsWith(prefix)) && !present.has(id + BASELINE_SUFFIX)
+  return storyIds.filter((id) => isBaselined(id, scope) && !present.has(id + BASELINE_SUFFIX))
+}
+
+/** Baseline PNGs whose story id no longer exists. */
+export function findOrphanBaselines(
+  storyIds: readonly string[],
+  snapshotFiles: readonly string[]
+): string[] {
+  const known = new Set(storyIds)
+  return snapshotFiles.filter(
+    (file) => file.endsWith(BASELINE_SUFFIX) && !known.has(file.slice(0, -BASELINE_SUFFIX.length))
   )
 }
 
