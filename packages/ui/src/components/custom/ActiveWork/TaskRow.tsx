@@ -69,11 +69,7 @@ export interface TaskRowProps extends TaskLinkProps {
 }
 
 /** The id as a link when the host gave a press or href handler, plain text otherwise. */
-function TaskId({
-  task,
-  onTaskPress,
-  getTaskHref,
-}: TaskLinkProps & { task: TaskListItem }) {
+function TaskId({ task, onTaskPress, getTaskHref }: TaskLinkProps & { task: TaskListItem }) {
   if (!onTaskPress && !getTaskHref) {
     return (
       <Typography variant="mono" className="text-xs text-brand-primary">
