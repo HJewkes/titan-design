@@ -703,6 +703,12 @@
   "custom-activework-tasktable--embedded-narrow light": {
     "#ff7900|#edeae7": 8
   },
+  "custom-activework-tasktable--linked-ids dark": {
+    "#888684|#252321": 16
+  },
+  "custom-activework-tasktable--linked-ids light": {
+    "#ff7900|#edeae7": 8
+  },
   "custom-activework-tasktable--narrow dark": {
     "#888684|#252321": 16
   },
