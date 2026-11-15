@@ -322,7 +322,9 @@ describe('Tabs', () => {
       const text = screen.getByText('Plain content')
       expect(text.parentElement).toBe(screen.getByRole('tabpanel'))
       expect((capturedByNode.get(text) ?? '').split(/\s+/)).toContain('text-text-primary')
-      const textNodeErrors = errorSpy.mock.calls.filter((c) => /Unexpected text node/.test(String(c[0])))
+      const textNodeErrors = errorSpy.mock.calls.filter((c) =>
+        /Unexpected text node/.test(String(c[0]))
+      )
       expect(textNodeErrors).toHaveLength(0)
       errorSpy.mockRestore()
     })
