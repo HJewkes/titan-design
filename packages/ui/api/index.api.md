@@ -4221,7 +4221,6 @@ export interface PillProps extends ViewProps {
     // @deprecated (undocumented)
     color?: PillColor;
     dotTone?: PillTone;
-    hasHitTarget?: boolean;
     isDisabled?: boolean;
     leading?: React__default.ReactNode | 'dot';
     // @deprecated (undocumented)

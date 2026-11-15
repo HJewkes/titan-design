@@ -61,12 +61,6 @@ export interface PillProps extends ViewProps {
   onPress?: () => void
   /** Non-interactive and dimmed */
   isDisabled?: boolean
-  /**
-   * Whether a pressable pill grows a 44px hit box. `Chip` sets `false` because
-   * it owns a group-aware one.
-   * @default true
-   */
-  hasHitTarget?: boolean
   /** Additional className on the container */
   className?: string
   /** Additional className on the label, for presets that own their typography */
@@ -207,8 +201,9 @@ function PillContent({ tone, ...p }: PillProps & { tone: PillTone }) {
   )
 }
 
-type PressablePillProps = Pick<PillProps, 'onPress' | 'isDisabled' | 'hasHitTarget'> &
-  Omit<ViewProps, 'children'> & { className: string; children: React.ReactNode }
+type PressablePillProps = Pick<PillProps, 'onPress' | 'isDisabled'> & {
+  hasHitTarget: boolean
+} & Omit<ViewProps, 'children'> & { className: string; children: React.ReactNode }
 
 function PressablePill({
   onPress,
@@ -255,7 +250,6 @@ export function Pill(props: PillProps) {
     trailing,
     onPress,
     isDisabled,
-    hasHitTarget = true,
     className,
     textClassName,
     children,
@@ -270,7 +264,8 @@ export function Pill(props: PillProps) {
       <PressablePill
         onPress={onPress}
         isDisabled={isDisabled}
-        hasHitTarget={hasHitTarget}
+        // A caller that passes `hitSlop` (even undefined) owns the hit box, as `Chip` does.
+        hasHitTarget={!('hitSlop' in viewProps)}
         className={classes}
         {...viewProps}
       >
