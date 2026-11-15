@@ -75,6 +75,15 @@ function glowColors(mode: ThemeMode): Record<IndicatorColor, string> {
   }
 }
 
+/** Reduced motion wins over any requested pulse; `true` means the opacity fade. */
+function resolvePulseMode(
+  pulse: boolean | IndicatorPulse,
+  reducedMotion: boolean
+): IndicatorPulse | false {
+  if (reducedMotion || !pulse) return false
+  return pulse === true ? 'opacity' : pulse
+}
+
 export function Indicator({
   size = 'sm',
   color = 'default',
@@ -88,8 +97,7 @@ export function Indicator({
 }: IndicatorProps) {
   const mode = useSurfaceMode()
   const reducedMotion = usePrefersReducedMotion()
-  const requestedPulse: IndicatorPulse | false = pulse === true ? 'opacity' : pulse || false
-  const pulseMode = reducedMotion ? false : requestedPulse
+  const pulseMode = resolvePulseMode(pulse, reducedMotion)
   const colorClass = !customColor ? colorStyles[color] : undefined
   const colorStyle = customColor ? { backgroundColor: customColor } : undefined
 
