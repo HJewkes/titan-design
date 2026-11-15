@@ -1,5 +1,6 @@
 import { createContext, useContext } from 'react'
-import { TimeOriginContext } from './hooks'
+import { TimeOriginContext, useLocalTime } from './hooks'
+import { MOTION } from './tokens'
 
 /** Named moments of a Beat, in seconds from the beat's start. */
 export type BeatCues = Readonly<Record<string, number>>
@@ -42,4 +43,9 @@ export function useCue(name: string): number {
     throw new Error(`useCue: no Beat declares cue "${name}" (known: ${known})`)
   }
   return atS - origin
+}
+
+/** 0 to 1 progress over `durationS` seconds starting at the cue `name`. */
+export function useCueProgress(name: string, durationS: number = MOTION.video.enter): number {
+  return useLocalTime(useCue(name), durationS).progress
 }

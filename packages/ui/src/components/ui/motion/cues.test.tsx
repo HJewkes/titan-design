@@ -5,9 +5,10 @@ import { Text } from 'react-native'
 import { describe, expect, it, vi } from 'vitest'
 import { Beat, BeatFrame } from './Beat'
 import { seekClock } from './clocks'
-import { useCue, withCues } from './cues'
+import { useCue, useCueProgress, withCues } from './cues'
 import { useLocalTime } from './hooks'
 import { MotionProvider } from './MotionProvider'
+import { MOTION } from './tokens'
 
 function CuePhase({ name }: { name: string }) {
   const { phase } = useLocalTime(useCue(name), 1)
@@ -159,5 +160,51 @@ describe('withCues', () => {
 
   it('rejects an ancestor duplicate without rendering', () => {
     expect(() => withCues(new Map([['vo', 1]]), { vo: 2 }, 0, 4)).toThrow(/already declared/)
+  })
+})
+
+function CueProgress({ name, durationS }: { name: string; durationS?: number }) {
+  return <Text testID="cue-progress">{useCueProgress(name, durationS)}</Text>
+}
+
+describe('useCueProgress', () => {
+  it.each([
+    { at: 3.4, progress: '0' },
+    { at: 4, progress: '0.5' },
+    { at: 4.6, progress: '1' },
+  ])('runs 0 to 1 over durationS from the cue: $progress at $at', ({ at, progress }) => {
+    renderAt(
+      at,
+      <Beat startS={2} durationS={4} cues={{ vo: 1.5 }}>
+        <CueProgress name="vo" durationS={1} />
+      </Beat>
+    )
+    expect(screen.getByTestId('cue-progress').textContent).toBe(progress)
+  })
+
+  it('defaults durationS to MOTION.video.enter', () => {
+    renderAt(
+      3.5 + MOTION.video.enter / 2,
+      <Beat startS={2} durationS={4} cues={{ vo: 1.5 }}>
+        <CueProgress name="vo" />
+      </Beat>
+    )
+    expect(screen.getByTestId('cue-progress').textContent).toBe('0.5')
+  })
+
+  it('shifts the cue by a nested beat origin', () => {
+    renderAt(
+      4,
+      <Beat startS={2} durationS={4} cues={{ vo: 1.5 }}>
+        <Beat startS={1} durationS={2}>
+          <CueProgress name="vo" durationS={1} />
+        </Beat>
+      </Beat>
+    )
+    expect(screen.getByTestId('cue-progress').textContent).toBe('0.5')
+  })
+
+  it('throws useCue error for an undeclared name', () => {
+    expectRenderToThrow(<CueProgress name="nope" />, /no Beat declares cue "nope"/)
   })
 })
