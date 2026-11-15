@@ -64,10 +64,16 @@ describe('clipDiff', () => {
   })
 
   it('scales the box by the device scale before comparing', () => {
-    const wide: Rgba = { width: SIZE * 2, height: SIZE * 2, data: Buffer.alloc(SIZE * SIZE * 16, 100) }
+    const wide: Rgba = {
+      width: SIZE * 2,
+      height: SIZE * 2,
+      data: Buffer.alloc(SIZE * SIZE * 16, 100),
+    }
     for (let x = 40; x < 90; x++) paint(wide, x, 40, 80)
 
-    expect(clipDiff(wide, { ...wide, data: Buffer.alloc(wide.data.length, 100) }, BOX, 2).clipped).toBe(false)
+    expect(
+      clipDiff(wide, { ...wide, data: Buffer.alloc(wide.data.length, 100) }, BOX, 2).clipped
+    ).toBe(false)
   })
 
   it('throws when the two buffers differ in size', () => {

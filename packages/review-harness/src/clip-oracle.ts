@@ -31,7 +31,8 @@ export const DOWNSCALE_FACTOR = 4
 
 function maxChannelDelta(a: Rgba, b: Rgba, i: number): number {
   let max = 0
-  for (let c = 0; c < 4; c++) max = Math.max(max, Math.abs((a.data[i + c] ?? 0) - (b.data[i + c] ?? 0)))
+  for (let c = 0; c < 4; c++)
+    max = Math.max(max, Math.abs((a.data[i + c] ?? 0) - (b.data[i + c] ?? 0)))
   return max
 }
 
@@ -65,8 +66,16 @@ function downscale(image: Rgba): Rgba {
 function blockMean(image: Rgba, bx: number, by: number, channel: number): number {
   let sum = 0
   let n = 0
-  for (let y = by * DOWNSCALE_FACTOR; y < Math.min((by + 1) * DOWNSCALE_FACTOR, image.height); y++) {
-    for (let x = bx * DOWNSCALE_FACTOR; x < Math.min((bx + 1) * DOWNSCALE_FACTOR, image.width); x++) {
+  for (
+    let y = by * DOWNSCALE_FACTOR;
+    y < Math.min((by + 1) * DOWNSCALE_FACTOR, image.height);
+    y++
+  ) {
+    for (
+      let x = bx * DOWNSCALE_FACTOR;
+      x < Math.min((bx + 1) * DOWNSCALE_FACTOR, image.width);
+      x++
+    ) {
       sum += image.data[(y * image.width + x) * 4 + channel] ?? 0
       n++
     }
