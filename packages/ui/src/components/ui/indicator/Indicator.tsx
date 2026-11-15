@@ -2,6 +2,7 @@ import { View, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { getGlowShadow } from '../../../theme/elevation'
 import { getSemanticColors, type ThemeMode } from '../../../theme/tokens/semantic'
+import { usePrefersReducedMotion } from '../../../hooks/usePrefersReducedMotion'
 import { useSurfaceMode } from '../surface'
 
 export type IndicatorSize = 'xs' | 'sm' | 'md' | 'lg'
@@ -86,7 +87,9 @@ export function Indicator({
   ...props
 }: IndicatorProps) {
   const mode = useSurfaceMode()
-  const pulseMode: IndicatorPulse | false = pulse === true ? 'opacity' : pulse || false
+  const reducedMotion = usePrefersReducedMotion()
+  const requestedPulse: IndicatorPulse | false = pulse === true ? 'opacity' : pulse || false
+  const pulseMode = reducedMotion ? false : requestedPulse
   const colorClass = !customColor ? colorStyles[color] : undefined
   const colorStyle = customColor ? { backgroundColor: customColor } : undefined
 

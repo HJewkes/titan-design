@@ -1,9 +1,11 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, afterEach, vi } from 'vitest'
 import { render } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import type { CSSProperties, ReactNode } from 'react'
 import { getGlowShadow } from '../../../theme/elevation'
 import { getSemanticColors, type ThemeMode } from '../../../theme/tokens/semantic'
+import { capturedByNode } from '../../../test/classname-capture'
+import { stubReducedMotion } from '../../../test/reduced-motion-stub'
 import { SurfaceContext } from '../surface'
 import { Indicator } from './Indicator'
 
@@ -74,6 +76,43 @@ describe('Indicator', () => {
       const results = await axe(container)
       expect(results).toHaveNoViolations()
     })
+  })
+})
+
+describe('Indicator pulse under prefers-reduced-motion', () => {
+  const classesOf = (el: Element) => (capturedByNode.get(el) ?? '').split(/\s+/)
+
+  afterEach(() => {
+    vi.unstubAllGlobals()
+  })
+
+  it('animates the opacity pulse when motion is allowed', () => {
+    stubReducedMotion(false)
+    const { container } = render(<Indicator pulse color="success" />)
+    expect(classesOf(container.firstChild as Element)).toContain('animate-pulse')
+  })
+
+  it('holds the opacity pulse still when motion is reduced', () => {
+    stubReducedMotion(true)
+    const { container } = render(<Indicator pulse color="success" />)
+    expect(classesOf(container.firstChild as Element)).not.toContain('animate-pulse')
+  })
+
+  it('renders the ping layer when motion is allowed', () => {
+    stubReducedMotion(false)
+    const { container } = render(<Indicator pulse="ping" color="success" />)
+    const layers = Array.from((container.firstChild as HTMLElement).children)
+    expect(layers.some((l) => classesOf(l).includes('animate-ping'))).toBe(true)
+  })
+
+  it('renders one solid dot keeping glow and ring when motion is reduced', () => {
+    stubReducedMotion(true)
+    const { container } = render(<Indicator pulse="ping" glow ring color="success" />)
+    const dot = container.firstChild as HTMLElement
+    expect(classesOf(dot)).not.toContain('animate-ping')
+    expect(dot.children).toHaveLength(0)
+    expect(classesOf(dot)).toContain('border-2')
+    expect(dot.style.boxShadow).not.toBe('')
   })
 })
 
