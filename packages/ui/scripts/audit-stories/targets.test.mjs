@@ -5,6 +5,7 @@ import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
 import {
   REPO_ROOT,
+  EXIT_NO_TARGETS,
   TargetError,
   changedFilesFromGit,
   gitAt,
@@ -12,6 +13,7 @@ import {
   gitUntrackedArgs,
   selectTargets,
 } from './targets.mjs'
+import { EXIT_BLOCKERS } from './capture.mjs'
 
 const index = JSON.parse(readFileSync(resolve('scripts/audit-stories/fixtures/index.json'), 'utf8'))
 
@@ -60,7 +62,7 @@ describe('selectTargets from a diff', () => {
 
   it('ignores changed files outside packages/ui/src', () => {
     const error = refusal({ changed: ['README.md', 'packages/ui/scripts/foo.mjs'] })
-    expect(error.exitCode).toBe(1)
+    expect(error.exitCode).toBe(3)
   })
 })
 
@@ -103,10 +105,15 @@ describe('refusals', () => {
     expect(ids).toHaveLength(4)
   })
 
-  it('fails with exit 1 and lists the files when no story is touched', () => {
+  it('fails with exit 3 and lists the files when no story is touched', () => {
     const error = refusal({ changed: ['packages/ui/src/hooks/useThing.ts'] })
-    expect(error.exitCode).toBe(1)
+    expect(error.exitCode).toBe(3)
     expect(error.message).toContain('src/hooks/useThing.ts')
+  })
+
+  it('uses an exit code distinct from the blockers code', () => {
+    expect(EXIT_NO_TARGETS).toBe(3)
+    expect(EXIT_NO_TARGETS).not.toBe(EXIT_BLOCKERS)
   })
 
   it('rejects an unknown story id', () => {

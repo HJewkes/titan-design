@@ -9,7 +9,8 @@
  * A key that is not already listed is refused unless you pass --allow-increase. The ceiling is
  * always set to the new key count. It never starts Storybook.
  *
- * --seed writes the file when none exists, from an `--all` dom.json whose story count matches
+ * --seed writes the file when none exists, or adds `--kind`'s section to an existing file that
+ * lacks it (its widths and every other section stay as they are), from an `--all` dom.json whose story count matches
  * the count the run printed (`<n> stories in ...`). `--baseline <path>` and `--sha <sha>` point it
  * at another file and provenance (the test uses temp files).
  */
@@ -116,13 +117,29 @@ function parseArgs(argv) {
 
 const headSha = () => execFileSync('git', ['rev-parse', '--short', 'HEAD'], { encoding: 'utf8' })
 
+/** `baseline` plus `kind`, seeded from `entries`; every other section and the widths stay as is. */
+export function addKind(baseline, entries, { kind, storyCount }) {
+  if (baseline.kinds[kind]) throw new Error(`${kind} already has a section; --seed is for none`)
+  const seeded = seedBaseline(entries, { kind, sha: baseline.generated.sha, storyCount })
+  const { widths } = baseline.generated
+  if (JSON.stringify(seeded.generated.widths) !== JSON.stringify(widths)) {
+    throw new Error(
+      `dom.json widths ${seeded.generated.widths.join(',')} differ from generated.widths ${widths.join(',')}`
+    )
+  }
+  return withKind(baseline, kind, seeded.kinds[kind])
+}
+
 function seed(opts, entries) {
-  if (existsSync(opts.baselinePath))
-    throw new Error(`${opts.baselinePath} exists; --seed is for none`)
+  const exists = existsSync(opts.baselinePath)
   const sha = opts.sha ?? headSha().trim()
-  const baseline = seedBaseline(entries, { ...opts, sha })
+  const baseline = exists
+    ? addKind(loadBaseline(opts.baselinePath), entries, opts)
+    : seedBaseline(entries, { ...opts, sha })
   writeFileSync(opts.baselinePath, serialise(baseline))
-  console.log(`seeded ${opts.kind}: ${baseline.ceiling[opts.kind]} keys at ${sha}`)
+  console.log(
+    `seeded ${opts.kind}: ${baseline.ceiling[opts.kind]} keys at ${baseline.generated.sha}`
+  )
   return 0
 }
 
