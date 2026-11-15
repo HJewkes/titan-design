@@ -1,6 +1,6 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { useMemo } from 'react'
-import { View, Text, Pressable, Animated, Easing, Platform, type ViewProps } from 'react-native'
+import { View, Text, Pressable, Animated, Easing, type ViewProps } from 'react-native'
 import { type ExtendedBodyPart, type Slug } from 'react-native-body-highlighter'
 import { cn } from '../../../utils/cn'
 import { resolveColor } from '../../../theme/resolve-color'
@@ -16,13 +16,13 @@ import {
   MUSCLE_DISPLAY_NAMES,
   SIMPLE_DISPLAY_NAMES,
   DETAILED_TO_SIMPLE,
-  SLUG_TO_PRIMARY_MUSCLE,
   VOLUME_STATUS_LABELS,
   getHeatmapColor,
   isMoreSevere,
   volumeStatusDotStyle,
   type VolumeStatus,
 } from './muscleTaxonomy'
+import { figurePress } from './bodyMapPress'
 import { Body, PressFreeBody, unlitBodyProps } from './bodyHighlighter'
 
 /** Presentation size for BodyMap and TrainingStatusPage: 'phone' (default) keeps
@@ -189,23 +189,8 @@ export function BodyMap({
       )
     : null
 
-  const handleBodyPress = (part: ExtendedBodyPart) => {
-    if (!onMusclePress || !part.slug) return
-    const fromData = data.find((d) =>
-      (MUSCLE_TO_SVG_SLUGS[d.muscleGroup] ?? []).includes(part.slug as string)
-    )
-    const muscle = fromData?.muscleGroup ?? SLUG_TO_PRIMARY_MUSCLE[part.slug]
-    if (muscle) onMusclePress(muscle)
-  }
-
-  // On web the figure's per-path onPress would leak responder props into the DOM, so taps
-  // arrive as a click on the wrapper and the muscle slug is read from the clicked path's id.
-  const isWeb = Platform.OS === 'web'
-  const handleFigureClick = (event: { target: unknown }) => {
-    const slug = (event.target as { id?: string } | null)?.id
-    if (slug) handleBodyPress({ slug: slug as Slug })
-  }
-  const FigureBody = isWeb ? PressFreeBody : Body
+  const press = figurePress(data, onMusclePress)
+  const FigureBody = press.isWeb ? PressFreeBody : Body
 
   return (
     <View className={cn(className)} testID="body-map" {...props}>
@@ -227,7 +212,7 @@ export function BodyMap({
         accessibilityElementsHidden
         importantForAccessibility="no-hide-descendants"
         testID="body-map-svg"
-        {...(isWeb ? { onClick: handleFigureClick } : {})}
+        {...press.wrapperProps}
       >
         <FigureBody
           side={view}
@@ -235,7 +220,7 @@ export function BodyMap({
           scale={bodyScale}
           gender="male"
           {...unlitBodyProps(surfaceMode)}
-          onBodyPartPress={isWeb ? undefined : handleBodyPress}
+          onBodyPartPress={press.onBodyPartPress}
         />
       </Animated.View>
 
