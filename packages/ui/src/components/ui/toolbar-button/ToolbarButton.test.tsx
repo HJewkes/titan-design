@@ -220,10 +220,23 @@ describe('ToolbarButton', () => {
       expect(screen.getByLabelText('Settings')).toBeInTheDocument()
     })
 
-    it('applies tooltip as accessibility hint', () => {
-      render(<ToolbarButton label="Help" tooltip="Show help panel" />)
+    it('exposes the tooltip as the button accessible description', () => {
+      render(
+        <ToolbarButton
+          label="Help"
+          tooltip="Show help panel"
+          showLabel={false}
+          icon={<Text>?</Text>}
+        />
+      )
       const button = screen.getByRole('button', { name: 'Help' })
-      expect(button).toBeInTheDocument()
+      expect(button).toHaveAccessibleDescription('Show help panel')
+    })
+
+    it('has no accessible description without a tooltip', () => {
+      render(<ToolbarButton label="Help" showLabel={false} icon={<Text>?</Text>} />)
+      const button = screen.getByRole('button', { name: 'Help' })
+      expect(button).toHaveAccessibleDescription('')
     })
   })
 })

@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo, createContext, useContext } from 'react'
+import React, { useState, useCallback, useMemo, useId, createContext, useContext } from 'react'
 import {
   View,
   Text,
@@ -51,7 +51,7 @@ export interface ToolbarButtonProps extends ViewProps {
   size?: ToolbarButtonSize
   /** Visual variant */
   variant?: ToolbarButtonVariant
-  /** Tooltip text (shown when label is hidden) */
+  /** Tooltip text, exposed as the button's accessible description */
   tooltip?: string
   /** Whether to show label (false = icon only) */
   showLabel?: boolean
@@ -121,6 +121,9 @@ export function ToolbarButton({
 }: ToolbarButtonProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
+  // react-native-web drops accessibilityHint, so web needs a described-by node (TD-1073).
+  const tooltipNodeId = useId()
+  const tooltipId = Platform.OS === 'web' && tooltip ? tooltipNodeId : undefined
   const faces = useToolbarFaces()
   const hitTarget = useHitTarget({ limit: useContext(ToolbarButtonGroupContext) })
 
@@ -153,6 +156,7 @@ export function ToolbarButton({
           accessibilityState={{ selected, disabled: isDisabled }}
           accessibilityLabel={label}
           accessibilityHint={tooltip}
+          aria-describedby={tooltipId}
           hitSlop={hitTarget.hitSlop}
           onLayout={hitTarget.onLayout}
           className={cn(
@@ -167,6 +171,11 @@ export function ToolbarButton({
           )}
           style={faceStyle({ faces, variant, isDisabled, showActive, isHovered })}
         >
+          {tooltipId && (
+            <Text nativeID={tooltipId} className="hidden">
+              {tooltip}
+            </Text>
+          )}
           {hitTarget.layerProps && <View {...hitTarget.layerProps} />}
           {icon && <ToolbarButtonIcon icon={icon} color={iconTint} />}
           {showLabel && (
