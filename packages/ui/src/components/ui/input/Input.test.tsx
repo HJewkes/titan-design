@@ -134,6 +134,29 @@ describe('Input', () => {
       expect(input).toHaveAccessibleName('Username')
     })
 
+    it('names the textbox from the label and links the error text when invalid', () => {
+      render(<Input label="Email" isInvalid errorMessage="Required" />)
+      const input = screen.getByRole('textbox', { name: 'Email' })
+      expect(input).toHaveAttribute('aria-invalid', 'true')
+      const errorId = screen.getByText('Required').getAttribute('id')
+      expect(errorId).toBeTruthy()
+      expect(input).toHaveAttribute('aria-describedby', errorId)
+    })
+
+    it('links the helper text and leaves aria-invalid off when valid', () => {
+      render(<Input label="Email" helperText="We never share it" />)
+      const input = screen.getByRole('textbox', { name: 'Email' })
+      expect(input).not.toHaveAttribute('aria-invalid')
+      const helperId = screen.getByText('We never share it').getAttribute('id')
+      expect(helperId).toBeTruthy()
+      expect(input).toHaveAttribute('aria-describedby', helperId)
+    })
+
+    it('has no aria-describedby without helper or error text', () => {
+      render(<Input label="Email" />)
+      expect(screen.getByRole('textbox', { name: 'Email' })).not.toHaveAttribute('aria-describedby')
+    })
+
     it('communicates disabled state', () => {
       render(<Input isDisabled placeholder="Disabled input" />)
       const input = screen.getByPlaceholderText('Disabled input')
