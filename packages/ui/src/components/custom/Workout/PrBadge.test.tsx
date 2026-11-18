@@ -1,8 +1,10 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi, afterEach } from 'vitest'
+import { Animated } from 'react-native'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { PrBadge } from './PrBadge'
 import { capturedClassNames } from '../../../test/classname-capture'
+import { stubReducedMotion } from '../../../test/reduced-motion-stub'
 
 describe('PrBadge', () => {
   it('renders star and default PR label', () => {
@@ -112,5 +114,59 @@ describe('PrBadge', () => {
       const results = await axe(container)
       expect(results).toHaveNoViolations()
     })
+  })
+})
+
+describe('PrBadge reduced motion', () => {
+  afterEach(() => {
+    vi.restoreAllMocks()
+    vi.unstubAllGlobals()
+  })
+
+  /** Spies on timing without running it; each call's target value tells opacity (0) from scale. */
+  function spyTiming() {
+    const spy = vi
+      .spyOn(Animated, 'timing')
+      .mockImplementation(
+        () => ({ start: () => {}, stop: () => {}, reset: () => {} }) as Animated.CompositeAnimation
+      )
+    const startingValues = () =>
+      spy.mock.calls.map(([value]) => (value as unknown as { __getValue(): number }).__getValue())
+    return { spy, startingValues }
+  }
+
+  // Catches: dropping the guard, so the 400 ms scale pop runs for reduced-motion users.
+  it('runs one 150 ms opacity timing and none on scale when reduced', () => {
+    stubReducedMotion(true)
+    const { spy, startingValues } = spyTiming()
+    render(<PrBadge animate />)
+    expect(spy).toHaveBeenCalledTimes(1)
+    expect(spy).toHaveBeenCalledWith(
+      expect.anything(),
+      expect.objectContaining({ toValue: 1, duration: 150 })
+    )
+    expect(startingValues()).toEqual([0])
+  })
+
+  // Catches: the scale starting at 0.8 on the first frame before the effect runs.
+  it('renders the wrapper at scale 1 on the first render when reduced', () => {
+    stubReducedMotion(true)
+    spyTiming()
+    render(<PrBadge animate />)
+    expect(screen.getByTestId('pr-badge-animated').style.transform).toContain('scale(1)')
+  })
+
+  // Catches: the guard being hard-wired on, which would drop the default entrance.
+  it('still starts the scale animation when reduced motion is not preferred', () => {
+    stubReducedMotion(false)
+    const { startingValues } = spyTiming()
+    render(<PrBadge animate />)
+    expect(startingValues()).toContain(0.8)
+  })
+
+  it('has no accessibility violations under reduced motion', async () => {
+    stubReducedMotion(true)
+    const { container } = render(<PrBadge animate />)
+    expect(await axe(container)).toHaveNoViolations()
   })
 })
