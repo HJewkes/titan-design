@@ -70,7 +70,7 @@ export interface ContrastReport {
   knownDefects: KnownFinding[]
   unmeasured: ContrastDeclarations['unmeasured']
   indeterminate: (Where & Indeterminate)[]
-  /** Declared defects that matched nothing this round: stale, and able to hide a future miss. */
+  /** Declared defects that matched nothing this round: stale, able to hide a future miss, and each refuses the round. */
   unmatchedDefects: DeclaredDefect[]
   /** Reasons the round cannot be judged at all, such as an image variant with no measurement. */
   problems: string[]
@@ -191,6 +191,14 @@ function imageProblems(manifest: Manifest, declared: Declared): string[] {
     )
 }
 
+/** A declaration that matched nothing is stale and could excuse a later miss, so it refuses the round. */
+function unmatchedProblems(defects: DeclaredDefect[]): string[] {
+  return defects.map(
+    (d) =>
+      `${d.where} ${d.route}: declared defect matched nothing this round; remove it (${d.reason})`
+  )
+}
+
 export interface ReportInput {
   manifest: Manifest
   manifestSha256: string
@@ -208,7 +216,8 @@ export function contrastReport({ manifest, manifestSha256, frames, measuredAt }:
     return summarize(frame, misses, declared)
   })
   for (const miss of imageMisses(declared)) route([miss], declared.defectsFor(miss.variant), tally)
-  const problems = imageProblems(manifest, declared)
+  const unmatchedDefects = declared.defects.filter((d) => !tally.matched.has(d))
+  const problems = [...imageProblems(manifest, declared), ...unmatchedProblems(unmatchedDefects)]
   const report: ContrastReport = {
     schema: CONTRAST_SCHEMA_ID,
     unit: manifest.unit,
@@ -230,7 +239,7 @@ export function contrastReport({ manifest, manifestSha256, frames, measuredAt }:
         ...i,
       }))
     ),
-    unmatchedDefects: declared.defects.filter((d) => !tally.matched.has(d)),
+    unmatchedDefects,
     problems,
   }
   return report
@@ -267,10 +276,6 @@ export function formatContrastReport(report: ContrastReport): string[] {
     ...byElement(report.failures).map((f) => `  FAIL ${describe(f)}`),
     ...byElement(report.knownDefects).map((f) => `  KNOWN ${f.route} ${describe(f)}: ${f.reason}`),
     ...report.unmeasured.map((u) => `  UNMEASURED ${u.variant} ${u.mode}: ${u.reason}`),
-    ...report.unmatchedDefects.map(
-      (d) =>
-        `  UNMATCHED ${d.where} ${d.route}: matched nothing this round; remove it (${d.reason})`
-    ),
     ...report.problems.map((p) => `  REFUSED ${p}`),
   ]
 }

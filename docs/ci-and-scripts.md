@@ -13,7 +13,7 @@ newer push replaces a run still queued, so a burst of merges tests the tip once.
 | Job        | Runs on                                                                            | What it runs                                                                                                                                               |
 | ---------- | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `build`    | Node 22 (single-entry matrix)                                                      | Install, then the steps below                                                                                                                              |
-| `visual`   | Playwright container, Node 22                                                      | Layer 3 parity, offline fonts, Layer 1 and 2 baselines, interaction                                                                                        |
+| `visual`   | Playwright container, Node 22                                                      | Layer 3 parity, token resolution, offline fonts, Layer 1 and 2 baselines, interaction                                                                      |
 | `contrast` | Playwright container, Node 22; a three-shard matrix (`contrast 1/3` to `3/3`)      | axe `color-contrast` in both themes: on a PR the stories its diff reaches, on `main` every story (`--shard=i/3`); each shard uploads `contrast-report-<i>` |
 | `check`    | Playwright container, Node 22; always runs; needs `build`, `visual` and `contrast` | all-green over `needs`, then audit, stories axe and play functions (see below)                                                                             |
 
@@ -51,6 +51,7 @@ them in `inputs` with `$TURBO_ROOT$` (as `test:unit` and `test:unit:ci` do in `t
 | Step                         | Script (package `@titan-design/react-ui`) |
 | ---------------------------- | ----------------------------------------- |
 | Layer 3 HTML vs React parity | `test:visual:compare`                     |
+| Token resolution             | `test:visual:tokens`                      |
 | Offline fonts                | `test:offline-fonts`                      |
 | Capture proof                | `test:capture`                            |
 | Layer 1 component baselines  | `test:visual:baseline`                    |
