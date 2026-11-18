@@ -36,6 +36,8 @@ export type NodeStyle = {
 export type NodeText = {
   fontSize: number
   lineCount: number
+  /** Characters on each wrapped line, spaces between words included. */
+  lineChars: number[]
   first: Line
   last: Line
   textTransform: string

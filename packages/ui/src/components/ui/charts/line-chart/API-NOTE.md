@@ -1,8 +1,9 @@
 # LineChart API note
 
 Source: TD-34 Round 0 contract, Part B (owner-decided), restated in our own words with amendments A1
-to A8. This is a design note for a component that does not exist yet (`ui/charts/line-chart/`, story
-`Components/Organisms/LineChart`). Nothing here is exported from a barrel.
+to A8. This is the design note for `ui/charts/line-chart/` (story `Components/Organisms/LineChart`).
+`LineChart` and `LineChartPlaceholder` export from the `@titan-design/react-ui/line-chart` subpath
+only (TD-1087); the root barrel would exceed its 170 kB size limit.
 
 Decided in Round 0 and not reopened: 34.1 a change of index version breaks the line, draws a labelled
 boundary rule, and the summary says the span is not comparable. 34.2 more than six series render as

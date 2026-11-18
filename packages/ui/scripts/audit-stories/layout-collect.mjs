@@ -148,7 +148,7 @@ export function collectLayout({ spacingVars = [] } = {}) {
         const r = range.getBoundingClientRect()
         if (!r.width && !r.height) continue
         run = run ?? runOf(node, r)
-        out.push({ ch: s[i], r, run, baseline: run.baseline ?? r.top + run.ascent })
+        out.push({ ch: s[i], node, at: i, r, run, baseline: run.baseline ?? r.top + run.ascent })
       }
     }
     return out
@@ -172,6 +172,17 @@ export function collectLayout({ spacingVars = [] } = {}) {
       else lines.push([c])
     }
     return lines.sort((a, b) => a[0].baseline - b[0].baseline)
+  }
+
+  // Characters on one line: per text node, the span from its first to its last visible character,
+  // so the spaces between words count and the wrap point's trailing space does not.
+  function charsOnLine(chars) {
+    const spans = new Map()
+    for (const c of chars) {
+      const [lo, hi] = spans.get(c.node) ?? [c.at, c.at]
+      spans.set(c.node, [Math.min(lo, c.at), Math.max(hi, c.at)])
+    }
+    return [...spans.values()].reduce((sum, [lo, hi]) => sum + hi - lo + 1, 0)
   }
 
   function lineMetrics(chars) {
@@ -297,6 +308,7 @@ export function collectLayout({ spacingVars = [] } = {}) {
       lineHeight: cs.lineHeight === 'normal' ? 'normal' : px(cs.lineHeight),
       font: cs.font,
       lineCount: lines.length,
+      lineChars: lines.map(charsOnLine),
       left: q(Math.min(...chars.map((c) => c.r.left))),
       right: q(Math.max(...chars.map((c) => c.r.right))),
       first: lineMetrics(lines[0]),

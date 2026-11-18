@@ -14,6 +14,7 @@ export default defineConfig({
     diagram: 'src/diagram.ts',
     'visual-router': 'src/visual-router.ts',
     'dependency-graph': 'src/dependency-graph.ts',
+    'line-chart': 'src/line-chart.ts',
     'theme/index': 'src/theme/index.ts',
     'theme/tokens': 'src/theme/tokens/index.ts',
     'theme/tokens-css': 'src/theme/tokens-css.ts',

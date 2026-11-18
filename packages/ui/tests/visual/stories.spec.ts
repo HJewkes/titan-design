@@ -8,6 +8,7 @@ import {
   loadStory,
   readStoryIds,
 } from './render-story'
+import { BASELINE_IDS, isBaselined } from '../../src/test/visual-scope'
 import { STORY_INDEX_ENV } from './story-index.global-setup'
 
 /**
@@ -25,14 +26,8 @@ import { STORY_INDEX_ENV } from './story-index.global-setup'
  * animations are disabled (pulse / ping), so control-driven, animated stories
  * snapshot stably.
  *
- * Scope: the shell family + the icon foundation story (`Foundations/Icons`,
- * whose Storybook id is `foundations-icons--*`), MesoProgressBar, every
- * VelocityStrip title (`custom-workout-dataviz-velocitystrip*`, including its
- * Expanded, Hero, Dual and Compact sheets), DualVelocityStrip, MesoCard,
- * SegmentedBar, GoalTrajectoryChart, StrengthTrendChart and the Active Workout,
- * Exercise Detail, Program Planning and Training Status pages, every
- * `Custom/ActiveWork` story, MediaThumb and MediaThumbBadge, plus the Chat stories named in `CHAT_STORIES`.
- * Widen `SCOPE` to cover more of the library as baselines are seeded.
+ * Scope: whatever `isBaselined` accepts in `src/test/visual-scope.ts`, the one list
+ * shared with the coverage check. Widen it there as baselines are seeded.
  *
  * Baselines must be generated in the pinned Playwright Linux container
  * (`mcr.microsoft.com/playwright:v1.58.2-noble`) so the committed PNGs are
@@ -42,27 +37,10 @@ import { STORY_INDEX_ENV } from './story-index.global-setup'
  * that are gitignored and never gate.
  */
 
-const SCOPE =
-  /^(shell-|foundations-icons--|custom-workout-mesoprogressbar--|custom-workout-dataviz-velocitystrip|custom-workout-dataviz-dualvelocitystrip--|custom-workout-mesocard--|custom-workout-segmentedbar--|custom-workout-dataviz-goaltrajectorychart--|custom-workout-dataviz-strengthtrendchart--|pages-active-workout--|pages-exercise-detail--|pages-program-planning--|pages-training-status--|custom-activework-|components-molecules-mediathumb--|components-atoms-mediathumbbadge--)/
-
-// The owner-locked Chat design (VW-393), listed by id so the interactive stories stay out.
-const CHAT_STORIES = new Set([
-  'custom-chat-coachpreset--phone',
-  'custom-chat-coachpreset--wall-drawer',
-  'custom-chat-messagelist--direct',
-  'custom-chat-messagelist--group',
-  'custom-chat-messagelist--endorsed',
-  'custom-chat-messagelist--revealed-times',
-  'custom-chat-messagelist--windowed',
-  'custom-chat-composer--typed',
-])
-
-const inScope = (id: string) => SCOPE.test(id) || CHAT_STORIES.has(id)
-
 const SHOT_OPTIONS = { animations: 'disabled', caret: 'hide' } as const
 
 // Empty when globalSetup did not run, which the first test reports.
-const storyIds = readStoryIds().filter(inScope)
+const storyIds = readStoryIds().filter((id) => isBaselined(id))
 
 // A stale-cache blank story must fail here rather than be frozen as its own baseline.
 async function expectRendered(page: Page, label: string, timeout = 5000) {
@@ -163,8 +141,8 @@ async function renderStory(page: Page, id: string) {
 test('the story index lists every in-scope story', () => {
   expect(process.env[STORY_INDEX_ENV], 'globalSetup wrote the story index').toBeTruthy()
   expect(storyIds.length, 'in-scope stories were found').toBeGreaterThan(0)
-  const chatIds = storyIds.filter((id) => CHAT_STORIES.has(id))
-  expect(chatIds.sort(), 'every listed Chat story exists').toEqual([...CHAT_STORIES].sort())
+  const chatIds = storyIds.filter((id) => (BASELINE_IDS as readonly string[]).includes(id))
+  expect(chatIds.sort(), 'every listed Chat story exists').toEqual([...BASELINE_IDS].sort())
 })
 
 test.describe('storybook story baselines', () => {
