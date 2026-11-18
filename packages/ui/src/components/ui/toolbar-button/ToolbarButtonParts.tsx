@@ -47,14 +47,14 @@ export function ToolbarButtonMenu({
         tabIndex={-1}
         aria-hidden
         style={StyleSheet.absoluteFill}
-        className="z-40"
+        className="z-overlay"
       />
       {/* Menu Content — floating: overlay plane + lift, no ring. */}
       <Surface
         elevation={4}
         rounded={false}
         className={cn(
-          'absolute z-50 top-full left-0 mt-1',
+          'absolute z-popover top-full left-0 mt-1',
           'rounded-lg min-w-[150px] overflow-hidden'
         )}
       >

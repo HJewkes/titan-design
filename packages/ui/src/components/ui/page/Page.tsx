@@ -81,7 +81,7 @@ function PageHeaderBand({ gutter, isElevated, innerClassName, children }: PageHe
     <View
       testID="page-header-band"
       className={cn(
-        'w-full border-b border-hairline-strong relative z-10',
+        'w-full border-b border-hairline-strong relative z-docked',
         gutterClasses[gutter],
         pinnedBandBottom
       )}

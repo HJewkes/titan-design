@@ -122,7 +122,7 @@ export function Tooltip({
         isVisible && (
           <View
             className={cn(
-              'absolute z-50 web:animate-fade-in',
+              'absolute z-tooltip web:animate-fade-in',
               tooltipPositionStyles[placement],
               className
             )}

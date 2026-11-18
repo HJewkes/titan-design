@@ -113,7 +113,7 @@ export function MenuList({ children, className }: MenuListProps) {
       {/* Backdrop */}
       <Pressable
         onPress={() => setIsOpen(false)}
-        className="fixed inset-0 z-40"
+        className="fixed inset-0 z-overlay"
         style={{ position: 'absolute' }}
       />
       {/* Menu — floating: overlay plane + lift, no ring. */}
@@ -121,7 +121,7 @@ export function MenuList({ children, className }: MenuListProps) {
         elevation={4}
         rounded={false}
         className={cn(
-          'absolute z-50 top-full left-0 mt-1 min-w-[160px]',
+          'absolute z-popover top-full left-0 mt-1 min-w-[160px]',
           'rounded-lg py-inset-xs overflow-hidden',
           className
         )}

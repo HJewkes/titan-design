@@ -35,7 +35,7 @@ export function AutocompleteDropdown({ children }: { children: React.ReactNode }
       elevation={4}
       rounded={false}
       className={cn(
-        'absolute z-50 top-full left-0 right-0 mt-1',
+        'absolute z-popover top-full left-0 right-0 mt-1',
         'rounded-md max-h-60 overflow-hidden'
       )}
     >
