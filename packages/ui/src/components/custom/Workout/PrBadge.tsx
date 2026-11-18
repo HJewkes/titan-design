@@ -5,6 +5,7 @@ import { StarIcon } from './icons'
 import { Pill } from '../../ui/pill'
 import { Typography } from '../../ui/typography'
 import { resolveColor } from '../../../theme/resolve-color'
+import { usePrefersReducedMotion } from '../../../hooks/usePrefersReducedMotion'
 
 export type PRType = 'e1rm' | 'weight' | 'reps' | 'volume' | 'velocity'
 
@@ -42,11 +43,17 @@ export function PrBadge({
 }: PrBadgeProps) {
   const resolvedLabel = labelProp ?? `PR ${PR_TYPE_LABELS[type]}`
   const brandPrimary = resolveColor('brand-primary')
-  const [scale] = useState(() => new Animated.Value(animate ? 0.8 : 1))
+  const isReducedMotion = usePrefersReducedMotion()
+  const [scale] = useState(() => new Animated.Value(animate && !isReducedMotion ? 0.8 : 1))
   const [opacity] = useState(() => new Animated.Value(animate ? 0 : 1))
 
   useEffect(() => {
     if (!animate) return
+
+    if (isReducedMotion) {
+      Animated.timing(opacity, { toValue: 1, duration: 150, useNativeDriver: true }).start()
+      return
+    }
 
     // HTML demo uses a 3-keyframe sequence; bezier approximation is close enough for native
     Animated.parallel([
@@ -63,7 +70,7 @@ export function PrBadge({
         useNativeDriver: true,
       }),
     ]).start()
-  }, [animate, scale, opacity])
+  }, [animate, isReducedMotion, scale, opacity])
 
   const badge = compact ? (
     <View
