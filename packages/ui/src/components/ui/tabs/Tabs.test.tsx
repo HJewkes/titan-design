@@ -306,4 +306,43 @@ describe('Tabs', () => {
       expect(panelWrapperClasses({ orientation: 'vertical' })).toContain('flex-1')
     })
   })
+  describe('panel text children', () => {
+    it('wraps a string child in themed text without a text-node error', () => {
+      const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+      render(
+        <Tabs>
+          <TabList>
+            <Tab>A</Tab>
+          </TabList>
+          <TabPanels>
+            <TabPanel>Plain content</TabPanel>
+          </TabPanels>
+        </Tabs>
+      )
+      const text = screen.getByText('Plain content')
+      expect(text.parentElement).toBe(screen.getByRole('tabpanel'))
+      expect((capturedByNode.get(text) ?? '').split(/\s+/)).toContain('text-text-primary')
+      const textNodeErrors = errorSpy.mock.calls.filter((c) =>
+        /Unexpected text node/.test(String(c[0]))
+      )
+      expect(textNodeErrors).toHaveLength(0)
+      errorSpy.mockRestore()
+    })
+
+    it('passes an element child through unwrapped', () => {
+      render(
+        <Tabs>
+          <TabList>
+            <Tab>A</Tab>
+          </TabList>
+          <TabPanels>
+            <TabPanel>
+              <button data-testid="child">Go</button>
+            </TabPanel>
+          </TabPanels>
+        </Tabs>
+      )
+      expect(screen.getByTestId('child').parentElement).toBe(screen.getByRole('tabpanel'))
+    })
+  })
 })
