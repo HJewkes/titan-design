@@ -27,6 +27,7 @@ const ENTRIES = {
   diagram: 'dist/diagram.d.ts',
   'visual-router': 'dist/visual-router.d.ts',
   'dependency-graph': 'dist/dependency-graph.d.ts',
+  'line-chart': 'dist/line-chart.d.ts',
   'theme-index': 'dist/theme/index.d.ts',
   'theme-tokens': 'dist/theme/tokens.d.ts',
   'theme-tokens-css': 'dist/theme/tokens-css.d.ts',
