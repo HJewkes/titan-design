@@ -72,15 +72,19 @@ describe('Link', () => {
     expect(screen.getByText(/\u2197/)).toBeInTheDocument()
   })
 
-  it('provides accessibility hint for external links', () => {
-    render(<Link isExternal>External</Link>)
-    // react-native-web does not map accessibilityHint to aria-description
-    expect(screen.getByRole('link')).toBeInTheDocument()
+  it('announces that an external link opens in a new window, without the arrow in its name', () => {
+    render(
+      <Link href="https://example.com" isExternal>
+        Example
+      </Link>
+    )
+    const link = screen.getByRole('link', { name: 'Example' })
+    expect(link).toHaveAccessibleDescription('Opens in a new window')
   })
 
-  it('does not have external hint for internal links', () => {
-    render(<Link>Internal</Link>)
-    expect(screen.getByRole('link')).not.toHaveAttribute('aria-description')
+  it('gives an internal link no accessible description', () => {
+    render(<Link href="/page">Internal</Link>)
+    expect(screen.getByRole('link', { name: 'Internal' })).not.toHaveAccessibleDescription()
   })
 
   it('renders with all color options', () => {

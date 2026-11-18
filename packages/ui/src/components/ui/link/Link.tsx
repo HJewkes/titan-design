@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useId } from 'react'
 import { Text, Pressable, type TextProps } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { anchorProps } from './anchorProps'
@@ -57,6 +57,7 @@ export function Link({
   children,
   ...props
 }: LinkProps) {
+  const hintId = useId()
   // react-native-web leaves Enter on a `link` role to the browser, which only
   // activates a real anchor; without an href this is a focusable view, so Enter is handled here.
   const handleKeyDown = (event: { key?: string }) => {
@@ -68,7 +69,8 @@ export function Link({
       {...anchorProps({ href, isExternal, isDisabled, onPress })}
       disabled={isDisabled}
       accessibilityRole="link"
-      accessibilityHint={isExternal ? 'Opens in new window' : undefined}
+      aria-describedby={isExternal ? hintId : undefined}
+      accessibilityHint={isExternal ? 'Opens in a new window' : undefined}
       {...{ onKeyDown: handleKeyDown }}
     >
       <Text
@@ -83,8 +85,13 @@ export function Link({
         {...props}
       >
         {children}
-        {isExternal && ' ↗'}
+        {isExternal && <Text aria-hidden> ↗</Text>}
       </Text>
+      {isExternal && (
+        <Text nativeID={hintId} style={{ display: 'none' }}>
+          Opens in a new window
+        </Text>
+      )}
     </Pressable>
   )
 }
