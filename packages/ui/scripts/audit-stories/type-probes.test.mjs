@@ -7,6 +7,7 @@ import {
   KINDS,
   LINE_STYLE_BUDGET,
   LOWERCASE_TRACKING,
+  READABLE_MEASURE,
   RULES,
   SIZES_PER_COMPONENT,
   TEXT_FLOOR,
@@ -17,6 +18,7 @@ import {
   judgeCapsTracking,
   judgeLineStyleBudget,
   judgeLowercaseTracking,
+  judgeReadableMeasure,
   judgeSizesPerComponent,
   judgeTextFloor,
   judgeWeightsFaces,
@@ -70,7 +72,7 @@ const kinds = (findings) => findings.map((f) => f.kind)
 
 describe('type probe module contract', () => {
   it('maps each kind to its typography rule', () => {
-    expect(KINDS).toHaveLength(7)
+    expect(KINDS).toHaveLength(8)
     expect(RULES).toEqual({
       [CAPS_TRACKING]: 'DR-TY-01',
       [CAPS_LABEL_LOOKS]: 'DR-TY-03',
@@ -79,6 +81,7 @@ describe('type probe module contract', () => {
       [WEIGHTS_FACES]: 'DR-TY-11',
       [LOWERCASE_TRACKING]: 'DR-TY-12',
       [LINE_STYLE_BUDGET]: 'DR-CO-05',
+      [READABLE_MEASURE]: 'DR-TY-09',
     })
   })
 
@@ -383,5 +386,37 @@ describe('line-style-budget', () => {
       text('0.2.0', '0.2', { color: 'rgb(0, 128, 0)', fontSize: 12 }, { box: [204, 2, 50, 16] }),
     ]
     expect(judgeLineStyleBudget(layoutOf(...nodes))).toEqual([])
+  })
+})
+
+describe('readable-measure', () => {
+  const measured = (lineChars) =>
+    judgeReadableMeasure(
+      card((id, p) =>
+        text(id, p, {}, { text: { ...text(id, p).text, lineCount: lineChars.length, lineChars } })
+      )
+    )
+
+  it('passes a 3-line block at 70 characters per line', () => {
+    expect(measured([70, 70, 70])).toEqual([])
+  })
+
+  it('reports a 3-line block at 110 characters per line', () => {
+    const found = measured([110, 110, 110])
+    expect(found).toHaveLength(1)
+    expect(found[0].kind).toBe(READABLE_MEASURE)
+    expect(found[0].detail).toBe('wrapped text averages 110 characters per line (limit 90)')
+  })
+
+  it('passes a single-line run of 150 characters', () => {
+    expect(measured([150])).toEqual([])
+  })
+
+  it('does not let a short final line pull the mean down', () => {
+    expect(measured([110, 110, 5])).toHaveLength(1)
+  })
+
+  it('does not count a long final line against the block', () => {
+    expect(measured([70, 70, 150])).toEqual([])
   })
 })

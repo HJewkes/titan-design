@@ -9,6 +9,10 @@ private and unversioned, so every entry sits under `[Unreleased]`.
 
 ### Added
 
+- `clipDiff` in `src/clip-oracle.ts` (TD-1080): a pure pixel oracle that compares a clipped and a
+  released render of a text box and reports a clip when at least 8 pixels outside the box plus a
+  2 px guard band changed. It runs at full size (delta over 16) and on a 0.25x box-averaged
+  downscale (delta over 8, since averaging can't raise a delta).
 - `titan-review build --storybook-build` (needs `--tree`, TD-996). Before `round.json` lands it
   runs `build-storybook --output-dir <round>/storybook/static` in the tree and writes
   `<round>/storybook/storybook.json` (`titan-review/storybook@1`): `repo`, `sha`, `dirty`,

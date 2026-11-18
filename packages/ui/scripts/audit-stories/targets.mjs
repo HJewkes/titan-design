@@ -3,7 +3,7 @@ import { dirname, posix, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 export const MAX_TARGETS = 40
-export const EXIT_NO_TARGETS = 1
+export const EXIT_NO_TARGETS = 3
 export const EXIT_USAGE = 64
 
 export const REPO_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../../../..')

@@ -200,6 +200,52 @@ describe('contrastReport', () => {
     expect(r.unmatchedDefects[0]).toMatchObject({ where: 'section s2 contrast' })
   })
 
+  const staleDefect = {
+    element: 'gone-label',
+    mode: 'light',
+    kind: 'text',
+    route: 'TD-777',
+    reason: 'fixed upstream',
+  } as const
+
+  it('refuses a round whose declared defect matched nothing, naming its where and route', () => {
+    const r = report(draft({ contrast: { knownDefects: [staleDefect] } }), [
+      measured('A', 'light', []),
+    ])
+    expect(r.passed).toBe(false)
+    expect(r.problems).toEqual([expect.stringContaining('contrast TD-777')])
+    expect(formatContrastReport(r).join('\n')).toContain('REFUSED contrast TD-777')
+  })
+
+  it('still passes when the declaration matches one miss', () => {
+    const r = report(
+      draft({
+        contrast: { knownDefects: [{ ...staleDefect, element: 'chip-label', route: 'TD-490' }] },
+      }),
+      [measured('A', 'light', [lowText])]
+    )
+    expect(r.passed).toBe(true)
+    expect(r.problems).toEqual([])
+  })
+
+  it('names the section of a section-scoped declaration that matched nothing', () => {
+    const r = report(
+      draft({
+        sections: [
+          {
+            id: 's2',
+            title: 'B',
+            variantKeys: ['B'],
+            contrast: { knownDefects: [staleDefect] },
+          },
+        ],
+      }),
+      [measured('B', 'light', [])]
+    )
+    expect(r.passed).toBe(false)
+    expect(r.problems.join('\n')).toContain('section s2 contrast TD-777')
+  })
+
   it('refuses an image variant unless each mode is measured or declared unmeasured', () => {
     const variants = [{ key: 'I', image: 'shots/wall.png', label: 'Wall' }]
     expect(report(draft({ variants }), []).problems).toHaveLength(2)
