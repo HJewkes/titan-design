@@ -313,6 +313,24 @@ describe('Menu', () => {
       )
       expect(screen.getByRole('menu')).toBeInTheDocument()
     })
+
+    it('closes when the backdrop is pressed', () => {
+      render(
+        <Menu defaultIsOpen>
+          <MenuTrigger>
+            <button>Options</button>
+          </MenuTrigger>
+          <MenuList>
+            <MenuItem>Edit</MenuItem>
+          </MenuList>
+        </Menu>
+      )
+      const backdrop = screen.getByRole('menu').previousElementSibling as HTMLElement
+
+      fireEvent.click(backdrop)
+
+      expect(screen.queryByRole('menu')).not.toBeInTheDocument()
+    })
   })
 
   describe('accessibility', () => {

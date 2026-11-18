@@ -113,6 +113,9 @@ export function MenuList({ children, className }: MenuListProps) {
       {/* Backdrop */}
       <Pressable
         onPress={() => setIsOpen(false)}
+        focusable={false}
+        tabIndex={-1}
+        aria-hidden
         className="fixed inset-0 z-40"
         style={{ position: 'absolute' }}
       />
