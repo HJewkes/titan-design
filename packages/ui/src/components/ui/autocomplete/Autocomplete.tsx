@@ -1,14 +1,12 @@
-import React from 'react'
+import React, { useId } from 'react'
 import { View, TextInput, type ViewProps, type TextInputProps } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { defaultFilterFn, dropdownContent, type AutocompleteOption } from './autocompleteFilter'
 import {
   AutocompleteClearButton,
-  AutocompleteDropdown,
   AutocompleteHelper,
   AutocompleteLabel,
-  AutocompleteMessage,
-  AutocompleteOptionRow,
+  AutocompleteResults,
   AutocompleteSpinner,
 } from './AutocompleteParts'
 import { useAutocompleteState } from './useAutocompleteState'
@@ -123,7 +121,9 @@ export function Autocomplete<T extends string = string>({
   })
 
   const isInvalid = !!errorMessage
-  const { showMinCharsMessage, showNoResults, showOptions } = dropdownContent({
+  const messageId = `${useId()}-message`
+  const hasMessage = !!(helperText || errorMessage)
+  const content = dropdownContent({
     inputValue: state.inputValue,
     minChars,
     isLoading,
@@ -156,6 +156,8 @@ export function Autocomplete<T extends string = string>({
             editable={!isDisabled}
             className={cn('flex-1 px-3 py-2 text-text-primary', 'placeholder:text-text-tertiary')}
             accessibilityLabel={label}
+            aria-invalid={isInvalid || undefined}
+            aria-describedby={hasMessage ? messageId : undefined}
             {...inputProps}
           />
 
@@ -168,34 +170,28 @@ export function Autocomplete<T extends string = string>({
           {!!isLoading && <AutocompleteSpinner />}
         </View>
 
-        {/* Dropdown */}
         {!!state.isOpen && (
-          <AutocompleteDropdown>
-            {!!showMinCharsMessage && (
-              <AutocompleteMessage>
-                {minCharsText || `Type at least ${minChars} characters`}
-              </AutocompleteMessage>
-            )}
-            {!!isLoading && <AutocompleteMessage>{loadingText}</AutocompleteMessage>}
-            {!!showNoResults && <AutocompleteMessage>{noOptionsText}</AutocompleteMessage>}
-            {!!showOptions &&
-              state.filteredOptions.map((option, index) => (
-                <AutocompleteOptionRow
-                  key={String(option.value)}
-                  option={option}
-                  isHighlighted={index === state.highlightedIndex}
-                  isSelected={option.value === value}
-                  renderOption={renderOption}
-                  onSelect={state.handleSelectOption}
-                />
-              ))}
-          </AutocompleteDropdown>
+          <AutocompleteResults
+            state={state}
+            content={content}
+            value={value}
+            isLoading={isLoading}
+            minChars={minChars}
+            minCharsText={minCharsText}
+            noOptionsText={noOptionsText}
+            loadingText={loadingText}
+            renderOption={renderOption}
+          />
         )}
       </View>
 
       {/* Helper/Error text */}
-      {!!(helperText || errorMessage) && (
-        <AutocompleteHelper text={errorMessage || helperText} isInvalid={isInvalid} />
+      {!!hasMessage && (
+        <AutocompleteHelper
+          id={messageId}
+          text={errorMessage || helperText}
+          isInvalid={isInvalid}
+        />
       )}
     </View>
   )
