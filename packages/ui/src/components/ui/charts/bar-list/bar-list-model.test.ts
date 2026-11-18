@@ -38,6 +38,19 @@ describe('barFraction', () => {
   })
 })
 
+describe('zero-baseline bar length (DR-CH-06)', () => {
+  it('DR-CH-06: barFraction is value over max from zero, and 0 for zero or negative', () => {
+    expect(barFraction(5, 20)).toBe(0.25)
+    expect(barFraction(-3, 20)).toBe(0)
+    expect(barFraction(0, 20)).toBe(0)
+  })
+
+  it('DR-CH-06: buildBarListModel gives fractions proportional to value from zero', () => {
+    const model = buildBarListModel(rowsOf(5, 10, 20), { sort: 'none' })
+    expect(model.rows.map((r) => r.fraction)).toEqual([0.25, 0.5, 1])
+  })
+})
+
 describe('resolveMax', () => {
   it('ignores null, NaN and Infinity when taking the data maximum', () => {
     expect(resolveMax(rowsOf(3, null, Number.NaN, Number.POSITIVE_INFINITY, 9))).toBe(9)

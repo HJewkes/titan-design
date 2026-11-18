@@ -3,6 +3,7 @@ import { fireEvent, render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { Text } from 'react-native'
 import { Drawer } from '../components/ui/drawer'
+import { Menu, MenuItem, MenuList, MenuTrigger } from '../components/ui/menu'
 import { Modal, ModalBody, ModalContent } from '../components/ui/modal'
 import { Popover, PopoverContent, PopoverTrigger } from '../components/ui/popover'
 import { Select } from '../components/ui/select'
@@ -54,6 +55,20 @@ function openSelect() {
   return backdropBefore(screen.getByRole('option', { name: 'Apple' }))
 }
 
+function openMenu() {
+  render(
+    <Menu isOpen>
+      <MenuTrigger>
+        <Text>Options</Text>
+      </MenuTrigger>
+      <MenuList>
+        <MenuItem>Edit</MenuItem>
+      </MenuList>
+    </Menu>
+  )
+  return backdropBefore(screen.getByRole('menu'))
+}
+
 // axe runs on the backdrop subtree: a scan of the whole body also reports the Select
 // listbox and the Drawer's pre-animation dialog, which this file does not cover.
 describe('overlay backdrops are out of the tab order and hidden from assistive tech', () => {
@@ -61,6 +76,7 @@ describe('overlay backdrops are out of the tab order and hidden from assistive t
     ['Drawer', openDrawer],
     ['Popover', openPopover],
     ['Select', openSelect],
+    ['Menu', openMenu],
   ])('%s backdrop renders tabindex="-1" and aria-hidden="true"', async (_name, open) => {
     const backdrop = open()
 

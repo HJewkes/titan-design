@@ -20,6 +20,13 @@ describe('SparkBars', () => {
     expect(screen.getByTestId('spark-bars')).toBeInTheDocument()
   })
 
+  it('DR-CH-06: bar length is proportional to |value| from zero, with no offset', () => {
+    render(<SparkBars values={[10, 20, -20]} height={20} />)
+    expect(screen.getByTestId('spark-bars-bar-0')).toHaveStyle({ height: '10px' })
+    expect(screen.getByTestId('spark-bars-bar-1')).toHaveStyle({ height: '20px' })
+    expect(screen.getByTestId('spark-bars-bar-2')).toHaveStyle({ height: '20px' })
+  })
+
   it('tints bars by sign with the result-* tokens', () => {
     // Asserts the token, not its current value: resolveColor emits the CSS var on
     // web, which is what keeps the chart theme-correct.

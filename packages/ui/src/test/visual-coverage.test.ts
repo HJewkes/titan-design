@@ -9,8 +9,9 @@ import {
   collectStoryIds,
   findMissingBaselines,
   findMisnamedSnapshots,
-  REQUIRED_PREFIXES,
+  findOrphanBaselines,
 } from './visual-coverage'
+import { BASELINE_IDS, BASELINE_PREFIXES } from './visual-scope'
 
 const PACKAGE_DIR = fileURLToPath(new URL('../..', import.meta.url))
 const STORY_SNAPSHOT_DIR = 'tests/visual/reference/stories.spec.ts-snapshots'
@@ -26,8 +27,16 @@ const storyBaselines = trackedSnapshots
 
 describe('Layer-2 visual coverage manifest', () => {
   it('matches at least one story for every required prefix', () => {
-    const unmatched = REQUIRED_PREFIXES.filter((p) => !storyIds.some((id) => id.startsWith(p)))
+    const unmatched = BASELINE_PREFIXES.filter((p) => !storyIds.some((id) => id.startsWith(p)))
     expect(unmatched).toEqual([])
+  })
+
+  it('matches a story for every baselined id', () => {
+    expect(BASELINE_IDS.filter((id) => !storyIds.includes(id))).toEqual([])
+  })
+
+  it('has no baseline PNG without a story', () => {
+    expect(findOrphanBaselines(storyIds, storyBaselines)).toEqual([])
   })
 
   it('has a committed linux baseline for every story under a required prefix', () => {
@@ -60,6 +69,34 @@ describe('Layer-2 visual coverage manifest against a fixture snapshot directory'
     const missing = findMissingBaselines(storyIds, readdirSync(fixtureDir))
 
     expect(missing).toEqual([shellBaseline!.slice(0, -BASELINE_SUFFIX.length)])
+  })
+
+  it('reports a Chat baseline unlinked from the snapshot directory', () => {
+    const chatBaseline = `${BASELINE_IDS[0]}${BASELINE_SUFFIX}`
+    expect(storyBaselines).toContain(chatBaseline)
+    unlinkSync(join(fixtureDir, chatBaseline))
+
+    expect(findMissingBaselines(storyIds, readdirSync(fixtureDir))).toEqual([BASELINE_IDS[0]])
+  })
+
+  it('reports a written baseline whose story is gone', () => {
+    writeFileSync(join(fixtureDir, 'components-atoms-gone--x-chromium-linux.png'), '')
+
+    expect(findOrphanBaselines(storyIds, readdirSync(fixtureDir))).toEqual([
+      'components-atoms-gone--x-chromium-linux.png',
+    ])
+  })
+
+  it('does not report a story under a baselined prefix that is also excluded', () => {
+    const scope = {
+      prefixes: ['synthetic-'],
+      ids: [],
+      excluded: [{ prefix: 'synthetic-skipped--', reason: 'synthetic' }],
+    }
+
+    expect(findMissingBaselines(['synthetic-skipped--a', 'synthetic-kept--a'], [], scope)).toEqual([
+      'synthetic-kept--a',
+    ])
   })
 
   it('reports a darwin snapshot', () => {
