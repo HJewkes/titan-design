@@ -21,8 +21,9 @@ export const CLIP_TOLERANCE = 0.5
 
 const round = (v) => Math.round(v * 10) / 10
 
-// [x, y, w, h] of a text node's painted ink, or null when the collector gave it none.
+// [x, y, w, h] of a text node's painted ink (the collector's transformed bbox, else line ink), or null when the collector gave it none.
 function inkOf(n) {
+  if (n.svgInk) return n.svgInk
   const t = n.text
   if (t?.first && t?.last)
     return [t.left, t.first.inkTop, t.right - t.left, t.last.inkBottom - t.first.inkTop]
@@ -89,7 +90,8 @@ function clippedSides([x, y, w, h], [sx, sy, sw, sh]) {
 /** DR-CH-04: a text label whose ink runs past the edge of the svg that holds it. */
 export function judgeChartLabelClip(layout) {
   const out = []
-  for (const [svg, labels] of labelsBySvg(layout))
+  for (const [svg, labels] of labelsBySvg(layout)) {
+    if (svg.overflow === 'visible') continue
     for (const { n, ink } of labels) {
       const past = clippedSides(ink, svg.box)
       if (!past.length) continue
@@ -100,6 +102,7 @@ export function judgeChartLabelClip(layout) {
         detail: `label ink past ${svg.selector} edge: ${what} (limit ${CLIP_TOLERANCE}px)`,
       })
     }
+  }
   return out
 }
 

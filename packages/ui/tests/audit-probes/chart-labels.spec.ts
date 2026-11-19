@@ -6,10 +6,16 @@ type Finding = { kind: string; selector: string; detail: string }
 
 const WIDTHS = [360, 768, 1280]
 
-const negatives = ['cl-zero', 'cl-one', 'cl-many', 'cl-missing']
+const negatives = ['cl-zero', 'cl-one', 'cl-many', 'cl-missing', 'cl-overflow']
 
 const positives: [string, string, RegExp][] = [
   ['cl-crowded', 'chart-label-collision', /^label overlaps .+ by [\d.]+×[\d.]+px \(limit 1px\)$/],
+  ['cl-rot-clip', 'chart-label-clip', /^label ink past .+ edge: top [\d.]+px \(limit 0\.5px\)$/],
+  [
+    'cl-rot-collide',
+    'chart-label-collision',
+    /^label overlaps .+ by [\d.]+×[\d.]+px \(limit 1px\)$/,
+  ],
   ['cl-long', 'chart-label-clip', /^label ink past .+ edge: right [\d.]+px \(limit 0\.5px\)$/],
 ]
 

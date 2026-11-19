@@ -110,3 +110,22 @@ describe('judgeChartLabelClip', () => {
     expect(judgeChartLabelClip(layoutOf(svg(), html))).toEqual([])
   })
 })
+
+describe('transformed labels and overflow', () => {
+  it('uses the collector svgInk over line ink for a rotated label', () => {
+    const rotated = label(1, [150, 20, 12, 12], { svgInk: [150, -80, 12, 100] })
+    const [f] = judgeChartLabelClip(layoutOf(svg(), rotated))
+    expect(f.detail).toBe('label ink past .chart edge: top 80px (limit 0.5px)')
+  })
+
+  it('finds a collision between rotated labels along their length', () => {
+    const a = label(1, [100, 100, 12, 12], { svgInk: [94, 40, 12, 70] })
+    const b = label(2, [106, 100, 12, 12], { svgInk: [100, 30, 12, 80] })
+    expect(judgeChartLabelCollision(layoutOf(svg(), a, b))).toHaveLength(1)
+  })
+
+  it('does not report a clip inside an svg with overflow visible', () => {
+    const visible = { ...svg(), overflow: 'visible' }
+    expect(judgeChartLabelClip(layoutOf(visible, label(1, [250, 10, 90, 12])))).toEqual([])
+  })
+})

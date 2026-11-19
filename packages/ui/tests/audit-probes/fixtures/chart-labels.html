@@ -80,6 +80,28 @@
           <path d="M30 60 L90 40 M210 70 L270 50" stroke="#2563eb" fill="none" />
         </svg>
       </div>
+
+      <!-- Rotated label whose length runs past the top edge. -->
+      <div data-testid="cl-rot-clip">
+        <svg viewBox="0 0 300 120">
+          <text x="150" y="30" transform="rotate(-90 150 30)">A long rotated tick label</text>
+        </svg>
+      </div>
+
+      <!-- Two rotated tick labels side by side, closer than a line height. -->
+      <div data-testid="cl-rot-collide">
+        <svg viewBox="0 0 300 120">
+          <text x="100" y="110" transform="rotate(-90 100 110)">January</text>
+          <text x="106" y="110" transform="rotate(-90 106 110)">February</text>
+        </svg>
+      </div>
+
+      <!-- Overflow visible: the long label is not clipped. -->
+      <div data-testid="cl-overflow">
+        <svg viewBox="0 0 300 120" style="overflow: visible">
+          <text x="200" y="108">A very long category label</text>
+        </svg>
+      </div>
     </div>
   </body>
 </html>
