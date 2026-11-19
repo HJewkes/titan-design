@@ -18,6 +18,8 @@ export interface InitiativeHeaderProps {
   shipTarget?: string
   /** ISO date the brief last changed. */
   updated?: string
+  /** Heading level (`aria-level`) of the title; the look is unchanged. @default 1 */
+  level?: 1 | 2 | 3 | 4 | 5 | 6
   className?: string
 }
 
@@ -36,12 +38,13 @@ export function InitiativeHeader({
   rank,
   shipTarget,
   updated,
+  level = 1,
   className,
 }: InitiativeHeaderProps) {
   const meta = INITIATIVE_STATE_META[state]
   return (
     <View className={cn('gap-1', className)}>
-      <Typography variant="h5" className="text-text-primary">
+      <Typography variant="h5" aria-level={level} className="text-text-primary">
         {title}
       </Typography>
       <View className="flex-row flex-wrap items-center gap-2.5">
