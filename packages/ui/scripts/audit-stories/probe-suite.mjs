@@ -6,6 +6,7 @@
 //                       threshold in `detail`, and never throws on a node missing an optional field.
 // ctx is { tokens: { '#rrggbb': [token names] }, story: { id, title }, fonts: { mono },
 // declared: { cssVar: px } }. Shared thresholds are imported from layout-probes.mjs, not copied.
+import * as chartProbes from './chart-probes.mjs'
 import * as colourProbes from './colour-probes.mjs'
 import * as elevationProbes from './elevation-probes.mjs'
 import * as hierarchyProbes from './hierarchy-probes.mjs'
@@ -14,6 +15,7 @@ import * as relationProbes from './relation-probes.mjs'
 import * as typeProbes from './type-probes.mjs'
 
 export const PROBE_MODULES = Object.freeze([
+  chartProbes,
   colourProbes,
   elevationProbes,
   hierarchyProbes,
