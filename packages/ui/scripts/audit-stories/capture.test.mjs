@@ -119,7 +119,7 @@ describe('summarise line cap', () => {
     const lines = summarise(many(100)).split('\n')
     expect(MAX_SUMMARY_LINES).toBe(30)
     expect(lines).toHaveLength(30)
-    expect(lines[28]).toBe('... 72 more blockers in dom.json')
+    expect(lines[28]).toBe('... 72 more findings in dom.json')
     expect(lines[29]).toMatch(/^1 frames audited, .* 100 blockers \(100 distinct\)/)
   })
 

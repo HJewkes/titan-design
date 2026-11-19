@@ -127,6 +127,30 @@ describe('the text-spacing pass over a fixture story', () => {
     )
   })
 
+  it('lists losses before blockers that were already there, counting only blockers as distinct', () => {
+    const loss = {
+      kind: TEXT_SPACING_LOSS,
+      selector: '.row',
+      detail: 'clipped-text under text spacing',
+    }
+    const entry = {
+      id: 'fixture-dense-row--default',
+      width: 360,
+      theme: 'dark',
+      rendered: true,
+      shot: null,
+      blockers: [blocker('overflow', 'html')],
+      contrast_token: [],
+      warnings: [loss],
+    }
+
+    const lines = summarise([entry]).split('\n')
+
+    expect(lines[0]).toMatch(/^WARN text-spacing-loss /)
+    expect(lines[1]).toMatch(/^BLOCKER overflow /)
+    expect(lines[2]).toContain('1 blockers (1 distinct)')
+  })
+
   it('injects the stylesheet once per frame, after that frame is shot unspaced', async () => {
     const { log } = await run(true)
 

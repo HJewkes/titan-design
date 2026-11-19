@@ -130,7 +130,8 @@ audited again. The stylesheet is gone at the next theme's navigation.
 | `text-spacing-loss` | DR-RB-03 | A blocker the spaced frame has and the unspaced frame does not, matched on kind and selector, so a blocker that only grew is not new. `lost` holds the blocker's kind. Detail: `clipped-text under text spacing: "Due" cut by 6px`. |
 
 It is a warning, as the rule row says ("any new blocker warns at first"), so it never changes the
-exit code. The summary prints these warnings as `WARN` lines after the blockers. Dense fixed-height
+exit code. The summary prints these warnings as `WARN` lines after render errors and ratchet failures
+and before every other blocker. Dense fixed-height
 rows are expected to hit it; whether they keep their height is an open density question.
 
 ### Retunes from the catch report (TD-740)

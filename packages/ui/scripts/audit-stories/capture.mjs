@@ -279,19 +279,26 @@ function findingLine(label, g, where) {
   return `${label} ${g.kind} ${g.id} [${where}] ${g.selector} :: ${detail}`
 }
 
-// One line per distinct blocker, listing every width and theme it appears at.
-function groupBlockers(entries, sweep = false) {
-  const audited = entries.map((e) => e.width)
-  const rank = (g) => (g.kind === 'render-error' ? 0 : g.ratchet === 'new' ? 1 : 2)
-  return groupFindings(entries, (e) => e.blockers)
-    .sort((a, b) => rank(a) - rank(b))
-    .map((g) => findingLine('BLOCKER', g, sweep ? sweptWhere(g.at, audited) : [...g.at].join(' ')))
-}
+const blockerRank = (g) => (g.kind === 'render-error' ? 0 : g.ratchet === 'new' ? 1 : 3)
+const textSpacingLosses = (e) => e.warnings.filter((w) => w.kind === TEXT_SPACING_LOSS)
 
-// `--text-spacing` findings are warnings, but they are what that mode is run for.
-function groupTextSpacingLosses(entries) {
-  const losses = (e) => e.warnings.filter((w) => w.kind === TEXT_SPACING_LOSS)
-  return groupFindings(entries, losses).map((g) => findingLine('WARN', g, [...g.at].join(' ')))
+/**
+ * One line per distinct blocker, listing every width and theme it appears at. `--text-spacing`
+ * losses are warnings, but they are what that mode is run for, so they rank after render errors
+ * and ratchet failures and before every other blocker.
+ */
+function findingLines(entries, sweep = false) {
+  const audited = entries.map((e) => e.width)
+  const where = (g) => (sweep ? sweptWhere(g.at, audited) : [...g.at].join(' '))
+  const blockers = groupFindings(entries, (e) => e.blockers)
+  const ranked = [
+    ...blockers.map((g) => ({ g, label: 'BLOCKER', rank: blockerRank(g) })),
+    ...groupFindings(entries, textSpacingLosses).map((g) => ({ g, label: 'WARN', rank: 2 })),
+  ].sort((a, b) => a.rank - b.rank)
+  return {
+    distinct: blockers.length,
+    lines: ranked.map((r) => findingLine(r.label, r.g, where(r.g))),
+  }
 }
 
 function sweptWhere(at, audited) {
@@ -318,17 +325,17 @@ function countsLine(entries, distinct) {
 }
 
 /**
- * At most `maxLines` lines: grouped blockers (render errors, then ratchet failures), then grouped
- * text-spacing losses, an overflow
+ * At most `maxLines` lines: grouped findings (render errors, ratchet failures, text-spacing
+ * losses, other blockers), an overflow
  * pointer if any, the ratchet line per ratcheted kind when `ratchet` is given, then the counts.
  */
 export function summarise(entries, maxLines = MAX_SUMMARY_LINES, ratchet = [], sweep = false) {
-  const blockerLines = [...groupBlockers(entries, sweep), ...groupTextSpacingLosses(entries)]
-  const tail = [...ratchetLines(ratchet), countsLine(entries, blockerLines.length)]
+  const found = findingLines(entries, sweep)
+  const tail = [...ratchetLines(ratchet), countsLine(entries, found.distinct)]
   const room = maxLines - 1 - tail.length
-  const lines = blockerLines.slice(0, room)
-  if (blockerLines.length > room) {
-    lines.push(`... ${blockerLines.length - room} more blockers in dom.json`)
+  const lines = found.lines.slice(0, room)
+  if (found.lines.length > room) {
+    lines.push(`... ${found.lines.length - room} more findings in dom.json`)
   }
   lines.push(...tail)
   return lines.join('\n')
