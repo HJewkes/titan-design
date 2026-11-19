@@ -2,6 +2,7 @@ import { View, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { getGlowShadow } from '../../../theme/elevation'
 import { getSemanticColors, type ThemeMode } from '../../../theme/tokens/semantic'
+import { usePrefersReducedMotion } from '../../../hooks/usePrefersReducedMotion'
 import { useSurfaceMode } from '../surface'
 
 export type IndicatorSize = 'xs' | 'sm' | 'md' | 'lg'
@@ -74,6 +75,15 @@ function glowColors(mode: ThemeMode): Record<IndicatorColor, string> {
   }
 }
 
+/** Reduced motion wins over any requested pulse; `true` means the opacity fade. */
+function resolvePulseMode(
+  pulse: boolean | IndicatorPulse,
+  reducedMotion: boolean
+): IndicatorPulse | false {
+  if (reducedMotion || !pulse) return false
+  return pulse === true ? 'opacity' : pulse
+}
+
 export function Indicator({
   size = 'sm',
   color = 'default',
@@ -86,7 +96,8 @@ export function Indicator({
   ...props
 }: IndicatorProps) {
   const mode = useSurfaceMode()
-  const pulseMode: IndicatorPulse | false = pulse === true ? 'opacity' : pulse || false
+  const reducedMotion = usePrefersReducedMotion()
+  const pulseMode = resolvePulseMode(pulse, reducedMotion)
   const colorClass = !customColor ? colorStyles[color] : undefined
   const colorStyle = customColor ? { backgroundColor: customColor } : undefined
 

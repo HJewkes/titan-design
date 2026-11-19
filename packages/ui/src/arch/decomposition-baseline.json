@@ -235,9 +235,6 @@
   "components/ui/form-field/FormField.tsx#FormField": {
     "complexity": 20
   },
-  "components/ui/indicator/Indicator.tsx#Indicator": {
-    "complexity": 16
-  },
   "components/ui/input/Input.tsx#Input": {
     "complexity": 31,
     "props": 15
