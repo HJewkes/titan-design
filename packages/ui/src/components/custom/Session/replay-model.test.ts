@@ -16,19 +16,17 @@ import {
   REPLAY_IDS,
   replayEventsOf,
 } from './replay-fixture'
+import { buildReplayEvents, kindOf } from './replay-model'
 import {
-  REPLAY_KIND_ORDER,
-  buildReplayEvents,
   countByKind,
   eventIdAtTime,
   eventIndexById,
-  eventTitle,
-  kindOf,
   replayEventLabel,
   stepSelection,
   type StepKey,
-  type ReplayEvent,
-} from './replay-model'
+} from './replay-navigation'
+import { eventTitle } from './replay-title'
+import { REPLAY_KIND_ORDER, type ReplayEvent } from './replay-types'
 import { SESSION_DEFAULT, SESSION_ORIGINS } from './session-fixture'
 import type {
   CompactionMark,

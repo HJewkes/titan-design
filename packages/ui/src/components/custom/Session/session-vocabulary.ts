@@ -1,7 +1,7 @@
 import { formatCompact } from '../../../utils/number-format'
 import type { IndicatorColor } from '../../ui/indicator'
 import type { PillTone } from '../../ui/pill'
-import type { ReplayEventKind } from './replay-model'
+import type { ReplayEventKind } from './replay-types'
 import type {
   TimelineToolOutcome,
   TimelineTurn,

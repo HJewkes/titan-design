@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { REPLAY_KIND_ORDER } from './replay-model'
+import { REPLAY_KIND_ORDER } from './replay-types'
 import {
   REPLAY_KIND_META,
   TOOL_FAMILY_META,

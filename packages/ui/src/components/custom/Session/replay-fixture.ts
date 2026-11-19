@@ -1,4 +1,5 @@
-import { buildReplayEvents, type ReplayEvent } from './replay-model'
+import { buildReplayEvents } from './replay-model'
+import type { ReplayEvent } from './replay-types'
 import {
   SESSION_ALL_ERRORS,
   SESSION_DEFAULT,
