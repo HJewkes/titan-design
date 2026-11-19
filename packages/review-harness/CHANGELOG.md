@@ -9,6 +9,11 @@ private and unversioned, so every entry sits under `[Unreleased]`.
 
 ### Added
 
+- `probeClip` in `src/clip-probe.ts` (TD-969): a Playwright driver for `clipDiff`. It screenshots
+  a text box, lifts its clip (`overflow`, `text-overflow`, line clamp, `clip-path`, `clip`, each
+  `!important`; sizes untouched), screenshots again, restores the element's style attribute and
+  diffs the pair. `e2e/clip-probe.e2e.ts` runs paired `fire-*`/`quiet-*` fixtures from
+  `test/fixtures/clip-probe/` at 1x and 2x; a fire fixture that stays quiet fails the suite.
 - `clipDiff` in `src/clip-oracle.ts` (TD-1080): a pure pixel oracle that compares a clipped and a
   released render of a text box and reports a clip when at least 8 pixels outside the box plus a
   2 px guard band changed. It runs at full size (delta over 16) and on a 0.25x box-averaged
