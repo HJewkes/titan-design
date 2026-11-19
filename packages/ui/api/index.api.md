@@ -6695,6 +6695,12 @@ export function TaskIds(input: {
 export function taskKey(task: Pick<TaskListItem, 'slug' | 'id'>): string;
 
 // @public
+export interface TaskLinkProps {
+    getTaskHref?: (task: TaskListItem) => string;
+    onTaskPress?: (task: TaskListItem) => void;
+}
+
+// @public
 export interface TaskListItem {
     estimate?: number;
     id: string;
@@ -6729,7 +6735,7 @@ export function taskRefLinker(onPress?: (id: string) => void): ProseLinker;
 export function TaskRow(input: TaskRowProps): react_jsx_runtime.JSX.Element;
 
 // @public (undocumented)
-export interface TaskRowProps {
+export interface TaskRowProps extends TaskLinkProps {
     ageLabel: string;
     hideColumns?: TaskColumnKey[];
     severityDotOnly?: boolean;
@@ -6772,7 +6778,7 @@ export type TaskStageTone = Exclude<PillTone, 'brand-secondary'>;
 export function TaskTable(input: TaskTableProps): react_jsx_runtime.JSX.Element;
 
 // @public (undocumented)
-export interface TaskTableProps {
+export interface TaskTableProps extends TaskLinkProps {
     // (undocumented)
     className?: string;
     defaultSortKey?: TaskSortKey;

@@ -16,8 +16,7 @@ import {
 import { Typography } from '../../ui/typography'
 import { Eyebrow } from '../../ui/eyebrow'
 import { SeverityLabel, SEVERITY_ORDER, type TaskSeverity } from './SeverityLabel'
-import { TaskRow, TASK_COLUMN_WIDTHS, type TaskListItem } from './TaskRow'
-
+import { TaskRow, TASK_COLUMN_WIDTHS, type TaskLinkProps, type TaskListItem } from './TaskRow'
 import { formatTaskAge } from './format-time'
 import type { TaskColumnKey, TaskSortKey } from './task-columns'
 import { taskKey } from './task-flow'
@@ -25,7 +24,6 @@ import { TASK_BLANKS, TASK_COMPARATORS } from './task-table-sort'
 
 // Kept on this module's surface: the session reader shares the helper now, but callers imported it from here first.
 export { formatTaskAge }
-
 export type { TaskColumnKey }
 
 interface TaskColumn extends TableColumnFit {
@@ -170,7 +168,7 @@ function SeverityLegend({ tasks }: { tasks: TaskListItem[] }) {
   )
 }
 
-export interface TaskTableProps {
+export interface TaskTableProps extends TaskLinkProps {
   tasks: TaskListItem[]
   /**
    * Reference timestamp for the age column. Injected rather than read from the
@@ -242,6 +240,7 @@ export function TaskTable({
   fitWidth,
   label,
   className,
+  ...links
 }: TaskTableProps) {
   const { columns, dotOnly, rowHidden, onLayout, contentMinWidth } = useFittedColumns(
     severityDisplay,
@@ -297,6 +296,7 @@ export function TaskTable({
                 ageLabel={formatTaskAge(task.updated, now)}
                 severityDotOnly={dotOnly}
                 hideColumns={rowHidden}
+                {...links}
               />
             ))}
           </TableBody>

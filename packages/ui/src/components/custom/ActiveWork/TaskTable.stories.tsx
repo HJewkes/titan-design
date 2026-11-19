@@ -117,6 +117,21 @@ export const NoLegend: Story = {
   args: { hideLegend: true },
 }
 
+/**
+ * With `getTaskHref` and `onTaskPress` each task id is a link: a real anchor on
+ * web, and the press handler owns client-side routing.
+ */
+export const LinkedIds: Story = {
+  args: {
+    getTaskHref: (task) => `/tasks/${task.slug}/${task.id}`,
+    onTaskPress: () => {},
+  },
+  argTypes: {
+    getTaskHref: { table: { disable: true } },
+    onTaskPress: { table: { disable: true } },
+  },
+}
+
 /** Empty backlog — the grid keeps its header so the columns stay readable. */
 export const Empty: Story = {
   args: { tasks: [] },
