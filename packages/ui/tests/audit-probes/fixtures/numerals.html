@@ -1,0 +1,97 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      /* Each data-testid block is one case; numerals.spec.ts judges each as its own frame. */
+      body {
+        margin: 0;
+        font-family: 'Fixture Sans', sans-serif;
+        font-size: 14px;
+        color: #111827;
+        background: #ffffff;
+      }
+      #storybook-root {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        padding: 16px;
+      }
+      [role='table'] {
+        width: 240px;
+      }
+      [role='row'] {
+        display: flex;
+      }
+      [role='cell'],
+      [role='columnheader'] {
+        width: 120px;
+        padding: 4px 8px;
+      }
+      .end {
+        text-align: right;
+      }
+      .tnum {
+        font-variant-numeric: tabular-nums;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="storybook-root">
+      <div data-testid="nm-table-ok" role="table">
+        <div role="row">
+          <div role="columnheader"><div>Lift</div></div>
+          <div role="columnheader" class="end"><div>Load</div></div>
+        </div>
+        <div role="row">
+          <div role="cell"><div>Squat</div></div>
+          <div role="cell" class="end tnum"><div>1,120.5 kg</div></div>
+        </div>
+        <div role="row">
+          <div role="cell"><div>Press</div></div>
+          <div role="cell" class="end tnum"><div>42.5 kg</div></div>
+        </div>
+      </div>
+
+      <div data-testid="nm-table-ragged" role="table">
+        <div role="row">
+          <div role="columnheader"><div>Lift</div></div>
+          <div role="columnheader"><div>Load</div></div>
+        </div>
+        <div role="row">
+          <div role="cell"><div>Squat</div></div>
+          <div role="cell" class="tnum"><div>1,120.5</div></div>
+        </div>
+        <div role="row">
+          <div role="cell"><div>Press</div></div>
+          <div role="cell" class="tnum"><div>8.25</div></div>
+        </div>
+      </div>
+
+      <div data-testid="nm-header-left" role="table">
+        <div role="row">
+          <div role="columnheader"><div>Lift</div></div>
+          <div role="columnheader"><div>Load</div></div>
+        </div>
+        <div role="row">
+          <div role="cell"><div>Squat</div></div>
+          <div role="cell" class="end tnum"><div>120</div></div>
+        </div>
+        <div role="row">
+          <div role="cell"><div>Press</div></div>
+          <div role="cell" class="end tnum"><div>45</div></div>
+        </div>
+      </div>
+
+      <div data-testid="nm-spacing"><span>Effort 85 %</span></div>
+      <div data-testid="nm-spacing-ok"><span>Effort 85%, rest 90s</span></div>
+      <div data-testid="nm-ungrouped"><span>Volume 104000 kg</span></div>
+      <div data-testid="nm-grouped"><span>Volume 104,000 kg, order #104815</span></div>
+
+      <div data-testid="nm-live">
+        <span role="timer" class="tnum">01:45</span>
+        <span>Rest</span>
+      </div>
+    </div>
+  </body>
+</html>
