@@ -306,6 +306,17 @@ describe('state-carriers', () => {
     expect(judgeStateCarriers(layout, ctx)).toEqual([])
   })
 
+  it('ignores a grey state token, which carries no colour', () => {
+    const grey = { '#737373': ['--color-result-neutral'] }
+    const layout = card(
+      text('0.0', '0', '#737373'),
+      text('0.1', '0', '#737373'),
+      text('0.2', '0', '#737373')
+    )
+
+    expect(judgeStateCarriers(layout, { tokens: grey, story: component })).toEqual([])
+  })
+
   it('counts each instance of a variant grid apart', () => {
     const instance = (i) => [
       node(`0.${i}`, '0'),

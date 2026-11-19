@@ -53,6 +53,8 @@ export const MAX_HUES = 2
 export const MAX_ICON = 48
 /** DR-CO-07: elements per instance that may carry one state colour. */
 export const MAX_CARRIERS = 2
+/** DR-CO-07: a paint at or under this chroma is grey (`result-neutral`) and carries no state. */
+export const STATE_MIN_C = 0.02
 /** A background mark (a dot, a swatch) is at most this size on both sides. */
 export const MAX_MARK = 24
 
@@ -254,7 +256,8 @@ function carrierRole(n) {
 function carriersByFamily(members, tokens) {
   const families = new Map()
   for (const n of members) {
-    for (const family of new Set(paintsOf(n).map((p) => stateFamilyOf(toHex(p), tokens)))) {
+    const chromatic = paintsOf(n).filter((p) => toOklch(p).C > STATE_MIN_C)
+    for (const family of new Set(chromatic.map((p) => stateFamilyOf(toHex(p), tokens)))) {
       if (!family) continue
       if (!families.has(family)) families.set(family, [])
       families.get(family).push(n)
