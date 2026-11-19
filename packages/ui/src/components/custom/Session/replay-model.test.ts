@@ -26,6 +26,7 @@ import {
   kindOf,
   replayEventLabel,
   stepSelection,
+  type StepKey,
   type ReplayEvent,
 } from './replay-model'
 import { SESSION_DEFAULT, SESSION_ORIGINS } from './session-fixture'
@@ -118,7 +119,7 @@ const marksArb = fc.array(
   { maxLength: 3 }
 )
 
-type GeneratedTurns = fc.ArbitraryValue<typeof turnsArb>
+type GeneratedTurns = typeof turnsArb extends fc.Arbitrary<infer T> ? T : never
 type Spec = GeneratedTurns[number]
 
 const toTurns = (specs: GeneratedTurns): TimelineTurn[] =>
@@ -267,7 +268,7 @@ describe('compaction placement', () => {
     const loneMark = buildReplayEvents({ turns, tokens: { points: [], compactions: [markAt(10)] } })
 
     expect(loneOpener.filter((e) => e.kind === 'compaction')).toHaveLength(1)
-    expect(loneOpener.at(-1)?.payload).toMatchObject({ mark: null })
+    expect(loneOpener[loneOpener.length - 1]?.payload).toMatchObject({ mark: null })
     expect(loneMark.filter((e) => e.kind === 'compaction')).toHaveLength(1)
     expect(loneMark[1]?.payload).toMatchObject({ summaryMessage: null })
   })
@@ -446,7 +447,7 @@ describe('eventIdAtTime', () => {
     const next = timedEvents.find((e) => (e.moment.atMs ?? 0) > target.moment.atMs!)!
 
     expect(eventIdAtTime(REPLAY_DEFAULT, target.moment.atMs!)).toBe(
-      timedEvents.filter((e) => e.moment.atMs! <= target.moment.atMs!).at(-1)!.id
+      timedEvents.filter((e) => e.moment.atMs! <= target.moment.atMs!).pop()!.id
     )
     expect(eventIdAtTime(REPLAY_DEFAULT, next.moment.atMs! - 1)).not.toBe(next.id)
   })
@@ -511,7 +512,7 @@ describe('stepSelection', () => {
     fcAssert(
       fc.property(
         fc.integer({ min: -5, max: 50 }),
-        fc.constantFrom('ArrowDown', 'ArrowUp', 'Home', 'End', 'PageDown', 'PageUp'),
+        fc.constantFrom<StepKey>('ArrowDown', 'ArrowUp', 'Home', 'End', 'PageDown', 'PageUp'),
         fc.integer({ min: 1, max: 40 }),
         (index, key, count) => {
           const next = stepSelection(index, key, count)
