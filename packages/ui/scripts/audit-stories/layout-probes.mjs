@@ -470,13 +470,47 @@ export function spreadsChildren(container, run, axis) {
   )
 }
 
+const grows = (n) => cssPx(n.layout.flexGrow) > 0
+
+// Free space a flex-grow child took on one side: its content edge minus its ink edge. Its own
+// padding is the author's spacing, so it is not counted.
+function grownSpace(n, facing, axis) {
+  if (!grows(n)) return 0
+  const side = axis === 'x' ? (facing === 'after' ? 1 : 3) : facing === 'after' ? 2 : 0
+  const [boxStart, boxEnd] = span(n.box, axis)
+  const [inkStart, inkEnd] = inkSpan(n, axis)
+  const inset = n.pad[side] + n.border[side]
+  return facing === 'after' ? boxEnd - inset - inkEnd : inkStart - boxStart - inset
+}
+
+// An inkless flex-grow sibling (a `flex: 1` spacer) has no run of its own: it sits inside the gap.
+function spacerBetween({ a, b }, axis, siblings) {
+  const [from, to] = [inkSpan(a, axis)[1], inkSpan(b, axis)[0]]
+  return siblings.some((s) => {
+    if (s.ink || !inFlow(s) || !grows(s)) return false
+    const [start, end] = span(s.box, axis)
+    return start >= from - PADDING_TOLERANCE && end <= to + PADDING_TOLERANCE && end > start
+  })
+}
+
+// A flex-grow child (a `flex: 1` name cell) stretches its box over the row's free space while its
+// ink stays put, so the ink gap beside it measures the free space, not the author's spacing.
+export function isGrownGap(container, gap, axis, children) {
+  if (!container.layout.display.includes('flex')) return false
+  return (
+    grownSpace(gap.a, 'after', axis) > PADDING_TOLERANCE ||
+    grownSpace(gap.b, 'before', axis) > PADDING_TOLERANCE ||
+    spacerBetween(gap, axis, children.get(container.id) ?? [])
+  )
+}
+
 export function judgeGapOutlier({ nodes, declared = {} }) {
   const { children } = index(nodes)
   const findings = []
   for (const container of nodes) {
     const { axis, runs } = stackRuns(container, children)
     for (const run of runs.filter((r) => r.length >= 3 && !spreadsChildren(container, r, axis))) {
-      const gaps = runGaps(run, axis)
+      const gaps = runGaps(run, axis).filter((gap) => !isGrownGap(container, gap, axis, children))
       if (gaps.length < 2) continue
       const m = Math.min(...gaps.map((x) => x.g))
       for (const gap of gaps) {
@@ -496,11 +530,16 @@ export function judgeGapOutlier({ nodes, declared = {} }) {
 }
 
 // A child that is itself a stack of two or more inked children: its largest internal gap, or null.
+// A gap a flex-grow child stretched over is free space, not how far apart the author set the items.
 export function innerGap(group, children) {
   const { axis, runs } = stackRuns(group, children)
   const members = runs.flat()
   if (members.length < 2) return null
-  const gaps = runs.flatMap((run) => runGaps(run, axis).map((x) => x.g))
+  const gaps = runs.flatMap((run) =>
+    runGaps(run, axis)
+      .filter((gap) => !isGrownGap(group, gap, axis, children))
+      .map((x) => x.g)
+  )
   return gaps.length ? Math.max(...gaps) : null
 }
 

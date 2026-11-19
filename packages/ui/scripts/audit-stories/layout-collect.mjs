@@ -398,6 +398,7 @@ export function collectLayout({ spacingVars = [] } = {}) {
         flexWrap: cs.flexWrap,
         alignItems: cs.alignItems,
         alignSelf: cs.alignSelf,
+        flexGrow: cs.flexGrow,
         justifyContent: cs.justifyContent,
         position: cs.position,
         rowGap: cs.rowGap,
