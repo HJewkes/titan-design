@@ -55,6 +55,7 @@ export function buildManifest({ repo, pr, baseSha, headSha, selection, before, a
     return { ...header, ...selectionFields, rendered: false, reason: selection.reason, shots: [] }
   const { shots, dropped } = pairShots(before, after)
   const droppedNote = dropped.length > 0 ? `dropped one-sided shots: ${dropped.join(', ')}` : ''
+  const note = [selection.truncated && selection.reason, droppedNote].filter(Boolean).join('; ')
   if (shots.length === 0) {
     const reason = ['no story rendered on both sides', droppedNote].filter(Boolean).join('; ')
     return { ...header, ...selectionFields, rendered: false, reason, shots: [] }
@@ -63,7 +64,7 @@ export function buildManifest({ repo, pr, baseSha, headSha, selection, before, a
     ...header,
     ...selectionFields,
     rendered: true,
-    ...(droppedNote && { reason: droppedNote }),
+    ...(note && { reason: note }),
     shots,
   }
 }
