@@ -76,6 +76,19 @@ export function toOklch(value) {
   return { L, C: Math.hypot(a, b), h: h < 0 ? h + 360 : h }
 }
 
+function relativeLuminance(c) {
+  const [r, g, b] = [c.r, c.g, c.b].map((v) => toLinear(v / 255))
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b
+}
+
+/** WCAG contrast ratio, 1 to 21, of two colours read as opaque. */
+export function contrastRatio(x, y) {
+  const [a, b] = [asColour(x), asColour(y)]
+  if (!a || !b) return null
+  const [hi, lo] = [relativeLuminance(a), relativeLuminance(b)].sort((p, q) => q - p)
+  return (hi + 0.05) / (lo + 0.05)
+}
+
 /** Perceived difference as OKLab Euclidean distance times 100. */
 export function deltaE(x, y) {
   const [a, b] = [toOklab(x), toOklab(y)]
