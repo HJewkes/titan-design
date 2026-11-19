@@ -96,6 +96,20 @@ describe('summarise grouping', () => {
   })
 })
 
+describe('summarise under --sweep', () => {
+  it('prints one BLOCKER line whose widths merge neighbouring audited widths into ranges', () => {
+    const overflow = blocker('page-overflow', 'html')
+    const widths = [320, 360, 400, 440, 1199, 1200]
+    const entries = widths.map((width) =>
+      frame({ width, blockers: [320, 360, 400, 1200].includes(width) ? [overflow] : [] })
+    )
+    const lines = summarise(entries, 30, [], true).split('\n')
+    expect(lines.filter((l) => l.startsWith('BLOCKER'))).toEqual([
+      'BLOCKER page-overflow components-molecules-button--default [320-400,1200 dark] html :: by 12px',
+    ])
+  })
+})
+
 describe('summarise line cap', () => {
   const many = (count) => [
     frame({ blockers: Array.from({ length: count }, (_, i) => blocker('clipped-text', `.n${i}`)) }),

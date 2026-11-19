@@ -21,6 +21,7 @@ import {
   summarise,
 } from './audit-stories/capture.mjs'
 import { applyRatchet, loadBaseline } from './audit-stories/ratchet.mjs'
+import { sweepWidths } from './audit-stories/sweep.mjs'
 import { attachStorybook, startStorybook, stopOnSignals } from './audit-stories/storybook.mjs'
 import {
   REPO_ROOT,
@@ -37,12 +38,14 @@ const DEFAULT_WIDTHS = [360, 768, 1280]
 const TOUCH_WIDTH = 320
 const THEMES = ['dark', 'light']
 const VALUE_FLAGS = ['base', 'stories', 'widths', 'themes', 'out', 'url']
-const BOOLEAN_FLAGS = ['all', 'dependents', 'touch', 'help']
+const BOOLEAN_FLAGS = ['all', 'dependents', 'touch', 'sweep', 'help']
 
 export const USAGE = `Usage: pnpm audit:stories [--base <ref>] [--stories <id,...>] [--all] [--dependents]
-       [--widths 360,768,1280] [--themes dark,light] [--touch] [--out <dir>] [--url <loopback url>]
+       [--widths 360,768,1280 | --sweep] [--themes dark,light] [--touch] [--out <dir>] [--url <loopback url>]
 
 Audits the stories touched by the diff against --base (default origin/main).
+--sweep audits 320..1440 in 40px steps plus 599/600, 999/1000 and 1199/1200 and reports
+each blocker as width ranges; it cannot be combined with --widths.
 --touch adds the 320 width and checks 44px hit targets. Output goes under TMPDIR.
 Exit: 0 clean, 1 blockers (including a text-floor finding outside the ratchet baseline),
       2 render error, 3 no story touched, 64 usage or start failure,
@@ -71,7 +74,9 @@ function flagValue(name, value) {
   return value
 }
 
-function parseWidths(raw, touch) {
+function parseWidths(raw, touch, sweep) {
+  if (sweep && raw !== undefined) throw new UsageError('--sweep and --widths cannot be combined')
+  if (sweep) return sweepWidths()
   if (raw === undefined) return touch ? [TOUCH_WIDTH, ...DEFAULT_WIDTHS] : DEFAULT_WIDTHS
   const widths = list(raw).map(Number)
   if (widths.length === 0 || widths.some((w) => !Number.isInteger(w) || w < 200 || w > 4000)) {
@@ -98,7 +103,8 @@ export function parseOptions(argv) {
     stories: flags.stories ? list(flags.stories) : [],
     all: Boolean(flags.all),
     dependents: Boolean(flags.dependents),
-    widths: parseWidths(flags.widths, touch),
+    widths: parseWidths(flags.widths, touch, Boolean(flags.sweep)),
+    sweep: Boolean(flags.sweep),
     themes: parseThemes(flags.themes),
     touch,
     out: flags.out,
@@ -203,7 +209,7 @@ async function audit(options, { outDir, changed, started }) {
     const domFile = writeDom(outDir, entries)
     const seconds = ((Date.now() - started) / 1000).toFixed(0)
     const owner = server.pid ? `storybook pid ${server.pid}` : `storybook at ${server.url}`
-    console.log(summarise(entries, MAX_SUMMARY_LINES - 1, report))
+    console.log(summarise(entries, MAX_SUMMARY_LINES - 1, report, options.sweep))
     console.log(`${stories.length} stories in ${seconds}s, ${owner}; dom.json at ${domFile}`)
     return exitCodeFor(entries)
   } finally {
