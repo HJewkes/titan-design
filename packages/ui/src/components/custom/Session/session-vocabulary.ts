@@ -1,5 +1,7 @@
 import { formatCompact } from '../../../utils/number-format'
 import type { IndicatorColor } from '../../ui/indicator'
+import type { PillTone } from '../../ui/pill'
+import type { ReplayEventKind } from './replay-types'
 import type {
   TimelineToolOutcome,
   TimelineTurn,
@@ -101,6 +103,25 @@ export function turnOriginMeta(
     return CHANNEL_OPENER_META
   }
   return TURN_ORIGIN_META[turn.origin] ?? TURN_ORIGIN_META.none
+}
+
+/** How a replay event kind reads and marks. */
+export interface ReplayKindMeta {
+  /** Names the kind in a row, the legend and an option's accessible name. */
+  label: string
+  /** The `Pill` tone; the label is what carries meaning, never the tone alone. */
+  tone: PillTone
+}
+
+export const REPLAY_KIND_META: Record<ReplayEventKind, ReplayKindMeta> = {
+  prompt: { label: 'Prompt', tone: 'brand' },
+  injected: { label: 'Injected', tone: 'neutral' },
+  message: { label: 'Channel message', tone: 'info' },
+  assistant: { label: 'Assistant', tone: 'brand-secondary' },
+  tool: { label: 'Tool', tone: 'neutral' },
+  error: { label: 'Tool error', tone: 'error' },
+  agent: { label: 'Subagent', tone: 'warning' },
+  compaction: { label: 'Compaction', tone: 'success' },
 }
 
 /** Names a call whose tool name is empty, so a row never reads blank. */
