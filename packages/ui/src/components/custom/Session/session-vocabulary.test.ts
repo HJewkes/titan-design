@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest'
+import { REPLAY_KIND_ORDER } from './replay-model'
 import {
+  REPLAY_KIND_META,
   TOOL_FAMILY_META,
   TOOL_FAMILY_ORDER,
   TOOL_OUTCOME_META,
@@ -17,6 +19,17 @@ describe('session vocabulary', () => {
     expect(new Set(labels).size).toBe(12)
     for (const family of TOOL_FAMILY_ORDER) {
       expect(TOOL_FAMILY_META[family].glyph).toHaveLength(1)
+    }
+  })
+
+  it('gives every replay kind a distinct label and a tone', () => {
+    const labels = REPLAY_KIND_ORDER.map((kind) => REPLAY_KIND_META[kind].label)
+
+    expect(Object.keys(REPLAY_KIND_META).sort()).toEqual([...REPLAY_KIND_ORDER].sort())
+    expect(new Set(labels).size).toBe(REPLAY_KIND_ORDER.length)
+    for (const kind of REPLAY_KIND_ORDER) {
+      expect(REPLAY_KIND_META[kind].label).not.toBe('')
+      expect(REPLAY_KIND_META[kind].tone).not.toBe('')
     }
   })
 
