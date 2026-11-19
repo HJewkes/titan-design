@@ -21,14 +21,21 @@ const PIPELINE_PATHS = [
   /^packages\/ui\/scripts\/pr-visual-[a-z]+\.mjs$/,
   /^packages\/ui\/scripts\/(visual-paths|lib\/entry)\.mjs$/,
 ]
-const isPipeline = (path) => PIPELINE_PATHS.some((pattern) => pattern.test(path))
 export const PIPELINE_CANARY = 'components-molecules-button--primary'
 
-// Generated files no story reads; the CI visual job still runs on them, the capture does not.
+// RENDERED_UI_PATTERNS is CI's trigger list and over-includes on purpose. These are the paths
+// in it that no story reads: generated metadata, and test and CI support (TP-6766). Only
+// src/test/fixtures is imported by stories, so it stays rendered.
 const NON_STORY_PATHS = [
   /^packages\/ui\/src\/arch\/[^/]+\.json$/,
   /\/__snapshots__\/[^/]+\.snap$/,
-  /^packages\/ui\/tests\/visual\/.*\.(png|json)$/,
+  /^packages\/ui\/src\/test\/(?!fixtures\/)/,
+  /^packages\/ui\/tests\//,
+  /^packages\/ui\/specimen\//,
+  /^packages\/ui\/(playwright[^/]*|vitest[^/]*)\.config\.[^/]+$/,
+  /^packages\/ui\/scripts\//,
+  /^turbo\.json$/,
+  /^\.github\//,
 ]
 
 const GLOBAL_PATHS = [
@@ -38,10 +45,22 @@ const GLOBAL_PATHS = [
   /^(package\.json|pnpm-lock\.yaml|pnpm-workspace\.yaml)$/,
 ]
 
-const rendersStory = (path) =>
-  Boolean(firstRenderedPath([path])) &&
-  !NON_STORY_PATHS.some((pattern) => pattern.test(path)) &&
-  !isPipeline(path)
+const matches = (patterns, path) => patterns.some((pattern) => pattern.test(path))
+
+/**
+ * What a changed path is to the capture: `pipeline`, `global` (could change any story), `story`
+ * (a story renders it), `non-story` (CI reads it, no story does), or undefined outside CI's
+ * trigger list. The one place a path is classified, so selection and the seat check agree.
+ */
+export function pathRole(path) {
+  if (matches(PIPELINE_PATHS, path)) return 'pipeline'
+  if (!firstRenderedPath([path])) return undefined
+  if (matches(GLOBAL_PATHS, path)) return 'global'
+  return matches(NON_STORY_PATHS, path) ? 'non-story' : 'story'
+}
+
+const isPipeline = (path) => pathRole(path) === 'pipeline'
+const rendersStory = (path) => ['story', 'global'].includes(pathRole(path))
 
 /**
  * Whether a change touches a path a story renders, so a run that shows nothing for it is a
@@ -95,13 +114,13 @@ function directoryOwners(path, entries, readSource) {
 function ownersOf(path, entries, readSource) {
   const direct = entries.filter((entry) => owns(entry, path))
   if (direct.length > 0) return direct
-  if (GLOBAL_PATHS.some((pattern) => pattern.test(path))) return []
+  if (matches(GLOBAL_PATHS, path)) return []
   const secondary = secondaryStoryOwners(path, entries)
   return secondary.length > 0 ? secondary : directoryOwners(path, entries, readSource)
 }
 
 function broadReason(unowned) {
-  const global = unowned.find((path) => GLOBAL_PATHS.some((pattern) => pattern.test(path)))
+  const global = unowned.find((path) => matches(GLOBAL_PATHS, path))
   if (global)
     return `${global} is a global (Tailwind, tokens, Storybook config or dependencies) that can change any story, so no story subset is captured`
   return `${unowned[0]} maps to no catalog entry`
