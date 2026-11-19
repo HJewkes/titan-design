@@ -121,6 +121,12 @@ function orderedStories(reached, pipelinePaths) {
   return ids.map((story) => ({ story, paths: [...paths.get(story)].sort() }))
 }
 
+function emptyReason(changedPaths, attribution) {
+  if (attribution.size === 0) return `none of ${changedPaths.length} changed paths renders a story`
+  const names = [...attribution.keys()].map((entry) => entry.name).sort(byCodeUnit)
+  return `the change reaches only entries without stories: ${names.join(', ')}`
+}
+
 function attribute(rendered, entries, readSource) {
   const attribution = new Map()
   const unowned = []
@@ -153,11 +159,7 @@ export function storiesFor(
 
   const ordered = orderedStories(reachedEntries(attribution, entries), pipelinePaths)
   if (ordered.length === 0)
-    return {
-      storyIds: [],
-      selected: [],
-      reason: `none of ${changedPaths.length} changed paths renders a story`,
-    }
+    return { storyIds: [], selected: [], reason: emptyReason(changedPaths, attribution) }
   const selected = ordered.slice(0, cap).sort((a, b) => byCodeUnit(a.story, b.story))
   const storyIds = selected.map((item) => item.story)
   if (ordered.length <= cap)

@@ -113,6 +113,16 @@ describe('pr-visual paths beside a catalogued component (TP-6757)', () => {
     expect(selection.storyIds).toEqual(['card--default', 'card--empty', 'page--default'])
   })
 
+  it('names the reached entries when none of them has a story', () => {
+    const silent = { entries: [entry('Beat', [], [])] }
+    const selection = storiesFor([`${ui}/Beat/cues.ts`], silent)
+    expect(selection).toEqual({
+      storyIds: [],
+      selected: [],
+      reason: 'the change reaches only entries without stories: Beat',
+    })
+  })
+
   it('goes broad on a helper outside every catalogued directory and logs each such path', () => {
     const paths = ['packages/ui/src/hooks/useThing.ts', 'packages/ui/src/utils/format.ts']
     const selection = storiesFor(paths, catalog)
