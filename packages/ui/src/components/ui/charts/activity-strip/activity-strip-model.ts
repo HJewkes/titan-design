@@ -6,50 +6,15 @@ import {
   resolveBucketMs,
   resolveDomain,
   resolveMaxCount,
-  type ActivityScale,
-  type ActivityBucket,
-  type ActivityGap,
   type CleanBucket,
-  type TimeRange,
 } from './activity-strip-clean'
-import { columnMax, columnsOf, offsetOfTime, type Column } from './activity-strip-geometry'
+import type { ActivityStripModel, ActivityStripModelInput } from './activity-strip-types'
+import { columnMax, columnsOf, offsetOfTime } from './activity-strip-geometry'
 
 export * from './activity-strip-clean'
 export * from './activity-strip-geometry'
+export type * from './activity-strip-types'
 export { summarizeActivity } from './activity-strip-summary'
-
-export interface GapMark {
-  offset: number
-  size: number
-  label?: string
-}
-
-export interface ActivityStripModel {
-  domain: TimeRange
-  bucketMs: number
-  length: number
-  maxCount: number
-  scale: ActivityScale
-  buckets: CleanBucket[]
-  gaps: ActivityGap[]
-  columns: Array<Column & { step: number }>
-  gapMarks: GapMark[]
-  unknownCount: number
-  totalCount: number
-  activeBuckets: number
-  busiest: CleanBucket | null
-  longestGapMs: number
-}
-
-export interface ActivityStripModelInput {
-  buckets: readonly ActivityBucket[]
-  gaps?: readonly ActivityGap[]
-  domain?: TimeRange | null
-  bucketMs?: number
-  maxCount?: number
-  scale?: ActivityScale
-  length: number
-}
 
 const busiestOf = (buckets: readonly CleanBucket[]): CleanBucket | null =>
   buckets.reduce<CleanBucket | null>(

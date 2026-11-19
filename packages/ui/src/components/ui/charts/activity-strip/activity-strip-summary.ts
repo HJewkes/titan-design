@@ -1,5 +1,5 @@
 import { formatDurationMs } from '../../../../utils/time-format'
-import type { ActivityStripModel } from './activity-strip-model'
+import type { ActivityStripModel } from './activity-strip-types'
 
 const plural = (n: number, one: string, many = `${one}s`) => `${n} ${n === 1 ? one : many}`
 
