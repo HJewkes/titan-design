@@ -1,8 +1,9 @@
-import React, { forwardRef, useState } from 'react'
+import React, { forwardRef, useId, useState } from 'react'
 import { TextInput, View, Text, Pressable, type TextInputProps } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { useSurface, type SurfaceContextValue } from '../surface'
 import { insetFieldStyle } from '../surface/insetField'
+import { describeField } from './describeField'
 
 export type InputSize = 'sm' | 'md' | 'lg'
 export type InputVariant = 'outline' | 'filled' | 'underline'
@@ -142,8 +143,11 @@ export const Input = forwardRef<TextInput, InputProps>(function Input(
     onBlur?.(e)
   }
 
-  const showError = isInvalid && errorMessage
-  const showHelper = !showError && helperText
+  const messageId = useId()
+  const { showError, showHelper, describedBy, ariaInvalid } = describeField(
+    { isInvalid, errorMessage, helperText },
+    messageId
+  )
 
   return (
     <View className={cn('w-full gap-stack-md', className)}>
@@ -173,6 +177,8 @@ export const Input = forwardRef<TextInput, InputProps>(function Input(
           ref={ref}
           editable={!isDisabled && !isReadOnly}
           accessibilityLabel={label}
+          aria-invalid={ariaInvalid}
+          aria-describedby={describedBy}
           accessibilityState={{
             disabled: isDisabled,
           }}
@@ -197,9 +203,17 @@ export const Input = forwardRef<TextInput, InputProps>(function Input(
         )}
       </View>
 
-      {showHelper && <Text className="text-xs text-text-secondary">{helperText}</Text>}
+      {showHelper && (
+        <Text nativeID={messageId} className="text-xs text-text-secondary">
+          {helperText}
+        </Text>
+      )}
 
-      {showError && <Text className="text-xs text-text-error">{errorMessage}</Text>}
+      {showError && (
+        <Text nativeID={messageId} className="text-xs text-text-error">
+          {errorMessage}
+        </Text>
+      )}
     </View>
   )
 })
