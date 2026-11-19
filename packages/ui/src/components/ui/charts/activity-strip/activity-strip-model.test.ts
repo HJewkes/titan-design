@@ -15,6 +15,7 @@ import {
   summarizeActivity,
   timeAtOffset,
   type ActivityBucket,
+  type ActivityScale,
   type TimeRange,
 } from './activity-strip-model'
 import {
@@ -60,7 +61,7 @@ describe('binCount', () => {
         fc.double({ min: 0, max: 1_000, noNaN: true }),
         fc.double({ min: 0, max: 1_000, noNaN: true }),
         fc.double({ min: 0.1, max: 1_000, noNaN: true }),
-        fc.constantFrom('linear', 'sqrt', 'log'),
+        fc.constantFrom<ActivityScale>('linear', 'sqrt', 'log'),
         (a, b, max, scale) => {
           const [low, high] = a <= b ? [a, b] : [b, a]
           expect(binCount(low, max, scale)).toBeLessThanOrEqual(binCount(high, max, scale))
