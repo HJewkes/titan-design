@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { PIPELINE_CANARY, storiesFor } from './pr-visual-stories.mjs'
+import { changesStories, PIPELINE_CANARY, storiesFor } from './pr-visual-stories.mjs'
 
 const ui = 'packages/ui/src/components/ui'
 const entry = (name, composes = [], storyIds = [`${name.toLowerCase()}--default`]) => ({
@@ -145,5 +145,29 @@ describe('pr-visual paths beside a catalogued component (TP-6757)', () => {
     expect(selection.selected.map((item) => item.story)).toEqual(selection.storyIds)
     expect(selection.truncated).toEqual({ reached: 3, cap: 2 })
     expect(selection.reason).toContain('3 stories reached, over the cap of 2')
+  })
+})
+
+describe('pr-visual changes to rendered UI (TP-6766)', () => {
+  it('counts a component, helper or global change as changing rendered UI', () => {
+    expect(changesStories([`${ui}/Pill/Pill.tsx`])).toBe(true)
+    expect(changesStories([`${ui}/Pill/pillTone.ts`])).toBe(true)
+    expect(changesStories(['packages/ui/tailwind.config.js'])).toBe(true)
+  })
+
+  it('counts a change to the capture pipeline as changing rendered UI', () => {
+    expect(changesStories(['.github/workflows/pr-visual.yml'])).toBe(true)
+  })
+
+  it('does not count docs, tests, snapshots or generated metadata', () => {
+    expect(
+      changesStories([
+        'README.md',
+        `${ui}/Pill/Pill.test.tsx`,
+        `${ui}/Pill/__snapshots__/Pill.test.tsx.snap`,
+        'packages/ui/src/arch/component-catalog.json',
+        'packages/ui/tests/visual/reference/pill--default-chromium-linux.png',
+      ])
+    ).toBe(false)
   })
 })

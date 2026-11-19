@@ -36,6 +36,16 @@ const GLOBAL_PATHS = [
   /^(package\.json|pnpm-lock\.yaml|pnpm-workspace\.yaml)$/,
 ]
 
+const rendersStory = (path) =>
+  Boolean(firstRenderedPath([path])) && !NON_STORY_PATHS.some((pattern) => pattern.test(path))
+
+/**
+ * Whether a change touches a path a story renders, so a run that shows nothing for it is a
+ * failure for the seat to diagnose rather than an owner gate with nothing to look at (TP-6766).
+ */
+export const changesStories = (changedPaths) =>
+  changedPaths.some((path) => rendersStory(path) || PIPELINE_PATHS.some((p) => p.test(path)))
+
 const owns = (entry, path) => entry.file === path || entry.sources?.status === path
 const dirOf = (path) => path.slice(0, path.lastIndexOf('/'))
 // Code-unit order, so the capture order never depends on the runner's locale.
@@ -150,9 +160,7 @@ export function storiesFor(
 ) {
   const entries = catalog.entries
   const pipelinePaths = changedPaths.filter((path) => PIPELINE_PATHS.some((p) => p.test(path)))
-  const rendered = changedPaths.filter(
-    (path) => firstRenderedPath([path]) && !NON_STORY_PATHS.some((pattern) => pattern.test(path))
-  )
+  const rendered = changedPaths.filter(rendersStory)
   const { attribution, unowned } = attribute(rendered, entries, readSource)
   if (unowned.length > 0)
     return { broad: true, storyIds: [], selected: [], unowned, reason: broadReason(unowned) }
@@ -186,9 +194,14 @@ async function select({ GITHUB_REPOSITORY, PR_NUMBER, GITHUB_TOKEN }) {
       pr: PR_NUMBER,
       token: GITHUB_TOKEN,
     })
-    return storiesFor(paths, catalog, { readSource: readRepoFile })
+    const selection = storiesFor(paths, catalog, { readSource: readRepoFile })
+    return { ...selection, changesStories: changesStories(paths) }
   } catch (error) {
-    return { storyIds: [], reason: `could not list changed paths (${error.message})` }
+    return {
+      storyIds: [],
+      changesStories: true,
+      reason: `could not list changed paths (${error.message})`,
+    }
   }
 }
 
