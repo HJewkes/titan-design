@@ -1,6 +1,7 @@
 import React from 'react'
 import { View, Text, Pressable, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
+import { useHitTarget } from '../../../hooks/useHitTarget'
 
 export type PillVariant = 'solid' | 'subtle' | 'outline' | 'clear'
 /** Semantic tone. `brand-secondary` is the accent, not a second brand. */
@@ -200,6 +201,37 @@ function PillContent({ tone, ...p }: PillProps & { tone: PillTone }) {
   )
 }
 
+type PressablePillProps = Pick<PillProps, 'onPress' | 'isDisabled'> & {
+  hasHitTarget: boolean
+} & Omit<ViewProps, 'children'> & { className: string; children: React.ReactNode }
+
+function PressablePill({
+  onPress,
+  isDisabled,
+  hasHitTarget,
+  onLayout,
+  children,
+  ...rest
+}: PressablePillProps) {
+  const hitTarget = useHitTarget({ enabled: hasHitTarget, onLayout })
+  return (
+    <Pressable
+      onPress={onPress}
+      disabled={isDisabled}
+      accessibilityRole="button"
+      hitSlop={hitTarget.hitSlop}
+      onLayout={hitTarget.onLayout}
+      {...rest}
+    >
+      {hitTarget.layerProps ? (
+        // Painted above the label, the layer makes axe skip its contrast as `bgOverlap`.
+        <View {...hitTarget.layerProps} className={cn(hitTarget.layerProps.className, 'z-hide')} />
+      ) : null}
+      {children}
+    </Pressable>
+  )
+}
+
 /**
  * The single pill primitive: a capsule of tone-coloured label with optional
  * leading and trailing slots. `Badge`, `Chip`, `StatusPill` and
@@ -232,15 +264,16 @@ export function Pill(props: PillProps) {
 
   if (onPress) {
     return (
-      <Pressable
+      <PressablePill
         onPress={onPress}
-        disabled={isDisabled}
-        accessibilityRole="button"
+        isDisabled={isDisabled}
+        // A caller that passes `hitSlop` (even undefined) owns the hit box, as `Chip` does.
+        hasHitTarget={!('hitSlop' in viewProps)}
         className={classes}
         {...viewProps}
       >
         {content}
-      </Pressable>
+      </PressablePill>
     )
   }
 
