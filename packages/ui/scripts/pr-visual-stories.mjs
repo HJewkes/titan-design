@@ -15,11 +15,13 @@ import { API_FILE_CAP, fetchChangedPaths, firstRenderedPath } from './visual-pat
 export const DEFAULT_CAP = 40
 
 // A change to the capture pipeline itself renders one fixed story, so the pipeline's own PR
-// proves it end to end.
+// proves it end to end. The pipeline includes the modules its scripts import.
 const PIPELINE_PATHS = [
   /^\.github\/workflows\/pr-visual\.yml$/,
   /^packages\/ui\/scripts\/pr-visual-[a-z]+\.mjs$/,
+  /^packages\/ui\/scripts\/(visual-paths|lib\/entry)\.mjs$/,
 ]
+const isPipeline = (path) => PIPELINE_PATHS.some((pattern) => pattern.test(path))
 export const PIPELINE_CANARY = 'components-molecules-button--primary'
 
 // Generated files no story reads; the CI visual job still runs on them, the capture does not.
@@ -37,7 +39,9 @@ const GLOBAL_PATHS = [
 ]
 
 const rendersStory = (path) =>
-  Boolean(firstRenderedPath([path])) && !NON_STORY_PATHS.some((pattern) => pattern.test(path))
+  Boolean(firstRenderedPath([path])) &&
+  !NON_STORY_PATHS.some((pattern) => pattern.test(path)) &&
+  !isPipeline(path)
 
 /**
  * Whether a change touches a path a story renders, so a run that shows nothing for it is a
@@ -46,7 +50,7 @@ const rendersStory = (path) =>
  */
 export const changesStories = (changedPaths) =>
   changedPaths.length >= API_FILE_CAP ||
-  changedPaths.some((path) => rendersStory(path) || PIPELINE_PATHS.some((p) => p.test(path)))
+  changedPaths.some((path) => rendersStory(path) || isPipeline(path))
 
 const owns = (entry, path) => entry.file === path || entry.sources?.status === path
 const dirOf = (path) => path.slice(0, path.lastIndexOf('/'))
@@ -161,7 +165,7 @@ export function storiesFor(
   { cap = DEFAULT_CAP, readSource = () => '' } = {}
 ) {
   const entries = catalog.entries
-  const pipelinePaths = changedPaths.filter((path) => PIPELINE_PATHS.some((p) => p.test(path)))
+  const pipelinePaths = changedPaths.filter(isPipeline)
   const rendered = changedPaths.filter(rendersStory)
   const { attribution, unowned } = attribute(rendered, entries, readSource)
   if (unowned.length > 0)

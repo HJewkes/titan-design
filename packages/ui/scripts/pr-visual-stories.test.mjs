@@ -55,6 +55,13 @@ describe('pr-visual story selection (TP-1697)', () => {
       PIPELINE_CANARY,
     ])
   })
+
+  it('renders the canary story, not a broad selection, when a module the pipeline imports changes', () => {
+    const selection = storiesFor(['packages/ui/scripts/visual-paths.mjs'], catalog)
+
+    expect(selection.broad).toBeUndefined()
+    expect(selection.storyIds).toEqual([PIPELINE_CANARY])
+  })
 })
 
 describe('pr-visual selected paths (TP-4774)', () => {
