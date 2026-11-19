@@ -315,6 +315,7 @@ describe('defaults and options', () => {
       width: 320,
       themes: ['dark', 'light'],
       touch: true,
+      textSpacing: false,
       shotDir: join('/out', 'a--default'),
     })
   })

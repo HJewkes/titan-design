@@ -6,7 +6,7 @@ jsdom has no layout, so none of this can be a Vitest test. The command lives in
 
 ```bash
 pnpm audit:stories [--base <ref>] [--stories <id,...>] [--all] [--dependents]
-                   [--widths 360,768,1280] [--themes dark,light] [--touch]
+                   [--widths 360,768,1280 | --text-spacing] [--themes dark,light] [--touch]
                    [--out <dir>] [--url <loopback url>]
 ```
 
@@ -115,7 +115,23 @@ judged per frame; a `Foundations/` specimen skips the budgets but not the per-el
 | `weights-faces`       | DR-TY-11 | Three or more font weights in a component or instance (the rule allows 2; a bold value, a semibold label and regular body is a hit), any text under weight 400 (one finding per element, specimens included), or more than 3 font families in a frame (body, heading and mono make 3). Page-scope frames are judged on families and light weights only. Detail: `component uses 3 weights (limit 2): 400, 600, 700`.                                                                                                                                                                                                                                                                                             |
 | `lowercase-tracking`  | DR-TY-12 | Text with a lowercase letter in its own text and no `uppercase` transform has `letterSpacing / fontSize` over 2% at 12px or more, or under −3% at any size (the registry row's limits). `tracking-tight` (−2.5%) passes; `tracking-tighter` (−5%) on a display heading is a hit. Detail: `mixed-case 14px tracked 0.7px = 5% (limit 2% at 12px or more)`.                                                                                                                                                                                                                                                                                                                                                        |
 | `line-style-budget`   | DR-CO-05 | One visual line (the grouping of `font-size-near-miss`: nearest flex-row ancestor, vertical overlap of half the smaller box) mixes sizes whose max/min is under 1.5 and whose spread is over 2px, or holds more than 2 weights or more than 2 colours. A spread of 2px or less is left to `font-size-near-miss`, so one pair is never reported twice; a ratio of 1.5 or more is a hero and its unit. Text whose nearest painted ancestor differs from the row's (a chip, badge or button on the line) is its own object and is left out. One finding per line, on its first text. Inline links count as a colour. Detail: `one line has 3 sizes 12, 13, 16px (max/min 1.33 < 1.5, Δ4 > 2px)`.                    |
-| `readable-measure`    | DR-TY-09 | Wrapped text of 2 or more lines whose mean characters per line, final line excluded, is over 90. Characters come from `text.lineChars` (below). Single-line text is never reported; the rule's 80 note and 40 floor are not checked. Detail: `wrapped text averages 110 characters per line (limit 90)`. |
+| `readable-measure`    | DR-TY-09 | Wrapped text of 2 or more lines whose mean characters per line, final line excluded, is over 90. Characters come from `text.lineChars` (below). Single-line text is never reported; the rule's 80 note and 40 floor are not checked. Detail: `wrapped text averages 110 characters per line (limit 90)`.                                                                                                                                                                                                                                                                                                                                                                                                         |
+
+### Text-spacing warnings (TD-945)
+
+`--text-spacing` checks DR-RB-03: layout survives the WCAG 1.4.12 text-spacing overrides. It
+audits 360 and 1280 only, and cannot be combined with `--widths` or `--sweep`. Each frame is
+audited and shot as usual, then the overrides are injected as an `!important` stylesheet (line
+height 1.5, letter spacing 0.12em, word spacing 0.16em, paragraph spacing 2em) and the frame is
+audited again. The stylesheet is gone at the next theme's navigation.
+
+| Kind                | Rule     | Meaning                                                                                                                                                                                                                             |
+| ------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `text-spacing-loss` | DR-RB-03 | A blocker the spaced frame has and the unspaced frame does not, matched on kind and selector, so a blocker that only grew is not new. `lost` holds the blocker's kind. Detail: `clipped-text under text spacing: "Due" cut by 6px`. |
+
+It is a warning, as the rule row says ("any new blocker warns at first"), so it never changes the
+exit code. The summary prints these warnings as `WARN` lines after the blockers. Dense fixed-height
+rows are expected to hit it; whether they keep their height is an open density question.
 
 ### Retunes from the catch report (TD-740)
 
@@ -285,6 +301,7 @@ Without `--stories` or `--all`, the targets come from the diff against `--base` 
 | `--widths <list>`    | `360,768,1280` | Integers from 200 to 4000.                                         |
 | `--themes <list>`    | `dark,light`   | Any of `dark`, `light`.                                            |
 | `--touch`            | off            | Adds a 320 width and holds hit targets to 44px.                    |
+| `--text-spacing`     | off            | Audits 360 and 1280 again under the WCAG 1.4.12 overrides.         |
 | `--out <dir>`        | under `TMPDIR` | Output directory; must be outside the repo.                        |
 | `--url <loopback>`   | start our own  | Reuse a Storybook you already run. The command then stops nothing. |
 

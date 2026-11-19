@@ -10,6 +10,7 @@ import { ratchetLines } from './ratchet.mjs'
 import { withRules } from './rules.mjs'
 import { loadSpacingConfig } from './spacing-scale.mjs'
 import { mergeWidthRanges } from './sweep.mjs'
+import { TEXT_SPACING_LOSS, textSpacingPass } from './text-spacing.mjs'
 
 export const EXIT_CLEAN = 0
 export const EXIT_BLOCKERS = 1
@@ -35,9 +36,10 @@ export function loadAxeSource(uiDir) {
 }
 
 /** One job per story and width; a job walks its themes on one page so they can be compared. */
-export function planJobs({ stories, widths, themes, touch = false, outDir }) {
+export function planJobs({ stories, widths, themes, touch = false, textSpacing = false, outDir }) {
+  const shotDir = (story) => join(outDir, story.id)
   return stories.flatMap((story) =>
-    widths.map((width) => ({ story, width, themes, touch, shotDir: join(outDir, story.id) }))
+    widths.map((width) => ({ story, width, themes, touch, textSpacing, shotDir: shotDir(story) }))
   )
 }
 
@@ -163,17 +165,25 @@ async function captureTheme(page, ctx, job, theme, errors) {
       return entry
     }
     const story = { id: job.story.id, title: job.story.title }
-    const audit = await auditPage(page, { ...ctx, story, touch: Boolean(job.touch) })
+    const runAudit = () => auditPage(page, { ...ctx, story, touch: Boolean(job.touch) })
+    const audit = await runAudit()
     const rendered = !errors.some((e) => e.startsWith('pageerror'))
     const blockers = [...renderErrorBlockers(errors), ...audit.blockers]
     const failure = rendered ? {} : { error: errors[0].slice(0, 500) }
     const entry = { ...base, rendered, ...failure, shot: null, ...audit, blockers }
     entry.shot = await shoot(job, entry, (path) => screenshotContent(page, path))
+    if (job.textSpacing) entry.warnings.push(...(await spacedLosses(page, runAudit, audit)))
     return entry
   } catch (err) {
     const detail = err.message.split('\n')[0]
     return { ...base, ...failedRender(detail, [detail]) }
   }
+}
+
+// Last on the frame: the injected stylesheet stays until the next theme navigates.
+function spacedLosses(page, audit, base) {
+  const settle = () => page.waitForTimeout(SETTLE_MS)
+  return textSpacingPass(page, { audit, baseBlockers: base.blockers, settle })
 }
 
 const renderErrorBlockers = (details) =>
@@ -251,25 +261,37 @@ export function addFontSizeDrift(entries) {
   }
 }
 
-// One line per distinct blocker, listing every width and theme it appears at.
-function groupBlockers(entries, sweep = false) {
-  const audited = entries.map((e) => e.width)
+// Groups findings that repeat across frames, keeping every width and theme each appears at.
+function groupFindings(entries, findingsOf) {
   const groups = new Map()
   for (const e of entries) {
-    for (const b of e.blockers) {
-      const key = [e.id, b.kind, b.selector, b.detail].join('\u0000')
-      if (!groups.has(key)) groups.set(key, { id: e.id, ...b, at: new Set() })
+    for (const f of findingsOf(e)) {
+      const key = [e.id, f.kind, f.selector, f.detail].join('\u0000')
+      if (!groups.has(key)) groups.set(key, { id: e.id, ...f, at: new Set() })
       groups.get(key).at.add(`${e.width}-${e.theme}`)
     }
   }
-  const rank = (g) => (g.kind === 'render-error' ? 0 : g.ratchet === 'new' ? 1 : 2)
   return [...groups.values()]
+}
+
+function findingLine(label, g, where) {
+  const detail = g.detail.replace(/\s+/g, ' ').slice(0, 160)
+  return `${label} ${g.kind} ${g.id} [${where}] ${g.selector} :: ${detail}`
+}
+
+// One line per distinct blocker, listing every width and theme it appears at.
+function groupBlockers(entries, sweep = false) {
+  const audited = entries.map((e) => e.width)
+  const rank = (g) => (g.kind === 'render-error' ? 0 : g.ratchet === 'new' ? 1 : 2)
+  return groupFindings(entries, (e) => e.blockers)
     .sort((a, b) => rank(a) - rank(b))
-    .map((g) => {
-      const detail = g.detail.replace(/\s+/g, ' ').slice(0, 160)
-      const where = sweep ? sweptWhere(g.at, audited) : [...g.at].join(' ')
-      return `BLOCKER ${g.kind} ${g.id} [${where}] ${g.selector} :: ${detail}`
-    })
+    .map((g) => findingLine('BLOCKER', g, sweep ? sweptWhere(g.at, audited) : [...g.at].join(' ')))
+}
+
+// `--text-spacing` findings are warnings, but they are what that mode is run for.
+function groupTextSpacingLosses(entries) {
+  const losses = (e) => e.warnings.filter((w) => w.kind === TEXT_SPACING_LOSS)
+  return groupFindings(entries, losses).map((g) => findingLine('WARN', g, [...g.at].join(' ')))
 }
 
 function sweptWhere(at, audited) {
@@ -296,11 +318,12 @@ function countsLine(entries, distinct) {
 }
 
 /**
- * At most `maxLines` lines: grouped blockers (render errors, then ratchet failures), an overflow
+ * At most `maxLines` lines: grouped blockers (render errors, then ratchet failures), then grouped
+ * text-spacing losses, an overflow
  * pointer if any, the ratchet line per ratcheted kind when `ratchet` is given, then the counts.
  */
 export function summarise(entries, maxLines = MAX_SUMMARY_LINES, ratchet = [], sweep = false) {
-  const blockerLines = groupBlockers(entries, sweep)
+  const blockerLines = [...groupBlockers(entries, sweep), ...groupTextSpacingLosses(entries)]
   const tail = [...ratchetLines(ratchet), countsLine(entries, blockerLines.length)]
   const room = maxLines - 1 - tail.length
   const lines = blockerLines.slice(0, room)
