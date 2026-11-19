@@ -32,7 +32,7 @@ export const RENDERED_UI_PATTERNS = [
 ]
 
 // GET /pulls/{n}/files lists at most 3000 files; past that the list is incomplete.
-const API_FILE_CAP = 3000
+export const API_FILE_CAP = 3000
 
 /** The first changed path a visual layer reads, or undefined when none does. */
 export function firstRenderedPath(paths) {

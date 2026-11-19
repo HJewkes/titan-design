@@ -1,7 +1,7 @@
 import { appendFileSync, readFileSync, writeFileSync } from 'node:fs'
 
 import { isEntryPoint } from './lib/entry.mjs'
-import { fetchChangedPaths, firstRenderedPath } from './visual-paths.mjs'
+import { API_FILE_CAP, fetchChangedPaths, firstRenderedPath } from './visual-paths.mjs'
 
 /**
  * Picks the stories the `pr-visual` workflow captures before and after a pull request (TP-1697).
@@ -42,8 +42,10 @@ const rendersStory = (path) =>
 /**
  * Whether a change touches a path a story renders, so a run that shows nothing for it is a
  * failure for the seat to diagnose rather than an owner gate with nothing to look at (TP-6766).
+ * A list at the API cap is incomplete, so it may hide a rendered path and counts as one.
  */
 export const changesStories = (changedPaths) =>
+  changedPaths.length >= API_FILE_CAP ||
   changedPaths.some((path) => rendersStory(path) || PIPELINE_PATHS.some((p) => p.test(path)))
 
 const owns = (entry, path) => entry.file === path || entry.sources?.status === path

@@ -170,4 +170,10 @@ describe('pr-visual changes to rendered UI (TP-6766)', () => {
       ])
     ).toBe(false)
   })
+
+  it('counts a changed-path list at the API cap as changing rendered UI', () => {
+    const docs = Array.from({ length: 3000 }, (_, i) => `docs/page-${i}.md`)
+
+    expect(changesStories(docs)).toBe(true)
+  })
 })
