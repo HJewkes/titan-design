@@ -1,21 +1,16 @@
 import React, { useState, useCallback, useMemo, createContext, useContext } from 'react'
-import {
-  View,
-  Text,
-  Pressable,
-  type ViewProps,
-  type ViewStyle,
-  StyleSheet,
-  Platform,
-} from 'react-native'
+import { View, Text, Pressable, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { useHitTarget } from '../../../hooks/useHitTarget'
 import type { HitTargetLimit, HitTargetOutset } from '../../../utils/hit-target'
-import { getHoverColors } from '../../../theme'
-import { getSemanticColors, type ThemeMode } from '../../../theme/tokens/semantic'
 import { resolveColor } from '../../../theme/resolve-color'
-import { resolveSurfaceDepth, useSurface, type ResolvedSurface } from '../surface'
-import { ToolbarButtonIcon, ToolbarButtonMenu } from './ToolbarButtonParts'
+import { faceStyle, useToolbarFaces } from './toolbarFaces'
+import {
+  ToolbarButtonDescription,
+  ToolbarButtonIcon,
+  ToolbarButtonMenu,
+  useTooltipDescriptionId,
+} from './ToolbarButtonParts'
 
 export type ToolbarButtonVariant = 'default' | 'raised'
 export type ToolbarButtonSize = 'sm' | 'md' | 'lg'
@@ -51,7 +46,7 @@ export interface ToolbarButtonProps extends ViewProps {
   size?: ToolbarButtonSize
   /** Visual variant */
   variant?: ToolbarButtonVariant
-  /** Tooltip text (shown when label is hidden) */
+  /** Tooltip text, exposed as the button's accessible description */
   tooltip?: string
   /** Whether to show label (false = icon only) */
   showLabel?: boolean
@@ -121,6 +116,7 @@ export function ToolbarButton({
 }: ToolbarButtonProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
+  const tooltipId = useTooltipDescriptionId(tooltip)
   const faces = useToolbarFaces()
   const hitTarget = useHitTarget({ limit: useContext(ToolbarButtonGroupContext) })
 
@@ -153,6 +149,7 @@ export function ToolbarButton({
           accessibilityState={{ selected, disabled: isDisabled }}
           accessibilityLabel={label}
           accessibilityHint={tooltip}
+          aria-describedby={tooltipId}
           hitSlop={hitTarget.hitSlop}
           onLayout={hitTarget.onLayout}
           className={cn(
@@ -167,6 +164,7 @@ export function ToolbarButton({
           )}
           style={faceStyle({ faces, variant, isDisabled, showActive, isHovered })}
         >
+          <ToolbarButtonDescription id={tooltipId} text={tooltip} />
           {hitTarget.layerProps && <View {...hitTarget.layerProps} />}
           {icon && <ToolbarButtonIcon icon={icon} color={iconTint} />}
           {showLabel && (
@@ -198,67 +196,6 @@ function iconColor(isActive: boolean | undefined): string {
   if (isActive === true) return resolveColor('brand-primary')
   return isActive !== false ? resolveColor('on-control-active') : resolveColor('on-control-idle')
 }
-
-interface ToolbarFaces {
-  mode: ThemeMode
-  /** One plane up from the enclosing Surface, wearing the lift. */
-  raised: ResolvedSurface
-  /** One plane down from the enclosing Surface, wearing the recess. */
-  pressed: ResolvedSurface
-}
-
-/**
- * The two faces on the depth model, read off the enclosing Surface the same way
- * `<Surface raise>` and `<Surface pressed>` are: the raised face is the plane one
- * step above the toolbar with the lift, the active face is the plane one step
- * below it with the recess. No bespoke face colour; both are ramp planes.
- */
-function useToolbarFaces(): ToolbarFaces {
-  const inherited = useSurface()
-  return useMemo(
-    () => ({
-      mode: inherited.mode,
-      raised: resolveSurfaceDepth(inherited, { raise: 1 }),
-      pressed: resolveSurfaceDepth(inherited, { pressed: true }),
-    }),
-    [inherited]
-  )
-}
-
-// The raised variant wears the plane's treatment; the default variant is the same
-// planes flat. Hover nudges the fill the way the plane moves: up lightens, down darkens.
-function faceStyle(p: {
-  faces: ToolbarFaces
-  variant: ToolbarButtonVariant
-  isDisabled: boolean
-  showActive: boolean
-  isHovered: boolean
-}): ViewStyle {
-  if (p.isDisabled) return disabledStyles[p.faces.mode]
-  const face = p.showActive ? p.faces.pressed : p.faces.raised
-  const hover = getHoverColors(face.backgroundColor, 'medium')
-  const hoverFill = p.showActive ? hover.pressed : hover.raised
-  return {
-    backgroundColor: p.isHovered ? hoverFill : face.backgroundColor,
-    ...(p.variant === 'raised' ? face.depthStyle : {}),
-  }
-}
-
-// Disabled - flat face per theme, no lift or recess
-function disabledFace(mode: ThemeMode): ViewStyle {
-  return {
-    backgroundColor: getSemanticColors(mode)['control-face-disabled'],
-    ...Platform.select({
-      web: { boxShadow: 'none' },
-      default: { shadowOpacity: 0, elevation: 0 },
-    }),
-  }
-}
-
-const disabledStyles = StyleSheet.create({
-  dark: disabledFace('dark'),
-  light: disabledFace('light'),
-})
 
 export interface ToolbarButtonGroupProps extends ViewProps {
   /** Orientation of the button group */
