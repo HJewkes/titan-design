@@ -70,6 +70,17 @@ describe('pr-visual manifest (TP-1697)', () => {
     })
   })
 
+  it('records a selection truncated at the cap in the reason of a rendered manifest', () => {
+    const truncated = {
+      ...selected,
+      truncated: { reached: 41, cap: 40 },
+      reason: '41 stories reached, over the cap of 40; capturing the first 40',
+    }
+    const files = ['pill--default@1280.png']
+    const manifest = buildManifest({ ...run, selection: truncated, before: files, after: files })
+    expect(manifest).toMatchObject({ rendered: true, reason: truncated.reason })
+  })
+
   it('drops a one-sided shot and names it in the reason', () => {
     const manifest = buildManifest({
       ...run,
