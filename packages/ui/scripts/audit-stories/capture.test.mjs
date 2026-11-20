@@ -315,8 +315,19 @@ describe('defaults and options', () => {
       width: 320,
       themes: ['dark', 'light'],
       touch: true,
+      interact: false,
       shotDir: join('/out', 'a--default'),
     })
+  })
+
+  it('drives interactions only on the widest width, whatever order the widths come in', () => {
+    const stories = [{ id: 'a--default' }]
+    const jobs = planJobs({
+      ...parseOptions(['--widths', '1280,360,768']),
+      stories,
+      outDir: '/out',
+    })
+    expect(jobs.filter((j) => j.interact).map((j) => j.width)).toEqual([1280])
   })
 
   it('plans one job per story and width', () => {
