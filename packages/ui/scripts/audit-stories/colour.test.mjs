@@ -4,6 +4,7 @@ import * as reference from '../../src/theme/color-checks.ts'
 import { semanticColorsDark, semanticColorsLight } from '../../src/theme/tokens/semantic.ts'
 import {
   compositeOver,
+  contrastRatio,
   deltaE,
   parseColour,
   parseShadow,
@@ -36,6 +37,10 @@ describe('colour parity with color-checks.ts', () => {
 
   it.each(PAIRS)('gives the same deltaE for %s and %s', (a, b) => {
     expect(Math.abs(deltaE(a, b) - reference.deltaE(a, b))).toBeLessThan(TOLERANCE)
+  })
+
+  it.each(PAIRS)('gives the same WCAG contrast for %s and %s', (a, b) => {
+    expect(Math.abs(contrastRatio(a, b) - reference.contrast(a, b))).toBeLessThan(TOLERANCE)
   })
 
   it.each(PAIRS)('composites a translucent %s over %s the same way', (top, base) => {

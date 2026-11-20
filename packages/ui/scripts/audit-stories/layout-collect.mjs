@@ -400,6 +400,29 @@ export function collectLayout({ spacingVars = [] } = {}) {
     return ['top', 'right', 'bottom', 'left'].map((s) => String(map?.get(`margin-${s}`)) === 'auto')
   }
 
+  // An SVG <text>'s painted rect on screen: its bbox corners through the screen matrix, so a
+  // rotated or scaled label is measured along its whole length. Null when the bbox is unavailable.
+  function svgInkOf(el) {
+    const ctm = el.getScreenCTM?.()
+    if (!ctm) return null
+    let bbox
+    try {
+      bbox = el.getBBox()
+    } catch {
+      return null
+    }
+    const pts = [
+      [bbox.x, bbox.y],
+      [bbox.x + bbox.width, bbox.y],
+      [bbox.x, bbox.y + bbox.height],
+      [bbox.x + bbox.width, bbox.y + bbox.height],
+    ].map(([x, y]) => new window.DOMPoint(x, y).matrixTransform(ctm))
+    const xs = pts.map((p) => p.x)
+    const ys = pts.map((p) => p.y)
+    const [x, y] = [Math.min(...xs), Math.min(...ys)]
+    return [x, y, Math.max(...xs) - x, Math.max(...ys) - y].map(q)
+  }
+
   function describe(el, id, parent) {
     const cs = getComputedStyle(el)
     const svg = el.tagName.toLowerCase() === 'svg'
@@ -430,7 +453,8 @@ export function collectLayout({ spacingVars = [] } = {}) {
       text: textOf(el, cs),
       ink: null,
       style: styleOf(el, cs),
-      ...(svg ? { glyph: glyphOf(el), paint: paintOf(el) } : {}),
+      ...(svg ? { glyph: glyphOf(el), paint: paintOf(el), overflow: cs.overflow } : {}),
+      ...(el.tagName === 'text' ? { svgInk: svgInkOf(el) } : {}),
       concept: el.getAttribute('data-concept'),
       state: stateOf(el),
       heading: headingOf(el),
