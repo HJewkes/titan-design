@@ -14,6 +14,7 @@ import {
 import { KINDS as INTERACTION_KINDS } from './interaction.mjs'
 import { PROBE_KINDS, judgeAll } from './probe-suite.mjs'
 import { buildScale, isOnScale } from './spacing-scale.mjs'
+import { TEXT_SPACING_LOSS } from './text-spacing.mjs'
 
 const MAX_FINDINGS_PER_KIND = 25
 /** DR-TY-06 warning tier, [from, below) in px. Under 10px is the probe suite's `text-floor`. */
@@ -50,6 +51,7 @@ export const WARNING_KINDS = Object.freeze([
   FONT_SIZE_NEAR_MISS,
   FONT_SIZE_DRIFT,
   AXE_VIOLATION,
+  TEXT_SPACING_LOSS,
   ...PROBE_KINDS,
   ...INTERACTION_KINDS,
 ])

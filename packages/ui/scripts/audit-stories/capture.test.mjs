@@ -119,7 +119,7 @@ describe('summarise line cap', () => {
     const lines = summarise(many(100)).split('\n')
     expect(MAX_SUMMARY_LINES).toBe(30)
     expect(lines).toHaveLength(30)
-    expect(lines[28]).toBe('... 72 more blockers in dom.json')
+    expect(lines[28]).toBe('... 72 more findings in dom.json')
     expect(lines[29]).toMatch(/^1 frames audited, .* 100 blockers \(100 distinct\)/)
   })
 
@@ -315,6 +315,7 @@ describe('defaults and options', () => {
       width: 320,
       themes: ['dark', 'light'],
       touch: true,
+      textSpacing: false,
       interact: false,
       shotDir: join('/out', 'a--default'),
     })
@@ -328,6 +329,15 @@ describe('defaults and options', () => {
       outDir: '/out',
     })
     expect(jobs.filter((j) => j.interact).map((j) => j.width)).toEqual([1280])
+  })
+
+  it('drives no interactions in a text-spacing run, so the spaced re-audit sees a page at rest', () => {
+    const stories = [{ id: 'a--default' }]
+    const jobs = planJobs({ ...parseOptions(['--text-spacing']), stories, outDir: '/out' })
+    expect(jobs.map((j) => [j.width, j.textSpacing, j.interact])).toEqual([
+      [360, true, false],
+      [1280, true, false],
+    ])
   })
 
   it('plans one job per story and width', () => {

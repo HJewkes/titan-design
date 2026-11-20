@@ -20,6 +20,7 @@ export const RULE_BY_KIND = Object.freeze({
   'font-size-near-miss': 'DR-TY-05',
   'font-size-drift': 'DR-TY-05',
   'axe-violation': 'DR-IX-14',
+  'text-spacing-loss': 'DR-RB-03',
   ...PROBE_RULES,
   ...INTERACTION_RULES,
 })

@@ -22,6 +22,7 @@ import {
 } from './audit-stories/capture.mjs'
 import { applyRatchet, loadBaseline } from './audit-stories/ratchet.mjs'
 import { sweepWidths } from './audit-stories/sweep.mjs'
+import { TEXT_SPACING_WIDTHS } from './audit-stories/text-spacing.mjs'
 import { attachStorybook, startStorybook, stopOnSignals } from './audit-stories/storybook.mjs'
 import {
   REPO_ROOT,
@@ -38,14 +39,17 @@ const DEFAULT_WIDTHS = [360, 768, 1280]
 const TOUCH_WIDTH = 320
 const THEMES = ['dark', 'light']
 const VALUE_FLAGS = ['base', 'stories', 'widths', 'themes', 'out', 'url']
-const BOOLEAN_FLAGS = ['all', 'dependents', 'touch', 'sweep', 'help']
+const BOOLEAN_FLAGS = ['all', 'dependents', 'touch', 'sweep', 'text-spacing', 'help']
 
 export const USAGE = `Usage: pnpm audit:stories [--base <ref>] [--stories <id,...>] [--all] [--dependents]
-       [--widths 360,768,1280 | --sweep] [--themes dark,light] [--touch] [--out <dir>] [--url <loopback url>]
+       [--widths 360,768,1280 | --sweep | --text-spacing] [--themes dark,light] [--touch]
+       [--out <dir>] [--url <loopback url>]
 
 Audits the stories touched by the diff against --base (default origin/main).
 --sweep audits 320..1440 in 40px steps plus 599/600, 999/1000 and 1199/1200 and reports
 each blocker as width ranges; it cannot be combined with --widths.
+--text-spacing audits 360 and 1280 again under the WCAG 1.4.12 spacing overrides and warns
+text-spacing-loss for each blocker they add; it cannot be combined with --widths or --sweep.
 --touch adds the 320 width and checks 44px hit targets. Output goes under TMPDIR.
 Exit: 0 clean, 1 blockers (including a text-floor finding outside the ratchet baseline),
       2 render error, 3 no story touched, 64 usage or start failure,
@@ -74,9 +78,17 @@ function flagValue(name, value) {
   return value
 }
 
-function parseWidths(raw, touch, sweep) {
-  if (sweep && raw !== undefined) throw new UsageError('--sweep and --widths cannot be combined')
-  if (sweep) return sweepWidths()
+function refuseCombined(flags) {
+  const set = ['widths', 'sweep', 'text-spacing'].filter((name) => flags[name] !== undefined)
+  if (set.length > 1)
+    throw new UsageError(`${set.map((n) => `--${n}`).join(' and ')} cannot be combined`)
+}
+
+function parseWidths(flags, touch) {
+  refuseCombined(flags)
+  if (flags.sweep) return sweepWidths()
+  if (flags['text-spacing']) return [...TEXT_SPACING_WIDTHS]
+  const raw = flags.widths
   if (raw === undefined) return touch ? [TOUCH_WIDTH, ...DEFAULT_WIDTHS] : DEFAULT_WIDTHS
   const widths = list(raw).map(Number)
   if (widths.length === 0 || widths.some((w) => !Number.isInteger(w) || w < 200 || w > 4000)) {
@@ -103,8 +115,9 @@ export function parseOptions(argv) {
     stories: flags.stories ? list(flags.stories) : [],
     all: Boolean(flags.all),
     dependents: Boolean(flags.dependents),
-    widths: parseWidths(flags.widths, touch, Boolean(flags.sweep)),
+    widths: parseWidths(flags, touch),
     sweep: Boolean(flags.sweep),
+    textSpacing: Boolean(flags['text-spacing']),
     themes: parseThemes(flags.themes),
     touch,
     out: flags.out,
