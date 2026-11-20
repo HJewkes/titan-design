@@ -119,6 +119,33 @@ judged per frame; a `Foundations/` specimen skips the budgets but not the per-el
 | `line-style-budget`   | DR-CO-05 | One visual line (the grouping of `font-size-near-miss`: nearest flex-row ancestor, vertical overlap of half the smaller box) mixes sizes whose max/min is under 1.5 and whose spread is over 2px, or holds more than 2 weights or more than 2 colours. A spread of 2px or less is left to `font-size-near-miss`, so one pair is never reported twice; a ratio of 1.5 or more is a hero and its unit. Text whose nearest painted ancestor differs from the row's (a chip, badge or button on the line) is its own object and is left out. One finding per line, on its first text. Inline links count as a colour. Detail: `one line has 3 sizes 12, 13, 16px (max/min 1.33 < 1.5, Δ4 > 2px)`.                    |
 | `readable-measure`    | DR-TY-09 | Wrapped text of 2 or more lines whose mean characters per line, final line excluded, is over 90. Characters come from `text.lineChars` (below). Single-line text is never reported; the rule's 80 note and 40 floor are not checked. Detail: `wrapped text averages 110 characters per line (limit 90)`.                                                                                                                                                                                                                                                                                                                                                                                                         |
 
+### Interaction warnings (TD-941)
+
+Kinds from `scripts/audit-stories/interaction.mjs`. Each is a warning. They run on the widest
+width's frames only (`planJobs` sets `interact`), in every theme, after the frame's shot. The
+driver freezes transitions, then Tabs from an anchor before `#storybook-root` through up to 12
+focusables in the story (stopping when focus leaves the root or cycles). For each target it
+snapshots four states in order: rest (nothing hovered or focused), hover (pointer on the centre),
+focus (one keyboard Tab from the previous target, so `:focus-visible` matches) and press (pointer
+down; the click it would fire is swallowed, so nothing activates). A state's _look_ is the computed
+colour, background, border, box-shadow, outline, transform, opacity and text decoration of the
+target, its three nearest ancestors in the story (a wrapper may draw the state) and up to 24
+subtree nodes. The _ring_ is the widest indicator the focus state adds over rest on the target or
+one of those ancestors: an outline (its width; it reaches offset + width), a box-shadow layer with
+spread (outer spread minus the next added layer's, as a Tailwind ring draws it) or a changed border
+colour. `metrics.interaction` records `{ targets, ms }`, or `{ error }` when the driver failed
+(the frame still passes). Cost: about 230 ms per target, so 0.2 to 2 s per frame and 0.5 to 4 s per
+story.
+
+| Kind                  | Rule     | Meaning                                                                                                                                                                                                                                                                                                                       |
+| --------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `focus-ring-missing`  | DR-IX-03 | The focus state adds no ring, a ring under 2px wide, or one under 3:1 against what was there at rest (the nearest opaque ancestor background for an outline or shadow, the rest border colour for a border; a translucent ring is composited first). Detail: `outline ring #282828 on #111111 at 1.40:1 (limit 3:1)`.         |
+| `focus-ring-clipped`  | DR-IX-03 | The ring box (the drawer's box grown by the ring's reach) crosses the padding box of an ancestor whose overflow is not `visible`, by more than 0.5px. Detail: `outline ring clipped by 4px at [data-testid="a"] (limit 0px)`.                                                                                                 |
+| `focus-ring-obscured` | DR-IX-03 | At none of five sampled points (the centre and four quarter points) that are on screen is the focused target topmost (`elementFromPoint`), so something covers it entirely (WCAG 2.4.11). Elements with `pointer-events: none` are not seen. Detail: `none of 5 sampled points is topmost; covered by [data-testid="sheet"]`. |
+| `state-no-change`     | DR-IX-05 | Hover, focus or press has the same look as rest. One finding per target, listing the states. Disabled controls are not focusable, so the disabled state is not checked. Detail: `hover, press look the same as rest (colour, background, …)`.                                                                                 |
+| `state-shift`         | DR-IX-12 | A node outside the target's subtree moves or resizes by more than 1px between rest and a state. A node that appears or disappears (an empty box on one side) is not a move. One finding per target, the largest move. Detail: `hover moves [data-testid="b"] by 8px (limit 1px)`.                                             |
+| `hover-only-content`  | DR-IX-08 | Text that hover makes visible anywhere on the page (a portal included) and keyboard focus does not. Detail: `hover shows "Copy link"; keyboard focus does not`. Escape dismissal and staying open while hovered are not checked.                                                                                              |
+
 ### Hierarchy and salience warnings (TD-936)
 
 Kinds from `scripts/audit-stories/hierarchy-probes.mjs`. Each is a warning. Disabled nodes are left
@@ -220,7 +247,8 @@ printed lines. The PNGs show what geometry cannot measure; look at them too.
   `stacked-inset`); the map is `scripts/audit-stories/rules.mjs`. A ratcheted kind's finding also
   carries `ratchet` (`new`, `baselined` or `unbaselined-width`; see _Ratchet baseline_).
 - `metrics`, `axe.violations`: raw page metrics and every axe violation (the source of `contrast`,
-  `contrast_token` and `axe-violation`).
+  `contrast_token` and `axe-violation`). `metrics.interaction` is the interaction driver's
+  `{ targets, ms }` on the frames it ran on (see _Interaction warnings_).
 - `shot`: the PNG, relative to the output directory.
 
 The summary prints no per-kind counts. This prints, per warning kind, the findings over all frames,
