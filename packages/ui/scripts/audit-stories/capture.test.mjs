@@ -316,8 +316,28 @@ describe('defaults and options', () => {
       themes: ['dark', 'light'],
       touch: true,
       textSpacing: false,
+      interact: false,
       shotDir: join('/out', 'a--default'),
     })
+  })
+
+  it('drives interactions only on the widest width, whatever order the widths come in', () => {
+    const stories = [{ id: 'a--default' }]
+    const jobs = planJobs({
+      ...parseOptions(['--widths', '1280,360,768']),
+      stories,
+      outDir: '/out',
+    })
+    expect(jobs.filter((j) => j.interact).map((j) => j.width)).toEqual([1280])
+  })
+
+  it('drives no interactions in a text-spacing run, so the spaced re-audit sees a page at rest', () => {
+    const stories = [{ id: 'a--default' }]
+    const jobs = planJobs({ ...parseOptions(['--text-spacing']), stories, outDir: '/out' })
+    expect(jobs.map((j) => [j.width, j.textSpacing, j.interact])).toEqual([
+      [360, true, false],
+      [1280, true, false],
+    ])
   })
 
   it('plans one job per story and width', () => {

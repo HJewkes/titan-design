@@ -1,5 +1,6 @@
 // Maps each finding kind to the design rule it enforces (docs/design-rules.md). A kind with no
 // rule row stays unmapped and its findings carry no `rule` field.
+import { RULES as INTERACTION_RULES } from './interaction.mjs'
 import { PROBE_RULES } from './probe-suite.mjs'
 
 export const RULE_BY_KIND = Object.freeze({
@@ -21,6 +22,7 @@ export const RULE_BY_KIND = Object.freeze({
   'axe-violation': 'DR-IX-14',
   'text-spacing-loss': 'DR-RB-03',
   ...PROBE_RULES,
+  ...INTERACTION_RULES,
 })
 
 // An axe-violation finding whose axe rule enforces a narrower design rule cites that one.

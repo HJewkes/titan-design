@@ -41,7 +41,8 @@ function fakePage(domFor, log) {
     evaluate: async (fn) => answer(fn, state, domFor),
     addScriptTag: async () => {},
     addStyleTag: async ({ content }) => {
-      if (content === TEXT_SPACING_CSS) state.spaced = true
+      if (content !== TEXT_SPACING_CSS) return
+      state.spaced = true
       log.push('text-spacing stylesheet')
     },
     waitForTimeout: async () => {},
