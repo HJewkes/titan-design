@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { buildManifest } from './pr-visual-manifest.mjs'
+import { buildManifest, seatFailure } from './pr-visual-manifest.mjs'
 
 const run = { repo: 'owner/repo', pr: 7, baseSha: 'b'.repeat(40), headSha: 'h'.repeat(40) }
 const selected = { storyIds: ['pill--default'], reason: '1 stories reached' }
@@ -115,5 +115,56 @@ describe('pr-visual manifest (TP-1697)', () => {
       rendered: false,
       reason: 'story selection did not run',
     })
+  })
+})
+
+describe('pr-visual run outcome for the seat (TP-6766)', () => {
+  const broad = {
+    broad: true,
+    storyIds: [],
+    selected: [],
+    changesStories: true,
+    reason: 'packages/ui/src/hooks/useThing.ts maps to no catalog entry',
+  }
+
+  it('fails a UI change whose selection went broad, naming the reason', () => {
+    const manifest = buildManifest({ ...run, selection: broad, before: [], after: [] })
+    expect(seatFailure(manifest, broad)).toBe(
+      'pr-visual rendered nothing for a change to rendered UI: packages/ui/src/hooks/useThing.ts maps to no catalog entry'
+    )
+  })
+
+  it('fails a UI change whose selected stories captured on neither side', () => {
+    const selection = { ...selected, changesStories: true }
+    const manifest = buildManifest({ ...run, selection, before: [], after: [] })
+    expect(seatFailure(manifest, selection)).toContain('no story rendered on both sides')
+  })
+
+  it('fails when selection never ran', () => {
+    const manifest = buildManifest({ ...run, before: [], after: [] })
+    expect(seatFailure(manifest, undefined)).toContain('story selection did not run')
+  })
+
+  it('fails closed on a selection that does not say whether UI changed', () => {
+    const selection = { storyIds: [], reason: 'none of 1 changed paths renders a story' }
+    const manifest = buildManifest({ ...run, selection, before: [], after: [] })
+    expect(seatFailure(manifest, selection)).toBeDefined()
+  })
+
+  it('passes a change that touches no rendered UI', () => {
+    const selection = {
+      storyIds: [],
+      changesStories: false,
+      reason: 'none of 1 changed paths renders a story',
+    }
+    const manifest = buildManifest({ ...run, selection, before: [], after: [] })
+    expect(seatFailure(manifest, selection)).toBeUndefined()
+  })
+
+  it('passes a run that rendered pairs', () => {
+    const selection = { ...selected, changesStories: true }
+    const files = ['pill--default@1280.png']
+    const manifest = buildManifest({ ...run, selection, before: files, after: files })
+    expect(seatFailure(manifest, selection)).toBeUndefined()
   })
 })

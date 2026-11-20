@@ -69,19 +69,31 @@ export function buildManifest({ repo, pr, baseSha, headSha, selection, before, a
   }
 }
 
+/**
+ * Why the run fails, or undefined when it passes. A change to a path a story renders that shows no
+ * pair fails the check, so the seat diagnoses it instead of an owner gate opening on nothing
+ * (TP-6766). A selection missing `changesStories` counts as one that changes them: fail closed.
+ */
+export function seatFailure(manifest, selection) {
+  if (manifest.rendered) return undefined
+  if (selection && selection.changesStories === false) return undefined
+  return `pr-visual rendered nothing for a change to rendered UI: ${manifest.reason}`
+}
+
 const listPngs = (dir) =>
   existsSync(dir) ? readdirSync(dir).filter((f) => f.endsWith('.png')) : []
 
 function main() {
   const { OUT_DIR, STORIES_FILE, GITHUB_REPOSITORY, PR_NUMBER, BASE_SHA, HEAD_SHA } = process.env
+  const selection = existsSync(STORIES_FILE)
+    ? JSON.parse(readFileSync(STORIES_FILE, 'utf8'))
+    : undefined
   const manifest = buildManifest({
     repo: GITHUB_REPOSITORY,
     pr: Number(PR_NUMBER),
     baseSha: BASE_SHA,
     headSha: HEAD_SHA,
-    selection: existsSync(STORIES_FILE)
-      ? JSON.parse(readFileSync(STORIES_FILE, 'utf8'))
-      : undefined,
+    selection,
     before: listPngs(join(OUT_DIR, 'before')),
     after: listPngs(join(OUT_DIR, 'after')),
   })
@@ -89,6 +101,11 @@ function main() {
   writeFileSync(join(OUT_DIR, 'manifest.json'), `${JSON.stringify(manifest, null, 2)}\n`)
   console.log(`pr-visual-manifest: rendered=${manifest.rendered}, ${manifest.shots.length} shots`)
   if (manifest.reason) console.log(`pr-visual-manifest: ${manifest.reason}`)
+  const failure = seatFailure(manifest, selection)
+  if (failure) {
+    console.log(`::error title=pr-visual rendered nothing::${failure}`)
+    process.exitCode = 1
+  }
 }
 
 if (isEntryPoint(import.meta.url, process.argv[1])) main()
