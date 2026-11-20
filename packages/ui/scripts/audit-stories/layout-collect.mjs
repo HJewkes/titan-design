@@ -298,6 +298,28 @@ export function collectLayout({ spacingVars = [] } = {}) {
     }
   }
 
+  // Only text holding a digit gets figures. Canvas ignores font-variant-numeric, so `spread` is the
+  // face's default figures: "0000" against "1111" at the computed font. `full` is the whole own
+  // text, which ownText cuts to 40 characters.
+  const LIVE =
+    '[aria-live]:not([aria-live="off"]), [role="status"], [role="timer"], [role="log"], [role="marquee"]'
+  function figuresOf(el, cs, nodes) {
+    const full = nodes
+      .map((n) => n.textContent)
+      .join('')
+      .replace(/\s+/g, ' ')
+      .trim()
+    if (!/\d/.test(full)) return null
+    ctx.font = fontOf(cs)
+    const spread = Math.abs(ctx.measureText('0000').width - ctx.measureText('1111').width)
+    return {
+      variant: cs.fontVariantNumeric,
+      spread: Math.round(spread * 100) / 100,
+      live: Boolean(el.closest(LIVE)),
+      full: full.slice(0, 200),
+    }
+  }
+
   function textOf(el, cs) {
     const nodes = ownTextNodes(el)
     const chars = charRects(nodes)
@@ -313,6 +335,7 @@ export function collectLayout({ spacingVars = [] } = {}) {
       right: q(Math.max(...chars.map((c) => c.r.right))),
       first: lineMetrics(lines[0]),
       last: lineMetrics(lines[lines.length - 1]),
+      figures: figuresOf(el, cs, nodes),
       ...textStyleOf(el, cs, nodes),
     }
   }

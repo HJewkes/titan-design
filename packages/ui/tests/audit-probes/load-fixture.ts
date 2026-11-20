@@ -49,6 +49,15 @@ export type NodeText = {
   backdrop: string | null
   backdropImage: boolean
   ownText: string
+  /** Text holding a digit only; the numeral probes read it. */
+  figures: NodeFigures | null
+}
+export type NodeFigures = {
+  variant: string
+  /** Canvas width of "0000" less "1111" in the computed font, absolute. */
+  spread: number
+  live: boolean
+  full: string
 }
 export type NodeState = {
   selected: boolean

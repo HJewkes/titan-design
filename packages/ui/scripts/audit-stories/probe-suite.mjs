@@ -11,6 +11,7 @@ import * as colourProbes from './colour-probes.mjs'
 import * as elevationProbes from './elevation-probes.mjs'
 import * as hierarchyProbes from './hierarchy-probes.mjs'
 import { MAX_FINDINGS_PER_KIND, capPerKind, judgeLayout } from './layout-probes.mjs'
+import * as numeralProbes from './numeral-probes.mjs'
 import * as relationProbes from './relation-probes.mjs'
 import * as typeProbes from './type-probes.mjs'
 
@@ -19,6 +20,7 @@ export const PROBE_MODULES = Object.freeze([
   colourProbes,
   elevationProbes,
   hierarchyProbes,
+  numeralProbes,
   relationProbes,
   typeProbes,
 ])

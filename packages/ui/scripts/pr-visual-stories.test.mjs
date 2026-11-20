@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { PIPELINE_CANARY, storiesFor } from './pr-visual-stories.mjs'
+import { changesStories, pathRole, PIPELINE_CANARY, storiesFor } from './pr-visual-stories.mjs'
+import { RENDERED_UI_PATTERNS } from './visual-paths.mjs'
 
 const ui = 'packages/ui/src/components/ui'
 const entry = (name, composes = [], storyIds = [`${name.toLowerCase()}--default`]) => ({
@@ -54,6 +55,13 @@ describe('pr-visual story selection (TP-1697)', () => {
     expect(storiesFor(['.github/workflows/pr-visual.yml'], catalog).storyIds).toEqual([
       PIPELINE_CANARY,
     ])
+  })
+
+  it('renders the canary story, not a broad selection, when a module the pipeline imports changes', () => {
+    const selection = storiesFor(['packages/ui/scripts/visual-paths.mjs'], catalog)
+
+    expect(selection.broad).toBeUndefined()
+    expect(selection.storyIds).toEqual([PIPELINE_CANARY])
   })
 })
 
@@ -145,5 +153,100 @@ describe('pr-visual paths beside a catalogued component (TP-6757)', () => {
     expect(selection.selected.map((item) => item.story)).toEqual(selection.storyIds)
     expect(selection.truncated).toEqual({ reached: 3, cap: 2 })
     expect(selection.reason).toContain('3 stories reached, over the cap of 2')
+  })
+})
+
+describe('pr-visual changes to rendered UI (TP-6766)', () => {
+  it('counts a component, helper or global change as changing rendered UI', () => {
+    expect(changesStories([`${ui}/Pill/Pill.tsx`])).toBe(true)
+    expect(changesStories([`${ui}/Pill/pillTone.ts`])).toBe(true)
+    expect(changesStories(['packages/ui/tailwind.config.js'])).toBe(true)
+  })
+
+  it('counts a change to the capture pipeline as changing rendered UI', () => {
+    expect(changesStories(['.github/workflows/pr-visual.yml'])).toBe(true)
+  })
+
+  it('does not count docs, tests, snapshots or generated metadata', () => {
+    expect(
+      changesStories([
+        'README.md',
+        `${ui}/Pill/Pill.test.tsx`,
+        `${ui}/Pill/__snapshots__/Pill.test.tsx.snap`,
+        'packages/ui/src/arch/component-catalog.json',
+        'packages/ui/tests/visual/reference/pill--default-chromium-linux.png',
+      ])
+    ).toBe(false)
+  })
+
+  it('counts a changed-path list at the API cap as changing rendered UI', () => {
+    const docs = Array.from({ length: 3000 }, (_, i) => `docs/page-${i}.md`)
+
+    expect(changesStories(docs)).toBe(true)
+  })
+
+  it('does not count test or CI support files that no story renders', () => {
+    const support = [
+      '.github/workflows/ci.yml',
+      'turbo.json',
+      'packages/ui/vitest.config.ts',
+      'packages/ui/playwright.config.ts',
+      'packages/ui/tests/visual/components.spec.ts',
+      'packages/ui/tests/interaction/x.spec.ts',
+      'packages/ui/src/test/blank-render.ts',
+      'packages/ui/src/test/stories-axe.test.tsx',
+      'packages/ui/scripts/storybook-launch.mjs',
+      'packages/ui/scripts/lib/regen-eslint-baseline.test.mjs',
+    ]
+
+    expect(support.filter((path) => changesStories([path]))).toEqual([])
+  })
+
+  it('counts a rendered path that no catalog entry owns', () => {
+    expect(changesStories(['packages/ui/src/hooks/useThing.ts'])).toBe(true)
+    expect(changesStories(['packages/ui/src/test/fixtures/stress.ts'])).toBe(true)
+  })
+})
+
+// One sample per family of CI's trigger list, each with the role the capture gives it.
+const ROLE_SAMPLES = [
+  ['packages/ui/src/components/ui/Pill/Pill.tsx', 'story'],
+  ['packages/ui/src/hooks/useThing.ts', 'story'],
+  ['packages/ui/src/test/fixtures/stress.ts', 'story'],
+  ['packages/ui/src/test/blank-render.ts', 'non-story'],
+  ['packages/ui/src/arch/component-catalog.json', 'non-story'],
+  ['packages/ui/src/test/stories-axe.test.tsx', 'non-story'],
+  ['packages/ui/src/components/ui/Pill/Pill.stories.tsx', 'story'],
+  ['packages/ui/.storybook/preview.tsx', 'global'],
+  ['packages/ui/tailwind.config.js', 'global'],
+  ['packages/ui/vitest.config.ts', 'non-story'],
+  ['packages/ui/specimen/index.tsx', 'non-story'],
+  ['packages/ui/tests/visual/components.spec.ts', 'non-story'],
+  ['packages/ui/tests/capture/x.ts', 'non-story'],
+  ['packages/ui/playwright.visual.config.ts', 'non-story'],
+  ['packages/ui/scripts/storybook-launch.mjs', 'non-story'],
+  ['packages/ui/scripts/check-play-count.mjs', 'non-story'],
+  ['packages/ui/scripts/lib/regen-eslint-baseline.mjs', 'non-story'],
+  ['packages/ui/scripts/lib/entry.mjs', 'pipeline'],
+  ['packages/ui/scripts/visual-paths.mjs', 'pipeline'],
+  ['packages/ui/package.json', 'global'],
+  ['pnpm-lock.yaml', 'global'],
+  ['turbo.json', 'non-story'],
+  ['.github/workflows/ci.yml', 'non-story'],
+  ['.github/workflows/pr-visual.yml', 'pipeline'],
+  ['README.md', undefined],
+]
+
+describe('pr-visual path roles (TP-6766)', () => {
+  it.each(ROLE_SAMPLES)('classifies %s as %s', (path, role) => {
+    expect(pathRole(path)).toBe(role)
+  })
+
+  it('has a sample for every pattern in CI trigger list, so a new one must be classified', () => {
+    const unsampled = RENDERED_UI_PATTERNS.filter(
+      (pattern) => !ROLE_SAMPLES.some(([path]) => pattern.test(path))
+    )
+
+    expect(unsampled).toEqual([])
   })
 })

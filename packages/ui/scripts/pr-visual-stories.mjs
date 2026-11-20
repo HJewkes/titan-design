@@ -1,7 +1,7 @@
 import { appendFileSync, readFileSync, writeFileSync } from 'node:fs'
 
 import { isEntryPoint } from './lib/entry.mjs'
-import { fetchChangedPaths, firstRenderedPath } from './visual-paths.mjs'
+import { API_FILE_CAP, fetchChangedPaths, firstRenderedPath } from './visual-paths.mjs'
 
 /**
  * Picks the stories the `pr-visual` workflow captures before and after a pull request (TP-1697).
@@ -15,18 +15,27 @@ import { fetchChangedPaths, firstRenderedPath } from './visual-paths.mjs'
 export const DEFAULT_CAP = 40
 
 // A change to the capture pipeline itself renders one fixed story, so the pipeline's own PR
-// proves it end to end.
+// proves it end to end. The pipeline includes the modules its scripts import.
 const PIPELINE_PATHS = [
   /^\.github\/workflows\/pr-visual\.yml$/,
   /^packages\/ui\/scripts\/pr-visual-[a-z]+\.mjs$/,
+  /^packages\/ui\/scripts\/(visual-paths|lib\/entry)\.mjs$/,
 ]
 export const PIPELINE_CANARY = 'components-molecules-button--primary'
 
-// Generated files no story reads; the CI visual job still runs on them, the capture does not.
+// RENDERED_UI_PATTERNS is CI's trigger list and over-includes on purpose. These are the paths
+// in it that no story reads: generated metadata, and test and CI support (TP-6766). Only
+// src/test/fixtures is imported by stories, so it stays rendered.
 const NON_STORY_PATHS = [
   /^packages\/ui\/src\/arch\/[^/]+\.json$/,
   /\/__snapshots__\/[^/]+\.snap$/,
-  /^packages\/ui\/tests\/visual\/.*\.(png|json)$/,
+  /^packages\/ui\/src\/test\/(?!fixtures\/)/,
+  /^packages\/ui\/tests\//,
+  /^packages\/ui\/specimen\//,
+  /^packages\/ui\/(playwright[^/]*|vitest[^/]*)\.config\.[^/]+$/,
+  /^packages\/ui\/scripts\//,
+  /^turbo\.json$/,
+  /^\.github\//,
 ]
 
 const GLOBAL_PATHS = [
@@ -35,6 +44,32 @@ const GLOBAL_PATHS = [
   /^packages\/ui\/\.storybook\//,
   /^(package\.json|pnpm-lock\.yaml|pnpm-workspace\.yaml)$/,
 ]
+
+const matches = (patterns, path) => patterns.some((pattern) => pattern.test(path))
+
+/**
+ * What a changed path is to the capture: `pipeline`, `global` (could change any story), `story`
+ * (a story renders it), `non-story` (CI reads it, no story does), or undefined outside CI's
+ * trigger list. The one place a path is classified, so selection and the seat check agree.
+ */
+export function pathRole(path) {
+  if (matches(PIPELINE_PATHS, path)) return 'pipeline'
+  if (!firstRenderedPath([path])) return undefined
+  if (matches(GLOBAL_PATHS, path)) return 'global'
+  return matches(NON_STORY_PATHS, path) ? 'non-story' : 'story'
+}
+
+const isPipeline = (path) => pathRole(path) === 'pipeline'
+const rendersStory = (path) => ['story', 'global'].includes(pathRole(path))
+
+/**
+ * Whether a change touches a path a story renders, so a run that shows nothing for it is a
+ * failure for the seat to diagnose rather than an owner gate with nothing to look at (TP-6766).
+ * A list at the API cap is incomplete, so it may hide a rendered path and counts as one.
+ */
+export const changesStories = (changedPaths) =>
+  changedPaths.length >= API_FILE_CAP ||
+  changedPaths.some((path) => rendersStory(path) || isPipeline(path))
 
 const owns = (entry, path) => entry.file === path || entry.sources?.status === path
 const dirOf = (path) => path.slice(0, path.lastIndexOf('/'))
@@ -79,13 +114,13 @@ function directoryOwners(path, entries, readSource) {
 function ownersOf(path, entries, readSource) {
   const direct = entries.filter((entry) => owns(entry, path))
   if (direct.length > 0) return direct
-  if (GLOBAL_PATHS.some((pattern) => pattern.test(path))) return []
+  if (matches(GLOBAL_PATHS, path)) return []
   const secondary = secondaryStoryOwners(path, entries)
   return secondary.length > 0 ? secondary : directoryOwners(path, entries, readSource)
 }
 
 function broadReason(unowned) {
-  const global = unowned.find((path) => GLOBAL_PATHS.some((pattern) => pattern.test(path)))
+  const global = unowned.find((path) => matches(GLOBAL_PATHS, path))
   if (global)
     return `${global} is a global (Tailwind, tokens, Storybook config or dependencies) that can change any story, so no story subset is captured`
   return `${unowned[0]} maps to no catalog entry`
@@ -149,10 +184,8 @@ export function storiesFor(
   { cap = DEFAULT_CAP, readSource = () => '' } = {}
 ) {
   const entries = catalog.entries
-  const pipelinePaths = changedPaths.filter((path) => PIPELINE_PATHS.some((p) => p.test(path)))
-  const rendered = changedPaths.filter(
-    (path) => firstRenderedPath([path]) && !NON_STORY_PATHS.some((pattern) => pattern.test(path))
-  )
+  const pipelinePaths = changedPaths.filter(isPipeline)
+  const rendered = changedPaths.filter(rendersStory)
   const { attribution, unowned } = attribute(rendered, entries, readSource)
   if (unowned.length > 0)
     return { broad: true, storyIds: [], selected: [], unowned, reason: broadReason(unowned) }
@@ -186,9 +219,14 @@ async function select({ GITHUB_REPOSITORY, PR_NUMBER, GITHUB_TOKEN }) {
       pr: PR_NUMBER,
       token: GITHUB_TOKEN,
     })
-    return storiesFor(paths, catalog, { readSource: readRepoFile })
+    const selection = storiesFor(paths, catalog, { readSource: readRepoFile })
+    return { ...selection, changesStories: changesStories(paths) }
   } catch (error) {
-    return { storyIds: [], reason: `could not list changed paths (${error.message})` }
+    return {
+      storyIds: [],
+      changesStories: true,
+      reason: `could not list changed paths (${error.message})`,
+    }
   }
 }
 
