@@ -197,6 +197,23 @@ the summary line but never fails the run.
 
 At most 25 findings per kind are kept per frame, except `text-floor`, which is never capped.
 
+### Numeral warnings (TD-940)
+
+Kinds from `scripts/audit-stories/numeral-probes.mjs`. Each is a warning. They read
+`text.figures` (below), so only text holding a digit is judged. A _table column_ is the cells
+(`cell`, `gridcell`) and `columnheader` at one position in each `row` of one `table` or `grid`. A
+_numeric cell_ holds one number: an optional 2-character prefix such as `$` or `-`, digits grouped
+by `,` or a thin space, an optional fraction, and an optional unit of up to 4 characters (`kg`,
+`%`).
+
+| Kind               | Rule     | Meaning                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| ------------------ | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `tabular-figures`  | DR-TY-04 | Numerals in a table cell, or in a live region (`aria-live` other than `off`, or role `status`, `timer`, `log` or `marquee`), with proportional figures: `fontVariantNumeric` lacks `tabular-nums`, the face is not mono, and the canvas width of "0000" and "1111" in the computed font differs by more than 0.5px. One finding per table column, and one per live node outside a table. Stat values with no live role are not found. Detail: `3 numerals "120" in a table column use proportional figures: "0000" and "1111" differ by 3.5px (limit 0.5px), no tabular-nums`. |
+| `numeral-spacing`  | DR-TY-14 | Rendered text matches the registry row's `/\d\s+(%\|×\|x\d\|s\b\|ms\b)/`: a space between a number and %, ×, `x<digit>`, `s` or `ms`. One finding per text node. Detail: `"85 %" has a space before "%" in "Effort 85 %"`.                                                                                                                                                                                                                                                                                                                                                     |
+| `numeric-align`    | DR-DD-01 | A table column of 2 or more numeric cells whose text right edges spread over 1px, or whose header (its text and any `svg`, such as a sort icon) ends more than 1px from the cells' right edge. Identifier columns of equal width pass. Detail: `numeric column right edges spread 8px (limit 1px)`.                                                                                                                                                                                                                                                                            |
+| `decimal-count`    | DR-DD-02 | A table column of 2 or more numeric cells holding more than one count of decimal places; non-numeric cells (`—`, "n/a") are skipped. Detail: `numeric column mixes 0, 1, 2 decimal places (limit 1 count)`.                                                                                                                                                                                                                                                                                                                                                                    |
+| `ungrouped-digits` | DR-DD-04 | Rendered text holds a whole number of 5 or more digits with no grouping. A run after `.` or `,` (a fraction), or joined to `#`, `/`, `:`, `-`, an uppercase letter or a word before it, is an id and is skipped; a lowercase unit of up to 3 letters may follow (`12500kg`). Years have 4 digits and never match. Detail: `"104000" has 6 ungrouped digits (limit 4)`.                                                                                                                                                                                                         |
+
 ## Ratchet baseline
 
 `text-floor` (DR-TY-06's error tier) is ratcheted: a finding fails the run unless its key is in
@@ -280,6 +297,10 @@ box, padding, border, margin, flex layout, text metrics and ink:
   characters), `lineCount`, `lineChars` (characters on each wrapped line, spaces between words included), and `backdrop`: the opaque `#rrggbb` behind the text, compositing the node's and each
   ancestor's background colour in sRGB until one is opaque (white behind `<html>`). A background
   image stops the walk: `backdrop` is then `null` and `backdropImage` is `true`.
+  Text holding a digit also has `figures`: the computed `fontVariantNumeric` as `variant`,
+  `spread` (the canvas width difference of "0000" and "1111" in the computed font, which canvas
+  measures without `font-variant-numeric`), `live` (the node is in a live region) and `full` (the
+  whole own text, up to 200 characters); other text has `figures: null`.
 - `glyph` and `paint` (`svg` nodes): a djb2 hash of the shapes' geometry attributes, or the
   `data-icon` attribute when present, so two copies of one icon match; and the computed stroke,
   else fill, of the first painted shape.
