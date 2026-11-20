@@ -1,0 +1,107 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      body {
+        margin: 0;
+        font-family: sans-serif;
+        background: #ffffff;
+      }
+      #storybook-root {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+        padding: 16px;
+      }
+      svg {
+        display: block;
+        width: 300px;
+        height: 120px;
+        background: #f3f4f6;
+      }
+      text {
+        font-size: 12px;
+        fill: #111827;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="storybook-root">
+      <!-- Zero data: an empty plot with one centred message. -->
+      <div data-testid="cl-zero">
+        <svg viewBox="0 0 300 120">
+          <text x="150" y="64" text-anchor="middle">No data</text>
+        </svg>
+      </div>
+
+      <!-- One point: a single value label. -->
+      <div data-testid="cl-one">
+        <svg viewBox="0 0 300 120">
+          <circle cx="150" cy="50" r="4" fill="#2563eb" />
+          <text x="150" y="40" text-anchor="middle">42</text>
+          <text x="150" y="110" text-anchor="middle">Mon</text>
+        </svg>
+      </div>
+
+      <!-- Many points: spaced axis labels, a rotated tick label that stays inside. -->
+      <div data-testid="cl-many">
+        <svg viewBox="0 0 300 120">
+          <text x="30" y="108" text-anchor="middle">Mon</text>
+          <text x="90" y="108" text-anchor="middle">Tue</text>
+          <text x="150" y="108" text-anchor="middle">Wed</text>
+          <text x="210" y="108" text-anchor="middle">Thu</text>
+          <text x="270" y="108" text-anchor="middle">Fri</text>
+          <text x="20" y="20" text-anchor="end" transform="rotate(-90 20 20)">Count</text>
+        </svg>
+      </div>
+
+      <!-- Many points, too tight: neighbouring labels overlap. -->
+      <div data-testid="cl-crowded">
+        <svg viewBox="0 0 300 120">
+          <text x="100" y="108">Monday</text>
+          <text x="120" y="108">Tuesday</text>
+          <text x="260" y="40">Fri</text>
+        </svg>
+      </div>
+
+      <!-- Long label: runs past the right edge of the viewport. -->
+      <div data-testid="cl-long">
+        <svg viewBox="0 0 300 120">
+          <text x="200" y="108">A very long category label</text>
+        </svg>
+      </div>
+
+      <!-- Missing data: a gap in the series keeps its slot but has no label. -->
+      <div data-testid="cl-missing">
+        <svg viewBox="0 0 300 120">
+          <text x="30" y="108" text-anchor="middle">Mon</text>
+          <text x="270" y="108" text-anchor="middle">Fri</text>
+          <path d="M30 60 L90 40 M210 70 L270 50" stroke="#2563eb" fill="none" />
+        </svg>
+      </div>
+
+      <!-- Rotated label whose length runs past the top edge. -->
+      <div data-testid="cl-rot-clip">
+        <svg viewBox="0 0 300 120">
+          <text x="150" y="30" transform="rotate(-90 150 30)">A long rotated tick label</text>
+        </svg>
+      </div>
+
+      <!-- Two rotated tick labels side by side, closer than a line height. -->
+      <div data-testid="cl-rot-collide">
+        <svg viewBox="0 0 300 120">
+          <text x="100" y="110" transform="rotate(-90 100 110)">January</text>
+          <text x="106" y="110" transform="rotate(-90 106 110)">February</text>
+        </svg>
+      </div>
+
+      <!-- Overflow visible: the long label is not clipped. -->
+      <div data-testid="cl-overflow">
+        <svg viewBox="0 0 300 120" style="overflow: visible">
+          <text x="200" y="108">A very long category label</text>
+        </svg>
+      </div>
+    </div>
+  </body>
+</html>
