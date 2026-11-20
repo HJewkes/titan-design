@@ -11,6 +11,7 @@ import {
   PROXIMITY_INVERSION,
   STACKED_INSET,
 } from './layout-probes.mjs'
+import { KINDS as INTERACTION_KINDS } from './interaction.mjs'
 import { PROBE_KINDS, judgeAll } from './probe-suite.mjs'
 import { buildScale, isOnScale } from './spacing-scale.mjs'
 
@@ -50,6 +51,7 @@ export const WARNING_KINDS = Object.freeze([
   FONT_SIZE_DRIFT,
   AXE_VIOLATION,
   ...PROBE_KINDS,
+  ...INTERACTION_KINDS,
 ])
 export const CONTRAST_TOKEN_KIND = CONTRAST_TOKEN
 export const AXE_VIOLATION_KIND = AXE_VIOLATION

@@ -1,0 +1,114 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      /* One case per row. The focus ring copies theme/global.css: 2px solid over a 2px offset. */
+      body {
+        margin: 0;
+        font-family: sans-serif;
+        background: #ffffff;
+        color: #111111;
+      }
+      #storybook-root {
+        display: flex;
+        flex-direction: column;
+        gap: 32px;
+        padding: 24px;
+      }
+      .row {
+        position: relative;
+        display: flex;
+        gap: 12px;
+        align-items: center;
+      }
+      :focus-visible {
+        outline: 2px solid #c2410c;
+        outline-offset: 2px;
+      }
+      .btn {
+        appearance: none;
+        border: 0;
+        border-radius: 6px;
+        padding: 8px 16px;
+        font: inherit;
+        background: #e5e7eb;
+        color: #111111;
+      }
+      .btn:hover {
+        background: #d1d5db;
+      }
+      .btn:active {
+        background: #9ca3af;
+      }
+      .plain {
+        appearance: none;
+        border: 0;
+        padding: 8px 16px;
+        font: inherit;
+        background: #e5e7eb;
+        color: #111111;
+      }
+      .grow:hover {
+        margin-left: 8px;
+      }
+      .no-ring:focus-visible {
+        outline: none;
+      }
+      .clip {
+        display: inline-flex;
+        overflow: hidden;
+      }
+      .tooltip {
+        display: none;
+        position: absolute;
+        left: 0;
+        top: 44px;
+        padding: 4px 8px;
+        background: #111111;
+        color: #ffffff;
+      }
+      [data-testid='ix-tooltip']:hover + .tooltip,
+      [data-testid='ix-tooltip-ok']:hover + .tooltip,
+      [data-testid='ix-tooltip-ok']:focus-visible + .tooltip {
+        display: block;
+      }
+      .cover {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 160px;
+        height: 48px;
+        background: rgba(255, 255, 255, 0.9);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="storybook-root">
+      <div class="row"><button class="plain" data-testid="ix-plain">Plain</button></div>
+      <div class="row">
+        <button class="btn grow" data-testid="ix-margin">Grow</button>
+        <span data-testid="ix-margin-sibling">Beside</span>
+      </div>
+      <div class="row"><button class="btn" data-testid="ix-good">Good</button></div>
+      <div class="row"><button class="btn no-ring" data-testid="ix-no-ring">No ring</button></div>
+      <div class="row">
+        <div class="clip" data-testid="ix-clip-box">
+          <button class="btn" data-testid="ix-clipped">Clipped</button>
+        </div>
+      </div>
+      <div class="row">
+        <button class="btn" data-testid="ix-tooltip">Hover tip</button>
+        <span class="tooltip">Only on hover</span>
+      </div>
+      <div class="row">
+        <button class="btn" data-testid="ix-tooltip-ok">Focus tip</button>
+        <span class="tooltip">On hover and focus</span>
+      </div>
+      <div class="row">
+        <button class="btn" data-testid="ix-covered">Covered</button>
+        <div class="cover" data-testid="ix-cover"></div>
+      </div>
+    </div>
+  </body>
+</html>

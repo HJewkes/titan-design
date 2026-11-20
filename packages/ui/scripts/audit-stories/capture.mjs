@@ -6,9 +6,11 @@ import { createRequire } from 'node:module'
 import { join } from 'node:path'
 import { auditPage, fontSizeDrift, themeGeometryShift } from './checks.mjs'
 import { loadFontConfig } from './font-config.mjs'
+import { runInteraction } from './interaction.mjs'
 import { ratchetLines } from './ratchet.mjs'
 import { withRules } from './rules.mjs'
 import { loadSpacingConfig } from './spacing-scale.mjs'
+import { mergeWidthRanges } from './sweep.mjs'
 
 export const EXIT_CLEAN = 0
 export const EXIT_BLOCKERS = 1
@@ -33,10 +35,21 @@ export function loadAxeSource(uiDir) {
   return readFileSync(fromJestAxe.resolve('axe-core/axe.min.js'), 'utf8')
 }
 
-/** One job per story and width; a job walks its themes on one page so they can be compared. */
+/**
+ * One job per story and width; a job walks its themes on one page so they can be compared. Only
+ * the widest width's job drives interactions (interaction.mjs), in every theme, to bound its cost.
+ */
 export function planJobs({ stories, widths, themes, touch = false, outDir }) {
+  const widest = Math.max(...widths)
   return stories.flatMap((story) =>
-    widths.map((width) => ({ story, width, themes, touch, shotDir: join(outDir, story.id) }))
+    widths.map((width) => ({
+      story,
+      width,
+      themes,
+      touch,
+      interact: width === widest,
+      shotDir: join(outDir, story.id),
+    }))
   )
 }
 
@@ -168,10 +181,24 @@ async function captureTheme(page, ctx, job, theme, errors) {
     const failure = rendered ? {} : { error: errors[0].slice(0, 500) }
     const entry = { ...base, rendered, ...failure, shot: null, ...audit, blockers }
     entry.shot = await shoot(job, entry, (path) => screenshotContent(page, path))
+    if (job.interact && rendered) await addInteraction(page, entry)
     return entry
   } catch (err) {
     const detail = err.message.split('\n')[0]
     return { ...base, ...failedRender(detail, [detail]) }
+  }
+}
+
+// Runs after the shot, since it leaves the page hovered, pressed and with transitions frozen. A
+// driver failure is recorded on the frame and never fails it.
+async function addInteraction(page, entry) {
+  try {
+    const { findings, targets, ms } = await runInteraction(page)
+    entry.warnings.push(...findings)
+    entry.metrics = { ...entry.metrics, interaction: { targets, ms } }
+  } catch (err) {
+    const error = err.message.split('\n')[0].slice(0, 300)
+    entry.metrics = { ...entry.metrics, interaction: { error } }
   }
 }
 
@@ -251,7 +278,8 @@ export function addFontSizeDrift(entries) {
 }
 
 // One line per distinct blocker, listing every width and theme it appears at.
-function groupBlockers(entries) {
+function groupBlockers(entries, sweep = false) {
+  const audited = entries.map((e) => e.width)
   const groups = new Map()
   for (const e of entries) {
     for (const b of e.blockers) {
@@ -265,8 +293,18 @@ function groupBlockers(entries) {
     .sort((a, b) => rank(a) - rank(b))
     .map((g) => {
       const detail = g.detail.replace(/\s+/g, ' ').slice(0, 160)
-      return `BLOCKER ${g.kind} ${g.id} [${[...g.at].join(' ')}] ${g.selector} :: ${detail}`
+      const where = sweep ? sweptWhere(g.at, audited) : [...g.at].join(' ')
+      return `BLOCKER ${g.kind} ${g.id} [${where}] ${g.selector} :: ${detail}`
     })
+}
+
+function sweptWhere(at, audited) {
+  const frames = [...at].map((f) => f.split('-'))
+  const themes = [...new Set(frames.map(([, theme]) => theme))]
+  return `${mergeWidthRanges(
+    frames.map(([w]) => Number(w)),
+    audited
+  )} ${themes.join(' ')}`
 }
 
 const total = (entries, count) => entries.reduce((n, e) => n + count(e), 0)
@@ -287,8 +325,8 @@ function countsLine(entries, distinct) {
  * At most `maxLines` lines: grouped blockers (render errors, then ratchet failures), an overflow
  * pointer if any, the ratchet line per ratcheted kind when `ratchet` is given, then the counts.
  */
-export function summarise(entries, maxLines = MAX_SUMMARY_LINES, ratchet = []) {
-  const blockerLines = groupBlockers(entries)
+export function summarise(entries, maxLines = MAX_SUMMARY_LINES, ratchet = [], sweep = false) {
+  const blockerLines = groupBlockers(entries, sweep)
   const tail = [...ratchetLines(ratchet), countsLine(entries, blockerLines.length)]
   const room = maxLines - 1 - tail.length
   const lines = blockerLines.slice(0, room)

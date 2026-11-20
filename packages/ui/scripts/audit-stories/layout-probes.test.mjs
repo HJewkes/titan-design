@@ -71,6 +71,24 @@ const layout = (...nodes) => {
   return { nodes, truncated: false, declared: {} }
 }
 
+const rowItem = (id, parent, box) =>
+  node(id, parent, box, { selector: `.${id}`, text: textOf(box) })
+// The shape of a goal card's lift row: a status dot, a `flex: 1` name cell whose 60px name leaves
+// the rest of the cell empty, and the sets x load text, 4px apart. Returns the nodes in tree order.
+const liftRow = ({ flexGrow = '1', width = 300, id = 'lift0', parent = null, y = 0 } = {}) => [
+  node(id, parent, [0, y, width, 16], {
+    selector: `.${id}`,
+    layout: { ...flex('row'), alignItems: 'center', columnGap: '4px' },
+  }),
+  node(`${id}-dot`, id, [0, y + 4, 8, 8], { selector: `.${id}-dot`, paints: true }),
+  node(`${id}-name`, id, [12, y, 220, 16], {
+    selector: `.${id}-name`,
+    layout: { ...flow, flexGrow },
+  }),
+  node(`${id}-name-text`, `${id}-name`, [12, y, 220, 16], { text: textOf([12, y, 60, 16]) }),
+  rowItem(`${id}-value`, id, [236, y + 2, 64, 12]),
+]
+
 // Column of heading + body: the heading wrapper carries `padBottom` that paints nothing, and the
 // body starts `gap` below the wrapper box.
 const stackWith = ({ padBottom, gap = 8, wrapper = {} }) => {
@@ -663,6 +681,53 @@ describe('gap-outlier', () => {
       expect(judgeGapOutlier(found)).toEqual([])
     })
   })
+
+  describe('rows a flex-grow child spreads', () => {
+    it('fires on the lift row when the name cell does not grow', () => {
+      expect(judgeGapOutlier(layout(...liftRow({ flexGrow: '0' })))).toEqual([
+        {
+          kind: 'gap-outlier',
+          selector: '.lift0-name',
+          detail: 'gap 164px between .lift0-name and .lift0-value is 41× the 4px gaps beside it',
+        },
+      ])
+    })
+
+    it('skips the gap a flex: 1 name cell spreads (a lift row: dot, name, sets x load)', () => {
+      expect(judgeGapOutlier(layout(...liftRow()))).toEqual([])
+    })
+
+    it('still flags an outlier between the other children of the row', () => {
+      const nodes = liftRow({ width: 400 })
+      nodes.push(rowItem('lift0-extra', 'lift0', [324, 2, 20, 12]))
+      expect(judgeGapOutlier(layout(...nodes)).map((f) => f.selector)).toEqual(['.lift0-value'])
+    })
+
+    it("counts the growing cell's own padding as the author's spacing", () => {
+      const nodes = liftRow()
+      nodes.find((n) => n.id === 'lift0-name').pad = [0, 160, 0, 0]
+      expect(judgeGapOutlier(layout(...nodes))).toHaveLength(1)
+    })
+
+    it('skips a gap an inkless flex: 1 spacer fills', () => {
+      const row = node('r', null, [0, 0, 300, 16], { layout: flex('row') })
+      const spacer = node('s', 'r', [52, 0, 180, 16], { layout: { ...flow, flexGrow: '1' } })
+      const kids = [
+        [0, 8],
+        [24, 24],
+        [236, 64],
+      ].map(([x, w], i) => rowItem(`k${i}`, 'r', [x, 2, w, 12]))
+      expect(judgeGapOutlier(layout(row, kids[0], kids[1], spacer, kids[2]))).toEqual([])
+    })
+
+    it('ignores a flex-grow value on a child of block flow, where it does nothing', () => {
+      const found = stack([8, 8, 40], { root: column({ layout: flow }) })
+      const k2 = found.nodes.find((n) => n.id === 'k2')
+      Object.assign(k2, { paints: false, layout: { ...flow, flexGrow: '1' } })
+      k2.box = [0, k2.box[1], 200, 50]
+      expect(judgeGapOutlier(found)).toHaveLength(1)
+    })
+  })
 })
 
 describe('proximity-inversion', () => {
@@ -791,6 +856,29 @@ describe('proximity-inversion', () => {
           interactive: id.endsWith('i0'),
         })
       expect(judgeProximityInversion(groups([20, 4], 4, { itemOf: one }))).toHaveLength(1)
+    })
+  })
+
+  describe('rows a flex-grow child spreads', () => {
+    // A card's list of three lift rows, 4px apart.
+    const liftList = (flexGrow) =>
+      layout(
+        node('list', null, [0, 0, 300, 56], { layout: flex() }),
+        ...[0, 1, 2].flatMap((i) =>
+          liftRow({ flexGrow, id: `lift${i}`, parent: 'list', y: i * 20 })
+        )
+      )
+
+    it('fires on the lift rows when the name cell does not grow', () => {
+      expect(judgeProximityInversion(liftList('0')).map((f) => f.detail)).toEqual([
+        '.lift0: items 164px apart inside, 4px from .lift1 outside',
+        '.lift1: items 164px apart inside, 4px from .lift0 outside',
+        '.lift2: items 164px apart inside, 4px from .lift1 outside',
+      ])
+    })
+
+    it('skips the gap a flex: 1 name cell spreads (a lift row: dot, name, sets x load)', () => {
+      expect(judgeProximityInversion(liftList('1'))).toEqual([])
     })
   })
 })

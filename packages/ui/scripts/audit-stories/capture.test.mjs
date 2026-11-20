@@ -96,6 +96,20 @@ describe('summarise grouping', () => {
   })
 })
 
+describe('summarise under --sweep', () => {
+  it('prints one BLOCKER line whose widths merge neighbouring audited widths into ranges', () => {
+    const overflow = blocker('page-overflow', 'html')
+    const widths = [320, 360, 400, 440, 1199, 1200]
+    const entries = widths.map((width) =>
+      frame({ width, blockers: [320, 360, 400, 1200].includes(width) ? [overflow] : [] })
+    )
+    const lines = summarise(entries, 30, [], true).split('\n')
+    expect(lines.filter((l) => l.startsWith('BLOCKER'))).toEqual([
+      'BLOCKER page-overflow components-molecules-button--default [320-400,1200 dark] html :: by 12px',
+    ])
+  })
+})
+
 describe('summarise line cap', () => {
   const many = (count) => [
     frame({ blockers: Array.from({ length: count }, (_, i) => blocker('clipped-text', `.n${i}`)) }),
@@ -301,8 +315,19 @@ describe('defaults and options', () => {
       width: 320,
       themes: ['dark', 'light'],
       touch: true,
+      interact: false,
       shotDir: join('/out', 'a--default'),
     })
+  })
+
+  it('drives interactions only on the widest width, whatever order the widths come in', () => {
+    const stories = [{ id: 'a--default' }]
+    const jobs = planJobs({
+      ...parseOptions(['--widths', '1280,360,768']),
+      stories,
+      outDir: '/out',
+    })
+    expect(jobs.filter((j) => j.interact).map((j) => j.width)).toEqual([1280])
   })
 
   it('plans one job per story and width', () => {
