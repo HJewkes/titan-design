@@ -30,6 +30,8 @@ jobs:
       OUT_DIR: pr-visual-out
       STORIES_FILE: pr-visual-stories.json
       BASE_TREE: pr-visual-base
+      # The PR's merge commit with main, where selection and the manifest run (TP-6766).
+      SELECT_TREE: pr-visual-select
 
     steps:
       # The PR head, not the merge commit, so "after" is exactly the sha the manifest names.
@@ -47,10 +49,22 @@ jobs:
         env:
           PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
 
+      # GITHUB_SHA is refs/pull/N/merge: main's selector and manifest with the PR's own catalog, so
+      # a fix on main reaches a gated PR without merging main into its head. Captures stay on the
+      # head and the merge base, so the manifest still names the head.
+      - name: Selector at the merge commit
+        run: |
+          git fetch --no-tags origin "$GITHUB_SHA"
+          if [ "$(git rev-parse "$GITHUB_SHA^2")" != "$HEAD_SHA" ]; then
+            echo "::error::$GITHUB_SHA is not the merge of the PR head $HEAD_SHA"
+            exit 1
+          fi
+          git worktree add --detach "$SELECT_TREE" "$GITHUB_SHA"
+
       # Writes STORIES_FILE; run=false when no story is selected, and every capture step skips.
       - name: Stories the PR changes
         id: stories
-        run: node packages/ui/scripts/pr-visual-stories.mjs
+        run: node "$SELECT_TREE/packages/ui/scripts/pr-visual-stories.mjs"
         env:
           GITHUB_TOKEN: ${{ github.token }}
 
@@ -87,9 +101,14 @@ jobs:
           node packages/ui/scripts/pr-visual-capture.mjs --side after \
             --static packages/ui/storybook-static --stories "$STORIES_FILE" --out "$OUT_DIR"
 
+      # Fails the run when a change to rendered UI shows no pair; the artifact still uploads below.
+      # The head's copy writes the manifest only when the merge commit tree was never created.
       - name: Manifest
         if: always()
-        run: node packages/ui/scripts/pr-visual-manifest.mjs
+        run: |
+          script="$SELECT_TREE/packages/ui/scripts/pr-visual-manifest.mjs"
+          [ -f "$script" ] || script=packages/ui/scripts/pr-visual-manifest.mjs
+          node "$script"
         env:
           GITHUB_REPOSITORY: ${{ github.repository }}
           BASE_SHA: ${{ steps.base.outputs.sha || github.event.pull_request.base.sha }}
