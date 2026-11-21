@@ -113,6 +113,45 @@ export interface BeatProps {
 }
 
 // @public
+export interface Box {
+    height: number;
+    width: number;
+    x: number;
+    y: number;
+}
+
+// @public
+export function camera(t: number, stations: readonly CameraStation[], input: CameraOptions): CameraFrame | null;
+
+// @public
+export const CAMERA_MOTION: {
+    readonly moveS: 1.5;
+    readonly easeName: "smootherstep";
+    readonly ease: Easing;
+};
+
+// @public
+export interface CameraFrame {
+    box: Box;
+    offset: Point;
+    scale: number;
+}
+
+// @public
+export interface CameraOptions {
+    ease?: Easing;
+    moveS?: number;
+    padding?: number;
+    viewport: Viewport;
+}
+
+// @public
+export interface CameraStation {
+    atS: number;
+    box: Box | null;
+}
+
+// @public
 export function chain(...spans: Span[]): Span;
 
 // @public
@@ -238,6 +277,9 @@ export type EvidenceChipSize = 'sm' | 'md' | 'lg';
 
 // @public
 export type EvidenceKind = (typeof EVIDENCE_KINDS)[number];
+
+// @public
+export function fitBox(box: Box, viewport: Viewport, padding?: number): CameraFrame;
 
 // @public
 export function interpolate(t: number, input: readonly [number, number], input2: readonly [number, number], input3?: InterpolateOptions): number;
@@ -545,10 +587,19 @@ export interface PathPoint {
 export type Phase = 'before' | 'during' | 'after';
 
 // @public
+export interface Point {
+    x: number;
+    y: number;
+}
+
+// @public
 export function pointAtLength(path: string | PathModel, at: number): PathPoint;
 
 // @public
 export const poly: (n: number) => Easing;
+
+// @public
+export function project(input: CameraFrame, p: Point): Point;
 
 // @public
 export function rafClock(input?: RafClockOptions): Clock;
@@ -683,6 +734,9 @@ export interface TitanMotionApi {
 }
 
 // @public
+export function unproject(input: CameraFrame, p: Point): Point;
+
+// @public
 export function useBeatEnvelope(options?: EnvelopeOptions): Envelope;
 
 // @public
@@ -704,6 +758,12 @@ export function useRawLocalTime(startS?: number, untilS?: number): number;
 
 // @public
 export function useWaitUntil(promise: Promise<unknown> | undefined): void;
+
+// @public
+export interface Viewport {
+    height: number;
+    width: number;
+}
 
 // (No @packageDocumentation comment for this package)
 

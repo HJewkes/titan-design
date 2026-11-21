@@ -24,6 +24,7 @@ const ENTRIES = {
   pages: 'dist/pages.d.ts',
   workout: 'dist/workout.d.ts',
   motion: 'dist/motion.d.ts',
+  'motion-camera': 'dist/motion/camera.d.ts',
   diagram: 'dist/diagram.d.ts',
   'visual-router': 'dist/visual-router.d.ts',
   'dependency-graph': 'dist/dependency-graph.d.ts',

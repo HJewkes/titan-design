@@ -11,6 +11,7 @@ export default defineConfig({
     pages: 'src/pages.ts',
     workout: 'src/workout.ts',
     motion: 'src/motion.ts',
+    'motion/camera': 'src/motion-camera.ts',
     diagram: 'src/diagram.ts',
     'visual-router': 'src/visual-router.ts',
     'dependency-graph': 'src/dependency-graph.ts',
