@@ -224,22 +224,40 @@ describe('pr-visual package exports that render nothing (TP-6890)', () => {
     ...pkg,
     exports: { ...pkg.exports, './motion/camera': { 'react-native': './src/motion-camera.ts' } },
   })
+  const dir = `${ui}/motion`
+  const [beat, hooks, camera, barrel] = ['Beat.tsx', 'hooks.ts', 'camera.ts', 'index.ts'].map(
+    (file) => `${dir}/${file}`
+  )
+  const motionCatalog = {
+    entries: [
+      ...catalog.entries,
+      { name: 'Beat', file: beat, sources: {}, composes: [], storyIds: ['beat--default'] },
+    ],
+  }
+  const baseFiles = {
+    [manifest]: JSON.stringify(base),
+    [beat]: "import { View } from 'react-native'\nimport { useLocalTime } from './hooks'\n",
+    [hooks]: "import { useContext } from 'react'\nexport const useLocalTime = () => 0\n",
+    [`${dir}/easing.ts`]: 'export const linear = (t) => t\n',
+    [camera]: "import { linear } from './easing'\nexport const camera = linear\n",
+    [barrel]: "export { useLocalTime } from './hooks'\n",
+  }
   const pureEntry = "export { camera } from './components/ui/motion/camera'\n"
   const trees = (before, after) => ({
     readBase: (file) => before[file],
     readHead: (file) => after[file],
+    headFiles: new Set(Object.keys(after)),
+    entries: motionCatalog.entries,
   })
   const change = (headPkg, headFiles = {}) =>
-    trees(
-      { [manifest]: JSON.stringify(base) },
-      { [manifest]: JSON.stringify(headPkg), ...headFiles }
-    )
+    trees(baseFiles, { ...baseFiles, [manifest]: JSON.stringify(headPkg), ...headFiles })
+  const edit = (headFiles) => trees(baseFiles, { ...baseFiles, ...headFiles })
   const classify = (paths, readers) => {
     const inert = inertPaths(paths, readers)
     return {
       inert,
       changes: changesStories(paths, inert),
-      selection: storiesFor(paths, catalog, { inert }),
+      selection: storiesFor(paths, motionCatalog, { inert, readSource: readers.readHead }),
     }
   }
 
@@ -287,28 +305,64 @@ describe('pr-visual package exports that render nothing (TP-6890)', () => {
     expect(changes).toBe(true)
   })
 
-  it('counts an entry file the change edits rather than adds', () => {
-    const readers = trees(
-      { [manifest]: JSON.stringify(withEntry(base)), [entryFile]: pureEntry },
-      { [manifest]: JSON.stringify(withEntry(base)), [entryFile]: `${pureEntry}// edited\n` }
-    )
-    expect(classify([entryFile], readers).changes).toBe(true)
-  })
-
-  it('counts an added src file that no exports entry names', () => {
-    const helper = 'packages/ui/src/motion-helper.ts'
-    expect(classify([helper], change(base, { [helper]: pureEntry })).changes).toBe(true)
-  })
-
-  it('still counts the component an added entry is imported by', () => {
-    const paths = [manifest, entryFile, `${ui}/Pill/Pill.tsx`]
-    const { changes, selection } = classify(
-      paths,
-      change(withEntry(base), { [entryFile]: pureEntry })
+  it('does not count an edited pure helper that no entry or story imports', () => {
+    const { inert, changes } = classify(
+      [camera],
+      edit({
+        [camera]: "import { linear } from './easing'\nexport const camera = (t) => linear(t)\n",
+      })
     )
 
+    expect(inert).toEqual(new Set([camera]))
+    expect(changes).toBe(false)
+  })
+
+  it('selects the entry whose import graph reaches an edited pure helper', () => {
+    const importsCamera = `${baseFiles[beat]}import { camera } from './camera'\n`
+    const { inert, changes, selection } = classify(
+      [camera],
+      edit({ [beat]: importsCamera, [camera]: `${baseFiles[camera]}// edited\n` })
+    )
+
+    expect(inert).toEqual(new Set())
     expect(changes).toBe(true)
-    expect(selection.storyIds).toEqual(['card--default', 'card--empty', 'pill--default'])
+    expect(selection.storyIds).toEqual(['beat--default'])
+  })
+
+  it('does not count an entry that imports a helper only as a type, which is erased', () => {
+    const typeOnly = `${baseFiles[beat]}import type { Camera } from './camera'\n`
+    expect(classify([camera], edit({ [beat]: typeOnly })).changes).toBe(false)
+  })
+
+  it('counts a pure helper a story file imports', () => {
+    const story = `${dir}/Beat.stories.tsx`
+    const { changes } = classify([camera], edit({ [story]: "import { camera } from './camera'\n" }))
+    expect(changes).toBe(true)
+  })
+
+  it('counts a helper whose own import graph loads react', () => {
+    const { changes } = classify(
+      [camera],
+      edit({ [camera]: "import { useLocalTime } from './hooks'\n" })
+    )
+    expect(changes).toBe(true)
+  })
+
+  it('does not count a barrel change that only adds a re-export of a pure module', () => {
+    const reexports = `${baseFiles[barrel]}export { camera, type Camera } from './camera'\n`
+    expect(classify([barrel], edit({ [barrel]: reexports })).changes).toBe(false)
+  })
+
+  it('counts a barrel change that re-exports a react module or edits a line', () => {
+    const beatExport = `${baseFiles[barrel]}export { Beat } from './Beat'\n`
+    const edited = "export { useLocalTime as useTime } from './hooks'\n"
+    expect(classify([barrel], edit({ [barrel]: beatExport })).changes).toBe(true)
+    expect(classify([barrel], edit({ [barrel]: edited })).changes).toBe(true)
+  })
+
+  it('clears nothing when an import names no file in the tree', () => {
+    const dangling = edit({ [beat]: `${baseFiles[beat]}import { x } from './missing'\n` })
+    expect(() => inertPaths([manifest, camera], dangling)).toThrow(/names no file/)
   })
 })
 
