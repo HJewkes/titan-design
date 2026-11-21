@@ -22,6 +22,19 @@ export {
   type Easing,
 } from './easing'
 export { MOTION } from './tokens'
+export {
+  camera,
+  CAMERA_MOTION,
+  fitBox,
+  project,
+  unproject,
+  type Box,
+  type CameraFrame,
+  type CameraOptions,
+  type CameraStation,
+  type Point,
+  type Viewport,
+} from './camera'
 export type {
   MotionPreset,
   MotionPresetFrame,

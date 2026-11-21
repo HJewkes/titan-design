@@ -41,6 +41,9 @@ const KNOWN_TYPE_ONLY_BARE_NAMES = new Set([
   'BrandKey', // components/shell/brands.tsx: type alias
   'BrandPreset', // components/shell/brands.tsx: interface
   'ElevationLevel', // theme/elevation.ts: type alias
+  // The /motion/camera entry (TP-6887) shares `easing.ts` with /motion, so the dts bundler moves
+  // the type to a shared chunk and re-exports it bare: a type alias in motion/easing.ts.
+  'Easing',
   'ExerciseIndicatorKind', // components/custom/Workout/ExerciseIndicator.tsx: type alias
   'GlowIntensity', // theme/elevation.ts: type alias
   // The /dependency-graph entry (TD-1023) shares these with the root, so the dts bundler moves
