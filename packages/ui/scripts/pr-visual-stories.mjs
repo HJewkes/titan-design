@@ -1,4 +1,7 @@
+import { execFileSync } from 'node:child_process'
 import { appendFileSync, readFileSync, writeFileSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
+import { isDeepStrictEqual } from 'node:util'
 
 import { isEntryPoint } from './lib/entry.mjs'
 import { API_FILE_CAP, fetchChangedPaths, firstRenderedPath } from './visual-paths.mjs'
@@ -10,7 +13,8 @@ import { API_FILE_CAP, fetchChangedPaths, firstRenderedPath } from './visual-pat
  * secondary story file selects the catalogued entries of its own directory (TP-6757). A global
  * (Tailwind, tokens, Storybook config, dependencies) could change any story, and so could a path
  * outside every catalogued directory, so either gives `broad` and the reason says which. Over the
- * cap, the first stories in a fixed order are captured and the truncation is recorded.
+ * cap, the first stories in a fixed order are captured and the truncation is recorded. A path is
+ * classified by name, except the few `inertPaths` clears by reading the change (TP-6890).
  */
 export const DEFAULT_CAP = 40
 
@@ -47,29 +51,70 @@ const GLOBAL_PATHS = [
 
 const matches = (patterns, path) => patterns.some((pattern) => pattern.test(path))
 
+const UI_MANIFEST = 'packages/ui/package.json'
+const ENTRY_FILE = /^packages\/ui\/src\/[^/]+\.ts$/
+const NO_PATHS = new Set()
+
+const parseJson = (text) => {
+  try {
+    return JSON.parse(text)
+  } catch {
+    return undefined
+  }
+}
+const withoutExports = (pkg) => ({ ...pkg, exports: undefined })
+const exportTargets = (node) =>
+  typeof node === 'string' ? [node] : Object.values(node ?? {}).flatMap(exportTargets)
+
+/** Whether `head` differs from `base` in its `exports` map alone; unparsable counts as more. */
+const changesExportsOnly = (base, head) =>
+  Boolean(base && head) && isDeepStrictEqual(withoutExports(base), withoutExports(head))
+
+/**
+ * The changed paths whose content shows that no story renders them, though their path is a
+ * global or a story's (TP-6890): `packages/ui/package.json` when only its `exports` map changed,
+ * and a `src/*.ts` package entry the change adds and that map names. An added file reaches a story
+ * only through a file that imports it, and that importer is in the same diff, classified on its
+ * own. `readBase` and `readHead` give a file's text before and after, undefined where it is absent.
+ */
+export function inertPaths(changedPaths, { readBase, readHead }) {
+  const head = parseJson(readHead(UI_MANIFEST))
+  const targets = new Set(exportTargets(head?.exports))
+  const isAddedEntry = (path) =>
+    ENTRY_FILE.test(path) &&
+    targets.has(`./${path.slice('packages/ui/'.length)}`) &&
+    readBase(path) === undefined &&
+    readHead(path) !== undefined
+  const isInert = (path) =>
+    path === UI_MANIFEST ? changesExportsOnly(parseJson(readBase(path)), head) : isAddedEntry(path)
+  return new Set(changedPaths.filter(isInert))
+}
+
 /**
  * What a changed path is to the capture: `pipeline`, `global` (could change any story), `story`
  * (a story renders it), `non-story` (CI reads it, no story does), or undefined outside CI's
- * trigger list. The one place a path is classified, so selection and the seat check agree.
+ * trigger list. `inert` holds the paths `inertPaths` cleared by content. The one place a path is
+ * classified, so selection and the seat check agree.
  */
-export function pathRole(path) {
+export function pathRole(path, inert = NO_PATHS) {
   if (matches(PIPELINE_PATHS, path)) return 'pipeline'
   if (!firstRenderedPath([path])) return undefined
+  if (inert.has(path)) return 'non-story'
   if (matches(GLOBAL_PATHS, path)) return 'global'
   return matches(NON_STORY_PATHS, path) ? 'non-story' : 'story'
 }
 
 const isPipeline = (path) => pathRole(path) === 'pipeline'
-const rendersStory = (path) => ['story', 'global'].includes(pathRole(path))
+const rendersStory = (path, inert) => ['story', 'global'].includes(pathRole(path, inert))
 
 /**
  * Whether a change touches a path a story renders, so a run that shows nothing for it is a
  * failure for the seat to diagnose rather than an owner gate with nothing to look at (TP-6766).
  * A list at the API cap is incomplete, so it may hide a rendered path and counts as one.
  */
-export const changesStories = (changedPaths) =>
+export const changesStories = (changedPaths, inert = NO_PATHS) =>
   changedPaths.length >= API_FILE_CAP ||
-  changedPaths.some((path) => rendersStory(path) || isPipeline(path))
+  changedPaths.some((path) => rendersStory(path, inert) || isPipeline(path))
 
 const owns = (entry, path) => entry.file === path || entry.sources?.status === path
 const dirOf = (path) => path.slice(0, path.lastIndexOf('/'))
@@ -176,16 +221,17 @@ function attribute(rendered, entries, readSource) {
 /**
  * `{ storyIds, selected, reason, truncated? }` for the stories a change reaches, or
  * `{ broad: true, storyIds: [], unowned, reason }` when it cannot be narrowed. `catalog` is
- * `src/arch/component-catalog.json`; `readSource(file)` returns a catalogued file's text.
+ * `src/arch/component-catalog.json`; `readSource(file)` returns a catalogued file's text, and
+ * `inert` the paths `inertPaths` cleared.
  */
 export function storiesFor(
   changedPaths,
   catalog,
-  { cap = DEFAULT_CAP, readSource = () => '' } = {}
+  { cap = DEFAULT_CAP, readSource = () => '', inert = NO_PATHS } = {}
 ) {
   const entries = catalog.entries
   const pipelinePaths = changedPaths.filter(isPipeline)
-  const rendered = changedPaths.filter(rendersStory)
+  const rendered = changedPaths.filter((path) => rendersStory(path, inert))
   const { attribution, unowned } = attribute(rendered, entries, readSource)
   if (unowned.length > 0)
     return { broad: true, storyIds: [], selected: [], unowned, reason: broadReason(unowned) }
@@ -209,6 +255,24 @@ const readRepoFile = (file) => {
   }
 }
 
+const git = (...args) =>
+  execFileSync('git', ['-C', fileURLToPath(new URL('../../../', import.meta.url)), ...args], {
+    encoding: 'utf8',
+  })
+const readAt = (rev) => (file) =>
+  git('ls-tree', '--name-only', rev, file) ? git('show', `${rev}:${file}`) : undefined
+
+// The tree is the PR's merge commit, so its first parent is the base the PR merges into. A read
+// that fails clears nothing, so every path keeps the role its name gives it.
+function inertAtMerge(paths) {
+  try {
+    return inertPaths(paths, { readBase: readAt('HEAD^1'), readHead: readAt('HEAD') })
+  } catch (error) {
+    console.log(`pr-visual-stories: classifying by path only (${error.message})`)
+    return NO_PATHS
+  }
+}
+
 async function select({ GITHUB_REPOSITORY, PR_NUMBER, GITHUB_TOKEN }) {
   const catalog = JSON.parse(
     readFileSync(new URL('../src/arch/component-catalog.json', import.meta.url), 'utf8')
@@ -219,8 +283,9 @@ async function select({ GITHUB_REPOSITORY, PR_NUMBER, GITHUB_TOKEN }) {
       pr: PR_NUMBER,
       token: GITHUB_TOKEN,
     })
-    const selection = storiesFor(paths, catalog, { readSource: readRepoFile })
-    return { ...selection, changesStories: changesStories(paths) }
+    const inert = inertAtMerge(paths)
+    const selection = storiesFor(paths, catalog, { readSource: readRepoFile, inert })
+    return { ...selection, inert: [...inert], changesStories: changesStories(paths, inert) }
   } catch (error) {
     return {
       storyIds: [],
@@ -233,6 +298,7 @@ async function select({ GITHUB_REPOSITORY, PR_NUMBER, GITHUB_TOKEN }) {
 async function main() {
   const selection = await select(process.env)
   console.log(`pr-visual-stories: ${selection.reason}`)
+  for (const path of selection.inert ?? []) console.log(`  renders nothing by content: ${path}`)
   for (const path of selection.unowned ?? []) console.log(`  unowned: ${path}`)
   for (const id of selection.storyIds) console.log(`  ${id}`)
   writeFileSync(process.env.STORIES_FILE, JSON.stringify(selection))

@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest'
-import { changesStories, pathRole, PIPELINE_CANARY, storiesFor } from './pr-visual-stories.mjs'
+import { buildManifest, seatFailure } from './pr-visual-manifest.mjs'
+import {
+  changesStories,
+  inertPaths,
+  pathRole,
+  PIPELINE_CANARY,
+  storiesFor,
+} from './pr-visual-stories.mjs'
 import { RENDERED_UI_PATTERNS } from './visual-paths.mjs'
 
 const ui = 'packages/ui/src/components/ui'
@@ -205,6 +212,103 @@ describe('pr-visual changes to rendered UI (TP-6766)', () => {
   it('counts a rendered path that no catalog entry owns', () => {
     expect(changesStories(['packages/ui/src/hooks/useThing.ts'])).toBe(true)
     expect(changesStories(['packages/ui/src/test/fixtures/stress.ts'])).toBe(true)
+  })
+})
+
+describe('pr-visual package exports that render nothing (TP-6890)', () => {
+  const manifest = 'packages/ui/package.json'
+  const entryFile = 'packages/ui/src/motion-camera.ts'
+  const motion = { react: './src/motion.ts', import: { default: './dist/motion.mjs' } }
+  const base = { name: 'ui', exports: { './motion': motion }, dependencies: { react: '19.0.0' } }
+  const withEntry = (pkg) => ({
+    ...pkg,
+    exports: { ...pkg.exports, './motion/camera': { 'react-native': './src/motion-camera.ts' } },
+  })
+  const pureEntry = "export { camera } from './components/ui/motion/camera'\n"
+  const trees = (before, after) => ({
+    readBase: (file) => before[file],
+    readHead: (file) => after[file],
+  })
+  const change = (headPkg, headFiles = {}) =>
+    trees(
+      { [manifest]: JSON.stringify(base) },
+      { [manifest]: JSON.stringify(headPkg), ...headFiles }
+    )
+  const classify = (paths, readers) => {
+    const inert = inertPaths(paths, readers)
+    return {
+      inert,
+      changes: changesStories(paths, inert),
+      selection: storiesFor(paths, catalog, { inert }),
+    }
+  }
+
+  it('does not count a change that only adds an exports entry and its new pure entry file', () => {
+    const paths = [manifest, entryFile]
+    const { changes, selection } = classify(
+      paths,
+      change(withEntry(base), { [entryFile]: pureEntry })
+    )
+
+    expect(changes).toBe(false)
+    expect(selection).toEqual({
+      storyIds: [],
+      selected: [],
+      reason: 'none of 2 changed paths renders a story',
+    })
+    const run = { ...selection, changesStories: changes }
+    expect(seatFailure(buildManifest({ selection: run, before: [], after: [] }), run)).toBe(
+      undefined
+    )
+  })
+
+  it('keeps package.json global when a dependency changes beside the exports', () => {
+    const bumped = { ...withEntry(base), dependencies: { react: '19.1.0' } }
+    const { inert, changes, selection } = classify(
+      [manifest, entryFile],
+      change(bumped, { [entryFile]: pureEntry })
+    )
+
+    expect(inert).toEqual(new Set([entryFile]))
+    expect(changes).toBe(true)
+    expect(selection).toMatchObject({ broad: true, unowned: [manifest] })
+  })
+
+  it.each([
+    ['devDependencies', { ...withEntry(base), devDependencies: { vitest: '3.0.0' } }],
+    ['sideEffects', { ...withEntry(base), sideEffects: false }],
+    ['name', { ...withEntry(base), name: 'ui-next' }],
+  ])('keeps package.json global when %s changes beside the exports', (_field, headPkg) => {
+    expect(pathRole(manifest, inertPaths([manifest], change(headPkg)))).toBe('global')
+  })
+
+  it('keeps package.json global when either side does not parse', () => {
+    const { changes } = classify([manifest], trees({ [manifest]: '{' }, { [manifest]: '{}' }))
+    expect(changes).toBe(true)
+  })
+
+  it('counts an entry file the change edits rather than adds', () => {
+    const readers = trees(
+      { [manifest]: JSON.stringify(withEntry(base)), [entryFile]: pureEntry },
+      { [manifest]: JSON.stringify(withEntry(base)), [entryFile]: `${pureEntry}// edited\n` }
+    )
+    expect(classify([entryFile], readers).changes).toBe(true)
+  })
+
+  it('counts an added src file that no exports entry names', () => {
+    const helper = 'packages/ui/src/motion-helper.ts'
+    expect(classify([helper], change(base, { [helper]: pureEntry })).changes).toBe(true)
+  })
+
+  it('still counts the component an added entry is imported by', () => {
+    const paths = [manifest, entryFile, `${ui}/Pill/Pill.tsx`]
+    const { changes, selection } = classify(
+      paths,
+      change(withEntry(base), { [entryFile]: pureEntry })
+    )
+
+    expect(changes).toBe(true)
+    expect(selection.storyIds).toEqual(['card--default', 'card--empty', 'pill--default'])
   })
 })
 
