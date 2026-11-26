@@ -694,6 +694,9 @@ export function useBeatTime(): LocalTime & {
 export function useCue(name: string): number;
 
 // @public
+export function useCueProgress(name: string, durationS?: number): number;
+
+// @public
 export function useLocalTime(startS: number, durationS: number): LocalTime;
 
 // @public
