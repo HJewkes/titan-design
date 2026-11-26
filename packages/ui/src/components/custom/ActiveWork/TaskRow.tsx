@@ -1,5 +1,6 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { Indicator } from '../../ui/indicator'
+import { Link } from '../../ui/link'
 import { Pill } from '../../ui/pill'
 import { Tooltip } from '../../ui/tooltip'
 import { formatDateTime } from '../../ui/date-time'
@@ -49,7 +50,15 @@ export const TASK_COLUMN_WIDTHS = {
   age: 74,
 } as const
 
-export interface TaskRowProps {
+/** How a host turns each task id into a link; with neither prop set the id is plain text. */
+export interface TaskLinkProps {
+  /** Makes the id a link; called with the task so the host owns client routing. */
+  onTaskPress?: (task: TaskListItem) => void
+  /** Makes the id a real anchor on web; pair with `onTaskPress` for client-side routing. */
+  getTaskHref?: (task: TaskListItem) => string
+}
+
+export interface TaskRowProps extends TaskLinkProps {
   task: TaskListItem
   /** Pre-formatted age label (e.g. "3d ago"). Passed in so rows stay pure and deterministic. */
   ageLabel: string
@@ -57,6 +66,27 @@ export interface TaskRowProps {
   severityDotOnly?: boolean
   /** Columns the table left out; the row skips their cells so header and body stay aligned. */
   hideColumns?: TaskColumnKey[]
+}
+
+/** The id as a link when the host gave a press or href handler, plain text otherwise. */
+function TaskId({ task, onTaskPress, getTaskHref }: TaskLinkProps & { task: TaskListItem }) {
+  if (!onTaskPress && !getTaskHref) {
+    return (
+      <Typography variant="mono" className="text-xs text-brand-primary">
+        {task.id}
+      </Typography>
+    )
+  }
+  return (
+    <Link
+      href={getTaskHref?.(task)}
+      onPress={onTaskPress ? () => onTaskPress(task) : undefined}
+      color="inherit"
+      className="font-mono text-xs text-brand-primary"
+    >
+      {task.id}
+    </Link>
+  )
 }
 
 /**
@@ -104,7 +134,13 @@ function SeverityPill({
  * {@link Pill} with an {@link Indicator} for the severity dot, and {@link TagPills} for tags. Used by
  * {@link TaskTable}.
  */
-export function TaskRow({ task, ageLabel, severityDotOnly = false, hideColumns }: TaskRowProps) {
+export function TaskRow({
+  task,
+  ageLabel,
+  severityDotOnly = false,
+  hideColumns,
+  ...links
+}: TaskRowProps) {
   const show = (column: TaskColumnKey) => !hideColumns?.includes(column)
   const severityWidth = severityDotOnly
     ? TASK_COLUMN_WIDTHS.severityCompact
@@ -122,9 +158,7 @@ export function TaskRow({ task, ageLabel, severityDotOnly = false, hideColumns }
 
       {show('id') ? (
         <TableCell width={TASK_COLUMN_WIDTHS.id}>
-          <Typography variant="mono" className="text-xs text-brand-primary">
-            {task.id}
-          </Typography>
+          <TaskId task={task} {...links} />
         </TableCell>
       ) : null}
 
