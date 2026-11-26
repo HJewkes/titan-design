@@ -2970,6 +2970,7 @@ export function InitiativeHeader(input: InitiativeHeaderProps): react_jsx_runtim
 export interface InitiativeHeaderProps {
     // (undocumented)
     className?: string;
+    level?: 1 | 2 | 3 | 4 | 5 | 6;
     rank?: number;
     shipTarget?: string;
     slug: string;
