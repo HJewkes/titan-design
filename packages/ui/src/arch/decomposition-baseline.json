@@ -239,7 +239,7 @@
     "complexity": 16
   },
   "components/ui/input/Input.tsx#Input": {
-    "complexity": 31,
+    "complexity": 29,
     "props": 15
   },
   "components/ui/input/Input.tsx#PasswordInput": {
