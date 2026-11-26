@@ -1398,6 +1398,9 @@ export interface ConversationTurnProps {
 }
 
 // @public
+export function countAtOrBefore(ascending: readonly number[], target: number): number;
+
+// @public
 export function countUndatedExcluded(items: KnowledgeItem[], filters: KnowledgeFilters, now: number): number;
 
 // @public
