@@ -9,6 +9,10 @@ private and unversioned, so every entry sits under `[Unreleased]`.
 
 ### Added
 
+- Static frames now come with an element map (TD-1098): `frames/<key>.targets.json`
+  (`titan-review/frame-targets@1`) boxes every `[data-testid]` and `[role]` element under the story
+  root, and the frame's record names it as `targets: {file, sha256}`. A map over 256 KiB is not
+  written. `FrameShooter.shoot` now returns `{theme, boxes}`.
 - `probeClip` in `src/clip-probe.ts` (TD-969): a Playwright driver for `clipDiff`. It screenshots
   a text box, lifts its clip (`overflow`, `text-overflow`, line clamp, `clip-path`, `clip`, each
   `!important`; sizes untouched), screenshots again, restores the element's style attribute and

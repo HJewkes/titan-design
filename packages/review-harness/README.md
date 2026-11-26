@@ -775,6 +775,7 @@ read somewhere no Storybook is running (the console's rounds view). They land be
 
 ```
 <round-dir>/frames/<width>-<key>-<story-name>.png   one per story variant per width
+<round-dir>/frames/<width>-<key>-<story-name>.targets.json   that frame's element map
 <round-dir>/frames/frames.json                      the index (titan-review/frames@1)
 ```
 
@@ -790,6 +791,13 @@ build writes none. A render is staged in a sibling directory and swapped in for 
 only when every frame passes, so a failed render (a theme that did not apply, a story that
 throws, a browser that dies) leaves the previous frames and `frames.json` exactly as they
 were, and a successful one leaves no file an earlier render wrote.
+
+Each element map (TD-1098) is a `titan-review/frame-targets@1` file:
+`{schema, boxes: [{x, y, width, height, target: {testId?, role?, text?}}]}`, one box per
+`[data-testid]` or `[role]` element under `#storybook-root`, in viewport CSS px relative to the
+root's top left. `text` is the element's text content with whitespace collapsed. The frame's record
+names the map as `targets: {file, sha256}`; its `viewport.width` is the width those px were
+measured at. A map over 256 KiB is not written, and that record carries no `targets`.
 
 The renderer is the harness's package-local subpath export (the harness is `private`, so the
 export resolves inside this workspace, not from npm):
