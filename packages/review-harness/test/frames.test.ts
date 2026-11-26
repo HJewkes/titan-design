@@ -13,9 +13,10 @@ import {
   renderFrames,
   type RenderFramesOptions,
 } from '@titan-design/review-harness/frames'
-import type { FrameShooter, Viewport } from '../src/shooter.ts'
+import type { FrameShooter, TargetBox, Viewport } from '../src/shooter.ts'
 import { ManifestSchema, type Manifest, type ThemeMode } from '@titan-design/review-schema'
 import { exampleManifest } from '../src/example.ts'
+import { ConsoleFrameTargetsSchema, ConsoleFramesIndexSchema } from './console-frames-schema.ts'
 
 const STORYBOOK = 'http://127.0.0.1:6100'
 const SHA = 'c'.repeat(64)
@@ -26,15 +27,26 @@ interface Shot {
   file: string
 }
 
-/** A shooter that writes the url it was given as the frame's bytes and reports `applied` as the theme. */
-function stubShooter(applied: (url: string) => ThemeMode = () => 'dark') {
+const BOXES: TargetBox[] = [
+  { x: 0, y: 0, width: 320, height: 48, target: { testId: 'card', text: 'Weekly volume' } },
+  { x: 16.5, y: -2, width: 0, height: 20, target: { role: 'button' } },
+]
+
+/**
+ * A shooter that writes the url it was given as the frame's bytes, reports `applied` as the theme
+ * and `boxes` as the story's elements.
+ */
+function stubShooter(
+  applied: (url: string) => ThemeMode = () => 'dark',
+  boxes: (viewport: Viewport) => TargetBox[] = () => BOXES
+) {
   const shots: Shot[] = []
   let closed = false
   const open = async (): Promise<FrameShooter> => ({
     shoot: async (url, viewport, file) => {
       shots.push({ url, viewport, file })
       await writeFile(file, `png:${url}`)
-      return applied(url)
+      return { theme: applied(url), boxes: boxes(viewport) }
     },
     close: async () => void (closed = true),
   })
@@ -71,6 +83,10 @@ async function setup(manifest: Manifest, extra: Partial<RenderFramesOptions> = {
 
 const sha256 = (bytes: Buffer | string) => createHash('sha256').update(bytes).digest('hex')
 
+/** What a frames dir holds after a render: a PNG and an element map per key, and the index. */
+const frameFiles = (keys: string[]) =>
+  [...keys.flatMap((k) => [`${k}.png`, `${k}.targets.json`]), 'frames.json'].sort()
+
 describe('renderFrames', () => {
   it('writes one PNG per story variant per width under <roundsDir>/<roundId>/frames and indexes them', async () => {
     const manifest = round()
@@ -94,13 +110,15 @@ describe('renderFrames', () => {
       viewport: { width: 1280, height: 900 },
       file: `frames/1280-A-${a.storyId!.split('--').pop()}.png`,
       sha256: sha256(`png:${shooter.shots[0].url}`),
+      targets: {
+        file: `frames/1280-A-${a.storyId!.split('--').pop()}.targets.json`,
+        sha256: expect.any(String),
+      },
     })
     expect(index.frames[1].viewport).toEqual({ width: 360, height: 900 })
     for (const frame of index.frames)
       expect(sha256(await readFile(join(dir, '..', frame.file)))).toBe(frame.sha256)
-    expect((await readdir(dir)).sort()).toEqual(
-      [...keys.map((k) => `${k}.png`), 'frames.json'].sort()
-    )
+    expect((await readdir(dir)).sort()).toEqual(frameFiles(keys))
     expect(await readFramesIndex(dir)).toEqual(index)
     expect(shooter.isClosed()).toBe(true)
   })
@@ -171,9 +189,7 @@ describe('renderFrames', () => {
     expect(await readFramesIndex(dir)).toEqual(before)
     for (const frame of before.frames)
       expect(sha256(await readFile(join(dir, '..', frame.file)))).toBe(frame.sha256)
-    expect((await readdir(dir)).sort()).toEqual(
-      [...before.frames.map((f) => `${f.key}.png`), 'frames.json'].sort()
-    )
+    expect((await readdir(dir)).sort()).toEqual(frameFiles(before.frames.map((f) => f.key)))
     expect(await readdir(join(dir, '..'))).toEqual(['frames'])
   })
 
@@ -208,5 +224,65 @@ describe('renderFrames', () => {
     expect(index.frames).toEqual([])
     expect(shooter.shots).toEqual([])
     expect(await readdir(dir)).toEqual(['frames.json'])
+  })
+})
+
+describe('renderFrames element maps', () => {
+  it('names each frame element map with the sha256 of the bytes it wrote', async () => {
+    const manifest = round()
+    const { options, dir } = await setup(manifest)
+    const { frames } = await renderFrames(manifest, STORYBOOK, options)
+    expect(frames).toHaveLength(6)
+    for (const frame of frames) {
+      expect(frame.targets?.file).toBe(`frames/${frame.key}.targets.json`)
+      expect(sha256(await readFile(join(dir, '..', frame.targets!.file)))).toBe(
+        frame.targets!.sha256
+      )
+    }
+  })
+
+  it('writes the element map as frame-targets@1 holding the boxes the shooter found', async () => {
+    const manifest = round()
+    const { options, dir } = await setup(manifest)
+    const { frames } = await renderFrames(manifest, STORYBOOK, options)
+    const bytes = await readFile(join(dir, '..', frames[0].targets!.file), 'utf8')
+    expect(ConsoleFrameTargetsSchema.parse(JSON.parse(bytes))).toEqual({
+      schema: 'titan-review/frame-targets@1',
+      boxes: BOXES,
+    })
+  })
+
+  it('writes no element map, and names none, for a box list over 256 KiB', async () => {
+    const manifest = round()
+    const oversized = [{ ...BOXES[0], target: { text: 'x'.repeat(256 * 1024) } }]
+    const shooter = stubShooter(themeFromUrl, ({ width }) => (width === 360 ? oversized : BOXES))
+    const { options, dir } = await setup(manifest, { open: shooter.open })
+    const { frames } = await renderFrames(manifest, STORYBOOK, options)
+    const narrow = frames.filter((f) => f.viewport.width === 360)
+    expect(narrow).toHaveLength(3)
+    for (const frame of narrow) {
+      expect(frame).not.toHaveProperty('targets')
+      expect(await readdir(dir)).not.toContain(`${frame.key}.targets.json`)
+    }
+    expect(frames.filter((f) => f.targets).map((f) => f.viewport.width)).toEqual([1280, 1280, 1280])
+  })
+
+  it('leaves no element map from the staged render when a theme check fails', async () => {
+    const manifest = round(true)
+    const { roundsDir, options } = await setup(manifest, {
+      open: stubShooter(() => 'dark').open,
+    })
+    await expect(renderFrames(manifest, STORYBOOK, options)).rejects.toThrow(FrameRenderError)
+    const left = await readdir(roundsDir, { recursive: true })
+    expect(left.filter((name) => name.endsWith('.targets.json'))).toEqual([])
+  })
+
+  it('writes an index the console reads, element maps included', async () => {
+    const manifest = round()
+    const { options, dir } = await setup(manifest)
+    const { frames } = await renderFrames(manifest, STORYBOOK, options)
+    const read = ConsoleFramesIndexSchema.parse(await readFramesIndex(dir))
+    expect(read.frames.map((f) => f.targets)).toEqual(frames.map((f) => f.targets))
+    expect(read.frames.every((f) => f.targets)).toBe(true)
   })
 })

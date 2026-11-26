@@ -12,11 +12,21 @@ import {
 } from '@titan-design/review-schema'
 import { storyUrl } from './round.ts'
 import { AUTO_FALLBACK_HEIGHT, frameHeight, isAuto } from './sections.ts'
-import { openChromiumShooter, type OpenShooter, type Viewport } from './shooter.ts'
+import {
+  openChromiumShooter,
+  type FrameShooter,
+  type OpenShooter,
+  type TargetBox,
+  type Viewport,
+} from './shooter.ts'
 
 export const FRAMES_SCHEMA_ID = 'titan-review/frames@1'
+export const FRAME_TARGETS_SCHEMA_ID = 'titan-review/frame-targets@1'
 export const FRAMES_DIR = 'frames'
 export const FRAMES_FILE = 'frames.json'
+
+/** The console refuses a larger targets file, so a larger element map is not written. */
+const MAX_TARGETS_BYTES = 256 * 1024
 
 /** The Storybook global `withThemeByClassName` reads; light puts `.light` on <html>. */
 const THEME_GLOBAL = 'theme'
@@ -37,6 +47,8 @@ export interface FrameRecord {
   /** Relative to the round directory: `frames/<key>.png`. */
   file: string
   sha256: string
+  /** The element map, `frames/<key>.targets.json`; absent when it would exceed 256 KiB. */
+  targets?: { file: string; sha256: string }
 }
 
 export interface FramesIndex {
@@ -149,27 +161,43 @@ export async function sha256Of(file: string): Promise<string> {
     .digest('hex')
 }
 
+/** Writes `<key>.targets.json` beside the frame's PNG, or nothing when the map is over the cap. */
+async function writeTargets(shot: Shot, boxes: TargetBox[]): Promise<FrameRecord['targets']> {
+  const json = `${JSON.stringify({ schema: FRAME_TARGETS_SCHEMA_ID, boxes })}\n`
+  if (Buffer.byteLength(json) > MAX_TARGETS_BYTES) return undefined
+  const name = `${shot.key}.targets.json`
+  const file = join(dirname(shot.file), name)
+  await writeFile(file, json)
+  return { file: `${FRAMES_DIR}/${name}`, sha256: await sha256Of(file) }
+}
+
+async function shootFrame(
+  shooter: FrameShooter,
+  shot: Shot,
+  storybookUrl: string
+): Promise<FrameRecord> {
+  const url = storyUrl(storybookUrl, shot.variant)
+  const { theme, boxes } = await shooter.shoot(url, shot.viewport, shot.file)
+  const applied = assertDeclaredTheme(shot, theme)
+  const targets = await writeTargets(shot, boxes)
+  return {
+    key: shot.key,
+    variant: shot.variant.key,
+    storyId: shot.variant.storyId,
+    theme: applied,
+    viewport: shot.viewport,
+    file: `${FRAMES_DIR}/${shot.key}.png`,
+    sha256: await sha256Of(shot.file),
+    ...(targets ? { targets } : {}),
+  }
+}
+
 async function shootAll(shots: Shot[], storybookUrl: string, open: OpenShooter) {
   const records: FrameRecord[] = []
   if (shots.length === 0) return records
   const shooter = await open()
   try {
-    for (const shot of shots) {
-      const applied = await shooter.shoot(
-        storyUrl(storybookUrl, shot.variant),
-        shot.viewport,
-        shot.file
-      )
-      records.push({
-        key: shot.key,
-        variant: shot.variant.key,
-        storyId: shot.variant.storyId,
-        theme: assertDeclaredTheme(shot, applied),
-        viewport: shot.viewport,
-        file: `${FRAMES_DIR}/${shot.key}.png`,
-        sha256: await sha256Of(shot.file),
-      })
-    }
+    for (const shot of shots) records.push(await shootFrame(shooter, shot, storybookUrl))
   } finally {
     await shooter.close()
   }
@@ -202,9 +230,9 @@ async function stageFrames(
 
 /**
  * Renders every story frame the manifest names, at every width, to static PNGs under
- * `<roundsDir>/<roundId>/frames/<key>.png`, and writes `frames.json` beside them. No server:
- * it needs only a running Storybook on loopback. Image variants are already static files
- * beside the round and are not copied. A story the Storybook does not serve, or a declared
+ * `<roundsDir>/<roundId>/frames/<key>.png`, each with its element map `<key>.targets.json`, and
+ * writes `frames.json` beside them. No server: it needs only a running Storybook on loopback.
+ * Image variants are already static files beside the round and are not copied. A story the Storybook does not serve, or a declared
  * theme that did not apply, rejects before (or instead of) writing the index. The render is
  * staged beside the frames dir and swapped in only on success, so a failed render leaves the
  * previous frames and index exactly as they were.
