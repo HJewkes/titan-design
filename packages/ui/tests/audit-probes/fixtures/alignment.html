@@ -29,6 +29,21 @@
         background: #dde;
         padding: 12px;
       }
+      /* A small overline above a large value, beside a text-less bar frame (live-strip shape). */
+      .values {
+        display: flex;
+        flex-direction: column;
+      }
+      .bars {
+        display: flex;
+        align-items: flex-end;
+        gap: 4px;
+        height: 48px;
+      }
+      .bars > div {
+        width: 12px;
+        background: #4a4;
+      }
     </style>
   </head>
   <body>
@@ -75,7 +90,29 @@
         </div>
       </div>
 
+      <div class="case" data-testid="last-baseline-bars" style="align-items: last baseline">
+        <div class="values">
+          <span style="font-size: 11px">REPS</span>
+          <span style="font-size: 40px; line-height: 1">5</span>
+        </div>
+        <div class="bars">
+          <div style="height: 20px"></div>
+          <div style="height: 44px"></div>
+        </div>
+      </div>
+
       <!-- Positives -->
+      <div class="case" data-testid="last-baseline-miss" style="align-items: last baseline">
+        <div class="values">
+          <span style="font-size: 11px">REPS</span>
+          <span style="font-size: 40px; line-height: 1">5</span>
+        </div>
+        <div class="bars" style="position: relative; top: 8px">
+          <div style="height: 20px"></div>
+          <div style="height: 44px"></div>
+        </div>
+      </div>
+
       <div class="case" data-testid="icon-first-miss" style="align-items: baseline">
         <span style="font-size: 12px">Label</span>
         <div style="display: flex; align-items: center; gap: 4px; position: relative; top: 6px">
