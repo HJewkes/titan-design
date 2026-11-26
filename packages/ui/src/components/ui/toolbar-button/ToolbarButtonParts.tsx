@@ -1,5 +1,5 @@
-import React from 'react'
-import { View, Pressable, StyleSheet } from 'react-native'
+import React, { useId } from 'react'
+import { View, Text, Pressable, StyleSheet, Platform } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { Surface } from '../surface'
 
@@ -61,5 +61,20 @@ export function ToolbarButtonMenu({
         {children}
       </Surface>
     </>
+  )
+}
+
+/** react-native-web drops accessibilityHint, so web needs a described-by node (TD-1073). */
+export function useTooltipDescriptionId(tooltip: string | undefined): string | undefined {
+  const id = useId()
+  return Platform.OS === 'web' && tooltip ? id : undefined
+}
+
+export function ToolbarButtonDescription({ id, text }: { id?: string; text?: string }) {
+  if (!id) return null
+  return (
+    <Text nativeID={id} className="hidden">
+      {text}
+    </Text>
   )
 }
