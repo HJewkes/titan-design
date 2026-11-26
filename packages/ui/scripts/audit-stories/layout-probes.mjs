@@ -333,33 +333,42 @@ const deltasOf = (a, b) =>
 
 const describeDeltas = (deltas) => deltas.map(({ line, d }) => `${line} Δ${d}`).join(', ')
 
-const alignsOnBaseline = (container, kid) =>
-  kid.layout.alignSelf.includes('baseline') ||
-  (['auto', 'normal'].includes(kid.layout.alignSelf) &&
-    container.layout.alignItems.includes('baseline'))
+// The baseline set a flex row aligns a child by ('first' or 'last'), or null when it does not align
+// the child by a baseline. `first baseline` computes to `baseline`.
+function baselineSet(container, kid) {
+  const { alignSelf } = kid.layout
+  const value = ['auto', 'normal'].includes(alignSelf) ? container.layout.alignItems : alignSelf
+  if (!value.includes('baseline')) return null
+  return value.includes('last') ? 'last' : 'first'
+}
 
-// The baseline a flex row aligns a child by: that of its first in-flow item, descending until text
-// is reached. An item with no baseline of its own (an icon, an image, an empty box) lends its
-// border-box bottom edge instead, as CSS synthesises it, so a child that opens with an icon is
-// aligned by the icon's bottom and not by the label beside it.
-function cssBaseline(node, children) {
+// The baseline a flex row aligns a child by: for the first baseline set, that of its first in-flow
+// item, descending until text is reached and taking the text's first line; for the last set, its
+// last in-flow item and the text's last line. An item with no baseline of its own (an icon, an
+// image, an empty box) lends its border-box bottom edge instead, as CSS synthesises it, so a child
+// that opens with an icon is aligned by the icon's bottom and not by the label beside it.
+function cssBaseline(node, children, set) {
   for (let n = node; n; ) {
-    if (n.text) return n.text.first.baseline
-    const first = (children.get(n.id) ?? []).find(inFlow)
-    if (!first || REPLACED_TAGS.has(n.tag)) return n.box[1] + n.box[3]
-    n = first
+    if (n.text) return n.text[set].baseline
+    const kids = (children.get(n.id) ?? []).filter(inFlow)
+    if (!kids.length || REPLACED_TAGS.has(n.tag)) return n.box[1] + n.box[3]
+    n = set === 'last' ? kids.at(-1) : kids[0]
   }
   return null
+}
+
+function baselineMiss(set, a, b, children) {
+  const d = q(Math.abs(cssBaseline(a, children, set) - cssBaseline(b, children, set)))
+  const name = set === 'last' ? 'last baseline' : 'baseline'
+  return d > ALIGN_TOLERANCE ? `${name} Δ${d} (align-items: ${name})` : null
 }
 
 // Both children are in a flex row with ink; returns the finding's detail, or null.
 function nearMiss(container, [a, b], children) {
   const [ta, tb] = [firstText(a, children), firstText(b, children)]
   const deltas = deltasOf(alignmentLines(a, ta), alignmentLines(b, tb))
-  if (alignsOnBaseline(container, a) && alignsOnBaseline(container, b)) {
-    const d = q(Math.abs(cssBaseline(a, children) - cssBaseline(b, children)))
-    return d > ALIGN_TOLERANCE ? `baseline Δ${d} (align-items: baseline)` : null
-  }
+  const set = baselineSet(container, a)
+  if (set && set === baselineSet(container, b)) return baselineMiss(set, a, b, children)
   const smallest = Math.min(...deltas.map((x) => x.d))
   const sizes = [ta, tb].filter(Boolean).map((t) => t.fontSize)
   const band = Math.min(MAX_BAND, ...sizes.map((s) => s / 2))

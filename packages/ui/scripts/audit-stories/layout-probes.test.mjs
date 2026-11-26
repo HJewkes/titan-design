@@ -497,6 +497,36 @@ describe('alignment-near-miss', () => {
     })
   })
 
+  describe('align-items: last baseline', () => {
+    // A small overline over a large value, beside a text-less bar frame whose foot is at `foot`.
+    const valueAndBars = (foot, row = rowOf({ alignItems: 'last baseline' })) => {
+      const values = node('v', 'r', [0, 0, 60, 56], { selector: '.v' })
+      const overline = label('v.0', [0, 0, 40, 12], { baseline: 10, fontSize: 11 })
+      const value = label('v.1', [0, 16, 60, 40], { baseline: 50, fontSize: 48 })
+      overline.parent = value.parent = 'v'
+      const frame = node('f', 'r', [80, foot - 48, 96, 48], { selector: '.f' })
+      const bar = node('f.0', 'f', [80, foot - 30, 20, 30], { paints: true })
+      return layout(row, values, overline, value, frame, bar)
+    }
+
+    it('gives no finding when the value’s last line sits on the bars’ foot', () => {
+      expect(judgeAlignmentNearMiss(valueAndBars(50))).toEqual([])
+    })
+
+    it('flags the pair when the bars’ foot is off the value’s last baseline', () => {
+      const [found] = judgeAlignmentNearMiss(valueAndBars(58))
+      expect(found.detail).toBe('.v vs .f: last baseline Δ8 (align-items: last baseline)')
+    })
+
+    it('honours align-self: last baseline over a first-baseline row', () => {
+      const layoutOf = valueAndBars(50, rowOf({ alignItems: 'baseline' }))
+      for (const n of layoutOf.nodes.filter((n) => n.parent === 'r')) {
+        n.layout = { ...n.layout, alignSelf: 'last baseline' }
+      }
+      expect(judgeAlignmentNearMiss(layoutOf)).toEqual([])
+    })
+  })
+
   it('reads the baseline from a label on a child’s first line', () => {
     const wrap = node('w', 'r', [50, 0, 60, 14], { selector: '.w' })
     const inner = label('w.0', [70, 0, 40, 12], { baseline: 10 })
