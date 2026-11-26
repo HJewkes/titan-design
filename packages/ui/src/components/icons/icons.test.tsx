@@ -121,6 +121,31 @@ describe('icon primitives', () => {
     expect(d.startsWith('M3.95 12.14 L9.3 17.6')).toBe(true)
   })
 
+  describe('CheckMark progress', () => {
+    const spineOf = (progress?: number) => {
+      const { container } = render(<CheckMark progress={progress} />)
+      return container.querySelector('mask path')!
+    }
+
+    it.each([
+      [0, '1'],
+      [0.5, '0.5'],
+      [1, '0'],
+      [1.4, '0'],
+      [-0.2, '1'],
+    ])('progress %s gives dashoffset %s over a dash of 1', (progress, offset) => {
+      const spine = spineOf(progress)
+      expect(spine.getAttribute('stroke-dasharray')).toBe('1')
+      expect(spine.getAttribute('stroke-dashoffset')).toBe(offset)
+    })
+
+    it('omitting progress leaves no dash attributes', () => {
+      const spine = spineOf()
+      expect(spine.hasAttribute('stroke-dasharray')).toBe(false)
+      expect(spine.hasAttribute('stroke-dashoffset')).toBe(false)
+    })
+  })
+
   it('every check mark masks with its own id', () => {
     const { container } = render(
       <>

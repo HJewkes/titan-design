@@ -2,6 +2,12 @@ import { useId } from 'react'
 import { SvgIcon, type IconProps } from './SvgIcon'
 import { CHECK_MARK_MASK_WIDTH, CHECK_MARK_SPINE, checkMarkOutline } from './checkMarkGeometry'
 
+/** Props for {@link CheckMark}: the icon props plus an optional draw-on `progress`. */
+export interface CheckMarkProps extends IconProps {
+  /** Draw-on amount, clamped to 0..1. Omit to show the whole mark with no dash attributes. */
+  progress?: number
+}
+
 /**
  * Check mark: a brush stroke with a flat vertical start cut that swells at the apex and tapers
  * to a hairline. Replaces the ✓ text glyph, which no titan font carries, so it rendered in
@@ -11,8 +17,12 @@ import { CHECK_MARK_MASK_WIDTH, CHECK_MARK_SPINE, checkMarkOutline } from './che
  * first, with `pathLength={1}`: a stroke-dash draw-on of the spine draws the mark on, and the
  * fully drawn spine shows the whole mark.
  */
-export function CheckMark(props: IconProps) {
-  const { strokeWidth = 2, color = 'currentColor', ...rest } = props
+export function CheckMark(props: CheckMarkProps) {
+  const { strokeWidth = 2, color = 'currentColor', progress, ...rest } = props
+  const dash =
+    progress === undefined
+      ? undefined
+      : { strokeDasharray: 1, strokeDashoffset: 1 - Math.min(1, Math.max(0, progress)) }
   const maskId = useId()
   const points = checkMarkOutline(strokeWidth)
     .map(([x, y]) => `${String(x)},${String(y)}`)
@@ -29,6 +39,7 @@ export function CheckMark(props: IconProps) {
           stroke="white"
           strokeWidth={strokeWidth * CHECK_MARK_MASK_WIDTH}
           strokeLinecap="butt"
+          {...dash}
         />
       </mask>
       {/* eslint-disable-next-line titan/no-html-element -- web SVG like the rest of the SvgIcon set until it moves to react-native-svg */}
