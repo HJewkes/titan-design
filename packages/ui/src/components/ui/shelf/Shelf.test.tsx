@@ -65,6 +65,16 @@ describe('Shelf', () => {
     for (const item of screen.getAllByRole('listitem')) expect(item).toHaveStyle({ width: '264px' })
   })
 
+  it('makes the row end a snap point, so a nudge to the end cannot settle a card short', () => {
+    layout.width = 1000
+    renderShelf({}, MORE)
+
+    const items = screen.getAllByRole('listitem')
+    const last = items.pop()
+    for (const item of items) expect(item).toHaveStyle({ scrollSnapAlign: 'start' })
+    expect(last).toHaveStyle({ scrollSnapAlign: 'end' })
+  })
+
   it('shows only the forward nudge on a wide column whose row overflows', () => {
     layout.width = 1000
     renderShelf({}, MORE)

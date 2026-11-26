@@ -62,19 +62,19 @@ function viewport(canvas: HTMLElement): HTMLElement {
   return within(canvas).getByTestId('shelf-viewport')
 }
 
-/** Resolves once the scroller's offset has held still for several frames (a smooth scroll has landed). */
-async function waitForScrollSettled(canvas: HTMLElement) {
+/**
+ * Resolves once the scroller has reached its far end. A smooth scroll on a loaded CI
+ * runner can take well over a second and may not move for several frames after the
+ * call, so this waits on the end itself rather than on the offset holding still.
+ */
+async function waitForScrollEnd(canvas: HTMLElement) {
   const scroller = viewport(canvas)
-  let last = Number.NaN
-  let stillFrames = 0
   await waitFor(
-    async () => {
-      await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()))
-      stillFrames = scroller.scrollLeft === last ? stillFrames + 1 : 0
-      last = scroller.scrollLeft
-      expect(stillFrames).toBeGreaterThanOrEqual(5)
-    },
-    { timeout: SETTLE_TIMEOUT_MS, interval: 0 }
+    () =>
+      expect(scroller.scrollLeft).toBeGreaterThanOrEqual(
+        scroller.scrollWidth - scroller.clientWidth - 1
+      ),
+    { timeout: SETTLE_TIMEOUT_MS }
   )
 }
 
@@ -82,22 +82,27 @@ async function waitForScrollSettled(canvas: HTMLElement) {
 async function expectWhollyInView(canvas: HTMLElement, title: string) {
   const column = within(canvas).getByRole('group', { name: 'Yesterday' })
   const card = within(canvas).getByRole('button', { name: title })
-  await waitFor(() => {
-    const view = column.getBoundingClientRect()
-    const box = card.getBoundingClientRect()
-    expect(box.left).toBeGreaterThanOrEqual(view.left - 1)
-    expect(box.right).toBeLessThanOrEqual(view.right + 1)
-  })
+  await waitFor(
+    () => {
+      const view = column.getBoundingClientRect()
+      const box = card.getBoundingClientRect()
+      expect(box.left).toBeGreaterThanOrEqual(view.left - 1)
+      expect(box.right).toBeLessThanOrEqual(view.right + 1)
+    },
+    { timeout: SETTLE_TIMEOUT_MS }
+  )
 }
 
 /** The named card's leading edge rests on the column's leading edge. */
 async function expectAtColumnStart(canvas: HTMLElement, title: string) {
   const column = within(canvas).getByRole('group', { name: 'Yesterday' })
   const card = within(canvas).getByRole('button', { name: title })
-  await waitFor(() =>
-    expect(
-      Math.abs(card.getBoundingClientRect().left - column.getBoundingClientRect().left)
-    ).toBeLessThan(2)
+  await waitFor(
+    () =>
+      expect(
+        Math.abs(card.getBoundingClientRect().left - column.getBoundingClientRect().left)
+      ).toBeLessThan(2),
+    { timeout: SETTLE_TIMEOUT_MS }
   )
 }
 
@@ -110,7 +115,9 @@ export const NudgeMovesTheRowAndBack: Story = {
     await expectAtColumnStart(canvasElement, TITLES[3])
     await userEvent.click(await canvas.findByRole('button', { name: 'Back in Yesterday' }))
     await expectAtColumnStart(canvasElement, TITLES[0])
-    await waitFor(() => expect(viewport(canvasElement).scrollLeft).toBe(0))
+    await waitFor(() => expect(viewport(canvasElement).scrollLeft).toBe(0), {
+      timeout: SETTLE_TIMEOUT_MS,
+    })
   },
 }
 
@@ -119,10 +126,9 @@ export const NudgeHidesAtTheEnd: Story = {
     const canvas = within(canvasElement)
     await userEvent.click(await canvas.findByRole('button', { name: 'More from Yesterday' }))
     await expectAtColumnStart(canvasElement, TITLES[3])
-    await waitForScrollSettled(canvasElement)
     // Three more steps would pass the end, so the second nudge stops on the last card.
     await userEvent.click(canvas.getByRole('button', { name: 'More from Yesterday' }))
-    await waitForScrollSettled(canvasElement)
+    await waitForScrollEnd(canvasElement)
     await expectWhollyInView(canvasElement, TITLES[9])
     await waitFor(
       () => expect(canvas.queryByRole('button', { name: 'More from Yesterday' })).toBeNull(),
