@@ -74,6 +74,17 @@
         "default": "./dist/motion.js"
       }
     },
+    "./motion/camera": {
+      "react-native": "./src/motion-camera.ts",
+      "import": {
+        "types": "./dist/motion/camera.d.mts",
+        "default": "./dist/motion/camera.mjs"
+      },
+      "require": {
+        "types": "./dist/motion/camera.d.ts",
+        "default": "./dist/motion/camera.js"
+      }
+    },
     "./diagram": {
       "react-native": "./src/diagram.ts",
       "import": {

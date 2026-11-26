@@ -1,24 +1,43 @@
 // A 2D camera as a pure function of stations: the frame at t never depends on the previous frame.
-import type { Easing } from './easing'
-import { MOTION } from './tokens'
+// Imports only `./easing`, so the `./motion/camera` entry stays free of react and react-native.
+import { smootherstep, type Easing } from './easing'
+
+/**
+ * The camera's one declared motion: a move lasts `moveS` seconds on the `ease` curve. Smootherstep
+ * has zero slope and zero curvature at both ends, so a move starts and stops without a jerk spike.
+ * `easeName` names the curve for consumers that record or check it.
+ */
+export const CAMERA_MOTION = {
+  moveS: 1.5,
+  easeName: 'smootherstep',
+  ease: smootherstep,
+} as const
 
 /** A point in world or screen space. */
 export interface Point {
+  /** Horizontal position. */
   x: number
+  /** Vertical position. */
   y: number
 }
 
 /** A world-space rectangle: top-left corner plus a positive size. */
 export interface Box {
+  /** Left edge. */
   x: number
+  /** Top edge. */
   y: number
+  /** Horizontal extent; positive. */
   width: number
+  /** Vertical extent; positive. */
   height: number
 }
 
 /** The screen size the camera renders into, in px. */
 export interface Viewport {
+  /** Screen width in px. */
   width: number
+  /** Screen height in px. */
   height: number
 }
 
@@ -37,22 +56,23 @@ export interface CameraFrame {
  * with no map: the camera holds its last box and moves on from it to the next station.
  */
 export interface CameraStation {
+  /** Seconds at which the move to `box` ends. */
   atS: number
+  /** The world box to frame, or `null` for a span with no map. */
   box: Box | null
 }
 
 /** Options for `camera`. */
 export interface CameraOptions {
+  /** The screen the frame is fitted into. */
   viewport: Viewport
-  /** Seconds a move lasts, cut short so it never starts before the previous station. Default 1.5. */
+  /** Seconds a move lasts, cut short so it never starts before the previous station. Default `CAMERA_MOTION.moveS`. */
   moveS?: number
-  /** Applied to move progress. Default `MOTION.ease.inOut`. */
+  /** Applied to move progress. Default `CAMERA_MOTION.ease`. */
   ease?: Easing
   /** Screen px kept clear around the framed box. Default 0. */
   padding?: number
 }
-
-const DEFAULT_MOVE_S = 1.5
 
 function assertPositiveSize({ width, height }: Box): void {
   if (!(width > 0 && height > 0)) {
@@ -136,7 +156,7 @@ function cameraBox(
 export function camera(
   t: number,
   stations: readonly CameraStation[],
-  { viewport, moveS = DEFAULT_MOVE_S, ease = MOTION.ease.inOut, padding = 0 }: CameraOptions
+  { viewport, moveS = CAMERA_MOTION.moveS, ease = CAMERA_MOTION.ease, padding = 0 }: CameraOptions
 ): CameraFrame | null {
   stations.forEach(({ box }) => box && assertPositiveSize(box))
   const box = cameraBox(t, stations, moveS, ease)

@@ -1,6 +1,14 @@
 import { describe, expect, it } from 'vitest'
-import { camera, fitBox, project, unproject, type Box, type CameraStation } from './camera'
-import { linear } from './easing'
+import {
+  camera,
+  CAMERA_MOTION,
+  fitBox,
+  project,
+  unproject,
+  type Box,
+  type CameraStation,
+} from './camera'
+import { linear, smootherstep } from './easing'
 
 const viewport = { width: 1600, height: 900 }
 const world: Box = { x: 0, y: 0, width: 1600, height: 900 }
@@ -49,6 +57,33 @@ describe('camera', () => {
     expect(camera(5.2, stations, { viewport, ease: linear })?.box.width).toBeCloseTo(
       400 * (100 / 400) ** 0.2
     )
+  })
+
+  it('declares a 1.5 s move on smootherstep', () => {
+    expect(CAMERA_MOTION.moveS).toBe(1.5)
+    expect(CAMERA_MOTION.easeName).toBe('smootherstep')
+    expect(CAMERA_MOTION.ease).toBe(smootherstep)
+    expect(CAMERA_MOTION.ease(0.5)).toBe(0.5)
+    expect(CAMERA_MOTION.ease(0.25)).toBeCloseTo(
+      6 * 0.25 ** 5 - 15 * 0.25 ** 4 + 10 * 0.25 ** 3,
+      12
+    )
+  })
+
+  it('a camera with no ease option moves on the declared camera easing', () => {
+    const stations = [
+      { atS: 0, box: world },
+      { atS: 10, box: sibling },
+    ]
+    const t = 10 - CAMERA_MOTION.moveS * 0.75
+    const progress = CAMERA_MOTION.ease(0.25)
+
+    const defaulted = camera(t, stations, { viewport })?.box
+    const declared = camera(t, stations, { viewport, ease: CAMERA_MOTION.ease })?.box
+
+    expect(defaulted).toEqual(declared)
+    expect(defaulted?.width).toBeCloseTo(1600 * (400 / 1600) ** progress, 9)
+    expect(progress).not.toBeCloseTo(0.25, 2)
   })
 
   it('holds the first box before the first station instead of the world origin', () => {

@@ -22,13 +22,14 @@ const objectEntries = Object.entries(pkg.exports).filter(
 )
 
 describe('package.json exports', () => {
-  it('has the twelve TypeScript subpaths as object entries', () => {
+  it('has the thirteen TypeScript subpaths as object entries', () => {
     expect(objectEntries.map(([subpath]) => subpath)).toEqual([
       '.',
       './bodymap',
       './pages',
       './workout',
       './motion',
+      './motion/camera',
       './diagram',
       './visual-router',
       './dependency-graph',
