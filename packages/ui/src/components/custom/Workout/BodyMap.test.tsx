@@ -27,6 +27,23 @@ const data: BodyMapData[] = [
   { muscleGroup: MuscleGroup.QUADS, intensity: 0.9, volumeStatus: 'over', weeklySets: 20 },
 ]
 
+// React warns once per prop name per file, so this must stay the first render in the file:
+// an earlier render would swallow the warning and the assertion would pass vacuously.
+describe('BodyMap console errors', () => {
+  afterEach(() => {
+    vi.restoreAllMocks()
+  })
+
+  it('logs no unknown event handler or responder prop errors when rendered with data', () => {
+    const errors = vi.spyOn(console, 'error').mockImplementation(() => {})
+    render(<BodyMap data={data} view="front" onMusclePress={vi.fn()} />)
+    const messages = errors.mock.calls.map((call) => call.map(String).join(' '))
+    expect(
+      messages.filter((m) => /Unknown event handler|onResponder|ShouldSetResponder/.test(m))
+    ).toEqual([])
+  })
+})
+
 describe('BodyMap', () => {
   describe('rendering', () => {
     it('renders the container, SVG, and view toggle', () => {
@@ -71,6 +88,15 @@ describe('BodyMap', () => {
       const onMusclePress = vi.fn()
       render(<BodyMap data={data} view="front" onMusclePress={onMusclePress} />)
       fireEvent.click(screen.getByTestId('body-map-muscle-chest'))
+      expect(onMusclePress).toHaveBeenCalledWith(MuscleGroup.CHEST)
+    })
+
+    it('calls onMusclePress with the muscle behind a tapped figure path', () => {
+      const onMusclePress = vi.fn()
+      const { container } = render(
+        <BodyMap data={data} view="front" onMusclePress={onMusclePress} />
+      )
+      fireEvent.click(container.querySelector('[id="chest"]') as Element)
       expect(onMusclePress).toHaveBeenCalledWith(MuscleGroup.CHEST)
     })
 

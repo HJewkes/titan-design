@@ -16,14 +16,14 @@ import {
   MUSCLE_DISPLAY_NAMES,
   SIMPLE_DISPLAY_NAMES,
   DETAILED_TO_SIMPLE,
-  SLUG_TO_PRIMARY_MUSCLE,
   VOLUME_STATUS_LABELS,
   getHeatmapColor,
   isMoreSevere,
   volumeStatusDotStyle,
   type VolumeStatus,
 } from './muscleTaxonomy'
-import { Body, unlitBodyProps } from './bodyHighlighter'
+import { figurePress } from './bodyMapPress'
+import { Body, PressFreeBody, unlitBodyProps } from './bodyHighlighter'
 
 /** Presentation size for BodyMap and TrainingStatusPage: 'phone' (default) keeps
  * today's compact geometry; 'wall' scales up for large-display dashboards. */
@@ -189,14 +189,8 @@ export function BodyMap({
       )
     : null
 
-  const handleBodyPress = (part: ExtendedBodyPart) => {
-    if (!onMusclePress || !part.slug) return
-    const fromData = data.find((d) =>
-      (MUSCLE_TO_SVG_SLUGS[d.muscleGroup] ?? []).includes(part.slug as string)
-    )
-    const muscle = fromData?.muscleGroup ?? SLUG_TO_PRIMARY_MUSCLE[part.slug]
-    if (muscle) onMusclePress(muscle)
-  }
+  const press = figurePress(data, onMusclePress)
+  const FigureBody = press.isWeb ? PressFreeBody : Body
 
   return (
     <View className={cn(className)} testID="body-map" {...props}>
@@ -218,14 +212,15 @@ export function BodyMap({
         accessibilityElementsHidden
         importantForAccessibility="no-hide-descendants"
         testID="body-map-svg"
+        {...press.wrapperProps}
       >
-        <Body
+        <FigureBody
           side={view}
           data={slugParts}
           scale={bodyScale}
           gender="male"
           {...unlitBodyProps(surfaceMode)}
-          onBodyPartPress={handleBodyPress}
+          onBodyPartPress={press.onBodyPartPress}
         />
       </Animated.View>
 
