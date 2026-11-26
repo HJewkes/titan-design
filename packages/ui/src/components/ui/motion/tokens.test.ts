@@ -14,6 +14,7 @@ const css = readFileSync(path.join(packageRoot, 'src/theme/global.css'), 'utf8')
 const tailwindTheme = require(path.join(packageRoot, 'tailwind.config.js')).theme.extend as {
   transitionTimingFunction: Record<string, string>
   transitionDuration: Record<string, string>
+  animation: Record<string, string>
 }
 
 /** Every declaration of `name` in global.css: one per theme block. */
@@ -157,5 +158,25 @@ describe('motion CSS variables', () => {
 
   it.each(durations)('Tailwind duration-%s holds the same value as %s', (name, variable) => {
     expect(tailwindTheme.transitionDuration[name]).toBe(motionCSSVars[variable])
+  })
+})
+
+describe('Tailwind animation shorthands', () => {
+  /** Infinite loops are not transitions between states, so they keep their own pacing. */
+  const exemptLoops = ['shimmer']
+  const durationValues = durations.map(([, v]) => motionCSSVars[v] as string)
+  const easeValues = curves.map(([, v]) => motionCSSVars[v] as string)
+  const guarded = Object.entries(tailwindTheme.animation).filter(
+    ([name]) => !exemptLoops.includes(name)
+  )
+
+  it.each(exemptLoops)('exempts %s only because it loops forever', (name) => {
+    expect(tailwindTheme.animation[name]).toMatch(/\binfinite\b/)
+  })
+
+  it.each(guarded)('%s uses a motion duration and ease token', (_, shorthand) => {
+    const [, duration, ...timing] = shorthand.split(/\s+(?![^(]*\))/)
+    expect(durationValues).toContain(duration)
+    expect(easeValues).toContain(timing.join(' '))
   })
 })
